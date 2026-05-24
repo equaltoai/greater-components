@@ -115,6 +115,12 @@
 	padding: 0.5rem var(--gr-shell-gutter);
 	cursor: pointer;
 	min-width: 0;
+	/*
+	 * `role="option"` elements render as <div> so the listbox can wrap them in
+	 * <div role="group"> sections. Reset any default block-flow weirdness so
+	 * groups look identical to the flat list layout.
+	 */
+	box-sizing: border-box;
 }
 
 .gr-shell-command-palette__option--active {

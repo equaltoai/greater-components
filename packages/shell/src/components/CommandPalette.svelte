@@ -579,18 +579,25 @@ tokens via the bundled `shell.css`.
 						{#if emptyState}{@render emptyState()}{:else}{emptyMessage}{/if}
 					</div>
 				{:else if filteredGroups}
-					{#each filteredGroups as group (group.id)}
-						{@const headerId = groupHeaderDomId(stableId.value, group.id)}
-						<div class="gr-shell-command-palette__group" role="group" aria-labelledby={headerId}>
-							<div class="gr-shell-command-palette__group-header" id={headerId}>
-								{group.label}
-							</div>
-							<ul
-								id={`${listboxOwningId}-${group.id}`}
-								class="gr-shell-command-palette__listbox"
-								role="listbox"
-								aria-labelledby={headerId}
-							>
+					<!--
+						Grouped mode: one parent listbox owns every option. Each group is
+						a role="group" child whose `aria-labelledby` references the
+						visible group header. ARIA listboxes accept role="group"
+						children that wrap their options — this matches the W3C
+						APG "Combobox with Listbox Popup, Grouped Options" pattern
+						and resolves the input's aria-controls IDREF.
+					-->
+					<div
+						id={listboxOwningId}
+						class="gr-shell-command-palette__listbox gr-shell-command-palette__listbox--grouped"
+						role="listbox"
+					>
+						{#each filteredGroups as group (group.id)}
+							{@const headerId = groupHeaderDomId(stableId.value, group.id)}
+							<div class="gr-shell-command-palette__group" role="group" aria-labelledby={headerId}>
+								<div class="gr-shell-command-palette__group-header" id={headerId}>
+									{group.label}
+								</div>
 								{#each group.items as item (item.id)}
 									{@const entryIndex = itemEntries.findIndex(
 										(e) => e.groupId === group.id && e.item.id === item.id
@@ -604,8 +611,18 @@ tokens via the bundled `shell.css`.
 										still need a click handler, but Svelte's a11y_click_events_have_key_events
 										linter incorrectly flags it. Documented exception per ARIA APG.
 									-->
+									<!--
+	W3C ARIA Combobox + Listbox pattern (virtual focus):
+	- The combobox input is the single tab stop; options are NOT in the
+	  tab order. They receive virtual focus via `aria-activedescendant`.
+	- Mouse activation still needs a click handler, but svelte's
+	  a11y_click_events_have_key_events linter expects a key handler
+	  alongside it — keyboard interaction is owned by the input. We
+	  suppress both warnings here per ARIA APG guidance.
+-->
 									<!-- svelte-ignore a11y_click_events_have_key_events -->
-									<li
+									<!-- svelte-ignore a11y_interactive_supports_focus -->
+									<div
 										id={optId}
 										class={[
 											'gr-shell-command-palette__option',
@@ -643,19 +660,33 @@ tokens via the bundled `shell.css`.
 												</kbd>
 											{/if}
 										{/if}
-									</li>
+									</div>
 								{/each}
-							</ul>
-						</div>
-					{/each}
+							</div>
+						{/each}
+					</div>
 				{:else if filteredItems}
-					<ul id={listboxOwningId} class="gr-shell-command-palette__listbox" role="listbox">
+					<div
+						id={listboxOwningId}
+						class="gr-shell-command-palette__listbox gr-shell-command-palette__listbox--flat"
+						role="listbox"
+					>
 						{#each filteredItems as item (item.id)}
 							{@const entryIndex = itemEntries.findIndex((e) => e.item.id === item.id)}
 							{@const isActive = entryIndex === activeIndex}
 							{@const optId = optionDomId(stableId.value, undefined, item.id)}
+							<!--
+	W3C ARIA Combobox + Listbox pattern (virtual focus):
+	- The combobox input is the single tab stop; options are NOT in the
+	  tab order. They receive virtual focus via `aria-activedescendant`.
+	- Mouse activation still needs a click handler, but svelte's
+	  a11y_click_events_have_key_events linter expects a key handler
+	  alongside it — keyboard interaction is owned by the input. We
+	  suppress both warnings here per ARIA APG guidance.
+-->
 							<!-- svelte-ignore a11y_click_events_have_key_events -->
-							<li
+							<!-- svelte-ignore a11y_interactive_supports_focus -->
+							<div
 								id={optId}
 								class={[
 									'gr-shell-command-palette__option',
@@ -687,9 +718,9 @@ tokens via the bundled `shell.css`.
 										</kbd>
 									{/if}
 								{/if}
-							</li>
+							</div>
 						{/each}
-					</ul>
+					</div>
 				{/if}
 			</div>
 

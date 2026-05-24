@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-05-24T19:46:17.417Z",
+  "generatedAt": "2026-05-24T20:14:39.644Z",
   "ref": "greater-v0.9.0",
   "version": "0.9.0",
   "checksums": {
@@ -900,8 +900,8 @@
     "packages/shell/src/components/Breadcrumb.svelte": "sha256-NP1cHv6jMKWSe4PYsafPn/ta/Hle13f154pY6IS/Rig=",
     "packages/shell/src/components/Callout.css": "sha256-LnnrUMfn9/3VcHX6zcDZFSpqe7nKRMZKAI71Jkpgq+8=",
     "packages/shell/src/components/Callout.svelte": "sha256-ph59kDztSXz4xJ+NHdg4dkyhyMM5kv/uGpl/ZvdzgmY=",
-    "packages/shell/src/components/CommandPalette.css": "sha256-JFAY1r9Up5S1nhIfWox69+z5AZTs4Lc4odXLkt7l/Fg=",
-    "packages/shell/src/components/CommandPalette.svelte": "sha256-UrkgFhzcfLGsJOarQkl9LByQwjBKrOONbu2j/H4Wa4k=",
+    "packages/shell/src/components/CommandPalette.css": "sha256-/IGfp1GGTymIqO1Ti/TqyhNh4l6bvCqhd4On971rKCo=",
+    "packages/shell/src/components/CommandPalette.svelte": "sha256-3mNM4rE3MqE/janHhyG9a+zvJDgTgD7i3NFJ843sxGs=",
     "packages/shell/src/components/PageFrame.css": "sha256-uiWRrFQ2HAFj1yBpi2eSLVi2DEGdju5WB4Y+AHL0mlA=",
     "packages/shell/src/components/PageFrame.svelte": "sha256-zesK3O34UhQcZTxOqhuqQqnxlm3TFWv0d+EuLqX05HI=",
     "packages/shell/src/components/PageTitle.css": "sha256-jy/Vfn9B9VBstoMHrWA0oPdblW8hxPoRexTCf7c1TiU=",
@@ -919,7 +919,7 @@
     "packages/shell/src/components/Topbar.css": "sha256-e49AWpuwlaEBLxqeDvM8sMNuwlqugOB+54w1y+7ojME=",
     "packages/shell/src/components/Topbar.svelte": "sha256-QXASS11a1RlKcnxqDskrt0PwkGTt7zvr+LrK2uWHm80=",
     "packages/shell/src/index.ts": "sha256-NLhn3AXDEWBZsC7ACM0NX2/1Uq0CzDuQwYjVG4zGXhw=",
-    "packages/shell/src/styles/base.css": "sha256-HEzrvYFs/wBWZuQUMeZmzhNjywLC88m8FgEYWd9S9Ho=",
+    "packages/shell/src/styles/base.css": "sha256-INLODwNQNHYVsBKgGXbW/PENIwGo7NuIODzsRFuUUN8=",
     "packages/shell/src/types.ts": "sha256-xRnEGFsxQoJKt05wbZb+rbvOVbkbNb5UCpXOSovR8hI=",
     "packages/shell/src/utils/fuzzy-filter.ts": "sha256-ZopMxsr/aoZ3BqcmGydIR4DOwysud9oxTBLp88qVXt8=",
     "packages/faces/social/src/adapters/batcher.ts": "sha256-6PnUshOPk84U+PSnkADYzhN9SpUrvwiy+tN10HPaVeE=",
@@ -6030,13 +6030,13 @@
         },
         {
           "path": "src/components/CommandPalette.css",
-          "checksum": "sha256-JFAY1r9Up5S1nhIfWox69+z5AZTs4Lc4odXLkt7l/Fg=",
-          "size": 4732
+          "checksum": "sha256-/IGfp1GGTymIqO1Ti/TqyhNh4l6bvCqhd4On971rKCo=",
+          "size": 4969
         },
         {
           "path": "src/components/CommandPalette.svelte",
-          "checksum": "sha256-UrkgFhzcfLGsJOarQkl9LByQwjBKrOONbu2j/H4Wa4k=",
-          "size": 21893
+          "checksum": "sha256-3mNM4rE3MqE/janHhyG9a+zvJDgTgD7i3NFJ843sxGs=",
+          "size": 23397
         },
         {
           "path": "src/components/PageFrame.css",
@@ -6125,8 +6125,8 @@
         },
         {
           "path": "src/styles/base.css",
-          "checksum": "sha256-HEzrvYFs/wBWZuQUMeZmzhNjywLC88m8FgEYWd9S9Ho=",
-          "size": 2031
+          "checksum": "sha256-INLODwNQNHYVsBKgGXbW/PENIwGo7NuIODzsRFuUUN8=",
+          "size": 2912
         },
         {
           "path": "src/types.ts",

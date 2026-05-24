@@ -111,24 +111,74 @@ describe('CommandPalette — open: dialog & combobox semantics', () => {
 		expect(options.length).toBe(flatItems.length);
 	});
 
-	it('renders one listbox per group when groups are supplied with aria-labelledby', async () => {
+	it('renders a single parent listbox containing role="group" sections when groups are supplied', async () => {
+		// W3C ARIA APG "Combobox with Listbox Popup, Grouped Options" pattern:
+		// one listbox per combobox, with role="group" children wrapping options.
+		// This keeps `aria-controls` pointing at a single owning listbox element,
+		// which is the regression Arch flagged in PR #668's first revision.
 		const { container } = render(CommandPalette, {
 			open: true,
 			groups: groupedItems,
 		});
 		await tick();
 		const listboxes = container.querySelectorAll('[role="listbox"]');
-		expect(listboxes.length).toBe(2);
+		expect(listboxes.length).toBe(1);
 		const groupRegions = container.querySelectorAll('[role="group"]');
 		expect(groupRegions.length).toBe(2);
-		// Each group has aria-labelledby pointing at a visible header.
+		// The parent listbox contains both groups.
 		for (const region of Array.from(groupRegions)) {
+			expect(listboxes[0]!.contains(region)).toBe(true);
 			const labelledby = region.getAttribute('aria-labelledby');
 			expect(labelledby).toBeTruthy();
 			const labelEl = region.ownerDocument.getElementById(labelledby!);
 			expect(labelEl).toBeTruthy();
 			expect(labelEl?.textContent?.trim().length).toBeGreaterThan(0);
 		}
+	});
+
+	it('input aria-controls IDREF resolves in flat mode', async () => {
+		const { container } = render(CommandPalette, {
+			open: true,
+			items: flatItems,
+		});
+		await tick();
+		const input = container.querySelector(
+			'input.gr-shell-command-palette__input'
+		) as HTMLInputElement;
+		const controls = input.getAttribute('aria-controls');
+		expect(controls).toBeTruthy();
+		const target = container.ownerDocument.getElementById(controls!);
+		expect(
+			target,
+			`Expected aria-controls=${controls} to point at a rendered element`
+		).toBeTruthy();
+		expect(target?.getAttribute('role')).toBe('listbox');
+	});
+
+	it('input aria-controls IDREF resolves in grouped mode (Arch PR #668 review regression)', async () => {
+		const { container } = render(CommandPalette, {
+			open: true,
+			groups: groupedItems,
+		});
+		await tick();
+		const input = container.querySelector(
+			'input.gr-shell-command-palette__input'
+		) as HTMLInputElement;
+		const controls = input.getAttribute('aria-controls');
+		expect(controls).toBeTruthy();
+		const target = container.ownerDocument.getElementById(controls!);
+		expect(
+			target,
+			`Expected aria-controls=${controls} to point at a rendered element in grouped mode`
+		).toBeTruthy();
+		expect(target?.getAttribute('role')).toBe('listbox');
+		// The active descendant must live inside the listbox that aria-controls
+		// names, so screen readers see one owning popup.
+		const activeId = input.getAttribute('aria-activedescendant');
+		expect(activeId).toBeTruthy();
+		const activeEl = container.ownerDocument.getElementById(activeId!);
+		expect(activeEl).toBeTruthy();
+		expect(target!.contains(activeEl!)).toBe(true);
 	});
 
 	it('renders shortcut chip with aria-hidden', async () => {
