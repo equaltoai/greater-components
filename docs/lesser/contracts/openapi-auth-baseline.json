@@ -1,0 +1,177 @@
+{
+  "_comment": "Auth gap baseline for docs/lesser/contracts/openapi.yaml. Each entry is an endpoint missing a `security:` block in the pinned Lesser OpenAPI snapshot. The fix belongs in Lesser's route contracts. Do not hand-edit openapi.yaml in Greater.",
+  "_instructions": "When Lesser publishes a release with auth metadata fixes, resync this snapshot and regenerate this baseline via: node scripts/check-openapi-auth.mjs --write-baseline",
+  "known_gaps": [
+    {
+      "method": "POST",
+      "path": "/api/v1/agents/delegate",
+      "tags": ["agents"]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/agents/{username}",
+      "tags": ["agents"]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/agents/{username}",
+      "tags": ["agents"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/agents/{username}/access-leases",
+      "tags": ["agents"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/agents/{username}/access-leases/challenge/agent",
+      "tags": ["agents"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/agents/{username}/access-leases/challenge/principal",
+      "tags": ["agents"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/agents/{username}/access-leases/{leaseID}/renew/challenge",
+      "tags": ["agents"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/agents/{username}/access-leases/{leaseID}/revoke",
+      "tags": ["agents"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/agents/{username}/access-leases/{leaseID}/session-key",
+      "tags": ["agents"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/agents/{username}/access-leases/{leaseID}/session-key/challenge",
+      "tags": ["agents"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/agents/{username}/access-leases/{leaseID}/token",
+      "tags": ["agents"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/agents/{username}/runtime-sessions/{sessionID}/revoke",
+      "tags": ["agents"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/announcements/{id}/dismiss",
+      "tags": ["announcements"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/follow_requests/{account_id}/authorize",
+      "tags": ["follow_requests"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/follow_requests/{account_id}/reject",
+      "tags": ["follow_requests"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/moderation/flag",
+      "tags": ["moderation"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/moderation/review",
+      "tags": ["moderation"]
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/moderation/trust",
+      "tags": ["moderation"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/notes",
+      "tags": ["notes"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/notes/{id}/vote",
+      "tags": ["notes"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/notifications/deliver",
+      "tags": ["notifications"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/push/subscription",
+      "tags": ["push"]
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/push/subscription",
+      "tags": ["push"]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/push/subscription",
+      "tags": ["push"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/reports",
+      "tags": ["reports"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/reputation/export",
+      "tags": ["reputation"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/reputation/import",
+      "tags": ["reputation"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/reputation/verify",
+      "tags": ["reputation"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/statuses/{id}/translate",
+      "tags": ["statuses"]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/suggestions/{account_id}",
+      "tags": ["suggestions"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/vouches",
+      "tags": ["vouches"]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/vouches/{vouch_id}",
+      "tags": ["vouches"]
+    }
+  ],
+  "meta": {
+    "spec_path": "docs/lesser/contracts/openapi.yaml",
+    "generated_at": "2026-05-23T20:40:49.741Z",
+    "has_global_security": false,
+    "has_security_schemes": true,
+    "security_scheme_names": ["bearerAuth", "oauth2", "setupBearer"],
+    "total_paths": 293,
+    "sensitive_checked": 169,
+    "with_security": 115,
+    "without_security": 32
+  }
+}

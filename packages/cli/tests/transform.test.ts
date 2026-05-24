@@ -38,14 +38,33 @@ describe('buildPathMappings', () => {
 		expect(headlessMapping?.to).toBe('$lib/greater/headless');
 	});
 
-	it('includes headless primitive subpath mappings in hybrid mode', () => {
+	it('includes headless primitive subpath mappings in hybrid mode for all 10 primitives', () => {
 		const config = createTestConfig({ installMode: 'hybrid' });
 		const mappings = buildPathMappings(config);
 
-		const buttonMapping = mappings.find(
-			(m) => m.from === '@equaltoai/greater-components-headless/button'
-		);
-		expect(buttonMapping?.to).toBe('$lib/primitives/button');
+		const allPrimitives = [
+			'alert',
+			'avatar',
+			'button',
+			'menu',
+			'modal',
+			'skeleton',
+			'spinner',
+			'tabs',
+			'textfield',
+			'tooltip',
+		];
+		for (const primitive of allPrimitives) {
+			const hyphenatedMapping = mappings.find(
+				(m) => m.from === `@equaltoai/greater-components-headless/${primitive}`
+			);
+			expect(hyphenatedMapping?.to).toBe(`$lib/primitives/${primitive}`);
+
+			const umbrellaMapping = mappings.find(
+				(m) => m.from === `@equaltoai/greater-components/headless/${primitive}`
+			);
+			expect(umbrellaMapping?.to).toBe(`$lib/primitives/${primitive}`);
+		}
 	});
 
 	it('includes core package mappings in vendored mode', () => {
@@ -87,10 +106,26 @@ describe('transformPath (vendored mode)', () => {
 	const config = createTestConfig();
 	const mappings = buildPathMappings(config);
 
-	it('rewrites headless primitives to local paths', () => {
-		expect(transformPath('@equaltoai/greater-components-headless/button', mappings)).toBe(
-			'$lib/greater/headless/button'
-		);
+	it('rewrites all 10 headless primitives to local paths (vendored mode)', () => {
+		for (const primitive of [
+			'alert',
+			'avatar',
+			'button',
+			'menu',
+			'modal',
+			'skeleton',
+			'spinner',
+			'tabs',
+			'textfield',
+			'tooltip',
+		]) {
+			expect(transformPath(`@equaltoai/greater-components-headless/${primitive}`, mappings)).toBe(
+				`$lib/greater/headless/${primitive}`
+			);
+			expect(transformPath(`@equaltoai/greater-components/headless/${primitive}`, mappings)).toBe(
+				`$lib/greater/headless/${primitive}`
+			);
+		}
 	});
 
 	it('rewrites shared module imports to local paths', () => {
@@ -575,9 +610,75 @@ describe('edge cases', () => {
 		expect(result.content).toBe(content);
 	});
 
-	it('does not transform template literal dynamic imports', () => {
+	it('does not transform template literal dynamic imports CSR-054 anchor', () => {
 		const content = `const mod = await import(\`@equaltoai/greater-components-utils\`);`;
 		const result = transformTypeScriptImports(content, config);
 		expect(result.hasChanges).toBe(false);
+	});
+});
+
+describe('CSR-054: headless primitive import rewriting completeness', () => {
+	const ALL_HEADLESS_PRIMITIVES = [
+		'alert',
+		'avatar',
+		'button',
+		'menu',
+		'modal',
+		'skeleton',
+		'spinner',
+		'tabs',
+		'textfield',
+		'tooltip',
+	] as const;
+
+	it('canonicalizes hyphenated headless primitive imports in hybrid mode', () => {
+		const config = createTestConfig({ installMode: 'hybrid' });
+		const mappings = buildPathMappings(config);
+
+		for (const primitive of ALL_HEADLESS_PRIMITIVES) {
+			expect(transformPath(`@equaltoai/greater-components-headless/${primitive}`, mappings)).toBe(
+				`$lib/primitives/${primitive}`
+			);
+
+			expect(transformPath(`@equaltoai/greater-components/headless/${primitive}`, mappings)).toBe(
+				`$lib/primitives/${primitive}`
+			);
+		}
+	});
+
+	it('canonicalizes hyphenated headless root package in hybrid mode', () => {
+		const config = createTestConfig({ installMode: 'hybrid' });
+		const mappings = buildPathMappings(config);
+
+		expect(transformPath('@equaltoai/greater-components-headless', mappings)).toBe(
+			'@equaltoai/greater-components/headless'
+		);
+	});
+
+	it('rewrites all headless primitive imports to vendored paths in vendored mode', () => {
+		const config = createTestConfig();
+		const mappings = buildPathMappings(config);
+
+		for (const primitive of ALL_HEADLESS_PRIMITIVES) {
+			expect(transformPath(`@equaltoai/greater-components-headless/${primitive}`, mappings)).toBe(
+				`$lib/greater/headless/${primitive}`
+			);
+
+			expect(transformPath(`@equaltoai/greater-components/headless/${primitive}`, mappings)).toBe(
+				`$lib/greater/headless/${primitive}`
+			);
+		}
+	});
+
+	it('transforms TypeScript imports for all headless primitives in vendored mode', () => {
+		const config = createTestConfig();
+
+		for (const primitive of ALL_HEADLESS_PRIMITIVES) {
+			const capitalized = primitive.charAt(0).toUpperCase() + primitive.slice(1);
+			const content = `import { create${capitalized} } from '@equaltoai/greater-components-headless/${primitive}';`;
+			const result = transformTypeScriptImports(content, config);
+			expect(result.transformedCount).toBe(1);
+			expect(result.content).toContain(`from '$lib/greater/headless/${primitive}'`);
+		}
 	});
 });
