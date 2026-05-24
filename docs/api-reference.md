@@ -1522,13 +1522,16 @@ Hosted-platform data-display components for managed-instance dashboards
 (lesser-host web, sim, operator consoles). Strict-CSP safe, Svelte 5 runes,
 WCAG 2.1 AA; status communication is never color-only.
 
-**Components (3):**
+**Components (6):**
 
-| Component           | Element                                 | Required props     | Snippets / slots                      |
-| ------------------- | --------------------------------------- | ------------------ | ------------------------------------- |
-| `FleetCard`         | `<section>` with auto `aria-labelledby` | `name`             | `icon`, `cost`, `activity`, `actions` |
-| `CostGauge`         | `<div role="meter">`                    | `current`, `limit` | `extra`                               |
-| `ActivitySparkline` | `<svg role="img">` (or `aria-hidden`)   | `data`             | —                                     |
+| Component              | Element                                                                      | Required props               | Snippets / slots                                     |
+| ---------------------- | ---------------------------------------------------------------------------- | ---------------------------- | ---------------------------------------------------- |
+| `FleetCard`            | `<section>` with auto `aria-labelledby`                                      | `name`                       | `icon`, `cost`, `activity`, `actions`                |
+| `CostGauge`            | `<div role="meter">` (or `role="img"` for invalid ranges)                    | `current`, `limit`           | `extra`                                              |
+| `ActivitySparkline`    | `<svg role="img">` (or `aria-hidden`)                                        | `data`                       | —                                                    |
+| `ProvisioningTimeline` | `<section>` + `<ol>` with `aria-current="step"`                              | `label`, `steps`             | `liveLog`                                            |
+| `ReleaseTimeline`      | `<section>` + `<ol>` with `<time datetime>` + nested `role="meter"` adoption | `label`, `releases`          | `itemActions(release)`                               |
+| `StackMatrix`          | `<table>` with `<caption>`, `<th scope>`, `aria-sort`                        | `caption`, `columns`, `rows` | `cellRenderer(cell, row, column)`, `rowActions(row)` |
 
 **Key prop unions** (from `@equaltoai/greater-components/host-platform/types`):
 
@@ -1539,6 +1542,18 @@ WCAG 2.1 AA; status communication is never color-only.
 - `CostGaugeThresholds = { warning?: number; danger?: number }` (ratios in `[0, 1]`)
 - `CostValueFormatter = (value: number, currency: string | undefined) => string`
 - `ActivitySparklineTone = 'default' | 'success' | 'warning' | 'danger' | 'info'`
+- `ProvisioningStepStatus = 'pending' | 'active' | 'success' | 'failure' | 'skipped'`
+- `ProvisioningLogPoliteness = 'off' | 'polite' | 'assertive'`
+- `ProvisioningStep = { id: string; label: string; description?: string; status?: ProvisioningStepStatus; timestamp?: string; meta?: string }`
+- `ReleaseStatus = 'shipped' | 'in-progress' | 'rolled-back' | 'planned'`
+- `ReleaseChannel = string` (conventionally `'stable'` / `'beta'`)
+- `ReleaseTimelineItem = { id: string; version: string; channel: ReleaseChannel; date: Date | string; status?: ReleaseStatus; adoption?: number | string; description?: string; href?: string }`
+- `ReleaseAdoptionFormatter = (adoption: number | string | undefined) => string | undefined`
+- `StackMatrixDrift = 'in-sync' | 'pending' | 'drifted' | 'unknown'`
+- `StackMatrixColumn = { id: string; label: string; sortable?: boolean }`
+- `StackMatrixCell = { value: string; drift?: StackMatrixDrift; description?: string }`
+- `StackMatrixRow = { id: string; label: string; subLabel?: string; cells: Record<string, StackMatrixCell> }`
+- `StackMatrixSortDirection = 'ascending' | 'descending' | 'none'`
 
 **Accessibility:**
 
@@ -1552,6 +1567,23 @@ WCAG 2.1 AA; status communication is never color-only.
 - `ActivitySparkline` defaults to informative — `<svg role="img" aria-labelledby
 aria-describedby>` with real `<title>` / optional `<desc>` children. Opt
   into `decorative={true}` only when a textual equivalent exists adjacent.
+- `ProvisioningTimeline` renders a semantic `<ol>` of steps with
+  `aria-current="step"` on the active step. The optional live-log slot is
+  wrapped in `<section role="log" aria-live="polite" aria-atomic="false"
+aria-relevant="additions">` so AT users hear only NEW log lines, not the
+  whole backlog on each update. `liveLogPoliteness` configurable to
+  `'assertive'` (urgent failures) or `'off'` (visible-only).
+- `ReleaseTimeline` exposes channel via `aria-label`, dates via `<time
+datetime>`, and numeric adoption as a nested `role="meter"` with `[0, 1]`
+  range and composed `aria-valuetext` (e.g. `"Adoption: 42%"`). String
+  adoption renders as static text (no fake meter range).
+- `StackMatrix` is a real `<table>` with `<caption>` (visually-hidden by
+  default), `<th scope="col">` column headers, `<th scope="row">` row
+  headers, and `aria-sort` on the currently-sorted column. Sortable column
+  headers render as `<button>` elements with the keyboard contract natively
+  handled by the browser; consumers receive the column id via `onsort`
+  and re-supply `rows` in the desired order. Per-row actions are wrapped
+  in `<div role="group">` with a row-specific accessible name.
 - All ids are unique across multiple instances via `useStableId`.
 
 **Strict CSP:**
@@ -1607,7 +1639,7 @@ The package exports three dependency-free utilities, also available via
 greater add host-platform
 ```
 
-This copies the 3 components, their CSS, types, formatters, sparkline-path
+This copies the 6 components, their CSS, types, formatters, sparkline-path
 utility, and the barrel into the consumer's `$lib/greater/host-platform`
 directory. The CLI registry validates per-file checksums on install.
 

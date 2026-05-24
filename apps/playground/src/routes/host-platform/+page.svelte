@@ -14,8 +14,131 @@ components. Only static stylesheets and class-driven width steps.
 		FleetCard,
 		CostGauge,
 		ActivitySparkline,
+		ProvisioningTimeline,
+		ReleaseTimeline,
+		StackMatrix,
+	} from '@equaltoai/greater-components-host-platform';
+	import type {
+		ProvisioningStep,
+		ReleaseTimelineItem,
+		StackMatrixColumn,
+		StackMatrixRow,
+		StackMatrixSortDirection,
 	} from '@equaltoai/greater-components-host-platform';
 	import '@equaltoai/greater-components-host-platform/host-platform.css';
+
+	// G3 — operator components
+	const provisioningSteps: ProvisioningStep[] = [
+		{
+			id: 'allocate',
+			label: 'Allocate compute',
+			status: 'success',
+			timestamp: '2026-05-24T15:00:00Z',
+			meta: '38s',
+		},
+		{
+			id: 'install',
+			label: 'Install Lesser',
+			status: 'success',
+			timestamp: '2026-05-24T15:00:38Z',
+			meta: '1m12s',
+		},
+		{
+			id: 'migrate',
+			label: 'Run migrations',
+			status: 'active',
+			description: 'Applying schema CSR-035 + x402 grant indexes…',
+		},
+		{ id: 'seed', label: 'Seed default data', status: 'pending' },
+		{ id: 'verify', label: 'Verify health checks', status: 'pending' },
+	];
+
+	const releases: ReleaseTimelineItem[] = [
+		{
+			id: 'lesser-v1412',
+			version: 'v1.4.12',
+			channel: 'stable',
+			date: '2026-05-22T00:00:00Z',
+			status: 'shipped',
+			adoption: 0.82,
+			description: 'Stable release — rate-limit headers + 429 responses.',
+		},
+		{
+			id: 'lesser-v1500rc1',
+			version: 'v1.5.0-rc.1',
+			channel: 'beta',
+			date: '2026-05-23T00:00:00Z',
+			status: 'in-progress',
+			adoption: 0.05,
+			description: 'Early-access channel; metrics endpoints stabilizing.',
+		},
+		{
+			id: 'lesser-v1411',
+			version: 'v1.4.11',
+			channel: 'stable',
+			date: '2026-05-18T00:00:00Z',
+			status: 'rolled-back',
+			adoption: 0,
+			description: 'Pulled after CSR-041 OpenAPI gap discovered.',
+		},
+	];
+
+	const stackColumns: StackMatrixColumn[] = [
+		{ id: 'lesser', label: 'Lesser', sortable: true },
+		{ id: 'host', label: 'Lesser Host', sortable: true },
+		{ id: 'body', label: 'Body', sortable: false },
+	];
+
+	let stackRows = $state<StackMatrixRow[]>([
+		{
+			id: 'r-lesser-example',
+			label: 'lesser.example',
+			subLabel: 'us-east-1',
+			cells: {
+				lesser: { value: 'v1.4.12', drift: 'in-sync' },
+				host: { value: 'v0.4.5', drift: 'pending' },
+				body: { value: 'v0.2.1', drift: 'in-sync' },
+			},
+		},
+		{
+			id: 'r-lesser-staging',
+			label: 'lesser.staging',
+			subLabel: 'us-west-2',
+			cells: {
+				lesser: { value: 'v1.4.10', drift: 'drifted' },
+				host: { value: 'v0.4.5', drift: 'in-sync' },
+				body: { value: 'v0.2.0', drift: 'drifted' },
+			},
+		},
+		{
+			id: 'r-lesser-scratch',
+			label: 'lesser.scratch',
+			subLabel: 'eu-central-1',
+			cells: {
+				lesser: { value: 'v1.4.12', drift: 'in-sync' },
+				host: { value: 'v0.4.4', drift: 'drifted' },
+				body: { value: 'unknown', drift: 'unknown' },
+			},
+		},
+	]);
+
+	let stackSortBy = $state<string | undefined>('lesser');
+	let stackSortDirection = $state<StackMatrixSortDirection>('ascending');
+
+	function handleStackSort(columnId: string) {
+		if (stackSortBy === columnId) {
+			stackSortDirection = stackSortDirection === 'ascending' ? 'descending' : 'ascending';
+		} else {
+			stackSortBy = columnId;
+			stackSortDirection = 'ascending';
+		}
+		const direction = stackSortDirection === 'ascending' ? 1 : -1;
+		stackRows = [...stackRows].sort((a, b) => {
+			const av = a.cells[columnId]?.value ?? '';
+			const bv = b.cells[columnId]?.value ?? '';
+			return av.localeCompare(bv) * direction;
+		});
+	}
 </script>
 
 <svelte:head>
@@ -159,6 +282,45 @@ components. Only static stylesheets and class-driven width steps.
 				/>
 			</div>
 		</div>
+	</section>
+
+	<section>
+		<h2>ProvisioningTimeline</h2>
+		<ProvisioningTimeline
+			label="lesser.example provisioning"
+			steps={provisioningSteps}
+			liveLogLabel="Live provisioning log"
+		>
+			{#snippet liveLog()}
+				<pre>
+15:00:00 [allocate] requesting compute node…
+15:00:38 [allocate] node provisioned (1 × t3.medium)
+15:00:38 [install] downloading Lesser v1.4.12 container…
+15:01:50 [install] container started
+15:01:51 [migrate] applying schema CSR-035…</pre>
+			{/snippet}
+		</ProvisioningTimeline>
+	</section>
+
+	<section>
+		<h2>ReleaseTimeline</h2>
+		<ReleaseTimeline label="Lesser release history" {releases} />
+	</section>
+
+	<section>
+		<h2>StackMatrix</h2>
+		<StackMatrix
+			caption="Lesser fleet stack versions"
+			columns={stackColumns}
+			rows={stackRows}
+			sortBy={stackSortBy}
+			sortDirection={stackSortDirection}
+			onsort={handleStackSort}
+		>
+			{#snippet rowActions(row)}
+				<button type="button">Inspect {row.label}</button>
+			{/snippet}
+		</StackMatrix>
 	</section>
 </div>
 
