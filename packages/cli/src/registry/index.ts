@@ -219,12 +219,21 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		name: 'host-platform',
 		type: 'shared',
 		description:
-			'Hosted-platform data-display components (FleetCard, CostGauge, ActivitySparkline) for managed-instance dashboards (lesser-host, sim, operator consoles)',
+			'Hosted-platform data-display + operator components (FleetCard, CostGauge, ActivitySparkline, ProvisioningTimeline, ReleaseTimeline, StackMatrix) for managed-instance dashboards (lesser-host, sim, operator consoles)',
 		files: [{ path: 'greater/host-platform/index.ts', content: '', type: 'component' }],
 		dependencies: [],
 		devDependencies: [],
 		registryDependencies: ['tokens', 'utils'],
-		tags: ['core', 'host-platform', 'data-display', 'meter', 'sparkline'],
+		tags: [
+			'core',
+			'host-platform',
+			'data-display',
+			'meter',
+			'sparkline',
+			'timeline',
+			'matrix',
+			'operator',
+		],
 		version: '1.0.0',
 	},
 

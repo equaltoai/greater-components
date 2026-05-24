@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-05-24T21:22:41.641Z",
+  "generatedAt": "2026-05-24T21:48:48.877Z",
   "ref": "greater-v0.9.0",
   "version": "0.9.0",
   "checksums": {
@@ -928,9 +928,15 @@
     "packages/host-platform/src/components/CostGauge.svelte": "sha256-MXGntskauXYINmg68F8Sa6ST/Kd14e5+Ff3/I+vD/wY=",
     "packages/host-platform/src/components/FleetCard.css": "sha256-rslZpcvYjpViDEP6F08QV9gGDTgCmiqYiQ95zuX2wXQ=",
     "packages/host-platform/src/components/FleetCard.svelte": "sha256-vVyr8nmE+E/utrZzaXWP0cbHuRXKofAo3R8J7X00yJ4=",
-    "packages/host-platform/src/index.ts": "sha256-iaKrAZ1nPtEbnw9jRTc59X/8afo9CsJJDy9538tzS30=",
-    "packages/host-platform/src/styles/base.css": "sha256-EvtaDGp/SuADtSnRc9VOl1ZNydpnyBQT4rw5zMATmTg=",
-    "packages/host-platform/src/types.ts": "sha256-EnkMzghFTrT2Gk3nk8DQqzn58xGPeYTY4ZJ0dIbM4/o=",
+    "packages/host-platform/src/components/ProvisioningTimeline.css": "sha256-rphEj1C3PlOup0baAgJyDSkSiZmzvMX2JhOBlpGj+J4=",
+    "packages/host-platform/src/components/ProvisioningTimeline.svelte": "sha256-DnbAeiSTqQ0/M9p7MNthklTAUcRSR6FdxA6cG232oL8=",
+    "packages/host-platform/src/components/ReleaseTimeline.css": "sha256-UCzT8op2KiKophHU40Bcfv80iMmv22DjWH2nMAxfLNY=",
+    "packages/host-platform/src/components/ReleaseTimeline.svelte": "sha256-EgdPZ4WJhFlmSnragw/HU5jY3aA2CTVtNIRBlvT76cY=",
+    "packages/host-platform/src/components/StackMatrix.css": "sha256-K59j8igR3hBFO2cFyaq3Rp0Dkjypg3+DM4wLCSWN9cY=",
+    "packages/host-platform/src/components/StackMatrix.svelte": "sha256-aMruAWkbvQmTTEXLd8Yp5kQdHegwLoj64//o2q5UGPo=",
+    "packages/host-platform/src/index.ts": "sha256-hFXD84EuQLU6bKXPyTkFUwxOewMy8fkcwkVzbRpAsTg=",
+    "packages/host-platform/src/styles/base.css": "sha256-razMHs+WCheiXksb3g4y90O42WAyMruExK9MiNmJbhc=",
+    "packages/host-platform/src/types.ts": "sha256-9wKDSQaj3aQ9OXIqdTbYM6O6sGbAxfpwa0I1119yBLg=",
     "packages/host-platform/src/utils/formatters.ts": "sha256-kkUGG/4k60g54llCi+xp5RmnYrg8TuFqMiKgdgd01cE=",
     "packages/host-platform/src/utils/sparkline.ts": "sha256-w8R8uqcnpPo2QK8crNVtabB10ChInLNOdNeQ6HxNUCM=",
     "packages/faces/social/src/adapters/batcher.ts": "sha256-6PnUshOPk84U+PSnkADYzhN9SpUrvwiy+tN10HPaVeE=",
@@ -6199,19 +6205,49 @@
           "size": 7366
         },
         {
+          "path": "src/components/ProvisioningTimeline.css",
+          "checksum": "sha256-rphEj1C3PlOup0baAgJyDSkSiZmzvMX2JhOBlpGj+J4=",
+          "size": 6355
+        },
+        {
+          "path": "src/components/ProvisioningTimeline.svelte",
+          "checksum": "sha256-DnbAeiSTqQ0/M9p7MNthklTAUcRSR6FdxA6cG232oL8=",
+          "size": 6658
+        },
+        {
+          "path": "src/components/ReleaseTimeline.css",
+          "checksum": "sha256-UCzT8op2KiKophHU40Bcfv80iMmv22DjWH2nMAxfLNY=",
+          "size": 5801
+        },
+        {
+          "path": "src/components/ReleaseTimeline.svelte",
+          "checksum": "sha256-EgdPZ4WJhFlmSnragw/HU5jY3aA2CTVtNIRBlvT76cY=",
+          "size": 8358
+        },
+        {
+          "path": "src/components/StackMatrix.css",
+          "checksum": "sha256-K59j8igR3hBFO2cFyaq3Rp0Dkjypg3+DM4wLCSWN9cY=",
+          "size": 5005
+        },
+        {
+          "path": "src/components/StackMatrix.svelte",
+          "checksum": "sha256-aMruAWkbvQmTTEXLd8Yp5kQdHegwLoj64//o2q5UGPo=",
+          "size": 8863
+        },
+        {
           "path": "src/index.ts",
-          "checksum": "sha256-iaKrAZ1nPtEbnw9jRTc59X/8afo9CsJJDy9538tzS30=",
-          "size": 1730
+          "checksum": "sha256-hFXD84EuQLU6bKXPyTkFUwxOewMy8fkcwkVzbRpAsTg=",
+          "size": 2233
         },
         {
           "path": "src/styles/base.css",
-          "checksum": "sha256-EvtaDGp/SuADtSnRc9VOl1ZNydpnyBQT4rw5zMATmTg=",
-          "size": 1441
+          "checksum": "sha256-razMHs+WCheiXksb3g4y90O42WAyMruExK9MiNmJbhc=",
+          "size": 1777
         },
         {
           "path": "src/types.ts",
-          "checksum": "sha256-EnkMzghFTrT2Gk3nk8DQqzn58xGPeYTY4ZJ0dIbM4/o=",
-          "size": 1512
+          "checksum": "sha256-9wKDSQaj3aQ9OXIqdTbYM6O6sGbAxfpwa0I1119yBLg=",
+          "size": 6274
         },
         {
           "path": "src/utils/formatters.ts",

@@ -7,13 +7,19 @@
 
 .gr-host-platform-fleet-card,
 .gr-host-platform-cost-gauge,
-.gr-host-platform-activity-sparkline {
+.gr-host-platform-activity-sparkline,
+.gr-host-platform-provisioning-timeline,
+.gr-host-platform-release-timeline,
+.gr-host-platform-stack-matrix {
 	box-sizing: border-box;
 }
 
 .gr-host-platform-fleet-card *,
 .gr-host-platform-cost-gauge *,
-.gr-host-platform-activity-sparkline * {
+.gr-host-platform-activity-sparkline *,
+.gr-host-platform-provisioning-timeline *,
+.gr-host-platform-release-timeline *,
+.gr-host-platform-stack-matrix * {
 	box-sizing: border-box;
 }
 
@@ -43,7 +49,10 @@
 :where(
 	.gr-host-platform-fleet-card,
 	.gr-host-platform-cost-gauge,
-	.gr-host-platform-activity-sparkline
+	.gr-host-platform-activity-sparkline,
+	.gr-host-platform-provisioning-timeline,
+	.gr-host-platform-release-timeline,
+	.gr-host-platform-stack-matrix
 ) {
 	--gr-host-platform-gutter: 1rem;
 	--gr-host-platform-gap-sm: 0.5rem;

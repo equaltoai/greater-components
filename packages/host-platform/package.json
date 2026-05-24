@@ -35,6 +35,21 @@
       "svelte": "./dist/components/ActivitySparkline.svelte",
       "import": "./dist/components/ActivitySparkline.svelte"
     },
+    "./ProvisioningTimeline": {
+      "types": "./dist/components/ProvisioningTimeline.svelte.d.ts",
+      "svelte": "./dist/components/ProvisioningTimeline.svelte",
+      "import": "./dist/components/ProvisioningTimeline.svelte"
+    },
+    "./ReleaseTimeline": {
+      "types": "./dist/components/ReleaseTimeline.svelte.d.ts",
+      "svelte": "./dist/components/ReleaseTimeline.svelte",
+      "import": "./dist/components/ReleaseTimeline.svelte"
+    },
+    "./StackMatrix": {
+      "types": "./dist/components/StackMatrix.svelte.d.ts",
+      "svelte": "./dist/components/StackMatrix.svelte",
+      "import": "./dist/components/StackMatrix.svelte"
+    },
     "./components/*.svelte": {
       "types": "./dist/components/*.svelte.d.ts",
       "svelte": "./dist/components/*.svelte",
