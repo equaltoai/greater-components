@@ -153,10 +153,47 @@ ratio crossing optional thresholds (default `warning: 0.75`, `danger: 0.9`).
 
 	const accessibleName = $derived(label ?? ariaLabelProp ?? 'Cost gauge');
 
+	/*
+	 * ARIA-meter contract enforcement (Arch PR #669 review):
+	 *
+	 * The W3C ARIA spec requires that for `role="meter"`:
+	 *   1. `aria-valuemin < aria-valuemax` — a meter must have a valid range.
+	 *   2. `aria-valuemin <= aria-valuenow <= aria-valuemax` — the current
+	 *      value must lie within the range.
+	 *
+	 * The previous revision exposed raw `aria-valuemax={limit}` and
+	 * `aria-valuenow={current}`, which violated both rules when:
+	 *   - `current > limit` (over-budget) — valuenow exceeds valuemax.
+	 *   - `limit <= 0` — invalid range (min === max or min > max).
+	 *
+	 * Strategy:
+	 *   - When the consumer supplies a valid positive `limit`, render
+	 *     `role="meter"` but clamp `aria-valuenow` into `[0, limit]`.
+	 *     The visible / announced `aria-valuetext` (e.g. "$250.00 of $100.00")
+	 *     still carries the precise raw numbers so AT users hear the
+	 *     overrun.
+	 *   - When `limit <= 0` or non-finite, the gauge no longer represents a
+	 *     valid meter — fall back to `role="img"` with an `aria-label` that
+	 *     composes the visible readout, and drop the meter-specific ARIA
+	 *     value attributes entirely. The visual bar is still rendered (at
+	 *     0% fill) so the surface stays recognizable.
+	 */
+	const meterContract = $derived.by<
+		{ hasMeter: true; ariaValueMax: number; ariaValueNow: number } | { hasMeter: false }
+	>(() => {
+		if (!Number.isFinite(limit) || limit <= 0) {
+			return { hasMeter: false };
+		}
+		// limit > 0 → valid range. Clamp valuenow to [0, limit].
+		const valueNow = Number.isFinite(current) ? Math.max(0, Math.min(current, limit)) : 0;
+		return { hasMeter: true, ariaValueMax: limit, ariaValueNow: valueNow };
+	});
+
 	const rootClass = $derived(() =>
 		[
 			'gr-host-platform-cost-gauge',
 			`gr-host-platform-cost-gauge--status-${resolvedStatus()}`,
+			!meterContract.hasMeter && 'gr-host-platform-cost-gauge--no-meter',
 			className,
 		]
 			.filter(Boolean)
@@ -177,20 +214,40 @@ ratio crossing optional thresholds (default `warning: 0.75`, `danger: 0.9`).
 	{/if}
 
 	<div class="gr-host-platform-cost-gauge__body">
-		<div
-			class="gr-host-platform-cost-gauge__meter"
-			role="meter"
-			aria-valuemin={0}
-			aria-valuemax={limit}
-			aria-valuenow={current}
-			aria-valuetext={valueText}
-			aria-labelledby={label ? labelId : undefined}
-			aria-label={!label ? accessibleName : undefined}
-			aria-describedby={descriptionId}
-			data-ratio={ratioStep}
-		>
-			<div class="gr-host-platform-cost-gauge__fill" aria-hidden="true"></div>
-		</div>
+		{#if meterContract.hasMeter}
+			<div
+				class="gr-host-platform-cost-gauge__meter"
+				role="meter"
+				aria-valuemin={0}
+				aria-valuemax={meterContract.ariaValueMax}
+				aria-valuenow={meterContract.ariaValueNow}
+				aria-valuetext={valueText}
+				aria-labelledby={label ? labelId : undefined}
+				aria-label={!label ? accessibleName : undefined}
+				aria-describedby={descriptionId}
+				data-ratio={ratioStep}
+			>
+				<div class="gr-host-platform-cost-gauge__fill" aria-hidden="true"></div>
+			</div>
+		{:else}
+			<!--
+				No valid meter range (limit <= 0 or non-finite). Render the bar
+				as a labelled graphic instead — `role="img"` + composed
+				`aria-label` so AT users still get the current / limit values
+				without violating the ARIA meter contract.
+			-->
+			<div
+				class="gr-host-platform-cost-gauge__meter"
+				role="img"
+				aria-labelledby={label ? labelId : undefined}
+				aria-label={!label ? `${accessibleName}: ${valueText}` : valueText}
+				aria-describedby={descriptionId}
+				data-ratio={ratioStep}
+				data-no-meter="true"
+			>
+				<div class="gr-host-platform-cost-gauge__fill" aria-hidden="true"></div>
+			</div>
+		{/if}
 
 		<div class="gr-host-platform-cost-gauge__readout">
 			<span class="gr-host-platform-cost-gauge__value">{formattedCurrent}</span>

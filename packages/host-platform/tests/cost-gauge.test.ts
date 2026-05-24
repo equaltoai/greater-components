@@ -96,15 +96,59 @@ describe('CostGauge', () => {
 		expect(meter?.getAttribute('data-ratio')).toBe('100');
 	});
 
-	it('handles zero / negative limits without producing invalid attributes', () => {
+	it('clamps aria-valuenow into [aria-valuemin, aria-valuemax] when over budget (PR #669 Arch review regression)', () => {
+		// The W3C ARIA meter contract requires
+		// aria-valuemin <= aria-valuenow <= aria-valuemax. Previously the
+		// gauge clamped its visual fill (data-ratio) but still exposed raw
+		// aria-valuenow > aria-valuemax for over-budget instances.
 		const { container } = render(CostGauge, {
-			current: 10,
-			limit: 0,
+			current: 250,
+			limit: 100,
+			currency: 'USD',
 		});
 		const meter = container.querySelector('[role="meter"]');
-		expect(meter?.getAttribute('data-ratio')).toBe('0');
-		expect(meter?.getAttribute('aria-valuenow')).toBe('10');
-		expect(meter?.getAttribute('aria-valuemax')).toBe('0');
+		expect(meter).toBeTruthy();
+		const min = Number(meter?.getAttribute('aria-valuemin'));
+		const max = Number(meter?.getAttribute('aria-valuemax'));
+		const now = Number(meter?.getAttribute('aria-valuenow'));
+		expect(Number.isFinite(min)).toBe(true);
+		expect(Number.isFinite(max)).toBe(true);
+		expect(Number.isFinite(now)).toBe(true);
+		expect(min).toBeLessThan(max);
+		expect(now).toBeGreaterThanOrEqual(min);
+		expect(now).toBeLessThanOrEqual(max);
+		// The valuetext still carries the precise raw numbers so AT users
+		// hear the overrun.
+		expect(meter?.getAttribute('aria-valuetext')).toBe('$250.00 of $100.00');
+	});
+
+	it('handles zero / negative / non-finite limits by dropping role="meter" entirely (Arch PR #669 review)', () => {
+		// An ARIA meter requires a non-degenerate range
+		// (aria-valuemin < aria-valuemax). When the consumer-supplied limit
+		// makes that impossible, the gauge falls back to role="img" with
+		// a composed accessible label so AT users still get the value
+		// information without us emitting an invalid meter contract.
+		for (const limit of [0, -5, Number.NaN, Number.POSITIVE_INFINITY]) {
+			const { container } = render(CostGauge, {
+				current: 10,
+				limit,
+				currency: 'USD',
+				label: 'Monthly spend',
+			});
+			const root = container.querySelector('.gr-host-platform-cost-gauge');
+			expect(root?.classList.contains('gr-host-platform-cost-gauge--no-meter')).toBe(true);
+			// No role="meter".
+			expect(container.querySelector('[role="meter"]')).toBeNull();
+			// A role="img" sits in its place with the composed value text
+			// surfaced through aria-label / aria-labelledby.
+			const img = container.querySelector('[role="img"]');
+			expect(img).toBeTruthy();
+			expect(img?.hasAttribute('aria-valuemin')).toBe(false);
+			expect(img?.hasAttribute('aria-valuemax')).toBe(false);
+			expect(img?.hasAttribute('aria-valuenow')).toBe(false);
+			// The visible readout still names current + limit.
+			expect(container.textContent).toContain('$10.00');
+		}
 	});
 
 	it('renders description with linked aria-describedby', () => {
