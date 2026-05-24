@@ -123,17 +123,37 @@ describe('ProvisioningTimeline', () => {
 		expect(container.ownerDocument.getElementById(labelledby!)?.textContent).toBe('Build output');
 	});
 
-	it('drops aria-live when liveLogPoliteness="off" (visible log but no announcements)', () => {
+	it('drops role="log" entirely when liveLogPoliteness="off" (Arch PR #670 review regression)', () => {
+		// `role="log"` has implicit polite live-region semantics in screen
+		// readers — merely omitting `aria-live` does NOT disable announcements.
+		// When the consumer opts into liveLogPoliteness="off", the log MUST
+		// render without role="log" so AT users see no announcements at all.
 		const { container } = render(ProvisioningTimeline, {
 			label: 'p',
 			steps: baseSteps,
 			liveLog: snippetOf('<div data-test="log"></div>'),
 			liveLogPoliteness: 'off',
 		});
+		// No role="log" anywhere in the rendered output.
+		expect(container.querySelector('[role="log"]')).toBeNull();
+		// The visible log region still renders (consumer's content is visible
+		// to sighted users), but with no live semantics.
 		const log = container.querySelector('section.gr-host-platform-provisioning-timeline__log');
 		expect(log).toBeTruthy();
 		expect(log?.hasAttribute('aria-live')).toBe(false);
+		expect(log?.hasAttribute('aria-atomic')).toBe(false);
+		expect(log?.hasAttribute('aria-relevant')).toBe(false);
+		expect(log?.classList.contains('gr-host-platform-provisioning-timeline__log--quiet')).toBe(
+			true
+		);
 		expect(log?.querySelector('[data-test="log"]')).toBeTruthy();
+		// The section still has an accessible name pointing at the visible
+		// log heading.
+		const labelledby = log?.getAttribute('aria-labelledby');
+		expect(labelledby).toBeTruthy();
+		expect(container.ownerDocument.getElementById(labelledby!)?.textContent).toBe(
+			'Live provisioning log'
+		);
 	});
 
 	it('does not render the log region when liveLog snippet is omitted', () => {

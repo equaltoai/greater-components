@@ -104,6 +104,67 @@ describe('ReleaseTimeline', () => {
 		expect(time?.textContent?.trim().length).toBeGreaterThan(0);
 	});
 
+	it('formats UTC-midnight and date-only release dates without timezone shift (Arch PR #670 review regression)', () => {
+		// `new Date('2026-05-22T00:00:00Z')` parses as UTC midnight; the default
+		// Intl.DateTimeFormat applies the viewer's local timezone, which renders
+		// the previous day in any zone west of UTC (US, Pacific, etc.). For
+		// calendar-day inputs (`YYYY-MM-DD` or `...T00:00:00Z`) we must format
+		// in UTC so the visible date matches what the consumer typed.
+		//
+		// We assert the date contains "22" (the day component) regardless of
+		// locale, and explicitly does NOT shift to "21".
+		const { container } = render(ReleaseTimeline, {
+			label: 'r',
+			releases: [
+				{
+					id: 'utc-midnight',
+					version: 'v1.0.0',
+					channel: 'stable',
+					date: '2026-05-22T00:00:00Z',
+					status: 'shipped',
+				},
+				{
+					id: 'date-only',
+					version: 'v1.0.1',
+					channel: 'stable',
+					date: '2026-05-23',
+					status: 'shipped',
+				},
+			],
+		});
+		const times = container.querySelectorAll('time.gr-host-platform-release-timeline__date');
+		const text1 = times[0]?.textContent?.trim() ?? '';
+		const text2 = times[1]?.textContent?.trim() ?? '';
+		expect(text1).toContain('22');
+		expect(text1).not.toContain('21');
+		expect(text2).toContain('23');
+		expect(text2).not.toContain('22');
+	});
+
+	it('preserves non-midnight timestamps in viewer-local timezone (existing behavior)', () => {
+		// Inputs with explicit non-midnight times remain instant-in-time
+		// semantics and may legitimately shift across day boundaries based on
+		// viewer timezone. This test pins that the calendar-day detection is
+		// narrow — it only kicks in for the unambiguous date-only cases.
+		const { container } = render(ReleaseTimeline, {
+			label: 'r',
+			releases: [
+				{
+					id: 'midday',
+					version: 'v1.0.0',
+					channel: 'stable',
+					date: '2026-05-22T14:30:00Z',
+					status: 'shipped',
+				},
+			],
+		});
+		const time = container.querySelector('time');
+		// Just assert the time renders something non-empty — exact date depends
+		// on viewer timezone, which is the correct semantics for an explicit
+		// instant.
+		expect(time?.textContent?.trim().length).toBeGreaterThan(0);
+	});
+
 	it('honors formatDate prop for custom date rendering', () => {
 		const { container } = render(ReleaseTimeline, {
 			label: 'r',
@@ -145,6 +206,36 @@ describe('ReleaseTimeline', () => {
 		expect(max).toBe(1);
 		expect(now).toBeCloseTo(0.42, 5);
 		expect(meter?.getAttribute('aria-valuetext')).toBe('Adoption: 42%');
+	});
+
+	it('adoption meter has an accessible name via aria-labelledby (Arch PR #670 review regression)', () => {
+		// Every `role="meter"` MUST have an accessible name. Previously we set
+		// aria-valuetext + aria-valuenow but left the meter unnamed, so screen
+		// readers announced only the value with no semantic anchor.
+		const { container } = render(ReleaseTimeline, {
+			label: 'r',
+			releases: [
+				{
+					id: 'r1',
+					version: 'v1.0.0',
+					channel: 'stable',
+					date: '2026-05-22',
+					status: 'shipped',
+					adoption: 0.42,
+				},
+			],
+		});
+		const meter = container.querySelector('[role="meter"]');
+		expect(meter).toBeTruthy();
+		const labelledby = meter?.getAttribute('aria-labelledby');
+		expect(labelledby, 'meter must have aria-labelledby').toBeTruthy();
+		const labelEl = container.ownerDocument.getElementById(labelledby!);
+		expect(labelEl, 'aria-labelledby must resolve to a real element').toBeTruthy();
+		expect(labelEl?.textContent).toContain('Adoption');
+		expect(labelEl?.textContent).toContain('42%');
+		// Should NOT also have aria-label (precedence pitfall — labelledby wins,
+		// but emitting both is ambiguous and triggers spec warnings).
+		expect(meter?.hasAttribute('aria-label')).toBe(false);
 	});
 
 	it('clamps numeric adoption above 1.0 into [0,1] for the meter', () => {

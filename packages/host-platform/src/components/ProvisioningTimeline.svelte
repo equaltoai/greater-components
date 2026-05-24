@@ -186,20 +186,48 @@ runtime style writes. All styling via stable `--gr-*` tokens.
 	{/if}
 
 	{#if liveLog}
-		<section
-			class="gr-host-platform-provisioning-timeline__log"
-			role="log"
-			aria-live={liveLogPoliteness === 'off' ? undefined : liveLogPoliteness}
-			aria-atomic="false"
-			aria-relevant="additions"
-			aria-labelledby={logLabelId}
-		>
-			<h3 id={logLabelId} class="gr-host-platform-provisioning-timeline__log-label">
-				{liveLogLabel}
-			</h3>
-			<div class="gr-host-platform-provisioning-timeline__log-body">
-				{@render liveLog()}
-			</div>
-		</section>
+		<!--
+			When `liveLogPoliteness === 'off'`, we MUST drop `role="log"`
+			entirely — not just `aria-live`. `role="log"` has implicit polite
+			live-region semantics in screen readers; merely omitting `aria-live`
+			leaves the role's implicit announcements in place. Arch flagged this
+			in PR #670 review. For the off-case we render a plain `<section
+			aria-labelledby>` so the consumer's log still appears visibly but
+			never announces to AT.
+
+			Polite / assertive paths keep `role="log"` and the matching
+			`aria-live`, with `aria-atomic="false"` + `aria-relevant="additions"`
+			so AT users hear only NEW lines, not the entire backlog on each
+			update.
+		-->
+		{#if liveLogPoliteness === 'off'}
+			<section
+				class="gr-host-platform-provisioning-timeline__log gr-host-platform-provisioning-timeline__log--quiet"
+				aria-labelledby={logLabelId}
+			>
+				<h3 id={logLabelId} class="gr-host-platform-provisioning-timeline__log-label">
+					{liveLogLabel}
+				</h3>
+				<div class="gr-host-platform-provisioning-timeline__log-body">
+					{@render liveLog()}
+				</div>
+			</section>
+		{:else}
+			<section
+				class="gr-host-platform-provisioning-timeline__log"
+				role="log"
+				aria-live={liveLogPoliteness}
+				aria-atomic="false"
+				aria-relevant="additions"
+				aria-labelledby={logLabelId}
+			>
+				<h3 id={logLabelId} class="gr-host-platform-provisioning-timeline__log-label">
+					{liveLogLabel}
+				</h3>
+				<div class="gr-host-platform-provisioning-timeline__log-body">
+					{@render liveLog()}
+				</div>
+			</section>
+		{/if}
 	{/if}
 </section>

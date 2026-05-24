@@ -105,11 +105,36 @@ runtime style writes. All styling via stable `--gr-*` tokens.
 		return map;
 	});
 
+	/**
+	 * True when the input string represents a date that should be interpreted
+	 * as a calendar day rather than a precise instant — e.g. a bare
+	 * `'2026-05-22'` or any ISO string at UTC midnight (`...T00:00:00Z`).
+	 *
+	 * Calendar-day inputs MUST be formatted in UTC; otherwise `Intl.DateTimeFormat`
+	 * applies the viewer's local timezone offset and renders the previous day
+	 * in any timezone west of UTC (US, Pacific, much of the Americas). Arch
+	 * flagged this regression on PR #670 — releases dated `'2026-05-22T00:00:00Z'`
+	 * rendered as "May 21" in US timezones.
+	 */
+	function isCalendarDayString(d: string): boolean {
+		// Bare `YYYY-MM-DD`.
+		if (/^\d{4}-\d{2}-\d{2}$/.test(d)) return true;
+		// ISO 8601 at UTC midnight (`...T00:00:00Z` or `...T00:00:00.000Z`).
+		if (/^\d{4}-\d{2}-\d{2}T00:00:00(?:\.0+)?Z$/.test(d)) return true;
+		return false;
+	}
+
 	function defaultFormatDate(d: Date | string): string {
+		const isCalendarDay = typeof d === 'string' && isCalendarDayString(d);
 		const date = typeof d === 'string' ? new Date(d) : d;
 		if (Number.isNaN(date.getTime())) return typeof d === 'string' ? d : '';
 		try {
-			return new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(date);
+			return new Intl.DateTimeFormat(locale, {
+				dateStyle: 'medium',
+				// For calendar-day inputs, format in UTC so we render the same
+				// day the consumer typed (no local-timezone shift).
+				timeZone: isCalendarDay ? 'UTC' : undefined,
+			}).format(date);
 		} catch {
 			return date.toISOString().slice(0, 10);
 		}
@@ -193,23 +218,36 @@ runtime style writes. All styling via stable `--gr-*` tokens.
 						{/if}
 						{#if adoptionText !== undefined}
 							{#if adoptionRatio !== null}
+								{@const adoptionLabelId = stableId.value
+									? `${stableId.value}-rel-${release.id}-adoption-label`
+									: undefined}
+								<!--
+									The adoption meter MUST have an accessible name. We use
+									`aria-labelledby` pointing at the visible adoption text
+									(rather than aria-label) so the visible text and the
+									announced name stay in sync.  aria-valuetext carries the
+									numeric value; aria-labelledby carries the "what is this
+									meter measuring" semantic.
+								-->
 								<div
 									class="gr-host-platform-release-timeline__adoption"
 									role="meter"
+									aria-labelledby={adoptionLabelId}
 									aria-valuemin={0}
 									aria-valuemax={1}
 									aria-valuenow={adoptionRatio}
 									aria-valuetext={`Adoption: ${adoptionText}`}
 								>
-									<span class="gr-sr-only">Adoption: {adoptionText}</span>
-									<span class="gr-host-platform-release-timeline__adoption-text" aria-hidden="true">
+									<span
+										id={adoptionLabelId}
+										class="gr-host-platform-release-timeline__adoption-text"
+									>
 										Adoption: {adoptionText}
 									</span>
 								</div>
 							{:else}
 								<p class="gr-host-platform-release-timeline__adoption-static">
-									<span class="gr-sr-only">Adoption: </span>
-									{adoptionText}
+									Adoption: {adoptionText}
 								</p>
 							{/if}
 						{/if}
