@@ -6,7 +6,7 @@
     "intentionalCommit": true
   },
   "mcpServers": {
-    "lesser": {
+    "greater_lab": {
       "type": "http",
       "url": "https://lab.theorymcp.ai/equaltoai/agents/greater/mcp"
     }
