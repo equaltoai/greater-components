@@ -176,7 +176,7 @@ describe('CSR-035: x402 grant contracts', () => {
 
 	// ── LESSER_HOST_REF pin ─────────────────────────────────────────
 	describe('LESSER_HOST_REF contract pin', () => {
-		it('pins to the CSR-035 remediated commit', () => {
+		it('pins to a released Lesser Host snapshot', () => {
 			const refPath = path.join(
 				__dirname,
 				'..',
@@ -189,8 +189,9 @@ describe('CSR-035: x402 grant contracts', () => {
 				'LESSER_HOST_REF.txt'
 			);
 			const refContent = fs.readFileSync(refPath, 'utf8');
-			expect(refContent).toMatch(/24c8d4b3d6055e79499f4c69947f79d4795024a5/);
-			expect(refContent).toMatch(/CSR-035/);
+			expect(refContent).toMatch(/^tag: v\d+\.\d+\.\d+$/m);
+			expect(refContent).toMatch(/^commit: [0-9a-f]{40}$/m);
+			expect(refContent).not.toMatch(/branch:/);
 		});
 	});
 });
