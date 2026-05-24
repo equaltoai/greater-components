@@ -1466,6 +1466,10 @@ importers:
         version: 4.1.4(@opentelemetry/api@1.9.0)(@types/node@25.6.0)(@vitest/coverage-v8@4.1.4)(@vitest/ui@4.1.4)(jsdom@29.0.2(@noble/hashes@1.8.0))(vite@8.0.8(@types/node@25.6.0)(esbuild@0.25.12)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
 
   packages/shell:
+    dependencies:
+      '@equaltoai/greater-components-utils':
+        specifier: workspace:*
+        version: link:../utils
     devDependencies:
       '@equaltoai/greater-components-tokens':
         specifier: workspace:*

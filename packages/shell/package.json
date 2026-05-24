@@ -103,8 +103,12 @@
     "@equaltoai/greater-components-tokens": "workspace:*",
     "svelte": "^5.43.6"
   },
+  "dependencies": {
+    "@equaltoai/greater-components-utils": "workspace:*"
+  },
   "devDependencies": {
     "@equaltoai/greater-components-tokens": "workspace:*",
+    "@equaltoai/greater-components-utils": "workspace:*",
     "@sveltejs/package": "^2.5.7",
     "@sveltejs/vite-plugin-svelte": "^7.0.0",
     "@testing-library/svelte": "^5.3.1",

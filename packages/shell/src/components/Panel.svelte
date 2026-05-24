@@ -19,16 +19,13 @@ name.
 <script lang="ts">
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { Snippet } from 'svelte';
+	import { useStableId } from '@equaltoai/greater-components-utils';
 	import type { PanelPadding, PanelVariant } from '../types.js';
 
-	let nextPanelId = 0;
-	function panelId() {
-		nextPanelId += 1;
-		return `gr-shell-panel-${nextPanelId}`;
-	}
-
-	// Stable base ID for the component instance.
-	const baseId = panelId();
+	// SSR/hydration-safe stable id per component instance.
+	// With IdProvider: deterministic counter-based id during SSR + hydration.
+	// Without IdProvider: id is assigned onMount (avoids hydration mismatches).
+	const stableId = useStableId('shell-panel');
 
 	interface Props extends HTMLAttributes<HTMLElement> {
 		/**
@@ -96,7 +93,9 @@ name.
 		...restProps
 	}: Props = $props();
 
-	const generatedTitleId = $derived(title ? `${baseId}-title` : undefined);
+	const generatedTitleId = $derived(
+		title && stableId.value ? `${stableId.value}-title` : undefined
+	);
 	const resolvedLabelledby = $derived(ariaLabelledby ?? generatedTitleId);
 
 	const rootClass = $derived(() =>

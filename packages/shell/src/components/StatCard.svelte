@@ -19,16 +19,13 @@ the default announcement (e.g. for unit text).
 <script lang="ts">
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { Snippet } from 'svelte';
+	import { useStableId } from '@equaltoai/greater-components-utils';
 	import type { StatCardStatus, StatCardTrend } from '../types.js';
 
-	let nextStatId = 0;
-	function statId() {
-		nextStatId += 1;
-		return `gr-shell-statcard-${nextStatId}`;
-	}
-
-	// Single stable base ID per component instance; derived IDs build off it.
-	const baseId = statId();
+	// SSR/hydration-safe stable id per component instance.
+	// With IdProvider: deterministic counter-based id during SSR + hydration.
+	// Without IdProvider: id is assigned onMount (avoids hydration mismatches).
+	const stableId = useStableId('shell-statcard');
 
 	interface Props extends HTMLAttributes<HTMLDivElement> {
 		/** Required visible label describing the metric. @public */
@@ -80,10 +77,12 @@ the default announcement (e.g. for unit text).
 		...restProps
 	}: Props = $props();
 
-	const labelId = `${baseId}-label`;
-	const valueId = `${baseId}-value`;
-	const descriptionId = $derived(description ? `${baseId}-description` : undefined);
-	const trendId = $derived(trend ? `${baseId}-trend` : undefined);
+	const labelId = $derived(stableId.value ? `${stableId.value}-label` : undefined);
+	const valueId = $derived(stableId.value ? `${stableId.value}-value` : undefined);
+	const descriptionId = $derived(
+		description && stableId.value ? `${stableId.value}-description` : undefined
+	);
+	const trendId = $derived(trend && stableId.value ? `${stableId.value}-trend` : undefined);
 
 	const rootClass = $derived(() =>
 		['gr-shell-statcard', `gr-shell-statcard--status-${status}`, className]
@@ -97,6 +96,7 @@ the default announcement (e.g. for unit text).
 	});
 
 	const labelledby = $derived.by(() => {
+		if (!labelId || !valueId) return undefined;
 		const parts = [labelId, valueId];
 		if (trendId) parts.push(trendId);
 		if (descriptionId) parts.push(descriptionId);

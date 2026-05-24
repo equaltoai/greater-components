@@ -17,6 +17,7 @@ export default defineConfig({
 		alias: {
 			'@equaltoai/greater-components-shell': path.resolve(__dirname, './src/index.ts'),
 			'@equaltoai/greater-components-tokens': path.resolve(__dirname, '../tokens/src/index.ts'),
+			'@equaltoai/greater-components-utils': path.resolve(__dirname, '../utils/src/index.ts'),
 		},
 	},
 	test: {
