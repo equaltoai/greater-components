@@ -12,6 +12,54 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.9.1-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.9.0-rc.0...greater-v0.9.1-rc.0) (2026-05-24)
+
+
+### Features
+
+* **cli:** register shell components with the source-install CLI ([5d283b2](https://github.com/equaltoai/greater-components/commit/5d283b2f3123607ae69452988c03d3cfd3d609a1))
+* **host-platform:** add hosted-platform cards, gauges, and sparklines ([#635](https://github.com/equaltoai/greater-components/issues/635)) ([4862e28](https://github.com/equaltoai/greater-components/commit/4862e285cc40dc2e9542578cf68d7f6c6ae62834))
+* **host-platform:** add hosted-platform data-display surface ([13ca43f](https://github.com/equaltoai/greater-components/commit/13ca43fca4e14839742d9a1431a6e9f6e496ea40))
+* **host-platform:** add operator timelines and stack matrix ([09490cc](https://github.com/equaltoai/greater-components/commit/09490cccbc6b21191fabdf3c257fea9341c28757))
+* **host-platform:** add operator timelines and stack matrix ([#636](https://github.com/equaltoai/greater-components/issues/636)) ([24154c2](https://github.com/equaltoai/greater-components/commit/24154c2399009645aaa54316926d2ed31dd2dbb2))
+* **shell:** add accessible CommandPalette for Host M0 navigation ([acc5652](https://github.com/equaltoai/greater-components/commit/acc5652731ac61ed8d57bba6df7b34f2b051a832))
+* **shell:** add accessible CommandPalette for Host M0 navigation ([#634](https://github.com/equaltoai/greater-components/issues/634)) ([05d0daf](https://github.com/equaltoai/greater-components/commit/05d0daf29fac4af8a2ef14139608a3f4ed875400))
+* **shell:** add app shell components for Host M0 surface ([a4299b5](https://github.com/equaltoai/greater-components/commit/a4299b5eaeea58b8f945718b95b70311cc3423a1))
+* **shell:** add app shell surface for lesser-host web M0 ([#633](https://github.com/equaltoai/greater-components/issues/633)) ([555a39d](https://github.com/equaltoai/greater-components/commit/555a39d95ac44f9999f751cdd18686d5deb96b51))
+
+
+### Bug Fixes
+
+* **host-platform:** compose CostGauge no-meter accessible name via labelledby ([31ec421](https://github.com/equaltoai/greater-components/commit/31ec4211d6846dc4478c06d978292c3078c5040a))
+* **host-platform:** enforce ARIA meter contract for CostGauge ([a853807](https://github.com/equaltoai/greater-components/commit/a85380742c9cd354df59c56c7fb99192bd783304))
+* **host-platform:** three a11y blockers from Arch PR [#670](https://github.com/equaltoai/greater-components/issues/670) review ([22253a5](https://github.com/equaltoai/greater-components/commit/22253a51e55127f75fc6ea5ea8656aa4bc2dbb62))
+* **shell:** route Panel and StatCard ids through useStableId ([a65682c](https://github.com/equaltoai/greater-components/commit/a65682c4f2d8e5f2b8d5be0e6eed9a7a519d345b))
+* **shell:** single CommandPalette listbox + ship .gr-sr-only ([0695406](https://github.com/equaltoai/greater-components/commit/06954066a0c081d15b7064b07b727e8c154151c0))
+
+
+### Docs
+
+* **host-platform:** document hosted-platform components and add playground demo ([b4a22a0](https://github.com/equaltoai/greater-components/commit/b4a22a099de9d62ebaac02bcbbe511d726b7cba5))
+* **host-platform:** document operator components and extend playground demo ([f96b7c9](https://github.com/equaltoai/greater-components/commit/f96b7c95d5245b108dd29d9c2a94a857db6dfb68))
+* **release:** align changeset wording with the optional policy ([1410c1e](https://github.com/equaltoai/greater-components/commit/1410c1efb623731075c6509c56005cd98132053c))
+* **shell:** document app shell components and add playground demo ([c611bf1](https://github.com/equaltoai/greater-components/commit/c611bf1300f1ff4b3ef7bb29779d8c1225428160))
+* **shell:** document CommandPalette and add playground demo ([7b299eb](https://github.com/equaltoai/greater-components/commit/7b299eb41a7f9125c378834eec36ef2541526af3))
+
+
+### CI
+
+* **docs:** build shell package before playground in docs deploy ([39b35ee](https://github.com/equaltoai/greater-components/commit/39b35ee30256fe8799fa1e97d2ad35ada3f49d01))
+
+
+### Chores
+
+* **main:** release greater 0.9.0 ([a9e3a6a](https://github.com/equaltoai/greater-components/commit/a9e3a6afaf2ddb08917d478fc0c55d4cc594143d))
+* **main:** release greater 0.9.0 ([53c6e16](https://github.com/equaltoai/greater-components/commit/53c6e16b8395886c9c61635e3d7bf0e22f449377))
+* **release:** document G0-G3 parity, RC preview, and deferred contract-sync lane ([44d8392](https://github.com/equaltoai/greater-components/commit/44d83929edf23223f66e08b162715932865b01b6))
+* **release:** G4 release-coordination docs + parity checklist + deferred contract-sync lane ([#637](https://github.com/equaltoai/greater-components/issues/637)) ([d7b60fd](https://github.com/equaltoai/greater-components/commit/d7b60fda5a317e2c1e7ad68c143cbc5ffafe8c2d))
+* **release:** prepare metadata ([ee292fc](https://github.com/equaltoai/greater-components/commit/ee292fc3cdcecace44da00f67d1410173f519692))
+* **shell:** regenerate registry after post-format CommandPalette + filter edits ([d4834b4](https://github.com/equaltoai/greater-components/commit/d4834b4525942c936d62b9b80f703d244ecf37b9))
+
 ## [0.9.0](https://github.com/equaltoai/greater-components/compare/greater-v0.8.19...greater-v0.9.0) (2026-05-24)
 
 ### Bug Fixes
