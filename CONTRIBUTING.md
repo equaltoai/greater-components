@@ -150,7 +150,10 @@ git commit -s -m "docs: update README with installation instructions"
 3. Update documentation alongside any user-facing change:
    `docs/component-inventory.md`, `docs/api-reference.md`, and a
    playground demo under `apps/playground/src/routes/`.
-4. Add a changeset:
+4. **Optionally** add a changeset when you want this PR's changes to
+   appear in the next published release notes (see the
+   [Changesets](#changesets) section below for when one is required
+   vs. optional):
    ```bash
    pnpm changeset
    ```
@@ -189,13 +192,46 @@ missing any item without an explicit `N/A` justification.
 
 ### Changesets
 
-This project uses [Changesets](https://github.com/changesets/changesets) for version management:
+This project uses [Changesets](https://github.com/changesets/changesets)
+for version management, but **changesets are optional** — the
+`Changeset (Optional)` workflow does not require one for docs-only,
+test-only, CI-config, or release-coordination PRs (see
+`.github/workflows/changeset-required.yml` for the exact policy that
+runs in CI, and `AGENTS.md` for the steward's posture).
 
-1. Run `pnpm changeset` when you make changes
-2. Select the packages affected
-3. Choose the version bump type (major, minor, patch)
-4. Write a summary of your changes
-5. Commit the generated changeset file
+**Add a changeset when:**
+
+- You change a published package's runtime / build / export surface
+  (anything under `packages/*` that affects consumers' installed
+  output).
+- You bump a dependency that consumers will receive.
+- You make any change you want to appear in the release notes.
+
+**Skip the changeset when:**
+
+- The PR only edits `docs/`, `apps/playground/`, `apps/docs/`, tests,
+  CI workflows, repo tooling, ADRs, or stewardship docs (CONTRIBUTING,
+  AGENTS, CODEOWNERS).
+- The PR is a release-coordination commit that the
+  `release-components` skill will follow (RC promotion, stable
+  promotion, backmerges).
+- The PR is purely a registry regeneration with no source change.
+
+When you do add one:
+
+1. Run `pnpm changeset`.
+2. Select the packages affected.
+3. Choose the version bump type (`major` / `minor` / `patch`). Use
+   `minor` for additive component or API work; `major` only for
+   breaking changes (which need `evolve-component-surface` stewardship
+   approval).
+4. Write a summary of your changes — release-please rolls these into
+   the consolidated changelog on the next version bump.
+5. Commit the generated `.changeset/<slug>.md` file with the rest of
+   your changes.
+
+If you're unsure whether your change needs a changeset, ask in the PR
+description — the Greater steward will tell you on review.
 
 ## Package Development
 

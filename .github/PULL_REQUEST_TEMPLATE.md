@@ -67,9 +67,15 @@ G4.1 / #661).
 
 ## Changeset
 
+> Changesets are **optional** — see
+> [CONTRIBUTING.md § Changesets](../CONTRIBUTING.md#changesets) for the
+> exact policy enforced by the `Changeset (Optional)` workflow.
+
 - [ ] `.changeset/<slug>.md` added with **minor** impact for additive
-      component / API work (no breaking changes), OR docs-only change
-      documented as no-changeset.
+      component / API work, or **patch** for bug fixes, or **major**
+      for breaking changes (which require stewardship approval), OR
+      this PR is docs-only / test-only / CI / release-coordination and
+      explicitly does not need a changeset (note the reason below).
 
 ## Semver impact
 
