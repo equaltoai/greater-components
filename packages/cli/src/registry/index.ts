@@ -207,12 +207,12 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		name: 'shell',
 		type: 'shared',
 		description:
-			'App shell layout components (Shell, Sidebar, Topbar, Panel, StatCard, SummaryStrip, PageFrame, PageTitle, Breadcrumb, Callout) for app-shaped Fediverse / Lesser-aware consumers',
+			'App shell layout components (Shell, Sidebar, Topbar, Panel, StatCard, SummaryStrip, PageFrame, PageTitle, Breadcrumb, Callout, CommandPalette) for app-shaped Fediverse / Lesser-aware consumers',
 		files: [{ path: 'greater/shell/index.ts', content: '', type: 'component' }],
 		dependencies: [],
 		devDependencies: [],
-		registryDependencies: ['tokens'],
-		tags: ['core', 'shell', 'layout', 'navigation'],
+		registryDependencies: ['tokens', 'utils', 'headless'],
+		tags: ['core', 'shell', 'layout', 'navigation', 'command-palette'],
 		version: '1.0.0',
 	},
 

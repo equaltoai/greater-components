@@ -46,7 +46,8 @@
 	.gr-shell-summary-strip,
 	.gr-shell-page-title,
 	.gr-shell-breadcrumb,
-	.gr-shell-callout
+	.gr-shell-callout,
+	.gr-shell-command-palette
 ) {
 	--gr-shell-sidebar-width-sm: 14rem;
 	--gr-shell-sidebar-width-md: 16rem;

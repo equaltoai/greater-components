@@ -89,6 +89,10 @@
       "types": "./dist/shell/types.d.ts",
       "import": "./dist/shell/types.js"
     },
+    "./shell/fuzzy-filter": {
+      "types": "./dist/shell/utils/fuzzy-filter.d.ts",
+      "import": "./dist/shell/utils/fuzzy-filter.js"
+    },
     "./shell/shell.css": "./dist/shell/shell.css",
     "./shell/style.css": "./dist/shell/shell.css",
     "./utils": {

@@ -66,3 +66,55 @@ export type CalloutTone = 'info' | 'success' | 'warning' | 'danger' | 'neutral';
 
 /** Callout ARIA role for live-region semantics. */
 export type CalloutRole = 'status' | 'alert' | 'note';
+
+/**
+ * A single command palette item (e.g. a route, an action, a setting).
+ *
+ * Consumers supply opaque ids; the CommandPalette never interprets `id`
+ * beyond using it for `aria-activedescendant` and as the argument to
+ * `onselect`. Use `keywords` to expose synonyms / aliases for filtering
+ * that should not be displayed as part of the label.
+ */
+export interface CommandPaletteItem {
+	/** Stable id; used for DOM identification and as the `onselect` argument. */
+	id: string;
+	/** Visible primary label. */
+	label: string;
+	/** Optional secondary description rendered below the label. */
+	description?: string;
+	/** Additional terms that should match against the query (synonyms, aliases). */
+	keywords?: string[];
+	/** Optional keyboard shortcut hint (rendered with `aria-hidden`; for visual cue only). */
+	shortcut?: string;
+	/** When true, the item is rendered but cannot be activated. */
+	disabled?: boolean;
+}
+
+/**
+ * A group of command palette items rendered together with a shared label.
+ *
+ * Groups are exposed via `role="group"` with `aria-labelledby` referencing
+ * the group label, so screen readers announce the section name.
+ */
+export interface CommandPaletteGroup {
+	/** Stable id used for the group label element. */
+	id: string;
+	/** Visible label for the group (e.g. "Pages", "Actions"). */
+	label: string;
+	/** Items in this group; rendered in array order after filtering. */
+	items: CommandPaletteItem[];
+}
+
+/**
+ * Signature for a custom item-vs-query matcher.
+ *
+ * Return `null` (or `undefined`) to exclude the item from results; return a
+ * numeric score (higher = better) to include and rank it. When omitted, the
+ * built-in scorer matches all whitespace-separated query tokens
+ * case-insensitively against `label`, `description`, and `keywords`, with
+ * higher scores for prefix / word-boundary matches over substring matches.
+ */
+export type CommandPaletteFilter = (
+	item: CommandPaletteItem,
+	query: string
+) => number | null | undefined;

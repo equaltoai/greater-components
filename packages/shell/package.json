@@ -70,6 +70,15 @@
       "svelte": "./dist/components/Callout.svelte",
       "import": "./dist/components/Callout.svelte"
     },
+    "./CommandPalette": {
+      "types": "./dist/components/CommandPalette.svelte.d.ts",
+      "svelte": "./dist/components/CommandPalette.svelte",
+      "import": "./dist/components/CommandPalette.svelte"
+    },
+    "./fuzzy-filter": {
+      "types": "./dist/utils/fuzzy-filter.d.ts",
+      "import": "./dist/utils/fuzzy-filter.js"
+    },
     "./components/*.svelte": {
       "types": "./dist/components/*.svelte.d.ts",
       "svelte": "./dist/components/*.svelte",
@@ -104,9 +113,11 @@
     "svelte": "^5.43.6"
   },
   "dependencies": {
+    "@equaltoai/greater-components-headless": "workspace:*",
     "@equaltoai/greater-components-utils": "workspace:*"
   },
   "devDependencies": {
+    "@equaltoai/greater-components-headless": "workspace:*",
     "@equaltoai/greater-components-tokens": "workspace:*",
     "@equaltoai/greater-components-utils": "workspace:*",
     "@sveltejs/package": "^2.5.7",
