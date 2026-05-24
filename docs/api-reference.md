@@ -1400,20 +1400,21 @@ The Shell package provides app-shell layout components for app-shaped consumers
 (e.g. lesser-host web, sim). All components are Svelte 5 runes, strict-CSP safe, and
 meet WCAG 2.1 AA from first release.
 
-**Components (10):**
+**Components (11):**
 
-| Component      | Element                                               | Required props            | Snippets / slots                          |
-| -------------- | ----------------------------------------------------- | ------------------------- | ----------------------------------------- |
-| `Shell`        | `<div>` with `<main>`                                 | —                         | `topbar`, `sidebar`, `children`           |
-| `Sidebar`      | `<nav aria-label>`                                    | `label`                   | `header`, `footer`, `children`            |
-| `Topbar`       | `<header>`                                            | —                         | `start`, `center`, `end`, `children`      |
-| `Panel`        | `<section>`                                           | —                         | `header`, `actions`, `footer`, `children` |
-| `StatCard`     | `<div role="group">`                                  | `label`, `value`          | `icon`                                    |
-| `SummaryStrip` | `<section aria-label>`                                | `label`                   | `children`                                |
-| `PageFrame`    | `<div>` with optional `<header>`/`<aside>`/`<footer>` | —                         | `header`, `footer`, `aside`, `children`   |
-| `PageTitle`    | `<header>` containing `<h1>` or `<h2>`                | `title`                   | `actions`                                 |
-| `Breadcrumb`   | `<nav aria-label>` + `<ol>`                           | `items: BreadcrumbItem[]` | —                                         |
-| `Callout`      | `<div role>`                                          | —                         | `icon`, `actions`, `children`             |
+| Component        | Element                                                                       | Required props                    | Snippets / slots                                             |
+| ---------------- | ----------------------------------------------------------------------------- | --------------------------------- | ------------------------------------------------------------ |
+| `Shell`          | `<div>` with `<main>`                                                         | —                                 | `topbar`, `sidebar`, `children`                              |
+| `Sidebar`        | `<nav aria-label>`                                                            | `label`                           | `header`, `footer`, `children`                               |
+| `Topbar`         | `<header>`                                                                    | —                                 | `start`, `center`, `end`, `children`                         |
+| `Panel`          | `<section>`                                                                   | —                                 | `header`, `actions`, `footer`, `children`                    |
+| `StatCard`       | `<div role="group">`                                                          | `label`, `value`                  | `icon`                                                       |
+| `SummaryStrip`   | `<section aria-label>`                                                        | `label`                           | `children`                                                   |
+| `PageFrame`      | `<div>` with optional `<header>`/`<aside>`/`<footer>`                         | —                                 | `header`, `footer`, `aside`, `children`                      |
+| `PageTitle`      | `<header>` containing `<h1>` or `<h2>`                                        | `title`                           | `actions`                                                    |
+| `Breadcrumb`     | `<nav aria-label>` + `<ol>`                                                   | `items: BreadcrumbItem[]`         | —                                                            |
+| `Callout`        | `<div role>`                                                                  | —                                 | `icon`, `actions`, `children`                                |
+| `CommandPalette` | `<div role="dialog">` + `<input role="combobox">` + `<ul role="listbox">` × N | exactly one of `groups` / `items` | `itemTemplate(item, isActive)`, `emptyState`, `loadingState` |
 
 **Key prop unions** (from `@equaltoai/greater-components/shell/types`):
 
@@ -1433,6 +1434,9 @@ meet WCAG 2.1 AA from first release.
 - `BreadcrumbItem = { label: string; href?: string; current?: boolean }`
 - `CalloutTone = 'info' | 'success' | 'warning' | 'danger' | 'neutral'`
 - `CalloutRole = 'status' | 'alert' | 'note'`
+- `CommandPaletteItem = { id: string; label: string; description?: string; keywords?: string[]; shortcut?: string; disabled?: boolean }`
+- `CommandPaletteGroup = { id: string; label: string; items: CommandPaletteItem[] }`
+- `CommandPaletteFilter = (item, query) => number | null | undefined`
 
 **Accessibility:**
 
@@ -1446,6 +1450,13 @@ meet WCAG 2.1 AA from first release.
   assertive.
 - Breadcrumb auto-marks the last item with `aria-current="page"` unless an explicit
   `current` flag is set; separators are `aria-hidden`.
+- CommandPalette implements the W3C ARIA combobox + listbox pattern. The input keeps
+  real focus; arrow keys move `aria-activedescendant` virtual focus through results.
+  Composes `createFocusTrap` + `createDismissable` + `createLiveRegion` from
+  `@equaltoai/greater-components/headless`. ESC closes; outside-pointerdown closes;
+  focus is restored to the opener. Disabled items are skipped during keyboard
+  navigation and ignored on Enter / click. Live region announces result counts and
+  loading / empty state changes politely.
 
 **Theming:**
 
@@ -1474,8 +1485,28 @@ import '@equaltoai/greater-components/shell/style.css';
 greater add shell
 ```
 
-This copies the 10 components, their CSS, types, and barrel into the consumer's
-`$lib/greater/shell` directory. The CLI registry validates per-file checksums on install.
+This copies the 11 components, their CSS, types, dependency-free fuzzy filter, and
+barrel into the consumer's `$lib/greater/shell` directory. The CLI registry validates
+per-file checksums on install.
+
+**CommandPalette fuzzy filter:**
+
+The package ships a dependency-free filter at
+`@equaltoai/greater-components/shell/fuzzy-filter` (also re-exported as
+`filterAndRankCommandPaletteItems`, `scoreCommandPaletteItem`, and
+`tokenizeCommandPaletteQuery` from the shell barrel). It is strict-CSP-safe —
+no `unsafe-eval`, no dynamic codegen, no runtime dependencies. Consumers can
+override the built-in scorer with the `filter` prop:
+
+```ts
+import { CommandPalette } from '@equaltoai/greater-components/shell';
+import type { CommandPaletteFilter } from '@equaltoai/greater-components/shell/types';
+
+const customFilter: CommandPaletteFilter = (item, query) => {
+	// Return a numeric score (higher = better) or null to exclude.
+	return item.label.toLowerCase().startsWith(query.toLowerCase()) ? 1 : null;
+};
+```
 
 See also the [Shell section of the component inventory](./component-inventory.md#shell-package-libgreatershell) for a full
 component-by-component description.

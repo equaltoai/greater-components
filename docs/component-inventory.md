@@ -1225,28 +1225,30 @@ to the shell surface without inheriting the broader primitives bundle.
 - Content containers with heading hierarchy and actions groups
 - Metric / summary surfaces (`StatCard`, `SummaryStrip`)
 - Status-aware call-outs with derived live-region semantics
+- Accessible command palette (`CommandPalette`) with virtual focus, grouped
+  results, and a dependency-free fuzzy filter
 
 **What Shell Does NOT Provide:**
 
 ❌ NO data fetching (Shell is presentational; bring your own adapters)
 ❌ NO routing (consume your router's `<a>` / `<button>` / store integrations)
 ❌ NO state management (use stores from your app or `$lib/greater/utils`)
-❌ NO command palette yet (planned for G1 — see #634)
 
-### All 10 Components
+### All 11 Components
 
-| Component        | Element                                                   | Purpose                                                                                                                                                                 |
-| ---------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Shell**        | `<div>` containing `<main>`                               | Root grid layout combining sidebar, topbar, and main content. Always renders a single `<main>` landmark; accepts an optional `mainLabel`.                               |
-| **Sidebar**      | `<nav aria-label>`                                        | Semantic navigation sidebar. Requires `label` prop; consumers populate children with real `<a>` (with `aria-current="page"` on the active link) or `<button>` controls. |
-| **Topbar**       | `<header>`                                                | Site/app header bar with optional `start` / `center` / `end` regions. Supports `sticky` and `variant="default"                                                          | "flat"                          | "elevated"`.                                                                                                                                   |
-| **Panel**        | `<section>` with auto `aria-labelledby`                   | Content container with title heading, optional `header`, `actions`, `footer` slots. `headerLevel` selects `<h1>`–`<h6>`.                                                |
-| **StatCard**     | `<div role="group">` with composed `aria-labelledby`      | Metric display card (`label`, `value`, optional `trend`, `description`, `icon`, `status`).                                                                              |
-| **SummaryStrip** | `<section aria-label>`                                    | Labeled responsive grid grouping summary items. `columns` accepts `'auto'` or `1` – `6`; `gap` accepts `'sm'                                                            | 'md'                            | 'lg'`.                                                                                                                                         |
-| **PageFrame**    | `<div>` with optional `<header>` / `<aside>` / `<footer>` | Content-level wrapper that sits inside Shell's `<main>`. `width` selects `narrow` / `default` / `wide` / `full`.                                                        |
-| **PageTitle**    | `<header>` containing `<h1>`/`<h2>`                       | Page heading with eyebrow / subtitle / description / actions. `level` selects 1 or 2.                                                                                   |
-| **Breadcrumb**   | `<nav aria-label>` + `<ol>`                               | Breadcrumb list. The current item (last item by default; can be set explicitly) carries `aria-current="page"`. Separators are `aria-hidden`.                            |
-| **Callout**      | `<div role="status"                                       | "alert"                                                                                                                                                                 | "note">`with derived`aria-live` | Informational call-out. `tone` of `info` / `success` / `neutral` defaults to `role="status"`; `warning` / `danger` defaults to `role="alert"`. |
+| Component          | Element                                                                              | Purpose                                                                                                                                                                                                                                 |
+| ------------------ | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Shell**          | `<div>` containing `<main>`                                                          | Root grid layout combining sidebar, topbar, and main content. Always renders a single `<main>` landmark; accepts an optional `mainLabel`.                                                                                               |
+| **Sidebar**        | `<nav aria-label>`                                                                   | Semantic navigation sidebar. Requires `label` prop; consumers populate children with real `<a>` (with `aria-current="page"` on the active link) or `<button>` controls.                                                                 |
+| **Topbar**         | `<header>`                                                                           | Site/app header bar with optional `start` / `center` / `end` regions. Supports `sticky` and `variant="default"                                                                                                                          | "flat"                          | "elevated"`.                                                                                                                                   |
+| **Panel**          | `<section>` with auto `aria-labelledby`                                              | Content container with title heading, optional `header`, `actions`, `footer` slots. `headerLevel` selects `<h1>`–`<h6>`.                                                                                                                |
+| **StatCard**       | `<div role="group">` with composed `aria-labelledby`                                 | Metric display card (`label`, `value`, optional `trend`, `description`, `icon`, `status`).                                                                                                                                              |
+| **SummaryStrip**   | `<section aria-label>`                                                               | Labeled responsive grid grouping summary items. `columns` accepts `'auto'` or `1` – `6`; `gap` accepts `'sm'                                                                                                                            | 'md'                            | 'lg'`.                                                                                                                                         |
+| **PageFrame**      | `<div>` with optional `<header>` / `<aside>` / `<footer>`                            | Content-level wrapper that sits inside Shell's `<main>`. `width` selects `narrow` / `default` / `wide` / `full`.                                                                                                                        |
+| **PageTitle**      | `<header>` containing `<h1>`/`<h2>`                                                  | Page heading with eyebrow / subtitle / description / actions. `level` selects 1 or 2.                                                                                                                                                   |
+| **Breadcrumb**     | `<nav aria-label>` + `<ol>`                                                          | Breadcrumb list. The current item (last item by default; can be set explicitly) carries `aria-current="page"`. Separators are `aria-hidden`.                                                                                            |
+| **Callout**        | `<div role="status"                                                                  | "alert"                                                                                                                                                                                                                                 | "note">`with derived`aria-live` | Informational call-out. `tone` of `info` / `success` / `neutral` defaults to `role="status"`; `warning` / `danger` defaults to `role="alert"`. |
+| **CommandPalette** | `<div role="dialog" aria-modal>` + `<input role="combobox">` + `<ul role="listbox">` | Accessible command palette for app navigation / quick actions. Combobox + listbox pattern with virtual focus via `aria-activedescendant`; ESC/outside-click close; focus trap; live-region announcements; dependency-free fuzzy filter. |
 
 ### Accessibility guarantees
 
@@ -1281,8 +1283,67 @@ forking the package.
 greater add shell
 ```
 
-This copies all 10 shell components, their CSS, types, and the barrel into the consumer's
-project. The CLI registry verifies per-file checksums on install (see [CLI guide](./cli.md)).
+This copies all 11 shell components, their CSS, types, the dependency-free
+fuzzy filter, and the barrel into the consumer's project. The CLI registry
+verifies per-file checksums on install (see [CLI guide](./cli.md)).
+
+### CommandPalette quick reference
+
+The CommandPalette implements the W3C ARIA combobox + listbox pattern:
+
+- Renders a `<div role="dialog" aria-modal="true">` overlay with an inner
+  `<input role="combobox" aria-autocomplete="list" aria-expanded="true">` and
+  `<ul role="listbox">` (or one listbox per group when `groups` is supplied).
+- Virtual focus: real focus stays on the input; arrow keys move the
+  `aria-activedescendant` pointer through results without blurring the input.
+- Keyboard lifecycle: `ArrowUp` / `ArrowDown` navigate skipping disabled items;
+  `Home` / `End` jump to the first / last selectable item; `Enter` activates
+  the current item; `Escape` closes; outside-pointerdown closes; focus is
+  restored to the opener.
+- Live region: result counts and empty / loading states are announced
+  politely via `createLiveRegion` (no DOM noise — uses a global, off-screen
+  region).
+- Filter: pass `filter` to override the built-in scorer; the default scores
+  exact label match > prefix > word-boundary > substring across label,
+  description, and keywords; multi-token queries require every token to match.
+- Item shape: `{ id, label, description?, keywords?, shortcut?, disabled? }`.
+  Groups wrap items with `{ id, label, items[] }`.
+
+Minimum host wiring:
+
+```svelte
+<script lang="ts">
+	import { CommandPalette } from '@equaltoai/greater-components/shell';
+
+	let open = $state(false);
+
+	const groups = [
+		{
+			id: 'pages',
+			label: 'Pages',
+			items: [
+				{ id: 'overview', label: 'Overview' },
+				{ id: 'instances', label: 'Instances' },
+			],
+		},
+		{
+			id: 'actions',
+			label: 'Actions',
+			items: [{ id: 'refresh', label: 'Refresh', shortcut: '⌘R' }],
+		},
+	];
+</script>
+
+<CommandPalette
+	bind:open
+	label="Command palette"
+	{groups}
+	onselect={(item) => {
+		open = false;
+		navigate(item.id);
+	}}
+/>
+```
 
 ### Usage example
 

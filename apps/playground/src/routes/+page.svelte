@@ -84,6 +84,9 @@
 			<Button variant="outline" size="lg" onclick={() => navigateTo('/shell')}>
 				Shell Components Demo
 			</Button>
+			<Button variant="outline" size="lg" onclick={() => navigateTo('/command-palette')}>
+				Command Palette Demo
+			</Button>
 		</div>
 	</section>
 
