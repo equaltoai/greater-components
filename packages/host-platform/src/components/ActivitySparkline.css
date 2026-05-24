@@ -1,0 +1,48 @@
+.gr-host-platform-activity-sparkline {
+	display: block;
+	min-width: 0;
+	min-height: 1.5rem;
+	color: var(--gr-semantic-foreground-secondary, var(--gr-color-gray-700, #374151));
+}
+
+.gr-host-platform-activity-sparkline__svg {
+	display: block;
+	width: 100%;
+	height: auto;
+	max-height: 4rem;
+	overflow: visible;
+}
+
+.gr-host-platform-activity-sparkline__path {
+	stroke-width: var(--gr-host-platform-sparkline-stroke);
+}
+
+.gr-host-platform-activity-sparkline__empty {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 1.75rem;
+	padding: 0 0.5rem;
+	font-size: 0.8125rem;
+	color: var(--gr-semantic-foreground-tertiary, var(--gr-color-gray-500, #6b7280));
+	background: var(--gr-semantic-background-secondary, var(--gr-color-gray-50, #f9fafb));
+	border: 1px dashed var(--gr-semantic-border-subtle, var(--gr-color-gray-200, #e5e7eb));
+	border-radius: var(--gr-host-platform-radius);
+}
+
+/* Tones — paired with the required `label` (or surrounding textual cue), never color-only. */
+.gr-host-platform-activity-sparkline--tone-default {
+	color: var(--gr-semantic-foreground-secondary, var(--gr-color-gray-700, #374151));
+}
+.gr-host-platform-activity-sparkline--tone-success {
+	color: var(--gr-color-success-700, #15803d);
+}
+.gr-host-platform-activity-sparkline--tone-warning {
+	color: var(--gr-color-warning-700, #b45309);
+}
+.gr-host-platform-activity-sparkline--tone-danger {
+	color: var(--gr-color-error-700, #b91c1c);
+}
+.gr-host-platform-activity-sparkline--tone-info {
+	color: var(--gr-color-info-700, #1d4ed8);
+}

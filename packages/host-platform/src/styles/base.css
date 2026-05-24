@@ -1,0 +1,54 @@
+/*
+ * Greater Host Platform — base styles.
+ *
+ * Strict-CSP safe: tokens only, no inline styles or runtime expressions.
+ * Consumers may override any --gr-host-platform-* token without forking.
+ */
+
+.gr-host-platform-fleet-card,
+.gr-host-platform-cost-gauge,
+.gr-host-platform-activity-sparkline {
+	box-sizing: border-box;
+}
+
+.gr-host-platform-fleet-card *,
+.gr-host-platform-cost-gauge *,
+.gr-host-platform-activity-sparkline * {
+	box-sizing: border-box;
+}
+
+/*
+ * Visually-hidden utility — shipped because composed status text + meter
+ * descriptions sometimes need to expose the textual equivalent without
+ * occupying layout space. Matches the canonical `.gr-sr-only` rule in
+ * the primitives + shell bundles byte-for-byte.
+ */
+.gr-sr-only {
+	position: fixed;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+/*
+ * Additive --gr-host-platform-* token defaults. Defined on every component
+ * root class so a standalone CostGauge / ActivitySparkline outside a
+ * FleetCard wrapper still has working spacing.
+ */
+:where(
+	.gr-host-platform-fleet-card,
+	.gr-host-platform-cost-gauge,
+	.gr-host-platform-activity-sparkline
+) {
+	--gr-host-platform-gutter: 1rem;
+	--gr-host-platform-gap-sm: 0.5rem;
+	--gr-host-platform-gap-md: 0.75rem;
+	--gr-host-platform-gap-lg: 1rem;
+	--gr-host-platform-radius: 0.5rem;
+	--gr-host-platform-sparkline-stroke: 1.5px;
+}

@@ -95,6 +95,31 @@
     },
     "./shell/shell.css": "./dist/shell/shell.css",
     "./shell/style.css": "./dist/shell/shell.css",
+    "./host-platform": {
+      "types": "./dist/host-platform/index.d.ts",
+      "svelte": "./dist/host-platform/index.js",
+      "import": "./dist/host-platform/index.js",
+      "default": "./dist/host-platform/index.js"
+    },
+    "./host-platform/*": {
+      "types": "./dist/host-platform/components/*.svelte.d.ts",
+      "svelte": "./dist/host-platform/components/*.svelte",
+      "import": "./dist/host-platform/components/*.svelte"
+    },
+    "./host-platform/types": {
+      "types": "./dist/host-platform/types.d.ts",
+      "import": "./dist/host-platform/types.js"
+    },
+    "./host-platform/formatters": {
+      "types": "./dist/host-platform/utils/formatters.d.ts",
+      "import": "./dist/host-platform/utils/formatters.js"
+    },
+    "./host-platform/sparkline": {
+      "types": "./dist/host-platform/utils/sparkline.d.ts",
+      "import": "./dist/host-platform/utils/sparkline.js"
+    },
+    "./host-platform/host-platform.css": "./dist/host-platform/host-platform.css",
+    "./host-platform/style.css": "./dist/host-platform/host-platform.css",
     "./utils": {
       "types": "./dist/utils/index.d.ts",
       "import": "./dist/utils/index.js"
@@ -452,6 +477,7 @@
     "@equaltoai/greater-components-compose": "workspace:*",
     "@equaltoai/greater-components-content": "workspace:*",
     "@equaltoai/greater-components-headless": "workspace:*",
+    "@equaltoai/greater-components-host-platform": "workspace:*",
     "@equaltoai/greater-components-icons": "workspace:*",
     "@equaltoai/greater-components-messaging": "workspace:*",
     "@equaltoai/greater-components-notifications": "workspace:*",
