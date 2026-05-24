@@ -25,6 +25,7 @@ const packages = [
 	{ key: 'headless', dir: 'headless' },
 	{ key: 'utils', dir: 'utils' },
 	{ key: 'shell', dir: 'shell' },
+	{ key: 'host-platform', dir: 'host-platform' },
 	// Content (heavy deps)
 	{ key: 'content', dir: 'content' },
 	// Shared
@@ -195,6 +196,7 @@ function generateRootBarrels() {
 		'headless',
 		'utils',
 		'shell',
+		'host-platform',
 		'adapters',
 		'testing',
 		'cli',
@@ -232,6 +234,7 @@ function aggregateStyles() {
 			'styles.css',
 			'theme.css',
 			'shell.css',
+			'host-platform.css',
 			'greater-components-social.css',
 			'greater-components-blog.css',
 			'greater-components-community.css',

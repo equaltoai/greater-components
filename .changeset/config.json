@@ -20,6 +20,7 @@
       "@equaltoai/greater-components-notifications",
       "@equaltoai/greater-components-search",
       "@equaltoai/greater-components-shell",
+      "@equaltoai/greater-components-host-platform",
       "@equaltoai/greater-components-admin",
       "@equaltoai/greater-components-chat",
       "@equaltoai/greater-components-messaging",

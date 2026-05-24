@@ -57,6 +57,12 @@ const config = {
 			'@equaltoai/greater-components-shell/style.css': resolvePackageDist(
 				'packages/shell/dist/shell.css'
 			),
+			'@equaltoai/greater-components-host-platform/host-platform.css': resolvePackageDist(
+				'packages/host-platform/dist/host-platform.css'
+			),
+			'@equaltoai/greater-components-host-platform/style.css': resolvePackageDist(
+				'packages/host-platform/dist/host-platform.css'
+			),
 			// Use directory-based aliases to support both main imports and subpath imports
 			...[
 				'adapters',
@@ -67,6 +73,7 @@ const config = {
 				'utils',
 				'testing',
 				'shell',
+				'host-platform',
 			].reduce((acc, pkg) => {
 				acc[`@equaltoai/greater-components-${pkg}`] = resolvePackageDist(`packages/${pkg}/src`);
 				return acc;

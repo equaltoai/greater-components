@@ -16,6 +16,7 @@ Complete API documentation for all Greater Components packages.
   - [Transitions](#transitions)
   - [Utilities](#utilities)
 - [Shell Package](#shell-package)
+- [Host-platform Package](#host-platform-package)
 - [Chat Package](#chat-package)
 - [Headless Package](#headless-package)
 - [Faces Package](#faces-package)
@@ -1510,6 +1511,108 @@ const customFilter: CommandPaletteFilter = (item, query) => {
 
 See also the [Shell section of the component inventory](./component-inventory.md#shell-package-libgreatershell) for a full
 component-by-component description.
+
+---
+
+## Host-platform Package
+
+`@equaltoai/greater-components/host-platform` (`$lib/greater/host-platform` after CLI install)
+
+Hosted-platform data-display components for managed-instance dashboards
+(lesser-host web, sim, operator consoles). Strict-CSP safe, Svelte 5 runes,
+WCAG 2.1 AA; status communication is never color-only.
+
+**Components (3):**
+
+| Component           | Element                                 | Required props     | Snippets / slots                      |
+| ------------------- | --------------------------------------- | ------------------ | ------------------------------------- |
+| `FleetCard`         | `<section>` with auto `aria-labelledby` | `name`             | `icon`, `cost`, `activity`, `actions` |
+| `CostGauge`         | `<div role="meter">`                    | `current`, `limit` | `extra`                               |
+| `ActivitySparkline` | `<svg role="img">` (or `aria-hidden`)   | `data`             | —                                     |
+
+**Key prop unions** (from `@equaltoai/greater-components/host-platform/types`):
+
+- `FleetCardStatus = 'healthy' | 'warning' | 'degraded' | 'offline' | 'provisioning' | 'unknown'`
+- `FleetCardVariant = 'default' | 'flat' | 'elevated'`
+- `FleetCardMetadataItem = { key: string; value: string }`
+- `CostGaugeStatus = 'ok' | 'warning' | 'danger'`
+- `CostGaugeThresholds = { warning?: number; danger?: number }` (ratios in `[0, 1]`)
+- `CostValueFormatter = (value: number, currency: string | undefined) => string`
+- `ActivitySparklineTone = 'default' | 'success' | 'warning' | 'danger' | 'info'`
+
+**Accessibility:**
+
+- Every `FleetCardStatus` ships an icon glyph + visible text label inside the
+  badge in addition to color tinting — color-blind users and screen-reader
+  users receive the same information.
+- `CostGauge` renders `role="meter"` with `aria-valuenow`, `aria-valuemin`,
+  `aria-valuemax`, and a composed `aria-valuetext` (e.g. `"$42.50 of $100.00"`).
+  Auto-thresholds default to `warning: 0.75`, `danger: 0.9`; override with
+  the `thresholds` prop or supply an explicit `status`.
+- `ActivitySparkline` defaults to informative — `<svg role="img" aria-labelledby
+aria-describedby>` with real `<title>` / optional `<desc>` children. Opt
+  into `decorative={true}` only when a textual equivalent exists adjacent.
+- All ids are unique across multiple instances via `useStableId`.
+
+**Strict CSP:**
+
+- No inline event handlers, no `style` attributes set at runtime.
+- `CostGauge` fill width is driven by a `data-ratio` integer attribute (0–100)
+  and 101 attribute-selector CSS rules in the bundle (1% resolution; AT receives
+  the precise value through `aria-valuetext`).
+- `ActivitySparkline` SVG path is a pure data-to-string transform via
+  `buildSparklinePath`; no runtime `style` writes.
+
+**Theming:**
+
+Host-platform consumes stable `--gr-*` semantic tokens and adds these
+additive `--gr-host-platform-*` tokens, all overridable:
+
+- `--gr-host-platform-gutter`
+- `--gr-host-platform-gap-sm | -md | -lg`
+- `--gr-host-platform-radius`
+- `--gr-host-platform-sparkline-stroke`
+
+The package also ships its own `.gr-sr-only` utility so shell-less consumers
+keep working visually-hidden semantics.
+
+**Stylesheet:**
+
+Import the host-platform CSS bundle once at the app root:
+
+```ts
+import '@equaltoai/greater-components/host-platform/style.css';
+```
+
+**Utilities:**
+
+The package exports three dependency-free utilities, also available via
+`@equaltoai/greater-components/host-platform/formatters` and
+`@equaltoai/greater-components/host-platform/sparkline`:
+
+- `formatCost(value, currency?, locale?)` — `Intl.NumberFormat` wrapper with
+  per-locale-per-currency caching; renders `'—'` for non-finite or missing
+  values.
+- `formatCostGaugeText(current, limit, currency?, locale?)` — composes the
+  `"current of limit"` aria-valuetext string.
+- `computeRatio(current, limit)` — clamped `[0, 1]` ratio; returns `0` on
+  non-finite / zero / negative inputs.
+- `buildSparklinePath({ data, width, height, padding?, min?, max? })` — pure
+  data → SVG `<path d>` transform; deterministic and zero-allocation outside
+  the returned object.
+
+**CLI install:**
+
+```sh
+greater add host-platform
+```
+
+This copies the 3 components, their CSS, types, formatters, sparkline-path
+utility, and the barrel into the consumer's `$lib/greater/host-platform`
+directory. The CLI registry validates per-file checksums on install.
+
+See also the [Host-platform section of the component inventory](./component-inventory.md#host-platform-package-libgreaterhost-platform)
+for a fuller component-by-component description.
 
 ---
 
