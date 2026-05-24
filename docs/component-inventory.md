@@ -1407,6 +1407,118 @@ Minimum host wiring:
 </Shell>
 ```
 
+## Host-platform Package (`$lib/greater/host-platform`)
+
+### Package Scope
+
+This package provides **3 hosted-platform data-display components** designed for
+managed-instance dashboards (lesser-host web, sim, operator consoles). It is
+intentionally separate from `shell` and `faces/*`: `shell` is the generic
+app-shell surface, `faces/*` are protocol-aware Fediverse UI suites, and
+`host-platform` is the **operator / platform console surface**.
+
+**What Host-platform Provides:**
+
+- `FleetCard` — composed instance / fleet card with status badge, metadata
+  rows, primary / secondary actions, and slots for cost / activity summaries
+- `CostGauge` — `role="meter"` cost / usage indicator with auto-thresholds
+  (default `warning` at 75%, `danger` at 90%), accessible value text via
+  `aria-valuetext`, and a non-color-only status icon + label
+- `ActivitySparkline` — inline SVG trend with explicit `<title>` / `<desc>`
+  for informative usage, or `aria-hidden` decorative mode when a textual
+  equivalent exists nearby
+
+**What Host-platform Does NOT Provide:**
+
+❌ NO data fetching (presentational; bring your own adapters)
+❌ NO Lesser Host adapter (consumer passes already-shaped data; contract sync deferred per #635)
+❌ NO chart library (sparkline is the only data-viz primitive)
+❌ NO billing / invoice surfaces (out of scope for G2; deferred to a future hosted-platform milestone)
+
+### All 3 Components
+
+| Component             | Element                                 | Required props     | Snippets / slots                      |
+| --------------------- | --------------------------------------- | ------------------ | ------------------------------------- |
+| **FleetCard**         | `<section>` with auto `aria-labelledby` | `name`             | `icon`, `cost`, `activity`, `actions` |
+| **CostGauge**         | `<div role="meter">`                    | `current`, `limit` | `extra`                               |
+| **ActivitySparkline** | `<svg role="img">` (or `aria-hidden`)   | `data`             | —                                     |
+
+### Accessibility guarantees
+
+- **Status is never color-only.** Every `FleetCardStatus` and `CostGaugeStatus`
+  ships an icon glyph + visible text label inside the badge / readout in
+  addition to any color tint.
+- **CostGauge uses `role="meter"`** with `aria-valuenow`, `aria-valuemin`,
+  `aria-valuemax`, and `aria-valuetext` so AT announces the precise numeric
+  value (e.g. "$42.50 of $100.00") rather than a coarse percentage.
+- **ActivitySparkline defaults to informative.** When `decorative === false`
+  (the default), the SVG has `role="img"` + `<title>` + optional `<desc>`.
+  Consumers opt into `decorative={true}` only when a textual equivalent
+  exists adjacent.
+- **All ids unique across multiple instances** via `useStableId`.
+- **Strict CSP safe.** No inline event handlers; no `style` attributes set
+  at runtime. The CostGauge fill width is driven by a `data-ratio`
+  attribute + 101 attribute-selector CSS rules (0–100% in 1% steps); the
+  ActivitySparkline path is a pure data-to-string transform.
+
+### Theming
+
+Host-platform consumes stable `--gr-*` semantic tokens and adds these
+additive `--gr-host-platform-*` tokens, all overridable by consumers:
+
+- `--gr-host-platform-gutter`
+- `--gr-host-platform-gap-sm | -md | -lg`
+- `--gr-host-platform-radius`
+- `--gr-host-platform-sparkline-stroke`
+
+The package ships its own `.gr-sr-only` utility so shell-less / primitives-
+less consumers retain working visually-hidden semantics.
+
+### Installing through the Greater CLI
+
+```sh
+greater add host-platform
+```
+
+This copies all 3 components, their CSS, types, the dependency-free
+formatters and sparkline-path utility, and the barrel into the consumer's
+project. The CLI registry verifies per-file checksums on install.
+
+### Usage example
+
+```svelte
+<script lang="ts">
+	import {
+		FleetCard,
+		CostGauge,
+		ActivitySparkline,
+	} from '@equaltoai/greater-components/host-platform';
+</script>
+
+<FleetCard
+	name="lesser.example"
+	region="us-east-1"
+	version="v1.4.12"
+	status="healthy"
+	metadata={[
+		{ key: 'Users', value: '1,243' },
+		{ key: 'Posts / day', value: '8,901' },
+	]}
+>
+	{#snippet cost()}
+		<CostGauge current={42.5} limit={100} currency="USD" label="Monthly spend" />
+	{/snippet}
+
+	{#snippet activity()}
+		<ActivitySparkline data={[3, 8, 5, 12, 9, 14, 10]} label="Posts per hour" />
+	{/snippet}
+
+	{#snippet actions()}
+		<button type="button">Manage</button>
+	{/snippet}
+</FleetCard>
+```
+
 ## Content Package (`$lib/greater/content`)
 
 ### Package Scope

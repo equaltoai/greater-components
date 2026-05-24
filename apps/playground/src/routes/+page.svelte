@@ -87,6 +87,9 @@
 			<Button variant="outline" size="lg" onclick={() => navigateTo('/command-palette')}>
 				Command Palette Demo
 			</Button>
+			<Button variant="outline" size="lg" onclick={() => navigateTo('/host-platform')}>
+				Host-platform Demo
+			</Button>
 		</div>
 	</section>
 
