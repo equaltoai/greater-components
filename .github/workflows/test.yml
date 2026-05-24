@@ -37,6 +37,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Audit release tarball integrity
+        run: pnpm audit:tarball-integrity
+
       - name: Build packages
         run: pnpm build
 
