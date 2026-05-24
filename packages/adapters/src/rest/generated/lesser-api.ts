@@ -11856,6 +11856,12 @@ export interface operations {
                 headers: {
                     /** @description RFC 8288 pagination links for recent messages. */
                     Link?: string;
+                    /** @description Request limit per window. */
+                    "X-RateLimit-Limit"?: number;
+                    /** @description Requests remaining in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    /** @description Unix timestamp (seconds) when the current window resets. */
+                    "X-RateLimit-Reset"?: number;
                     [name: string]: unknown;
                 };
                 content: {
@@ -11866,6 +11872,7 @@ export interface operations {
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
             500: components["responses"]["InternalServerError"];
         };
     };
@@ -13922,6 +13929,12 @@ export interface operations {
             /** @description OK */
             200: {
                 headers: {
+                    /** @description Request limit per window. */
+                    "X-RateLimit-Limit"?: number;
+                    /** @description Requests remaining in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    /** @description Unix timestamp (seconds) when the current window resets. */
+                    "X-RateLimit-Reset"?: number;
                     [name: string]: unknown;
                 };
                 content: {
@@ -13929,6 +13942,7 @@ export interface operations {
                 };
             };
             400: components["responses"]["BadRequest"];
+            429: components["responses"]["TooManyRequests"];
             500: components["responses"]["InternalServerError"];
         };
     };
@@ -14057,6 +14071,12 @@ export interface operations {
             /** @description OK */
             200: {
                 headers: {
+                    /** @description Request limit per window. */
+                    "X-RateLimit-Limit"?: number;
+                    /** @description Requests remaining in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    /** @description Unix timestamp (seconds) when the current window resets. */
+                    "X-RateLimit-Reset"?: number;
                     [name: string]: unknown;
                 };
                 content: {
@@ -14064,6 +14084,7 @@ export interface operations {
                 };
             };
             400: components["responses"]["BadRequest"];
+            429: components["responses"]["TooManyRequests"];
             500: components["responses"]["InternalServerError"];
         };
     };

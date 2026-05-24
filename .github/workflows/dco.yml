@@ -37,7 +37,12 @@ jobs:
         env:
           BASE_REF: ${{ github.event.pull_request.base.sha }}
           HEAD_REF: ${{ github.event.pull_request.head.sha }}
-        run: node scripts/check-dco.js --base "${BASE_REF}" --head "${HEAD_REF}"
+        run: |
+          # CSR-036: Use base ref's check-dco.js to prevent PR-controlled bypass.
+          # The PR branch's version of the script must not be the one that judges
+          # whether commits are signed off.
+          git checkout "${BASE_REF}" -- scripts/check-dco.js
+          node scripts/check-dco.js --base "${BASE_REF}" --head "${HEAD_REF}"
 
       - name: DCO Check (workflow_dispatch)
         if: github.event_name == 'workflow_dispatch'
@@ -52,4 +57,9 @@ jobs:
           fi
 
           git fetch origin "${BASE_REF}:${BASE_REF}" --force
+
+          # CSR-037: Use base ref's check-dco.js to prevent branch-controlled bypass.
+          # The release branch's version of the script must not be the one that
+          # judges whether commits are signed off.
+          git checkout "${BASE_REF}" -- scripts/check-dco.js
           node scripts/check-dco.js --base "${BASE_REF}" --head HEAD
