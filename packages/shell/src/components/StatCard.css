@@ -1,0 +1,97 @@
+.gr-shell-statcard {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--gr-shell-gap-md);
+	padding: var(--gr-shell-gap-md) var(--gr-shell-gutter);
+	background: var(--gr-semantic-background-surface, var(--gr-color-base-white, #fff));
+	color: var(--gr-semantic-foreground-primary, var(--gr-color-gray-900, #111827));
+	border: 1px solid var(--gr-semantic-border-subtle, var(--gr-color-gray-200, #e5e7eb));
+	border-radius: 0.5rem;
+	min-width: 0;
+}
+
+.gr-shell-statcard__icon {
+	flex: 0 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.5rem;
+	height: 2.5rem;
+	border-radius: 0.5rem;
+	background: var(--gr-semantic-background-secondary, var(--gr-color-gray-100, #f3f4f6));
+	color: var(--gr-semantic-foreground-primary, var(--gr-color-gray-900, #111827));
+}
+
+.gr-shell-statcard__body {
+	flex: 1 1 auto;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+
+.gr-shell-statcard__label {
+	margin: 0;
+	font-size: 0.875rem;
+	color: var(--gr-semantic-foreground-secondary, var(--gr-color-gray-700, #374151));
+}
+
+.gr-shell-statcard__value {
+	margin: 0;
+	font-size: 1.5rem;
+	line-height: 1.2;
+	font-weight: 600;
+}
+
+.gr-shell-statcard__trend {
+	margin: 0;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	font-size: 0.8125rem;
+}
+.gr-shell-statcard__trend--up {
+	color: var(--gr-color-success-700, #15803d);
+}
+.gr-shell-statcard__trend--down {
+	color: var(--gr-color-error-700, #b91c1c);
+}
+.gr-shell-statcard__trend--flat {
+	color: var(--gr-semantic-foreground-secondary, var(--gr-color-gray-700, #374151));
+}
+
+.gr-shell-statcard__description {
+	margin: 0;
+	font-size: 0.8125rem;
+	color: var(--gr-semantic-foreground-tertiary, var(--gr-color-gray-500, #6b7280));
+}
+
+/* Status tinting */
+.gr-shell-statcard--status-success {
+	border-color: var(--gr-color-success-300, #86efac);
+}
+.gr-shell-statcard--status-success .gr-shell-statcard__icon {
+	background: var(--gr-color-success-100, #dcfce7);
+	color: var(--gr-color-success-700, #15803d);
+}
+.gr-shell-statcard--status-warning {
+	border-color: var(--gr-color-warning-300, #fcd34d);
+}
+.gr-shell-statcard--status-warning .gr-shell-statcard__icon {
+	background: var(--gr-color-warning-100, #fef3c7);
+	color: var(--gr-color-warning-700, #b45309);
+}
+.gr-shell-statcard--status-danger {
+	border-color: var(--gr-color-error-300, #fca5a5);
+}
+.gr-shell-statcard--status-danger .gr-shell-statcard__icon {
+	background: var(--gr-color-error-100, #fee2e2);
+	color: var(--gr-color-error-700, #b91c1c);
+}
+.gr-shell-statcard--status-info {
+	border-color: var(--gr-color-info-300, #93c5fd);
+}
+.gr-shell-statcard--status-info .gr-shell-statcard__icon {
+	background: var(--gr-color-info-100, #dbeafe);
+	color: var(--gr-color-info-700, #1d4ed8);
+}

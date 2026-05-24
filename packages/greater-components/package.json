@@ -74,6 +74,23 @@
       "types": "./dist/headless/*.d.ts",
       "import": "./dist/headless/*.js"
     },
+    "./shell": {
+      "types": "./dist/shell/index.d.ts",
+      "svelte": "./dist/shell/index.js",
+      "import": "./dist/shell/index.js",
+      "default": "./dist/shell/index.js"
+    },
+    "./shell/*": {
+      "types": "./dist/shell/components/*.svelte.d.ts",
+      "svelte": "./dist/shell/components/*.svelte",
+      "import": "./dist/shell/components/*.svelte"
+    },
+    "./shell/types": {
+      "types": "./dist/shell/types.d.ts",
+      "import": "./dist/shell/types.js"
+    },
+    "./shell/shell.css": "./dist/shell/shell.css",
+    "./shell/style.css": "./dist/shell/shell.css",
     "./utils": {
       "types": "./dist/utils/index.d.ts",
       "import": "./dist/utils/index.js"
@@ -436,6 +453,7 @@
     "@equaltoai/greater-components-notifications": "workspace:*",
     "@equaltoai/greater-components-primitives": "workspace:*",
     "@equaltoai/greater-components-search": "workspace:*",
+    "@equaltoai/greater-components-shell": "workspace:*",
     "@equaltoai/greater-components-social": "workspace:*",
     "@equaltoai/greater-components-soul": "workspace:*",
     "@equaltoai/greater-components-testing": "workspace:*",

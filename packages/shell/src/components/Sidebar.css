@@ -1,0 +1,78 @@
+.gr-shell-sidebar {
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+	height: 100%;
+	background: var(--gr-semantic-background-surface, var(--gr-color-base-white, #fff));
+	color: var(--gr-semantic-foreground-primary, var(--gr-color-gray-900, #111827));
+	overflow-y: auto;
+}
+
+.gr-shell-sidebar--variant-compact {
+	align-items: center;
+}
+.gr-shell-sidebar--width-sm {
+	width: var(--gr-shell-sidebar-width-sm);
+}
+.gr-shell-sidebar--width-md {
+	width: var(--gr-shell-sidebar-width-md);
+}
+.gr-shell-sidebar--width-lg {
+	width: var(--gr-shell-sidebar-width-lg);
+}
+.gr-shell-sidebar--variant-compact.gr-shell-sidebar {
+	width: var(--gr-shell-sidebar-width-compact);
+}
+
+.gr-shell-sidebar__header,
+.gr-shell-sidebar__footer {
+	padding: var(--gr-shell-gap-md) var(--gr-shell-gutter);
+}
+.gr-shell-sidebar__header {
+	border-bottom: 1px solid var(--gr-semantic-border-subtle, var(--gr-color-gray-200, #e5e7eb));
+}
+.gr-shell-sidebar__footer {
+	border-top: 1px solid var(--gr-semantic-border-subtle, var(--gr-color-gray-200, #e5e7eb));
+	margin-top: auto;
+}
+
+.gr-shell-sidebar__body {
+	display: flex;
+	flex-direction: column;
+	gap: 0.125rem;
+	padding: var(--gr-shell-gap-md) 0.5rem;
+	flex: 1 1 auto;
+	min-height: 0;
+}
+
+/* Default styling for direct anchor / button descendants. Consumers may
+ * override via additional class names; these are baseline AA-compliant. */
+.gr-shell-sidebar__body > a,
+.gr-shell-sidebar__body > button {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.5rem 0.75rem;
+	border-radius: 0.375rem;
+	color: var(--gr-semantic-foreground-secondary, var(--gr-color-gray-700, #374151));
+	background: transparent;
+	border: 1px solid transparent;
+	font: inherit;
+	text-align: start;
+	text-decoration: none;
+	cursor: pointer;
+	width: 100%;
+}
+
+.gr-shell-sidebar__body > a:hover,
+.gr-shell-sidebar__body > button:hover {
+	background: var(--gr-semantic-background-secondary, var(--gr-color-gray-100, #f3f4f6));
+	color: var(--gr-semantic-foreground-primary, var(--gr-color-gray-900, #111827));
+}
+
+.gr-shell-sidebar__body > a[aria-current='page'],
+.gr-shell-sidebar__body > button[aria-pressed='true'] {
+	background: var(--gr-semantic-background-secondary, var(--gr-color-gray-100, #f3f4f6));
+	color: var(--gr-semantic-foreground-primary, var(--gr-color-gray-900, #111827));
+	font-weight: 600;
+}
