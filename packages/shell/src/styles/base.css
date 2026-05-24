@@ -1,0 +1,77 @@
+/*
+ * Greater Shell — base styles.
+ *
+ * Strict-CSP safe: tokens only, no inline styles or runtime expressions.
+ * Consumers may override any --gr-shell-* token without forking the package.
+ */
+
+.gr-shell,
+.gr-shell-sidebar,
+.gr-shell-topbar,
+.gr-shell-panel,
+.gr-shell-statcard,
+.gr-shell-summary-strip,
+.gr-shell-page-frame,
+.gr-shell-page-title,
+.gr-shell-breadcrumb,
+.gr-shell-callout {
+	box-sizing: border-box;
+}
+
+.gr-shell *,
+.gr-shell-sidebar *,
+.gr-shell-topbar *,
+.gr-shell-panel *,
+.gr-shell-page-frame * {
+	box-sizing: border-box;
+}
+
+/*
+ * Default --gr-shell-* tokens (consumers may override).
+ *
+ * Defined on every shell component root class so a standalone `Panel`,
+ * `StatCard`, `Callout`, etc. — rendered outside a `Shell` / `PageFrame`
+ * ancestor — still gets sensible defaults rather than `var()` resolving
+ * to empty. Consumers can override any token by setting it on a higher
+ * ancestor (or by overriding `.gr-shell` / `.gr-shell-page-frame` to
+ * theme the whole tree).
+ */
+:where(
+	.gr-shell,
+	.gr-shell-page-frame,
+	.gr-shell-topbar,
+	.gr-shell-sidebar,
+	.gr-shell-panel,
+	.gr-shell-statcard,
+	.gr-shell-summary-strip,
+	.gr-shell-page-title,
+	.gr-shell-breadcrumb,
+	.gr-shell-callout
+) {
+	--gr-shell-sidebar-width-sm: 14rem;
+	--gr-shell-sidebar-width-md: 16rem;
+	--gr-shell-sidebar-width-lg: 20rem;
+	--gr-shell-sidebar-width-compact: 4rem;
+	--gr-shell-topbar-height: 3.5rem;
+	--gr-shell-content-max-narrow: 48rem;
+	--gr-shell-content-max-default: 72rem;
+	--gr-shell-content-max-wide: 96rem;
+	--gr-shell-gutter: 1.5rem;
+	--gr-shell-gap-sm: 0.5rem;
+	--gr-shell-gap-md: 1rem;
+	--gr-shell-gap-lg: 1.5rem;
+}
+
+/* Focus ring used by interactive shell elements. */
+:where(
+	.gr-shell-sidebar a,
+	.gr-shell-sidebar button,
+	.gr-shell-topbar a,
+	.gr-shell-topbar button,
+	.gr-shell-breadcrumb a,
+	.gr-shell-callout button
+):focus-visible {
+	outline: 2px solid var(--gr-semantic-border-focus, var(--gr-color-primary-600, #2563eb));
+	outline-offset: 2px;
+	border-radius: 0.25rem;
+}

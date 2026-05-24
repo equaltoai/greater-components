@@ -1,0 +1,80 @@
+.gr-shell-panel {
+	display: flex;
+	flex-direction: column;
+	background: var(--gr-semantic-background-surface, var(--gr-color-base-white, #fff));
+	color: var(--gr-semantic-foreground-primary, var(--gr-color-gray-900, #111827));
+	border-radius: 0.5rem;
+	min-width: 0;
+}
+
+.gr-shell-panel--variant-default {
+	border: 1px solid var(--gr-semantic-border-subtle, var(--gr-color-gray-200, #e5e7eb));
+}
+.gr-shell-panel--variant-flat {
+	border: none;
+	background: transparent;
+}
+.gr-shell-panel--variant-elevated {
+	border: 1px solid var(--gr-semantic-border-subtle, var(--gr-color-gray-200, #e5e7eb));
+	box-shadow: var(--gr-shadows-base, 0 1px 3px 0 rgb(0 0 0 / 0.1));
+}
+
+.gr-shell-panel__header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: var(--gr-shell-gap-md);
+	padding: var(--gr-shell-gap-md) var(--gr-shell-gutter);
+	border-bottom: 1px solid var(--gr-semantic-border-subtle, var(--gr-color-gray-200, #e5e7eb));
+}
+.gr-shell-panel--variant-flat .gr-shell-panel__header {
+	border-bottom: none;
+	padding-inline: 0;
+}
+
+.gr-shell-panel__heading {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	min-width: 0;
+}
+.gr-shell-panel__title {
+	margin: 0;
+	font-size: 1rem;
+	line-height: 1.4;
+	font-weight: 600;
+	color: var(--gr-semantic-foreground-primary, var(--gr-color-gray-900, #111827));
+}
+
+.gr-shell-panel__actions {
+	display: flex;
+	align-items: center;
+	gap: var(--gr-shell-gap-sm);
+	flex-shrink: 0;
+}
+
+.gr-shell-panel__body {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+.gr-shell-panel--padding-none .gr-shell-panel__body {
+	padding: 0;
+}
+.gr-shell-panel--padding-sm .gr-shell-panel__body {
+	padding: 0.75rem;
+}
+.gr-shell-panel--padding-md .gr-shell-panel__body {
+	padding: 1rem var(--gr-shell-gutter);
+}
+.gr-shell-panel--padding-lg .gr-shell-panel__body {
+	padding: 1.5rem var(--gr-shell-gutter);
+}
+
+.gr-shell-panel__footer {
+	padding: var(--gr-shell-gap-md) var(--gr-shell-gutter);
+	border-top: 1px solid var(--gr-semantic-border-subtle, var(--gr-color-gray-200, #e5e7eb));
+}
+.gr-shell-panel--variant-flat .gr-shell-panel__footer {
+	border-top: none;
+	padding-inline: 0;
+}

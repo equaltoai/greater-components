@@ -1186,10 +1186,12 @@ This package provides **41 interactive and layout components** for building any 
 ### What This Package Does NOT Provide
 
 ❌ NO Grid or Flexbox layout components (use CSS Grid/Flexbox directly)
-❌ NO Navigation components (Nav, Navbar, Sidebar, Breadcrumbs) - build with HTML + Button
 ❌ NO Table components - build with HTML <table> + styling
 ❌ NO Form wrapper components - build with HTML <form>
 ❌ NO Image components - use HTML <img> or <picture>
+
+> **Navigation and app shell components are now provided by the Shell Package**
+> (`$lib/greater/shell`). See [Shell Package](#shell-package-libgreatershell) below.
 
 ### For Missing Functionality
 
@@ -1200,12 +1202,149 @@ Use standard HTML + CSS Grid/Flexbox:
 - Flex layouts: `<div style="display: flex; ...">`
 - Responsive: CSS media queries
 
-**If you need navigation:**
-Combine HTML + Button component:
+**If you need navigation or an app shell:**
+Use the Shell Package (`$lib/greater/shell`):
 
-- `<nav>` with `<Button>` components
-- `<ul><li>` with styling
-- SvelteKit links with `<a>` elements
+- `Shell`, `Sidebar`, `Topbar` for the page-level layout and navigation landmarks
+- `PageFrame`, `PageTitle`, `Breadcrumb` for in-page structure
+- `Panel`, `StatCard`, `SummaryStrip`, `Callout` for content surfaces
+
+## Shell Package (`$lib/greater/shell`)
+
+### Package Scope
+
+This package provides **10 additive, app-shell layout components** designed for
+app-shaped consumers (e.g. lesser-host web, sim, admin tools). It is intentionally
+separate from `primitives` so it can grow independently and so consumers can opt in
+to the shell surface without inheriting the broader primitives bundle.
+
+**What Shell Provides:**
+
+- Page-level structural landmarks (`<header>`, `<nav>`, `<main>`, `<aside>`)
+- Navigation patterns with `aria-current="page"` and accessible names
+- Content containers with heading hierarchy and actions groups
+- Metric / summary surfaces (`StatCard`, `SummaryStrip`)
+- Status-aware call-outs with derived live-region semantics
+
+**What Shell Does NOT Provide:**
+
+❌ NO data fetching (Shell is presentational; bring your own adapters)
+❌ NO routing (consume your router's `<a>` / `<button>` / store integrations)
+❌ NO state management (use stores from your app or `$lib/greater/utils`)
+❌ NO command palette yet (planned for G1 — see #634)
+
+### All 10 Components
+
+| Component        | Element                                                   | Purpose                                                                                                                                                                 |
+| ---------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Shell**        | `<div>` containing `<main>`                               | Root grid layout combining sidebar, topbar, and main content. Always renders a single `<main>` landmark; accepts an optional `mainLabel`.                               |
+| **Sidebar**      | `<nav aria-label>`                                        | Semantic navigation sidebar. Requires `label` prop; consumers populate children with real `<a>` (with `aria-current="page"` on the active link) or `<button>` controls. |
+| **Topbar**       | `<header>`                                                | Site/app header bar with optional `start` / `center` / `end` regions. Supports `sticky` and `variant="default"                                                          | "flat"                          | "elevated"`.                                                                                                                                   |
+| **Panel**        | `<section>` with auto `aria-labelledby`                   | Content container with title heading, optional `header`, `actions`, `footer` slots. `headerLevel` selects `<h1>`–`<h6>`.                                                |
+| **StatCard**     | `<div role="group">` with composed `aria-labelledby`      | Metric display card (`label`, `value`, optional `trend`, `description`, `icon`, `status`).                                                                              |
+| **SummaryStrip** | `<section aria-label>`                                    | Labeled responsive grid grouping summary items. `columns` accepts `'auto'` or `1` – `6`; `gap` accepts `'sm'                                                            | 'md'                            | 'lg'`.                                                                                                                                         |
+| **PageFrame**    | `<div>` with optional `<header>` / `<aside>` / `<footer>` | Content-level wrapper that sits inside Shell's `<main>`. `width` selects `narrow` / `default` / `wide` / `full`.                                                        |
+| **PageTitle**    | `<header>` containing `<h1>`/`<h2>`                       | Page heading with eyebrow / subtitle / description / actions. `level` selects 1 or 2.                                                                                   |
+| **Breadcrumb**   | `<nav aria-label>` + `<ol>`                               | Breadcrumb list. The current item (last item by default; can be set explicitly) carries `aria-current="page"`. Separators are `aria-hidden`.                            |
+| **Callout**      | `<div role="status"                                       | "alert"                                                                                                                                                                 | "note">`with derived`aria-live` | Informational call-out. `tone` of `info` / `success` / `neutral` defaults to `role="status"`; `warning` / `danger` defaults to `role="alert"`. |
+
+### Accessibility guarantees
+
+- **Landmarks:** exactly one `<main>` per Shell, `<header>` for Topbar / PageTitle / PageFrame
+  header, `<nav aria-label>` for Sidebar and Breadcrumb, `<aside aria-label>` when PageFrame
+  renders an aside.
+- **Accessible names:** Sidebar `label`, SummaryStrip `label`, Breadcrumb `label` (default
+  `'Breadcrumb'`), Panel `title` (auto `aria-labelledby`) or `aria-label` override, Callout
+  derives `role` + `aria-live` from `tone`.
+- **Current state:** Breadcrumb sets `aria-current="page"` on the current item; consumers
+  set the same on the active link inside Sidebar.
+- **Focus:** stable focus-visible outline using `--gr-semantic-border-focus`.
+- **Strict CSP:** no inline event handlers, no inline `style` attributes set by components,
+  no runtime style generation; consumer overrides happen through `--gr-shell-*` tokens.
+
+### Theming
+
+Shell consumes stable `--gr-*` tokens and exposes additive `--gr-shell-*` tokens:
+
+- `--gr-shell-sidebar-width-sm | -md | -lg | -compact`
+- `--gr-shell-topbar-height`
+- `--gr-shell-content-max-narrow | -default | -wide`
+- `--gr-shell-gutter`
+- `--gr-shell-gap-sm | -md | -lg`
+
+Consumers may bridge their own design tokens (e.g. `--ds-*`) in consumer CSS without
+forking the package.
+
+### Installing through the Greater CLI
+
+```sh
+greater add shell
+```
+
+This copies all 10 shell components, their CSS, types, and the barrel into the consumer's
+project. The CLI registry verifies per-file checksums on install (see [CLI guide](./cli.md)).
+
+### Usage example
+
+```svelte
+<script lang="ts">
+	import {
+		Shell,
+		Sidebar,
+		Topbar,
+		PageFrame,
+		PageTitle,
+		Panel,
+		StatCard,
+		SummaryStrip,
+		Breadcrumb,
+		Callout,
+	} from '@equaltoai/greater-components/shell';
+</script>
+
+<Shell mainLabel="Fleet overview">
+	{#snippet topbar()}
+		<Topbar variant="elevated">
+			{#snippet start()}<strong>lesser-host</strong>{/snippet}
+			{#snippet end()}<button>Sign out</button>{/snippet}
+		</Topbar>
+	{/snippet}
+
+	{#snippet sidebar()}
+		<Sidebar label="Primary navigation">
+			<a href="/overview" aria-current="page">Overview</a>
+			<a href="/instances">Instances</a>
+			<a href="/billing">Billing</a>
+		</Sidebar>
+	{/snippet}
+
+	<PageFrame width="wide">
+		{#snippet header()}
+			<Breadcrumb items={[{ label: 'Dashboard', href: '/' }, { label: 'Fleet' }]} />
+			<PageTitle
+				title="Fleet overview"
+				eyebrow="Project 39"
+				description="Live release readiness across all instances."
+			/>
+		{/snippet}
+
+		<SummaryStrip label="Fleet summary" columns={4}>
+			<StatCard label="Instances" value={42} />
+			<StatCard label="Healthy" value={40} status="success" />
+			<StatCard label="Warning" value={1} status="warning" />
+			<StatCard label="Down" value={1} status="danger" />
+		</SummaryStrip>
+
+		<Callout tone="warning" title="Provisioning incomplete">
+			One instance has not finished provisioning yet.
+		</Callout>
+
+		<Panel title="Recent activity" headerLevel={2}>
+			<p>…</p>
+		</Panel>
+	</PageFrame>
+</Shell>
+```
 
 ## Content Package (`$lib/greater/content`)
 
@@ -1890,10 +2029,14 @@ This package provides components specifically for building ActivityPub/Fediverse
 
 ❌ NO Authentication backend (provides UI only, you implement auth logic)
 ❌ NO API client (you provide the adapter/fetch logic)
-❌ NO Full app shell (components only, you build the app structure)
 ❌ NO Routing (use SvelteKit or your router)
 ❌ NO State persistence (you handle localStorage/sessionStorage)
 ❌ NO Push notifications (you implement notification service)
+
+> **App shell components** (Shell, Sidebar, Topbar, Panel, StatCard, SummaryStrip,
+> PageFrame, PageTitle, Breadcrumb, Callout) **are now provided** by the
+> [Shell Package](#shell-package-libgreatershell). Compose them with face components
+> to assemble an app surface.
 
 ## Headless Package (`$lib/greater/headless`)
 

@@ -1,0 +1,48 @@
+.gr-shell-topbar {
+	display: flex;
+	align-items: center;
+	gap: var(--gr-shell-gap-md);
+	min-height: var(--gr-shell-topbar-height);
+	padding: 0 var(--gr-shell-gutter);
+	background: var(--gr-semantic-background-surface, var(--gr-color-base-white, #fff));
+	color: var(--gr-semantic-foreground-primary, var(--gr-color-gray-900, #111827));
+	border-bottom: 1px solid var(--gr-semantic-border-subtle, var(--gr-color-gray-200, #e5e7eb));
+}
+
+.gr-shell-topbar--variant-flat {
+	border-bottom: none;
+}
+.gr-shell-topbar--variant-elevated {
+	border-bottom: none;
+	box-shadow: var(--gr-shadows-base, 0 1px 3px 0 rgb(0 0 0 / 0.1));
+}
+
+.gr-shell-topbar--sticky {
+	position: sticky;
+	top: 0;
+	z-index: 10;
+}
+
+.gr-shell-topbar__region {
+	display: flex;
+	align-items: center;
+	gap: var(--gr-shell-gap-sm);
+	min-width: 0;
+}
+.gr-shell-topbar__region--start {
+	flex: 0 0 auto;
+}
+.gr-shell-topbar__region--center {
+	flex: 1 1 auto;
+	justify-content: center;
+	min-width: 0;
+}
+.gr-shell-topbar__region--end {
+	flex: 0 0 auto;
+	margin-inline-start: auto;
+	justify-content: flex-end;
+}
+.gr-shell-topbar__region--full {
+	flex: 1 1 auto;
+	justify-content: space-between;
+}
