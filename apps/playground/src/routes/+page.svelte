@@ -81,6 +81,9 @@
 			<Button variant="outline" size="lg" onclick={() => navigateTo('/agent')}>
 				Agent Face Demo
 			</Button>
+			<Button variant="outline" size="lg" onclick={() => navigateTo('/shell')}>
+				Shell Components Demo
+			</Button>
 		</div>
 	</section>
 

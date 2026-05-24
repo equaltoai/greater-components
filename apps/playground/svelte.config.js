@@ -51,14 +51,26 @@ const config = {
 			'@equaltoai/greater-components-primitives/theme.css': resolvePackageDist(
 				'packages/primitives/dist/theme.css'
 			),
-			// Use directory-based aliases to support both main imports and subpath imports
-			...['adapters', 'headless', 'icons', 'primitives', 'tokens', 'utils', 'testing'].reduce(
-				(acc, pkg) => {
-					acc[`@equaltoai/greater-components-${pkg}`] = resolvePackageDist(`packages/${pkg}/src`);
-					return acc;
-				},
-				/** @type {Record<string, string>} */ ({})
+			'@equaltoai/greater-components-shell/shell.css': resolvePackageDist(
+				'packages/shell/dist/shell.css'
 			),
+			'@equaltoai/greater-components-shell/style.css': resolvePackageDist(
+				'packages/shell/dist/shell.css'
+			),
+			// Use directory-based aliases to support both main imports and subpath imports
+			...[
+				'adapters',
+				'headless',
+				'icons',
+				'primitives',
+				'tokens',
+				'utils',
+				'testing',
+				'shell',
+			].reduce((acc, pkg) => {
+				acc[`@equaltoai/greater-components-${pkg}`] = resolvePackageDist(`packages/${pkg}/src`);
+				return acc;
+			}, /** @type {Record<string, string>} */ ({})),
 			...['auth', 'admin', 'compose', 'messaging', 'search', 'notifications', 'chat'].reduce(
 				(acc, pkg) => {
 					acc[`@equaltoai/greater-components-${pkg}`] = resolvePackageDist(

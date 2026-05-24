@@ -15,6 +15,7 @@ Complete API documentation for all Greater Components packages.
   - [Settings Components](#settings-components)
   - [Transitions](#transitions)
   - [Utilities](#utilities)
+- [Shell Package](#shell-package)
 - [Chat Package](#chat-package)
 - [Headless Package](#headless-package)
 - [Faces Package](#faces-package)
@@ -1388,6 +1389,96 @@ import { preferencesStore, getPreferences } from '$lib/greater/primitives';
 const prefs = getPreferences();
 preferencesStore.subscribe((prefs) => console.log(prefs));
 ```
+
+---
+
+## Shell Package
+
+`@equaltoai/greater-components/shell` (`$lib/greater/shell` after CLI install)
+
+The Shell package provides app-shell layout components for app-shaped consumers
+(e.g. lesser-host web, sim). All components are Svelte 5 runes, strict-CSP safe, and
+meet WCAG 2.1 AA from first release.
+
+**Components (10):**
+
+| Component      | Element                                               | Required props            | Snippets / slots                          |
+| -------------- | ----------------------------------------------------- | ------------------------- | ----------------------------------------- |
+| `Shell`        | `<div>` with `<main>`                                 | —                         | `topbar`, `sidebar`, `children`           |
+| `Sidebar`      | `<nav aria-label>`                                    | `label`                   | `header`, `footer`, `children`            |
+| `Topbar`       | `<header>`                                            | —                         | `start`, `center`, `end`, `children`      |
+| `Panel`        | `<section>`                                           | —                         | `header`, `actions`, `footer`, `children` |
+| `StatCard`     | `<div role="group">`                                  | `label`, `value`          | `icon`                                    |
+| `SummaryStrip` | `<section aria-label>`                                | `label`                   | `children`                                |
+| `PageFrame`    | `<div>` with optional `<header>`/`<aside>`/`<footer>` | —                         | `header`, `footer`, `aside`, `children`   |
+| `PageTitle`    | `<header>` containing `<h1>` or `<h2>`                | `title`                   | `actions`                                 |
+| `Breadcrumb`   | `<nav aria-label>` + `<ol>`                           | `items: BreadcrumbItem[]` | —                                         |
+| `Callout`      | `<div role>`                                          | —                         | `icon`, `actions`, `children`             |
+
+**Key prop unions** (from `@equaltoai/greater-components/shell/types`):
+
+- `ShellSidebarPlacement = 'left' | 'right'`
+- `SidebarWidth = 'sm' | 'md' | 'lg'`
+- `SidebarVariant = 'compact' | 'full'`
+- `TopbarVariant = 'default' | 'flat' | 'elevated'`
+- `PanelVariant = 'default' | 'flat' | 'elevated'`
+- `PanelPadding = 'none' | 'sm' | 'md' | 'lg'`
+- `StatCardStatus = 'default' | 'success' | 'warning' | 'danger' | 'info'`
+- `StatCardTrendDirection = 'up' | 'down' | 'flat'`
+- `SummaryStripColumns = 'auto' | 1 | 2 | 3 | 4 | 5 | 6`
+- `SummaryStripGap = 'sm' | 'md' | 'lg'`
+- `PageFrameWidth = 'narrow' | 'default' | 'wide' | 'full'`
+- `PageFrameAsidePlacement = 'left' | 'right'`
+- `PageTitleLevel = 1 | 2`
+- `BreadcrumbItem = { label: string; href?: string; current?: boolean }`
+- `CalloutTone = 'info' | 'success' | 'warning' | 'danger' | 'neutral'`
+- `CalloutRole = 'status' | 'alert' | 'note'`
+
+**Accessibility:**
+
+- Sidebar / Breadcrumb / SummaryStrip require a `label` so the navigation / region has an
+  accessible name.
+- Panel auto-links a generated `<hN>` to the `<section>` via `aria-labelledby`. Falls back
+  to `aria-label` when no title is supplied.
+- StatCard derives a composed `aria-labelledby` from label / value / trend / description.
+- Callout derives `role` from `tone` (`'alert'` for warning / danger; `'status'` for info /
+  success / neutral). `role="note"` is non-live; `'status'` is polite; `'alert'` is
+  assertive.
+- Breadcrumb auto-marks the last item with `aria-current="page"` unless an explicit
+  `current` flag is set; separators are `aria-hidden`.
+
+**Theming:**
+
+Shell consumes stable `--gr-*` tokens and adds the following additive `--gr-shell-*`
+tokens, all overridable by consumers:
+
+- `--gr-shell-sidebar-width-sm | -md | -lg | -compact`
+- `--gr-shell-topbar-height`
+- `--gr-shell-content-max-narrow | -default | -wide`
+- `--gr-shell-gutter`
+- `--gr-shell-gap-sm | -md | -lg`
+
+Consumers may bridge their own `--ds-*` tokens in consumer CSS without forking the package.
+
+**Stylesheet:**
+
+Import the shell CSS bundle once at the app root:
+
+```ts
+import '@equaltoai/greater-components/shell/style.css';
+```
+
+**CLI install:**
+
+```sh
+greater add shell
+```
+
+This copies the 10 components, their CSS, types, and barrel into the consumer's
+`$lib/greater/shell` directory. The CLI registry validates per-file checksums on install.
+
+See also the [Shell section of the component inventory](./component-inventory.md#shell-package-libgreatershell) for a full
+component-by-component description.
 
 ---
 
