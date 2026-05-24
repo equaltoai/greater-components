@@ -153,6 +153,12 @@ greater --help
 - Changesets are optional; only add one when you explicitly want a changeset entry.
 - Pull requests should link issues, call out UI impacts (screenshots or GIFs), and confirm `pnpm lint`, `pnpm typecheck`, and relevant tests.
 
+## GitHub Provenance Guidance
+
+- When handling GitHub issues, PRs, comments, reviews, branches, commits, PR creation, or check runs, use `.codex/skills/github-provenance` and prefer the routed `mcp__greater_lab__` GitHub tools whenever they cover the action.
+- Fall back to the general GitHub plugin or `gh` only for capabilities the routed tools do not expose, such as diffs, inline review comments, unresolved threads, Actions logs, labels, search, approvals, or large local pushes. State the fallback reason when a GitHub write uses a non-routed path.
+- Routed provenance does not relax Greater gates: preserve component API stability, pinned Lesser/Lesser Host contract sync, WCAG 2.1 AA accessibility, CLI registry integrity, theming token stability, Mastodon-compatible behavior where applicable, and AGPL/dependency discipline.
+
 ## Environment & Tooling Notes
 
 - Husky with lint-staged formats staged files and runs lightweight checks; fix failures locally before retrying the commit.

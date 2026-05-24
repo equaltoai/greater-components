@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://lesser.host/spec/v3/schemas/soul-x402-invocation-grant.issue.request.schema.json",
   "title": "POST /api/v1/soul/x402/grants request",
-  "description": "Issues a host-side scoped x402 invocation grant for configured public paid callers. Raw caller and payment evidence may be supplied for hashing but is never returned by the public route.",
+  "description": "Issues a host-side scoped x402 invocation grant for configured public paid callers. Raw caller and payment evidence may be supplied for hashing but is never returned by the instance-key authenticated route.",
   "type": "object",
   "additionalProperties": false,
   "required": ["agentId", "capability", "tool", "resource", "requestHash", "caller", "payment", "nonce", "idempotencyKey", "expiresAt"],

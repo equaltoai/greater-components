@@ -4,7 +4,7 @@
   "title": "POST /api/v1/soul/x402/grants/{grantId}/consume request",
   "type": "object",
   "additionalProperties": false,
-  "required": ["grantToken", "agentId", "capability", "tool", "resource", "requestHash", "idempotencyKey"],
+  "required": ["grantToken", "agentId", "capability", "tool", "resource", "requestHash", "paymentEvidenceHash", "idempotencyKey"],
   "properties": {
     "grantToken": { "type": "string", "minLength": 1, "maxLength": 512 },
     "agentId": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
@@ -12,6 +12,7 @@
     "tool": { "type": "string", "minLength": 1, "maxLength": 128 },
     "resource": { "type": "string", "minLength": 1, "maxLength": 512 },
     "requestHash": { "type": "string", "pattern": "^(sha256:)?[0-9a-fA-F]{64}$" },
+    "paymentEvidenceHash": { "type": "string", "pattern": "^(sha256:)?[0-9a-fA-F]{64}$", "description": "Hash of the x402 payment evidence presented by the caller. Host compares against the stored grant payment evidence hash before any usage is recorded." },
     "idempotencyKey": { "type": "string", "minLength": 1, "maxLength": 256 }
   }
 }
