@@ -15,6 +15,8 @@ Complete API documentation for all Greater Components packages.
   - [Settings Components](#settings-components)
   - [Transitions](#transitions)
   - [Utilities](#utilities)
+- [Shell Package](#shell-package)
+- [Host-platform Package](#host-platform-package)
 - [Chat Package](#chat-package)
 - [Headless Package](#headless-package)
 - [Faces Package](#faces-package)
@@ -1388,6 +1390,261 @@ import { preferencesStore, getPreferences } from '$lib/greater/primitives';
 const prefs = getPreferences();
 preferencesStore.subscribe((prefs) => console.log(prefs));
 ```
+
+---
+
+## Shell Package
+
+`@equaltoai/greater-components/shell` (`$lib/greater/shell` after CLI install)
+
+The Shell package provides app-shell layout components for app-shaped consumers
+(e.g. lesser-host web, sim). All components are Svelte 5 runes, strict-CSP safe, and
+meet WCAG 2.1 AA from first release.
+
+**Components (11):**
+
+| Component        | Element                                                                       | Required props                    | Snippets / slots                                             |
+| ---------------- | ----------------------------------------------------------------------------- | --------------------------------- | ------------------------------------------------------------ |
+| `Shell`          | `<div>` with `<main>`                                                         | —                                 | `topbar`, `sidebar`, `children`                              |
+| `Sidebar`        | `<nav aria-label>`                                                            | `label`                           | `header`, `footer`, `children`                               |
+| `Topbar`         | `<header>`                                                                    | —                                 | `start`, `center`, `end`, `children`                         |
+| `Panel`          | `<section>`                                                                   | —                                 | `header`, `actions`, `footer`, `children`                    |
+| `StatCard`       | `<div role="group">`                                                          | `label`, `value`                  | `icon`                                                       |
+| `SummaryStrip`   | `<section aria-label>`                                                        | `label`                           | `children`                                                   |
+| `PageFrame`      | `<div>` with optional `<header>`/`<aside>`/`<footer>`                         | —                                 | `header`, `footer`, `aside`, `children`                      |
+| `PageTitle`      | `<header>` containing `<h1>` or `<h2>`                                        | `title`                           | `actions`                                                    |
+| `Breadcrumb`     | `<nav aria-label>` + `<ol>`                                                   | `items: BreadcrumbItem[]`         | —                                                            |
+| `Callout`        | `<div role>`                                                                  | —                                 | `icon`, `actions`, `children`                                |
+| `CommandPalette` | `<div role="dialog">` + `<input role="combobox">` + `<ul role="listbox">` × N | exactly one of `groups` / `items` | `itemTemplate(item, isActive)`, `emptyState`, `loadingState` |
+
+**Key prop unions** (from `@equaltoai/greater-components/shell/types`):
+
+- `ShellSidebarPlacement = 'left' | 'right'`
+- `SidebarWidth = 'sm' | 'md' | 'lg'`
+- `SidebarVariant = 'compact' | 'full'`
+- `TopbarVariant = 'default' | 'flat' | 'elevated'`
+- `PanelVariant = 'default' | 'flat' | 'elevated'`
+- `PanelPadding = 'none' | 'sm' | 'md' | 'lg'`
+- `StatCardStatus = 'default' | 'success' | 'warning' | 'danger' | 'info'`
+- `StatCardTrendDirection = 'up' | 'down' | 'flat'`
+- `SummaryStripColumns = 'auto' | 1 | 2 | 3 | 4 | 5 | 6`
+- `SummaryStripGap = 'sm' | 'md' | 'lg'`
+- `PageFrameWidth = 'narrow' | 'default' | 'wide' | 'full'`
+- `PageFrameAsidePlacement = 'left' | 'right'`
+- `PageTitleLevel = 1 | 2`
+- `BreadcrumbItem = { label: string; href?: string; current?: boolean }`
+- `CalloutTone = 'info' | 'success' | 'warning' | 'danger' | 'neutral'`
+- `CalloutRole = 'status' | 'alert' | 'note'`
+- `CommandPaletteItem = { id: string; label: string; description?: string; keywords?: string[]; shortcut?: string; disabled?: boolean }`
+- `CommandPaletteGroup = { id: string; label: string; items: CommandPaletteItem[] }`
+- `CommandPaletteFilter = (item, query) => number | null | undefined`
+
+**Accessibility:**
+
+- Sidebar / Breadcrumb / SummaryStrip require a `label` so the navigation / region has an
+  accessible name.
+- Panel auto-links a generated `<hN>` to the `<section>` via `aria-labelledby`. Falls back
+  to `aria-label` when no title is supplied.
+- StatCard derives a composed `aria-labelledby` from label / value / trend / description.
+- Callout derives `role` from `tone` (`'alert'` for warning / danger; `'status'` for info /
+  success / neutral). `role="note"` is non-live; `'status'` is polite; `'alert'` is
+  assertive.
+- Breadcrumb auto-marks the last item with `aria-current="page"` unless an explicit
+  `current` flag is set; separators are `aria-hidden`.
+- CommandPalette implements the W3C ARIA combobox + listbox pattern. The input keeps
+  real focus; arrow keys move `aria-activedescendant` virtual focus through results.
+  Composes `createFocusTrap` + `createDismissable` + `createLiveRegion` from
+  `@equaltoai/greater-components/headless`. ESC closes; outside-pointerdown closes;
+  focus is restored to the opener. Disabled items are skipped during keyboard
+  navigation and ignored on Enter / click. Live region announces result counts and
+  loading / empty state changes politely.
+
+**Theming:**
+
+Shell consumes stable `--gr-*` tokens and adds the following additive `--gr-shell-*`
+tokens, all overridable by consumers:
+
+- `--gr-shell-sidebar-width-sm | -md | -lg | -compact`
+- `--gr-shell-topbar-height`
+- `--gr-shell-content-max-narrow | -default | -wide`
+- `--gr-shell-gutter`
+- `--gr-shell-gap-sm | -md | -lg`
+
+Consumers may bridge their own `--ds-*` tokens in consumer CSS without forking the package.
+
+**Stylesheet:**
+
+Import the shell CSS bundle once at the app root:
+
+```ts
+import '@equaltoai/greater-components/shell/style.css';
+```
+
+**CLI install:**
+
+```sh
+greater add shell
+```
+
+This copies the 11 components, their CSS, types, dependency-free fuzzy filter, and
+barrel into the consumer's `$lib/greater/shell` directory. The CLI registry validates
+per-file checksums on install.
+
+**CommandPalette fuzzy filter:**
+
+The package ships a dependency-free filter at
+`@equaltoai/greater-components/shell/fuzzy-filter` (also re-exported as
+`filterAndRankCommandPaletteItems`, `scoreCommandPaletteItem`, and
+`tokenizeCommandPaletteQuery` from the shell barrel). It is strict-CSP-safe —
+no `unsafe-eval`, no dynamic codegen, no runtime dependencies. Consumers can
+override the built-in scorer with the `filter` prop:
+
+```ts
+import { CommandPalette } from '@equaltoai/greater-components/shell';
+import type { CommandPaletteFilter } from '@equaltoai/greater-components/shell/types';
+
+const customFilter: CommandPaletteFilter = (item, query) => {
+	// Return a numeric score (higher = better) or null to exclude.
+	return item.label.toLowerCase().startsWith(query.toLowerCase()) ? 1 : null;
+};
+```
+
+See also the [Shell section of the component inventory](./component-inventory.md#shell-package-libgreatershell) for a full
+component-by-component description.
+
+---
+
+## Host-platform Package
+
+`@equaltoai/greater-components/host-platform` (`$lib/greater/host-platform` after CLI install)
+
+Hosted-platform data-display components for managed-instance dashboards
+(lesser-host web, sim, operator consoles). Strict-CSP safe, Svelte 5 runes,
+WCAG 2.1 AA; status communication is never color-only.
+
+**Components (6):**
+
+| Component              | Element                                                                      | Required props               | Snippets / slots                                     |
+| ---------------------- | ---------------------------------------------------------------------------- | ---------------------------- | ---------------------------------------------------- |
+| `FleetCard`            | `<section>` with auto `aria-labelledby`                                      | `name`                       | `icon`, `cost`, `activity`, `actions`                |
+| `CostGauge`            | `<div role="meter">` (or `role="img"` for invalid ranges)                    | `current`, `limit`           | `extra`                                              |
+| `ActivitySparkline`    | `<svg role="img">` (or `aria-hidden`)                                        | `data`                       | —                                                    |
+| `ProvisioningTimeline` | `<section>` + `<ol>` with `aria-current="step"`                              | `label`, `steps`             | `liveLog`                                            |
+| `ReleaseTimeline`      | `<section>` + `<ol>` with `<time datetime>` + nested `role="meter"` adoption | `label`, `releases`          | `itemActions(release)`                               |
+| `StackMatrix`          | `<table>` with `<caption>`, `<th scope>`, `aria-sort`                        | `caption`, `columns`, `rows` | `cellRenderer(cell, row, column)`, `rowActions(row)` |
+
+**Key prop unions** (from `@equaltoai/greater-components/host-platform/types`):
+
+- `FleetCardStatus = 'healthy' | 'warning' | 'degraded' | 'offline' | 'provisioning' | 'unknown'`
+- `FleetCardVariant = 'default' | 'flat' | 'elevated'`
+- `FleetCardMetadataItem = { key: string; value: string }`
+- `CostGaugeStatus = 'ok' | 'warning' | 'danger'`
+- `CostGaugeThresholds = { warning?: number; danger?: number }` (ratios in `[0, 1]`)
+- `CostValueFormatter = (value: number, currency: string | undefined) => string`
+- `ActivitySparklineTone = 'default' | 'success' | 'warning' | 'danger' | 'info'`
+- `ProvisioningStepStatus = 'pending' | 'active' | 'success' | 'failure' | 'skipped'`
+- `ProvisioningLogPoliteness = 'off' | 'polite' | 'assertive'`
+- `ProvisioningStep = { id: string; label: string; description?: string; status?: ProvisioningStepStatus; timestamp?: string; meta?: string }`
+- `ReleaseStatus = 'shipped' | 'in-progress' | 'rolled-back' | 'planned'`
+- `ReleaseChannel = string` (conventionally `'stable'` / `'beta'`)
+- `ReleaseTimelineItem = { id: string; version: string; channel: ReleaseChannel; date: Date | string; status?: ReleaseStatus; adoption?: number | string; description?: string; href?: string }`
+- `ReleaseAdoptionFormatter = (adoption: number | string | undefined) => string | undefined`
+- `StackMatrixDrift = 'in-sync' | 'pending' | 'drifted' | 'unknown'`
+- `StackMatrixColumn = { id: string; label: string; sortable?: boolean }`
+- `StackMatrixCell = { value: string; drift?: StackMatrixDrift; description?: string }`
+- `StackMatrixRow = { id: string; label: string; subLabel?: string; cells: Record<string, StackMatrixCell> }`
+- `StackMatrixSortDirection = 'ascending' | 'descending' | 'none'`
+
+**Accessibility:**
+
+- Every `FleetCardStatus` ships an icon glyph + visible text label inside the
+  badge in addition to color tinting — color-blind users and screen-reader
+  users receive the same information.
+- `CostGauge` renders `role="meter"` with `aria-valuenow`, `aria-valuemin`,
+  `aria-valuemax`, and a composed `aria-valuetext` (e.g. `"$42.50 of $100.00"`).
+  Auto-thresholds default to `warning: 0.75`, `danger: 0.9`; override with
+  the `thresholds` prop or supply an explicit `status`.
+- `ActivitySparkline` defaults to informative — `<svg role="img" aria-labelledby
+aria-describedby>` with real `<title>` / optional `<desc>` children. Opt
+  into `decorative={true}` only when a textual equivalent exists adjacent.
+- `ProvisioningTimeline` renders a semantic `<ol>` of steps with
+  `aria-current="step"` on the active step. The optional live-log slot is
+  wrapped in `<section role="log" aria-live="polite" aria-atomic="false"
+aria-relevant="additions">` so AT users hear only NEW log lines, not the
+  whole backlog on each update. `liveLogPoliteness` configurable to
+  `'assertive'` (urgent failures) or `'off'` (visible-only).
+- `ReleaseTimeline` exposes channel via `aria-label`, dates via `<time
+datetime>`, and numeric adoption as a nested `role="meter"` with `[0, 1]`
+  range and composed `aria-valuetext` (e.g. `"Adoption: 42%"`). String
+  adoption renders as static text (no fake meter range).
+- `StackMatrix` is a real `<table>` with `<caption>` (visually-hidden by
+  default), `<th scope="col">` column headers, `<th scope="row">` row
+  headers, and `aria-sort` on the currently-sorted column. Sortable column
+  headers render as `<button>` elements with the keyboard contract natively
+  handled by the browser; consumers receive the column id via `onsort`
+  and re-supply `rows` in the desired order. Per-row actions are wrapped
+  in `<div role="group">` with a row-specific accessible name.
+- All ids are unique across multiple instances via `useStableId`.
+
+**Strict CSP:**
+
+- No inline event handlers, no `style` attributes set at runtime.
+- `CostGauge` fill width is driven by a `data-ratio` integer attribute (0–100)
+  and 101 attribute-selector CSS rules in the bundle (1% resolution; AT receives
+  the precise value through `aria-valuetext`).
+- `ActivitySparkline` SVG path is a pure data-to-string transform via
+  `buildSparklinePath`; no runtime `style` writes.
+
+**Theming:**
+
+Host-platform consumes stable `--gr-*` semantic tokens and adds these
+additive `--gr-host-platform-*` tokens, all overridable:
+
+- `--gr-host-platform-gutter`
+- `--gr-host-platform-gap-sm | -md | -lg`
+- `--gr-host-platform-radius`
+- `--gr-host-platform-sparkline-stroke`
+
+The package also ships its own `.gr-sr-only` utility so shell-less consumers
+keep working visually-hidden semantics.
+
+**Stylesheet:**
+
+Import the host-platform CSS bundle once at the app root:
+
+```ts
+import '@equaltoai/greater-components/host-platform/style.css';
+```
+
+**Utilities:**
+
+The package exports three dependency-free utilities, also available via
+`@equaltoai/greater-components/host-platform/formatters` and
+`@equaltoai/greater-components/host-platform/sparkline`:
+
+- `formatCost(value, currency?, locale?)` — `Intl.NumberFormat` wrapper with
+  per-locale-per-currency caching; renders `'—'` for non-finite or missing
+  values.
+- `formatCostGaugeText(current, limit, currency?, locale?)` — composes the
+  `"current of limit"` aria-valuetext string.
+- `computeRatio(current, limit)` — clamped `[0, 1]` ratio; returns `0` on
+  non-finite / zero / negative inputs.
+- `buildSparklinePath({ data, width, height, padding?, min?, max? })` — pure
+  data → SVG `<path d>` transform; deterministic and zero-allocation outside
+  the returned object.
+
+**CLI install:**
+
+```sh
+greater add host-platform
+```
+
+This copies the 6 components, their CSS, types, formatters, sparkline-path
+utility, and the barrel into the consumer's `$lib/greater/host-platform`
+directory. The CLI registry validates per-file checksums on install.
+
+See also the [Host-platform section of the component inventory](./component-inventory.md#host-platform-package-libgreaterhost-platform)
+for a fuller component-by-component description.
 
 ---
 

@@ -1186,10 +1186,12 @@ This package provides **41 interactive and layout components** for building any 
 ### What This Package Does NOT Provide
 
 ❌ NO Grid or Flexbox layout components (use CSS Grid/Flexbox directly)
-❌ NO Navigation components (Nav, Navbar, Sidebar, Breadcrumbs) - build with HTML + Button
 ❌ NO Table components - build with HTML <table> + styling
 ❌ NO Form wrapper components - build with HTML <form>
 ❌ NO Image components - use HTML <img> or <picture>
+
+> **Navigation and app shell components are now provided by the Shell Package**
+> (`$lib/greater/shell`). See [Shell Package](#shell-package-libgreatershell) below.
 
 ### For Missing Functionality
 
@@ -1200,12 +1202,353 @@ Use standard HTML + CSS Grid/Flexbox:
 - Flex layouts: `<div style="display: flex; ...">`
 - Responsive: CSS media queries
 
-**If you need navigation:**
-Combine HTML + Button component:
+**If you need navigation or an app shell:**
+Use the Shell Package (`$lib/greater/shell`):
 
-- `<nav>` with `<Button>` components
-- `<ul><li>` with styling
-- SvelteKit links with `<a>` elements
+- `Shell`, `Sidebar`, `Topbar` for the page-level layout and navigation landmarks
+- `PageFrame`, `PageTitle`, `Breadcrumb` for in-page structure
+- `Panel`, `StatCard`, `SummaryStrip`, `Callout` for content surfaces
+
+## Shell Package (`$lib/greater/shell`)
+
+### Package Scope
+
+This package provides **10 additive, app-shell layout components** designed for
+app-shaped consumers (e.g. lesser-host web, sim, admin tools). It is intentionally
+separate from `primitives` so it can grow independently and so consumers can opt in
+to the shell surface without inheriting the broader primitives bundle.
+
+**What Shell Provides:**
+
+- Page-level structural landmarks (`<header>`, `<nav>`, `<main>`, `<aside>`)
+- Navigation patterns with `aria-current="page"` and accessible names
+- Content containers with heading hierarchy and actions groups
+- Metric / summary surfaces (`StatCard`, `SummaryStrip`)
+- Status-aware call-outs with derived live-region semantics
+- Accessible command palette (`CommandPalette`) with virtual focus, grouped
+  results, and a dependency-free fuzzy filter
+
+**What Shell Does NOT Provide:**
+
+❌ NO data fetching (Shell is presentational; bring your own adapters)
+❌ NO routing (consume your router's `<a>` / `<button>` / store integrations)
+❌ NO state management (use stores from your app or `$lib/greater/utils`)
+
+### All 11 Components
+
+| Component          | Element                                                                              | Purpose                                                                                                                                                                                                                                 |
+| ------------------ | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Shell**          | `<div>` containing `<main>`                                                          | Root grid layout combining sidebar, topbar, and main content. Always renders a single `<main>` landmark; accepts an optional `mainLabel`.                                                                                               |
+| **Sidebar**        | `<nav aria-label>`                                                                   | Semantic navigation sidebar. Requires `label` prop; consumers populate children with real `<a>` (with `aria-current="page"` on the active link) or `<button>` controls.                                                                 |
+| **Topbar**         | `<header>`                                                                           | Site/app header bar with optional `start` / `center` / `end` regions. Supports `sticky` and `variant="default"                                                                                                                          | "flat"                          | "elevated"`.                                                                                                                                   |
+| **Panel**          | `<section>` with auto `aria-labelledby`                                              | Content container with title heading, optional `header`, `actions`, `footer` slots. `headerLevel` selects `<h1>`–`<h6>`.                                                                                                                |
+| **StatCard**       | `<div role="group">` with composed `aria-labelledby`                                 | Metric display card (`label`, `value`, optional `trend`, `description`, `icon`, `status`).                                                                                                                                              |
+| **SummaryStrip**   | `<section aria-label>`                                                               | Labeled responsive grid grouping summary items. `columns` accepts `'auto'` or `1` – `6`; `gap` accepts `'sm'                                                                                                                            | 'md'                            | 'lg'`.                                                                                                                                         |
+| **PageFrame**      | `<div>` with optional `<header>` / `<aside>` / `<footer>`                            | Content-level wrapper that sits inside Shell's `<main>`. `width` selects `narrow` / `default` / `wide` / `full`.                                                                                                                        |
+| **PageTitle**      | `<header>` containing `<h1>`/`<h2>`                                                  | Page heading with eyebrow / subtitle / description / actions. `level` selects 1 or 2.                                                                                                                                                   |
+| **Breadcrumb**     | `<nav aria-label>` + `<ol>`                                                          | Breadcrumb list. The current item (last item by default; can be set explicitly) carries `aria-current="page"`. Separators are `aria-hidden`.                                                                                            |
+| **Callout**        | `<div role="status"                                                                  | "alert"                                                                                                                                                                                                                                 | "note">`with derived`aria-live` | Informational call-out. `tone` of `info` / `success` / `neutral` defaults to `role="status"`; `warning` / `danger` defaults to `role="alert"`. |
+| **CommandPalette** | `<div role="dialog" aria-modal>` + `<input role="combobox">` + `<ul role="listbox">` | Accessible command palette for app navigation / quick actions. Combobox + listbox pattern with virtual focus via `aria-activedescendant`; ESC/outside-click close; focus trap; live-region announcements; dependency-free fuzzy filter. |
+
+### Accessibility guarantees
+
+- **Landmarks:** exactly one `<main>` per Shell, `<header>` for Topbar / PageTitle / PageFrame
+  header, `<nav aria-label>` for Sidebar and Breadcrumb, `<aside aria-label>` when PageFrame
+  renders an aside.
+- **Accessible names:** Sidebar `label`, SummaryStrip `label`, Breadcrumb `label` (default
+  `'Breadcrumb'`), Panel `title` (auto `aria-labelledby`) or `aria-label` override, Callout
+  derives `role` + `aria-live` from `tone`.
+- **Current state:** Breadcrumb sets `aria-current="page"` on the current item; consumers
+  set the same on the active link inside Sidebar.
+- **Focus:** stable focus-visible outline using `--gr-semantic-border-focus`.
+- **Strict CSP:** no inline event handlers, no inline `style` attributes set by components,
+  no runtime style generation; consumer overrides happen through `--gr-shell-*` tokens.
+
+### Theming
+
+Shell consumes stable `--gr-*` tokens and exposes additive `--gr-shell-*` tokens:
+
+- `--gr-shell-sidebar-width-sm | -md | -lg | -compact`
+- `--gr-shell-topbar-height`
+- `--gr-shell-content-max-narrow | -default | -wide`
+- `--gr-shell-gutter`
+- `--gr-shell-gap-sm | -md | -lg`
+
+Consumers may bridge their own design tokens (e.g. `--ds-*`) in consumer CSS without
+forking the package.
+
+### Installing through the Greater CLI
+
+```sh
+greater add shell
+```
+
+This copies all 11 shell components, their CSS, types, the dependency-free
+fuzzy filter, and the barrel into the consumer's project. The CLI registry
+verifies per-file checksums on install (see [CLI guide](./cli.md)).
+
+### CommandPalette quick reference
+
+The CommandPalette implements the W3C ARIA combobox + listbox pattern:
+
+- Renders a `<div role="dialog" aria-modal="true">` overlay with an inner
+  `<input role="combobox" aria-autocomplete="list" aria-expanded="true">` and
+  `<ul role="listbox">` (or one listbox per group when `groups` is supplied).
+- Virtual focus: real focus stays on the input; arrow keys move the
+  `aria-activedescendant` pointer through results without blurring the input.
+- Keyboard lifecycle: `ArrowUp` / `ArrowDown` navigate skipping disabled items;
+  `Home` / `End` jump to the first / last selectable item; `Enter` activates
+  the current item; `Escape` closes; outside-pointerdown closes; focus is
+  restored to the opener.
+- Live region: result counts and empty / loading states are announced
+  politely via `createLiveRegion` (no DOM noise — uses a global, off-screen
+  region).
+- Filter: pass `filter` to override the built-in scorer; the default scores
+  exact label match > prefix > word-boundary > substring across label,
+  description, and keywords; multi-token queries require every token to match.
+- Item shape: `{ id, label, description?, keywords?, shortcut?, disabled? }`.
+  Groups wrap items with `{ id, label, items[] }`.
+
+Minimum host wiring:
+
+```svelte
+<script lang="ts">
+	import { CommandPalette } from '@equaltoai/greater-components/shell';
+
+	let open = $state(false);
+
+	const groups = [
+		{
+			id: 'pages',
+			label: 'Pages',
+			items: [
+				{ id: 'overview', label: 'Overview' },
+				{ id: 'instances', label: 'Instances' },
+			],
+		},
+		{
+			id: 'actions',
+			label: 'Actions',
+			items: [{ id: 'refresh', label: 'Refresh', shortcut: '⌘R' }],
+		},
+	];
+</script>
+
+<CommandPalette
+	bind:open
+	label="Command palette"
+	{groups}
+	onselect={(item) => {
+		open = false;
+		navigate(item.id);
+	}}
+/>
+```
+
+### Usage example
+
+```svelte
+<script lang="ts">
+	import {
+		Shell,
+		Sidebar,
+		Topbar,
+		PageFrame,
+		PageTitle,
+		Panel,
+		StatCard,
+		SummaryStrip,
+		Breadcrumb,
+		Callout,
+	} from '@equaltoai/greater-components/shell';
+</script>
+
+<Shell mainLabel="Fleet overview">
+	{#snippet topbar()}
+		<Topbar variant="elevated">
+			{#snippet start()}<strong>lesser-host</strong>{/snippet}
+			{#snippet end()}<button>Sign out</button>{/snippet}
+		</Topbar>
+	{/snippet}
+
+	{#snippet sidebar()}
+		<Sidebar label="Primary navigation">
+			<a href="/overview" aria-current="page">Overview</a>
+			<a href="/instances">Instances</a>
+			<a href="/billing">Billing</a>
+		</Sidebar>
+	{/snippet}
+
+	<PageFrame width="wide">
+		{#snippet header()}
+			<Breadcrumb items={[{ label: 'Dashboard', href: '/' }, { label: 'Fleet' }]} />
+			<PageTitle
+				title="Fleet overview"
+				eyebrow="Project 39"
+				description="Live release readiness across all instances."
+			/>
+		{/snippet}
+
+		<SummaryStrip label="Fleet summary" columns={4}>
+			<StatCard label="Instances" value={42} />
+			<StatCard label="Healthy" value={40} status="success" />
+			<StatCard label="Warning" value={1} status="warning" />
+			<StatCard label="Down" value={1} status="danger" />
+		</SummaryStrip>
+
+		<Callout tone="warning" title="Provisioning incomplete">
+			One instance has not finished provisioning yet.
+		</Callout>
+
+		<Panel title="Recent activity" headerLevel={2}>
+			<p>…</p>
+		</Panel>
+	</PageFrame>
+</Shell>
+```
+
+## Host-platform Package (`$lib/greater/host-platform`)
+
+### Package Scope
+
+This package provides **6 hosted-platform data-display and operator components**
+designed for managed-instance dashboards (lesser-host web, sim, operator
+consoles). It is intentionally separate from `shell` and `faces/*`: `shell`
+is the generic app-shell surface, `faces/*` are protocol-aware Fediverse UI
+suites, and `host-platform` is the **operator / platform console surface**.
+
+**What Host-platform Provides:**
+
+- `FleetCard` — composed instance / fleet card with status badge, metadata
+  rows, primary / secondary actions, and slots for cost / activity summaries
+- `CostGauge` — `role="meter"` cost / usage indicator with auto-thresholds
+  (default `warning` at 75%, `danger` at 90%), accessible value text via
+  `aria-valuetext`, and a non-color-only status icon + label
+- `ActivitySparkline` — inline SVG trend with explicit `<title>` / `<desc>`
+  for informative usage, or `aria-hidden` decorative mode when a textual
+  equivalent exists nearby
+- `ProvisioningTimeline` — ordered timeline of provisioning steps with
+  `aria-current="step"` on the active step, status icon glyph + text label,
+  and an optional constrained live-log region (`role="log"` + polite/
+  assertive `aria-live`)
+- `ReleaseTimeline` — two-channel release history with accessible dates
+  (`<time datetime>`), status icon + text, and adoption metric rendered as
+  a valid `role="meter"` when numeric (0–1) or static text otherwise
+- `StackMatrix` — semantic `<table>` of stack / version drift with optional
+  sortable headers (`aria-sort`), non-color-only drift indicators, and a
+  per-row CTA slot
+
+**What Host-platform Does NOT Provide:**
+
+❌ NO data fetching (presentational; bring your own adapters)
+❌ NO Lesser Host adapter (consumer passes already-shaped data; contract sync deferred per #635 / #636)
+❌ NO chart library (sparkline is the only data-viz primitive; richer visualization belongs in a future dedicated package or a consumer-vendored chart lib)
+❌ NO billing / invoice surfaces (out of scope; deferred to a future hosted-platform milestone)
+
+### All 6 Components
+
+| Component                | Element                                                                      | Required props               | Snippets / slots                                     |
+| ------------------------ | ---------------------------------------------------------------------------- | ---------------------------- | ---------------------------------------------------- |
+| **FleetCard**            | `<section>` with auto `aria-labelledby`                                      | `name`                       | `icon`, `cost`, `activity`, `actions`                |
+| **CostGauge**            | `<div role="meter">` (or `role="img"` for invalid ranges)                    | `current`, `limit`           | `extra`                                              |
+| **ActivitySparkline**    | `<svg role="img">` (or `aria-hidden`)                                        | `data`                       | —                                                    |
+| **ProvisioningTimeline** | `<section>` + `<ol>` with `aria-current="step"`                              | `label`, `steps`             | `liveLog`                                            |
+| **ReleaseTimeline**      | `<section>` + `<ol>` with `<time datetime>` + nested `role="meter"` adoption | `label`, `releases`          | `itemActions(release)`                               |
+| **StackMatrix**          | `<table>` with `<caption>`, `<thead>`, `<th scope>`, `aria-sort`             | `caption`, `columns`, `rows` | `cellRenderer(cell, row, column)`, `rowActions(row)` |
+
+### Accessibility guarantees
+
+- **Status is never color-only.** Every `FleetCardStatus`, `CostGaugeStatus`,
+  `ProvisioningStepStatus`, `ReleaseStatus`, and `StackMatrixDrift` ships
+  an icon glyph + visible text label inside the badge / readout in addition
+  to any color tint.
+- **CostGauge uses `role="meter"`** with clamped `aria-valuenow` into a
+  valid `[aria-valuemin, aria-valuemax]` range. When the consumer-supplied
+  limit makes the range invalid (`limit <= 0` or non-finite), the gauge
+  falls back to `role="img"` with a composed `aria-labelledby` so AT users
+  still receive the current / limit values without violating the meter
+  contract.
+- **ActivitySparkline defaults to informative.** When `decorative === false`
+  (the default), the SVG has `role="img"` + `<title>` + optional `<desc>`.
+  Consumers opt into `decorative={true}` only when a textual equivalent
+  exists adjacent.
+- **ProvisioningTimeline** marks the active step with `aria-current="step"`.
+  The optional live-log region uses `role="log"` with `aria-live="polite"`
+  (default; configurable to `assertive` or `off`), `aria-atomic="false"`,
+  and `aria-relevant="additions"` so AT users hear only NEW log lines
+  rather than the entire backlog on each update.
+- **ReleaseTimeline** exposes channel via `aria-label`, dates via
+  `<time datetime>`, and numeric adoption as a `role="meter"` with a
+  valid `[0, 1]` range and composed `aria-valuetext` (e.g. `"Adoption: 42%"`).
+  String adoption renders as static text (no fake meter range).
+- **StackMatrix** is a real `<table>` with `<caption>` (visually-hidden by
+  default but available to AT), `<th scope="col">` column headers,
+  `<th scope="row">` row headers, and `aria-sort` on the currently-sorted
+  column. Per-row actions live inside `<div role="group">` with a
+  row-specific accessible name.
+- **All ids unique across multiple instances** via `useStableId`.
+- **Strict CSP safe.** No inline event handlers; no `style` attributes set
+  at runtime. The CostGauge fill width is driven by a `data-ratio`
+  attribute + 101 attribute-selector CSS rules (0–100% in 1% steps); the
+  ActivitySparkline path is a pure data-to-string transform.
+
+### Theming
+
+Host-platform consumes stable `--gr-*` semantic tokens and adds these
+additive `--gr-host-platform-*` tokens, all overridable by consumers:
+
+- `--gr-host-platform-gutter`
+- `--gr-host-platform-gap-sm | -md | -lg`
+- `--gr-host-platform-radius`
+- `--gr-host-platform-sparkline-stroke`
+
+The package ships its own `.gr-sr-only` utility so shell-less / primitives-
+less consumers retain working visually-hidden semantics.
+
+### Installing through the Greater CLI
+
+```sh
+greater add host-platform
+```
+
+This copies all 3 components, their CSS, types, the dependency-free
+formatters and sparkline-path utility, and the barrel into the consumer's
+project. The CLI registry verifies per-file checksums on install.
+
+### Usage example
+
+```svelte
+<script lang="ts">
+	import {
+		FleetCard,
+		CostGauge,
+		ActivitySparkline,
+	} from '@equaltoai/greater-components/host-platform';
+</script>
+
+<FleetCard
+	name="lesser.example"
+	region="us-east-1"
+	version="v1.4.12"
+	status="healthy"
+	metadata={[
+		{ key: 'Users', value: '1,243' },
+		{ key: 'Posts / day', value: '8,901' },
+	]}
+>
+	{#snippet cost()}
+		<CostGauge current={42.5} limit={100} currency="USD" label="Monthly spend" />
+	{/snippet}
+
+	{#snippet activity()}
+		<ActivitySparkline data={[3, 8, 5, 12, 9, 14, 10]} label="Posts per hour" />
+	{/snippet}
+
+	{#snippet actions()}
+		<button type="button">Manage</button>
+	{/snippet}
+</FleetCard>
+```
 
 ## Content Package (`$lib/greater/content`)
 
@@ -1890,10 +2233,14 @@ This package provides components specifically for building ActivityPub/Fediverse
 
 ❌ NO Authentication backend (provides UI only, you implement auth logic)
 ❌ NO API client (you provide the adapter/fetch logic)
-❌ NO Full app shell (components only, you build the app structure)
 ❌ NO Routing (use SvelteKit or your router)
 ❌ NO State persistence (you handle localStorage/sessionStorage)
 ❌ NO Push notifications (you implement notification service)
+
+> **App shell components** (Shell, Sidebar, Topbar, Panel, StatCard, SummaryStrip,
+> PageFrame, PageTitle, Breadcrumb, Callout) **are now provided** by the
+> [Shell Package](#shell-package-libgreatershell). Compose them with face components
+> to assemble an app surface.
 
 ## Headless Package (`$lib/greater/headless`)
 

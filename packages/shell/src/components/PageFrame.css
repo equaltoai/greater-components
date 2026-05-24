@@ -1,0 +1,61 @@
+.gr-shell-page-frame {
+	width: 100%;
+	margin: 0 auto;
+	padding: var(--gr-shell-gap-lg) var(--gr-shell-gutter);
+	display: flex;
+	flex-direction: column;
+	gap: var(--gr-shell-gap-lg);
+	min-width: 0;
+}
+
+.gr-shell-page-frame--width-narrow {
+	max-width: var(--gr-shell-content-max-narrow);
+}
+.gr-shell-page-frame--width-default {
+	max-width: var(--gr-shell-content-max-default);
+}
+.gr-shell-page-frame--width-wide {
+	max-width: var(--gr-shell-content-max-wide);
+}
+.gr-shell-page-frame--width-full {
+	max-width: none;
+}
+
+.gr-shell-page-frame__layout {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--gr-shell-gap-lg);
+	min-width: 0;
+}
+.gr-shell-page-frame--aside-right .gr-shell-page-frame__layout {
+	grid-template-columns: minmax(0, 1fr) minmax(0, 18rem);
+}
+.gr-shell-page-frame--aside-left .gr-shell-page-frame__layout {
+	grid-template-columns: minmax(0, 18rem) minmax(0, 1fr);
+}
+
+.gr-shell-page-frame__content {
+	min-width: 0;
+}
+.gr-shell-page-frame--aside-left .gr-shell-page-frame__content {
+	order: 2;
+}
+.gr-shell-page-frame--aside-left .gr-shell-page-frame__aside {
+	order: 1;
+}
+
+.gr-shell-page-frame__aside {
+	min-width: 0;
+}
+
+.gr-shell-page-frame__header,
+.gr-shell-page-frame__footer {
+	min-width: 0;
+}
+
+@media (max-width: 60rem) {
+	.gr-shell-page-frame--aside-right .gr-shell-page-frame__layout,
+	.gr-shell-page-frame--aside-left .gr-shell-page-frame__layout {
+		grid-template-columns: 1fr;
+	}
+}

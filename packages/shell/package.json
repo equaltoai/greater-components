@@ -1,0 +1,135 @@
+{
+  "name": "@equaltoai/greater-components-shell",
+  "version": "0.9.0",
+  "type": "module",
+  "description": "App shell layout components for Greater Components (Shell, Sidebar, Topbar, Panel, StatCard, SummaryStrip, PageFrame, PageTitle, Breadcrumb, Callout)",
+  "license": "AGPL-3.0-only",
+  "author": "Greater Contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/equaltoai/greater-components.git",
+    "directory": "packages/shell"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "svelte": "./dist/index.js",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./Shell": {
+      "types": "./dist/components/Shell.svelte.d.ts",
+      "svelte": "./dist/components/Shell.svelte",
+      "import": "./dist/components/Shell.svelte"
+    },
+    "./Sidebar": {
+      "types": "./dist/components/Sidebar.svelte.d.ts",
+      "svelte": "./dist/components/Sidebar.svelte",
+      "import": "./dist/components/Sidebar.svelte"
+    },
+    "./Topbar": {
+      "types": "./dist/components/Topbar.svelte.d.ts",
+      "svelte": "./dist/components/Topbar.svelte",
+      "import": "./dist/components/Topbar.svelte"
+    },
+    "./Panel": {
+      "types": "./dist/components/Panel.svelte.d.ts",
+      "svelte": "./dist/components/Panel.svelte",
+      "import": "./dist/components/Panel.svelte"
+    },
+    "./StatCard": {
+      "types": "./dist/components/StatCard.svelte.d.ts",
+      "svelte": "./dist/components/StatCard.svelte",
+      "import": "./dist/components/StatCard.svelte"
+    },
+    "./SummaryStrip": {
+      "types": "./dist/components/SummaryStrip.svelte.d.ts",
+      "svelte": "./dist/components/SummaryStrip.svelte",
+      "import": "./dist/components/SummaryStrip.svelte"
+    },
+    "./PageFrame": {
+      "types": "./dist/components/PageFrame.svelte.d.ts",
+      "svelte": "./dist/components/PageFrame.svelte",
+      "import": "./dist/components/PageFrame.svelte"
+    },
+    "./PageTitle": {
+      "types": "./dist/components/PageTitle.svelte.d.ts",
+      "svelte": "./dist/components/PageTitle.svelte",
+      "import": "./dist/components/PageTitle.svelte"
+    },
+    "./Breadcrumb": {
+      "types": "./dist/components/Breadcrumb.svelte.d.ts",
+      "svelte": "./dist/components/Breadcrumb.svelte",
+      "import": "./dist/components/Breadcrumb.svelte"
+    },
+    "./Callout": {
+      "types": "./dist/components/Callout.svelte.d.ts",
+      "svelte": "./dist/components/Callout.svelte",
+      "import": "./dist/components/Callout.svelte"
+    },
+    "./CommandPalette": {
+      "types": "./dist/components/CommandPalette.svelte.d.ts",
+      "svelte": "./dist/components/CommandPalette.svelte",
+      "import": "./dist/components/CommandPalette.svelte"
+    },
+    "./fuzzy-filter": {
+      "types": "./dist/utils/fuzzy-filter.d.ts",
+      "import": "./dist/utils/fuzzy-filter.js"
+    },
+    "./components/*.svelte": {
+      "types": "./dist/components/*.svelte.d.ts",
+      "svelte": "./dist/components/*.svelte",
+      "import": "./dist/components/*.svelte"
+    },
+    "./components/*": {
+      "types": "./dist/components/*.svelte.d.ts",
+      "svelte": "./dist/components/*.svelte",
+      "import": "./dist/components/*.svelte"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/types.js"
+    },
+    "./shell.css": "./dist/shell.css",
+    "./style.css": "./dist/shell.css"
+  },
+  "files": [
+    "src",
+    "dist"
+  ],
+  "scripts": {
+    "build": "svelte-package --output dist && node scripts/build-css.js",
+    "dev": "svelte-package --output dist --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "@equaltoai/greater-components-tokens": "workspace:*",
+    "svelte": "^5.43.6"
+  },
+  "dependencies": {
+    "@equaltoai/greater-components-headless": "workspace:*",
+    "@equaltoai/greater-components-utils": "workspace:*"
+  },
+  "devDependencies": {
+    "@equaltoai/greater-components-headless": "workspace:*",
+    "@equaltoai/greater-components-tokens": "workspace:*",
+    "@equaltoai/greater-components-utils": "workspace:*",
+    "@sveltejs/package": "^2.5.7",
+    "@sveltejs/vite-plugin-svelte": "^7.0.0",
+    "@testing-library/svelte": "^5.3.1",
+    "@types/node": "^25.6.0",
+    "@vitest/coverage-v8": "^4.1.4",
+    "jsdom": "^29.0.2",
+    "svelte": "^5.55.1",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.8",
+    "vitest": "^4.1.4"
+  },
+  "private": true
+}

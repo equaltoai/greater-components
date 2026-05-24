@@ -203,6 +203,39 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		tags: ['core', 'headless'],
 		version: '1.0.0',
 	},
+	shell: {
+		name: 'shell',
+		type: 'shared',
+		description:
+			'App shell layout components (Shell, Sidebar, Topbar, Panel, StatCard, SummaryStrip, PageFrame, PageTitle, Breadcrumb, Callout, CommandPalette) for app-shaped Fediverse / Lesser-aware consumers',
+		files: [{ path: 'greater/shell/index.ts', content: '', type: 'component' }],
+		dependencies: [],
+		devDependencies: [],
+		registryDependencies: ['tokens', 'utils', 'headless'],
+		tags: ['core', 'shell', 'layout', 'navigation', 'command-palette'],
+		version: '1.0.0',
+	},
+	'host-platform': {
+		name: 'host-platform',
+		type: 'shared',
+		description:
+			'Hosted-platform data-display + operator components (FleetCard, CostGauge, ActivitySparkline, ProvisioningTimeline, ReleaseTimeline, StackMatrix) for managed-instance dashboards (lesser-host, sim, operator consoles)',
+		files: [{ path: 'greater/host-platform/index.ts', content: '', type: 'component' }],
+		dependencies: [],
+		devDependencies: [],
+		registryDependencies: ['tokens', 'utils'],
+		tags: [
+			'core',
+			'host-platform',
+			'data-display',
+			'meter',
+			'sparkline',
+			'timeline',
+			'matrix',
+			'operator',
+		],
+		version: '1.0.0',
+	},
 
 	'social-generics': {
 		name: 'social-generics',
