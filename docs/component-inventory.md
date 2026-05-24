@@ -1411,11 +1411,11 @@ Minimum host wiring:
 
 ### Package Scope
 
-This package provides **3 hosted-platform data-display components** designed for
-managed-instance dashboards (lesser-host web, sim, operator consoles). It is
-intentionally separate from `shell` and `faces/*`: `shell` is the generic
-app-shell surface, `faces/*` are protocol-aware Fediverse UI suites, and
-`host-platform` is the **operator / platform console surface**.
+This package provides **6 hosted-platform data-display and operator components**
+designed for managed-instance dashboards (lesser-host web, sim, operator
+consoles). It is intentionally separate from `shell` and `faces/*`: `shell`
+is the generic app-shell surface, `faces/*` are protocol-aware Fediverse UI
+suites, and `host-platform` is the **operator / platform console surface**.
 
 **What Host-platform Provides:**
 
@@ -1427,34 +1427,65 @@ app-shell surface, `faces/*` are protocol-aware Fediverse UI suites, and
 - `ActivitySparkline` — inline SVG trend with explicit `<title>` / `<desc>`
   for informative usage, or `aria-hidden` decorative mode when a textual
   equivalent exists nearby
+- `ProvisioningTimeline` — ordered timeline of provisioning steps with
+  `aria-current="step"` on the active step, status icon glyph + text label,
+  and an optional constrained live-log region (`role="log"` + polite/
+  assertive `aria-live`)
+- `ReleaseTimeline` — two-channel release history with accessible dates
+  (`<time datetime>`), status icon + text, and adoption metric rendered as
+  a valid `role="meter"` when numeric (0–1) or static text otherwise
+- `StackMatrix` — semantic `<table>` of stack / version drift with optional
+  sortable headers (`aria-sort`), non-color-only drift indicators, and a
+  per-row CTA slot
 
 **What Host-platform Does NOT Provide:**
 
 ❌ NO data fetching (presentational; bring your own adapters)
-❌ NO Lesser Host adapter (consumer passes already-shaped data; contract sync deferred per #635)
-❌ NO chart library (sparkline is the only data-viz primitive)
-❌ NO billing / invoice surfaces (out of scope for G2; deferred to a future hosted-platform milestone)
+❌ NO Lesser Host adapter (consumer passes already-shaped data; contract sync deferred per #635 / #636)
+❌ NO chart library (sparkline is the only data-viz primitive; richer visualization belongs in a future dedicated package or a consumer-vendored chart lib)
+❌ NO billing / invoice surfaces (out of scope; deferred to a future hosted-platform milestone)
 
-### All 3 Components
+### All 6 Components
 
-| Component             | Element                                 | Required props     | Snippets / slots                      |
-| --------------------- | --------------------------------------- | ------------------ | ------------------------------------- |
-| **FleetCard**         | `<section>` with auto `aria-labelledby` | `name`             | `icon`, `cost`, `activity`, `actions` |
-| **CostGauge**         | `<div role="meter">`                    | `current`, `limit` | `extra`                               |
-| **ActivitySparkline** | `<svg role="img">` (or `aria-hidden`)   | `data`             | —                                     |
+| Component                | Element                                                                      | Required props               | Snippets / slots                                     |
+| ------------------------ | ---------------------------------------------------------------------------- | ---------------------------- | ---------------------------------------------------- |
+| **FleetCard**            | `<section>` with auto `aria-labelledby`                                      | `name`                       | `icon`, `cost`, `activity`, `actions`                |
+| **CostGauge**            | `<div role="meter">` (or `role="img"` for invalid ranges)                    | `current`, `limit`           | `extra`                                              |
+| **ActivitySparkline**    | `<svg role="img">` (or `aria-hidden`)                                        | `data`                       | —                                                    |
+| **ProvisioningTimeline** | `<section>` + `<ol>` with `aria-current="step"`                              | `label`, `steps`             | `liveLog`                                            |
+| **ReleaseTimeline**      | `<section>` + `<ol>` with `<time datetime>` + nested `role="meter"` adoption | `label`, `releases`          | `itemActions(release)`                               |
+| **StackMatrix**          | `<table>` with `<caption>`, `<thead>`, `<th scope>`, `aria-sort`             | `caption`, `columns`, `rows` | `cellRenderer(cell, row, column)`, `rowActions(row)` |
 
 ### Accessibility guarantees
 
-- **Status is never color-only.** Every `FleetCardStatus` and `CostGaugeStatus`
-  ships an icon glyph + visible text label inside the badge / readout in
-  addition to any color tint.
-- **CostGauge uses `role="meter"`** with `aria-valuenow`, `aria-valuemin`,
-  `aria-valuemax`, and `aria-valuetext` so AT announces the precise numeric
-  value (e.g. "$42.50 of $100.00") rather than a coarse percentage.
+- **Status is never color-only.** Every `FleetCardStatus`, `CostGaugeStatus`,
+  `ProvisioningStepStatus`, `ReleaseStatus`, and `StackMatrixDrift` ships
+  an icon glyph + visible text label inside the badge / readout in addition
+  to any color tint.
+- **CostGauge uses `role="meter"`** with clamped `aria-valuenow` into a
+  valid `[aria-valuemin, aria-valuemax]` range. When the consumer-supplied
+  limit makes the range invalid (`limit <= 0` or non-finite), the gauge
+  falls back to `role="img"` with a composed `aria-labelledby` so AT users
+  still receive the current / limit values without violating the meter
+  contract.
 - **ActivitySparkline defaults to informative.** When `decorative === false`
   (the default), the SVG has `role="img"` + `<title>` + optional `<desc>`.
   Consumers opt into `decorative={true}` only when a textual equivalent
   exists adjacent.
+- **ProvisioningTimeline** marks the active step with `aria-current="step"`.
+  The optional live-log region uses `role="log"` with `aria-live="polite"`
+  (default; configurable to `assertive` or `off`), `aria-atomic="false"`,
+  and `aria-relevant="additions"` so AT users hear only NEW log lines
+  rather than the entire backlog on each update.
+- **ReleaseTimeline** exposes channel via `aria-label`, dates via
+  `<time datetime>`, and numeric adoption as a `role="meter"` with a
+  valid `[0, 1]` range and composed `aria-valuetext` (e.g. `"Adoption: 42%"`).
+  String adoption renders as static text (no fake meter range).
+- **StackMatrix** is a real `<table>` with `<caption>` (visually-hidden by
+  default but available to AT), `<th scope="col">` column headers,
+  `<th scope="row">` row headers, and `aria-sort` on the currently-sorted
+  column. Per-row actions live inside `<div role="group">` with a
+  row-specific accessible name.
 - **All ids unique across multiple instances** via `useStableId`.
 - **Strict CSP safe.** No inline event handlers; no `style` attributes set
   at runtime. The CostGauge fill width is driven by a `data-ratio`

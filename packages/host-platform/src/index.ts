@@ -27,6 +27,9 @@ export type { ComponentProps } from 'svelte';
 export { default as FleetCard } from './components/FleetCard.svelte';
 export { default as CostGauge } from './components/CostGauge.svelte';
 export { default as ActivitySparkline } from './components/ActivitySparkline.svelte';
+export { default as ProvisioningTimeline } from './components/ProvisioningTimeline.svelte';
+export { default as ReleaseTimeline } from './components/ReleaseTimeline.svelte';
+export { default as StackMatrix } from './components/StackMatrix.svelte';
 
 // Utilities (dependency-free, strict-CSP-safe)
 export { formatCost, formatCostGaugeText, computeRatio } from './utils/formatters.js';
@@ -42,4 +45,16 @@ export type {
 	CostGaugeThresholds,
 	CostValueFormatter,
 	ActivitySparklineTone,
+	ProvisioningStep,
+	ProvisioningStepStatus,
+	ProvisioningLogPoliteness,
+	ReleaseChannel,
+	ReleaseStatus,
+	ReleaseTimelineItem,
+	ReleaseAdoptionFormatter,
+	StackMatrixDrift,
+	StackMatrixColumn,
+	StackMatrixCell,
+	StackMatrixRow,
+	StackMatrixSortDirection,
 } from './types.js';
