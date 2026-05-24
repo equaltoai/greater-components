@@ -1,2 +1,2 @@
-commit: 24c8d4b3d6055e79499f4c69947f79d4795024a5
-branch: project-38-security-remediation (post-v0.4.4, CSR-035 x402 grant security remediation)
+tag: v0.4.5
+commit: 315eb746c7b0acfd4c0385b7dfbac85178886772
