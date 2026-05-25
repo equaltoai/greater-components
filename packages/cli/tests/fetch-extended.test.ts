@@ -196,6 +196,48 @@ describe('Fetch Utils', () => {
 				'Failed to resolve source path'
 			);
 		});
+
+		it('error message discloses both user-facing ref and pinned commit SHA (issue #674)', async () => {
+			// Issue #674 Bug 2: host read the resolved SHA from the error message
+			// as "the CLI ignored my --ref and fell back to a hardcoded default".
+			// In fact --ref is honored end-to-end; resolveRefForFetch pins the tag
+			// to its commit SHA. The fixed error message must surface both forms
+			// so consumers can confirm their --ref was honored.
+			vi.mocked(registryIndex.resolveRef).mockResolvedValue({
+				ref: 'greater-v0.9.1-rc.0',
+				source: 'explicit',
+			});
+			vi.mocked(registryIndex.fetchRegistryIndex).mockResolvedValue({
+				...mockIndex,
+				checksums: {},
+			} as any);
+			vi.mocked(gitFetch.fetchFromGitTag).mockRejectedValue(new Error('404'));
+
+			await expect(
+				fetchComponentFiles(mockComponent, { ref: 'greater-v0.9.1-rc.0' })
+			).rejects.toThrow(/greater-v0\.9\.1-rc\.0 \(pinned to 0123456789abcdef/);
+		});
+
+		it('error message uses bare ref when no SHA pin happened (issue #674)', async () => {
+			// When the caller passed an already-pinned commit SHA (so
+			// `resolveRefForFetch` returns the same SHA it received), don't
+			// double-print it as "<sha> (pinned to <sha>)".
+			const pinned = '0123456789abcdef0123456789abcdef01234567';
+			vi.mocked(gitFetch.resolveGitRefToCommit).mockResolvedValue(pinned);
+			vi.mocked(registryIndex.resolveRef).mockResolvedValue({
+				ref: pinned,
+				source: 'explicit',
+			});
+			vi.mocked(registryIndex.fetchRegistryIndex).mockResolvedValue({
+				...mockIndex,
+				checksums: {},
+			} as any);
+			vi.mocked(gitFetch.fetchFromGitTag).mockRejectedValue(new Error('404'));
+
+			await expect(fetchComponentFiles(mockComponent, { ref: pinned })).rejects.toThrow(
+				new RegExp(`Resolved ref: ${pinned}(?!.*pinned)`)
+			);
+		});
 	});
 
 	describe('Verification', () => {

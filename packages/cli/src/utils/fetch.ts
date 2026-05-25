@@ -61,6 +61,23 @@ export interface FetchResult {
 
 const FACE_CANDIDATES = ['social', 'blog', 'community', 'artist'] as const;
 
+/**
+ * Top-level workspace packages whose source lives at
+ * `packages/<name>/src/...` (parallel to `primitives` / `icons` /
+ * `tokens`), NOT under `packages/shared/<name>/`.
+ *
+ * Treated as "core" by the fetcher so that:
+ *   - `buildCorePackageFileList` enumerates every file in the registry
+ *     index's `components.<name>.files` entry (not just the single
+ *     `index.ts` placeholder from the CLI registry).
+ *   - `buildSourcePathCandidates` routes `greater/<name>/...` install
+ *     paths to `packages/<name>/src/...` source paths.
+ *
+ * **Keep this set in sync with the matching `CORE_PACKAGE_NAMES` in
+ * `dependency-resolver.ts` and the `CORE_PACKAGES` array in
+ * `transform.ts`.** Missing entries here cause silent install failures
+ * for top-level packages (see issue #674).
+ */
 const CORE_PACKAGE_NAMES = new Set([
 	'primitives',
 	'icons',
@@ -69,6 +86,8 @@ const CORE_PACKAGE_NAMES = new Set([
 	'content',
 	'adapters',
 	'headless',
+	'shell',
+	'host-platform',
 ]);
 
 function isCorePackage(component: ComponentMetadata): boolean {
@@ -343,6 +362,13 @@ export async function fetchComponentFiles(
 	);
 	const signatureRef = resolvedRef;
 	const ref = await resolveRefForFetch(resolvedRef);
+	// `ref` is the immutable commit SHA `resolveRefForFetch` pinned the
+	// user-facing ref to. We surface both forms in error messages below
+	// so consumers can tell that `--ref greater-vX.Y.Z` was honored even
+	// when the failing message shows the corresponding commit hash (see
+	// issue #674 Bug 2 — the previous error message only showed the SHA
+	// and was read as "ref ignored / fell back to default").
+	const refLabel = ref === resolvedRef ? ref : `${resolvedRef} (pinned to ${ref})`;
 	const files: ComponentFile[] = [];
 	const fetchedFiles: FetchedFile[] = [];
 	let allVerified = true;
@@ -445,14 +471,17 @@ export async function fetchComponentFiles(
 					);
 				}
 				suggestions.push(
-					`Ensure the CLI can reach GitHub for ref "${ref}" (or pin a release tag via --ref greater-vX.Y.Z).`
+					`Ensure the CLI can reach GitHub for ref ${refLabel} (or pin a release tag via --ref greater-vX.Y.Z).`
 				);
 
 				const lastErrorMessage =
 					lastCandidateError instanceof Error ? lastCandidateError.message : null;
 				const lastErrorLine = lastErrorMessage ? `\nLast error: ${lastErrorMessage}` : '';
+				const refContext = `Resolved ref: ${refLabel}`;
 				const suggestionBlock =
-					suggestions.length > 0 ? `\n\n${suggestions.join('\n')}${lastErrorLine}` : '';
+					suggestions.length > 0
+						? `\n\n${refContext}\n${suggestions.join('\n')}${lastErrorLine}`
+						: `\n\n${refContext}${lastErrorLine}`;
 				throw new Error(
 					`Failed to resolve source path for "${component.name}" file "${file.path}".\n${detail}${suggestionBlock}`
 				);
