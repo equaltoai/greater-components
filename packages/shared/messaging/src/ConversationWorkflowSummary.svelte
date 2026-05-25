@@ -10,10 +10,14 @@
 	let { summary, compact = false, class: className = '' }: Props = $props();
 
 	function formatLabel(value: string): string {
+		// `String.prototype.charAt(0)` always returns a string (empty if
+		// out of range), avoiding the `Object is possibly 'undefined'`
+		// that `part[0]` would surface under `noUncheckedIndexedAccess`.
+		// The `.filter(Boolean)` above already drops empty fragments.
 		return value
 			.split(/[_-]/g)
 			.filter(Boolean)
-			.map((part) => part[0].toUpperCase() + part.slice(1))
+			.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
 			.join(' ');
 	}
 </script>
