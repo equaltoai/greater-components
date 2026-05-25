@@ -12,6 +12,32 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.10.0-rc.1](https://github.com/equaltoai/greater-components/compare/greater-v0.9.1-rc.1...greater-v0.10.0-rc.1) (2026-05-25)
+
+
+### Features
+
+* **scripts,cli,docs:** workspace svelte-check parity audits + CLI UX (Wave 4 / PR-E) ([a913a35](https://github.com/equaltoai/greater-components/commit/a913a3566bf89c90535ec91f26a91fa6c1797d34))
+* **scripts,cli,docs:** workspace svelte-check parity audits + CLI UX (Wave 4 / PR-E) ([f791379](https://github.com/equaltoai/greater-components/commit/f791379e1651daaddea7396680386bc14d747d32))
+
+
+### Bug Fixes
+
+* **faces/artist:** clear 21 svelte-check errors + 1 warning (Wave 3, PR-D) ([e351b4d](https://github.com/equaltoai/greater-components/commit/e351b4d41f9611fb047ee6545d9c856b31058e13))
+* **faces/artist:** clear 21 svelte-check errors + 1 warning (Wave 3, PR-D) ([dbfccb2](https://github.com/equaltoai/greater-components/commit/dbfccb2cd3c49174a4d35e6ebcbf0f8b6cf560bc))
+* **faces/social:** clear 29 svelte-check errors across 14 files (Wave 3 of Project 41) ([ceb9bde](https://github.com/equaltoai/greater-components/commit/ceb9bde50a05f2464d57fd9558b24658fd49e8d8))
+* **faces/social:** clear 29 svelte-check errors across 14 files (Wave 3 of Project 41) ([261f154](https://github.com/equaltoai/greater-components/commit/261f1548d89491ef1bf797e77d9882a7745ae297))
+* **shared/admin,shared/messaging:** clear svelte-check + extend coverage to 12 packages ([32c51bb](https://github.com/equaltoai/greater-components/commit/32c51bb46e2b2febd2ee113563633176a8678572))
+* **shared/admin,shared/messaging:** clear svelte-check + extend coverage to 12 packages ([67f404d](https://github.com/equaltoai/greater-components/commit/67f404dfc53a20fe9372afe3bcd903662a199bc0))
+* **shell,host-platform:** close svelte-check gaps blocking host M0.6-M0.10 ([e58a23d](https://github.com/equaltoai/greater-components/commit/e58a23db39aa5ae87b5aca397c3569c49ccd3023))
+* **shell,host-platform:** close svelte-check gaps blocking host M0.6-M0.10 (closes [#679](https://github.com/equaltoai/greater-components/issues/679)) ([b4f85c5](https://github.com/equaltoai/greater-components/commit/b4f85c5820da015dc746e243d2bf859d5d106bef))
+
+
+### Chores
+
+* backmerge premain into staging (restore release-branch ancestry after greater-v0.9.1-rc.1) ([144dd08](https://github.com/equaltoai/greater-components/commit/144dd084cdf6376b43424fb187168e2034f3c359))
+* backmerge premain into staging after greater-v0.9.1-rc.1 ([ece288a](https://github.com/equaltoai/greater-components/commit/ece288ac0f9c9ef6b18e3f73708d738137abd666))
+
 ## [0.9.1-rc.1](https://github.com/equaltoai/greater-components/compare/greater-v0.9.1-rc.0...greater-v0.9.1-rc.1) (2026-05-25)
 
 ### Bug Fixes
