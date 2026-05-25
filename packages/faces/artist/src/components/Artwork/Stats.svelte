@@ -151,10 +151,14 @@ Subtle styling until hover/focus.
 		transition: opacity var(--gr-artist-transition-hover, 200ms ease-out);
 	}
 
-	.gr-artist-artwork-stats:hover,
-	.gr-artist-artwork-stats:focus-within {
-		/* maintained for transition reference */
-	}
+	/*
+	 * `.gr-artist-artwork-stats:hover` / `:focus-within` was previously
+	 * a no-op ruleset retained for the `transition` declaration above.
+	 * svelte-check now (correctly) flags empty rulesets as warnings;
+	 * dropped here since the transition triggers on opacity change from
+	 * `transition: opacity ...` directly. If a future explicit hover
+	 * state is needed, restore with actual property changes.
+	 */
 
 	.gr-artist-artwork-stats-item {
 		display: flex;

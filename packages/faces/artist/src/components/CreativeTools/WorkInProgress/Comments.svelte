@@ -53,7 +53,11 @@ WorkInProgress.Comments - Threaded discussion
 	async function handleSubmit() {
 		if (!newComment.trim()) return;
 
+		// `thread.updates[index]` is `T | undefined` under
+		// `noUncheckedIndexedAccess`; guard explicitly even though
+		// `ctx.currentVersionIndex` should be valid.
 		const currentUpdate = thread.updates[ctx.currentVersionIndex];
+		if (!currentUpdate) return;
 		await handlers.onComment?.(thread, currentUpdate.id, newComment.trim());
 		newComment = '';
 	}

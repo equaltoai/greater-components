@@ -78,10 +78,16 @@ Features:
 		return () => clearInterval(interval);
 	});
 
-	// Current banner image
+	// Current banner image. The previous code used a non-null assertion
+	// (`heroArtworks![currentIndex]`) which the project lint forbids
+	// (`@typescript-eslint/no-non-null-assertion`). Switch to optional
+	// chaining + fallback to the static heroBanner / first image, which
+	// also handles the case where `currentIndex` exceeds the array
+	// length (which `noUncheckedIndexedAccess` correctly flags).
 	const bannerImage = $derived.by(() => {
 		if (rotating && artist.heroArtworks?.length) {
-			return artist.heroArtworks![currentIndex].images.full;
+			const current = artist.heroArtworks[currentIndex];
+			if (current) return current.images.full;
 		}
 		return artist.heroBanner || artist.heroArtworks?.[0]?.images.full;
 	});

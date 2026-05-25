@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-05-25T03:10:41.521Z",
+  "generatedAt": "2026-05-25T04:04:55.626Z",
   "ref": "greater-v0.9.1-rc.1",
   "version": "0.9.1-rc.1",
   "checksums": {
@@ -1135,16 +1135,16 @@
     "packages/faces/artist/src/components/ArtistProfile/Badges.svelte": "sha256-rkfqY9DtklEqo5A98zWfwwg1JFrpxD8eQgyh1uZI2EI=",
     "packages/faces/artist/src/components/ArtistProfile/context.ts": "sha256-Vxvqu77bG9FK/1rCi/B8Vso00XfEuBwx//fNYLsvM2Y=",
     "packages/faces/artist/src/components/ArtistProfile/Edit.svelte": "sha256-W8VnvXojaqQYaCAnz3yHz5vMCdmKfeKa7czPnUF0ZNk=",
-    "packages/faces/artist/src/components/ArtistProfile/HeroBanner.svelte": "sha256-cZAXai0HepmPh/9dMJcWGh0XCc2vXZMWaZGHz5KOVdA=",
+    "packages/faces/artist/src/components/ArtistProfile/HeroBanner.svelte": "sha256-YfDHneHv0T0aFx3TR0dhI60HmK8eJWnXzUAjLOXqbhs=",
     "packages/faces/artist/src/components/ArtistProfile/index.ts": "sha256-pfgnf444dYQ7qmQ2RjzOi5sistCeDyIgaGEUcJKTUmY=",
     "packages/faces/artist/src/components/ArtistProfile/Name.svelte": "sha256-vSEFf5RApu6Pb8aavOHfs1/xPvzJ0z9oGqomZg4Ohk8=",
     "packages/faces/artist/src/components/ArtistProfile/Root.svelte": "sha256-x4s6zVF88DGpNzRV2MvVXEMo6xqBDLxaV7uYPLAg6Rc=",
     "packages/faces/artist/src/components/ArtistProfile/Sections.svelte": "sha256-ExdxdakWSdIFNITFW7R/bysBlEZKaVqi1hc0IO3TmrM=",
     "packages/faces/artist/src/components/ArtistProfile/Statement.svelte": "sha256-hzZNF1l16cP/3fDTEibuDQNYAAPGnk6JWGyPvt684L4=",
     "packages/faces/artist/src/components/ArtistProfile/Stats.svelte": "sha256-lmWkQfmu1ZaCw4GHuw5907iqTFxAI1WNg5zgL6PttGM=",
-    "packages/faces/artist/src/components/ArtistProfile/Timeline.svelte": "sha256-HpFdEGagk/MJFulIFhbWoaT4VKvd3+CsPDe/OGELb9Y=",
+    "packages/faces/artist/src/components/ArtistProfile/Timeline.svelte": "sha256-pYTXPUJ+ObxLhvbKiAFqwRvXbbSx8nOd6Jiy+OETlME=",
     "packages/faces/artist/src/components/ArtistTimeline/index.ts": "sha256-DKtEBn2hsKq9aQQC3Se3sAH4Qyv9bcq9qftg00h6FZg=",
-    "packages/faces/artist/src/components/ArtistTimeline.svelte": "sha256-Fl8lpqcVHrJGfaJk1+P5UJuTz0OYDzvbADErZ/0MIyU=",
+    "packages/faces/artist/src/components/ArtistTimeline.svelte": "sha256-B/A9t/xM8UdSV5+UaDVkYrU3KAKSH3CsPzhSeMs5HAM=",
     "packages/faces/artist/src/components/Artwork/Actions.svelte": "sha256-6NHpKElejn6kEoBexel/w0ylSnQh/1fEIaOEW6/eg/8=",
     "packages/faces/artist/src/components/Artwork/AIDisclosure.svelte": "sha256-EiOQG1Z1mH8tUt9VkO7kwAusrd6+6UMXytlzbZ90+rE=",
     "packages/faces/artist/src/components/Artwork/Attribution.svelte": "sha256-i0Z0EtdJJuHakz4+QEn20xhbJkxOF8+Yz1dnRvVuO+8=",
@@ -1153,13 +1153,13 @@
     "packages/faces/artist/src/components/Artwork/index.ts": "sha256-Qoc+aLbbdwGiCI/sjnGqayeThQ1Wati1s9CHCQkVOmE=",
     "packages/faces/artist/src/components/Artwork/Metadata.svelte": "sha256-QmuYTap/58i88jvx/eofhTcQnEHcIXt6EYwxAu1yTXc=",
     "packages/faces/artist/src/components/Artwork/Root.svelte": "sha256-AsY2nREK/iZhP7sk59k+8zCnOLUon1h/l9BqPfmNuLw=",
-    "packages/faces/artist/src/components/Artwork/Stats.svelte": "sha256-/0XhiVXectj9kSJSRZ/C9f5/evTHXxgmAeL3iTqW0/Q=",
+    "packages/faces/artist/src/components/Artwork/Stats.svelte": "sha256-n5dU2nSqUvYkRiSFx9sxzWIKG7lKF1X4PaTpNsLadh0=",
     "packages/faces/artist/src/components/Artwork/Title.svelte": "sha256-ZqcJ9jNHOcU2ZjhGwu1mCYLnYKFghKQvlwoJx6hmF6s=",
     "packages/faces/artist/src/components/ArtworkCard/index.ts": "sha256-8WCCY+eNFMdUvZNHixwavoehS1ynoJij5DJstYi79J4=",
-    "packages/faces/artist/src/components/ArtworkCard.svelte": "sha256-BhD9LmXWYVDIMDXKwKOHWyA6rYiESaoEZdYuPIiXay8=",
+    "packages/faces/artist/src/components/ArtworkCard.svelte": "sha256-MS4Wcg+g66WM87w7HcZPIiIyXJt/EEKzwdlvvEzHPZU=",
     "packages/faces/artist/src/components/Community/Collaboration/context.ts": "sha256-QEdyLJ9WFTGa/cmoiJtkEfuX0/s1fWmC9sbuiYIzeIU=",
-    "packages/faces/artist/src/components/Community/Collaboration/Contributors.svelte": "sha256-twohy1+vIdMyWT2f0h4Pns8jS5bhHZl8mpof768mGc0=",
-    "packages/faces/artist/src/components/Community/Collaboration/Gallery.svelte": "sha256-IyMzRHLJikv91drDqLnP3FzFblFmjfxNcYsjG4GaftM=",
+    "packages/faces/artist/src/components/Community/Collaboration/Contributors.svelte": "sha256-P/n79mIPTkpty2X4Mg+64yBYF/BtW1yTWrkDC/D3LZs=",
+    "packages/faces/artist/src/components/Community/Collaboration/Gallery.svelte": "sha256-/RYq9tSCsjsmuM7IL7L3+6+2bXd8ARITouWp+JNd3F8=",
     "packages/faces/artist/src/components/Community/Collaboration/index.ts": "sha256-LD47twjpIz7jBrAgBygJBOqaRrygYMiwxL3EByBZwr8=",
     "packages/faces/artist/src/components/Community/Collaboration/Project.svelte": "sha256-Usf0KTzcPDbnFReVqkqYix8VeULsuhCQAJR8gLkhJ9Q=",
     "packages/faces/artist/src/components/Community/Collaboration/Root.svelte": "sha256-eJaMTTDC/rMN+YScBKuDVo3A3rK3+FJwAI00uOlcOwc=",
@@ -1168,7 +1168,7 @@
     "packages/faces/artist/src/components/Community/CritiqueCircle/context.ts": "sha256-KKeh9QWH9RxqUTF1/wNINIcZmMbCjY6cZcuG+mp65Dk=",
     "packages/faces/artist/src/components/Community/CritiqueCircle/History.svelte": "sha256-AZDAtMI/5ESEK2slbvvDYmgaeYiTA6A+5RDwXVPaOkQ=",
     "packages/faces/artist/src/components/Community/CritiqueCircle/index.ts": "sha256-Wf06sNkXwzfkhlGDmU2OCGb+VgiIzyTDwmtKKGuUVxM=",
-    "packages/faces/artist/src/components/Community/CritiqueCircle/Members.svelte": "sha256-9JhNpOZw+gM09t7Xfky50hp1mylpLT7CEEj2yKY722A=",
+    "packages/faces/artist/src/components/Community/CritiqueCircle/Members.svelte": "sha256-u/08R3dK10AV/TG9YjViyhlgsqJliI51w+qnCtYMVfM=",
     "packages/faces/artist/src/components/Community/CritiqueCircle/Queue.svelte": "sha256-fRoYzLMWiHT18kOG8Ce7IFT3wViF22LpH/eiBrrxVYI=",
     "packages/faces/artist/src/components/Community/CritiqueCircle/Root.svelte": "sha256-biSdTXDweeojYo5pPGtEBVslPPoWsf2Q2GfDOVa4yag=",
     "packages/faces/artist/src/components/Community/CritiqueCircle/Session.svelte": "sha256-8c2V6NIVSYJDBk7ufR+DL2KZBh/mRz8d+MRvssyLm5c=",
@@ -1177,14 +1177,14 @@
     "packages/faces/artist/src/components/CreativeTools/CommissionWorkflow/context.ts": "sha256-R9ijQmlffxBqrnWvVeSiHW6YDFQa1ea2eqWv6flUCDQ=",
     "packages/faces/artist/src/components/CreativeTools/CommissionWorkflow/index.ts": "sha256-Ude6a5Dkm8hgNJcS10v82biPxZcBkjwAun5weaOW6XE=",
     "packages/faces/artist/src/components/CreativeTools/CommissionWorkflow/Root.svelte": "sha256-osLVZxumZpihG3NcIaELrUidBrU18t3uGIPsJ3QYXRA=",
-    "packages/faces/artist/src/components/CreativeTools/CritiqueMode/Annotations.svelte": "sha256-O03EALmGG4ffUlFZmTQ+Cf6p7YuuSkhFalJ5q68NmsQ=",
+    "packages/faces/artist/src/components/CreativeTools/CritiqueMode/Annotations.svelte": "sha256-lBAzmOfgEIt4OZeJKqMkWeWZ5vXLToQbY1yeB6C6uhU=",
     "packages/faces/artist/src/components/CreativeTools/CritiqueMode/context.svelte.ts": "sha256-tbM984cw0gFEx4IrnKF8nqlt/D4tevKoyHJRWJGHwUs=",
     "packages/faces/artist/src/components/CreativeTools/CritiqueMode/Image.svelte": "sha256-tCUhfglTIm3LrDgbEsiof138EIyS0ireaibruyqZOJk=",
     "packages/faces/artist/src/components/CreativeTools/CritiqueMode/index.ts": "sha256-8zvKduPLqsyw1U+bTbgcZPO1TvFADJTe7QGGThIbi8w=",
     "packages/faces/artist/src/components/CreativeTools/CritiqueMode/Root.svelte": "sha256-zWSzOVJZFsIEous2G4mmvN0udnCrYOooa9V60Bzu54U=",
     "packages/faces/artist/src/components/CreativeTools/index.ts": "sha256-k4ES89dOEN9BSr+vDJB/T8e3pFBBIfDCjhpvhuRQpdk=",
     "packages/faces/artist/src/components/CreativeTools/ReferenceBoard.svelte": "sha256-eQKto7WkGbkx0Q5nMaguLyAmIjzACO5zMZEN20gnx3U=",
-    "packages/faces/artist/src/components/CreativeTools/WorkInProgress/Comments.svelte": "sha256-Nn0vFKnF58Dv/Ki25neXPSANaOE/NhrkyD2xX5KgH94=",
+    "packages/faces/artist/src/components/CreativeTools/WorkInProgress/Comments.svelte": "sha256-3JXevwhEHWBdsFTVK2+Lguou3J95POLVRlczZuQWUT4=",
     "packages/faces/artist/src/components/CreativeTools/WorkInProgress/Compare.svelte": "sha256-bgiNkEepbqwyOVPr6EF1Iau38KpY6ASwxQ0f4Q1EoKw=",
     "packages/faces/artist/src/components/CreativeTools/WorkInProgress/context.ts": "sha256-8Zd6GmpThnIWmb9CH56/StobzctTMji/JoWt3i/H6cM=",
     "packages/faces/artist/src/components/CreativeTools/WorkInProgress/Header.svelte": "sha256-xmDA+ut3ziurGiSNiBZQ1/U5uxdK3ZYNZtiinKikZqM=",
@@ -1223,15 +1223,15 @@
     "packages/faces/artist/src/components/MediaViewer/index.ts": "sha256-rLjVUZqKX9Jyi4uuUzwro0InzlVgYitp40q3YFlpzRY=",
     "packages/faces/artist/src/components/MediaViewer/MetadataPanel.svelte": "sha256-ahT3wAbnHVxMQSifH9Aez8qg1XLVx5aNrLATU46Djso=",
     "packages/faces/artist/src/components/MediaViewer/Navigation.svelte": "sha256-d+xVTVNoM896cPJWitkBcvQ6MBrn7KHx/j/jvPlTGEc=",
-    "packages/faces/artist/src/components/MediaViewer/Root.svelte": "sha256-qiBK1q0sUCJoo/wtrPu7ugOoe9ROTSrleVPMGGIjUTo=",
-    "packages/faces/artist/src/components/MediaViewer/ZoomControls.svelte": "sha256-1VoS2MZhAyHcp4UhtZ5EkMFeSyGrrMf4GMU09DfyP1k=",
-    "packages/faces/artist/src/components/Monetization/DirectPurchase.svelte": "sha256-Ae62iyOuW6tmvkGLB9c2yzPX2W1z8rV/lRFglqeEKkY=",
+    "packages/faces/artist/src/components/MediaViewer/Root.svelte": "sha256-xj7dC00b9R6i0IAzTRQXWUFXO5FDGlEs26IKnwy7PPI=",
+    "packages/faces/artist/src/components/MediaViewer/ZoomControls.svelte": "sha256-wby9XJ+JRj327wE2bBhEjdn6NWzOjYEQTMgm5RtnYUw=",
+    "packages/faces/artist/src/components/Monetization/DirectPurchase.svelte": "sha256-3BpwuXm3ovquQpFs8kDAdUcL9JxFG8Bndx4pdgGpPMw=",
     "packages/faces/artist/src/components/Monetization/index.ts": "sha256-rMMEbtBMXVx3TTbc2PDVol0M9qPQFSzVvwbBxSCKMPE=",
     "packages/faces/artist/src/components/Monetization/InstitutionalTools.svelte": "sha256-NCTPifwVDooZIZlsymYLmErufgWVbwy/ACiOCovDKJE=",
     "packages/faces/artist/src/components/Monetization/PremiumBadge.svelte": "sha256-OlD5NK8Cn60BxvjGKFum5K6t0IHMGMwUfHnVFcGap6U=",
     "packages/faces/artist/src/components/Monetization/ProtectionTools.svelte": "sha256-rysyZIi+oqMl1fi2bNHBXK5RwhlmNU2N9/e4sq7W30E=",
     "packages/faces/artist/src/components/Monetization/TipJar.svelte": "sha256-bznNJglJA73ucUNwsoGiZVwhrc+Bcl3DjnJJIevAhkI=",
-    "packages/faces/artist/src/components/PortfolioSection.svelte": "sha256-jhjDUwMcOutq8ula5gZ2E4/SLcAEO8egGzpaZduqLXk=",
+    "packages/faces/artist/src/components/PortfolioSection.svelte": "sha256-2gQ8aAOEGOFh5zmos3E3nPHlzIQ684yQspSAW1aYrpg=",
     "packages/faces/artist/src/components/Transparency/AIDisclosure.svelte": "sha256-XVkIqnZTTR72FHOcaD+sbdHVNz2z1MGOA0YCsaEIi/c=",
     "packages/faces/artist/src/components/Transparency/AIOptOutControls.svelte": "sha256-HgTv5l3PeM3z3IlS1+6yGUAepSKljHQiVRIqj1bAat0=",
     "packages/faces/artist/src/components/Transparency/EthicalSourcingBadge.svelte": "sha256-nsyVlNo4GVsbJcJSqwgaeAYgxZTpgOP3TWPiWK1A3Ok=",
@@ -1263,7 +1263,7 @@
     "packages/faces/artist/src/styles/index.css": "sha256-8KiG6c5rEq1fvbrTXphWrQuHV4VlL+pkwQY9sVBAAXs=",
     "packages/faces/artist/src/subscriptions/index.ts": "sha256-EJ53g8RCsC3gqnL6HC3xLysDOtrrtXVRkkfhZMooikM=",
     "packages/faces/artist/src/theme.css": "sha256-V8BN09El7jnzXMS8YPfaCWpdT4CMB4yiYokAQJkEw+A=",
-    "packages/faces/artist/src/types/artist.ts": "sha256-JYS/GygEOpvIL3z4rQKWRwZARUHlRTeKhwbfgBkOCm8=",
+    "packages/faces/artist/src/types/artist.ts": "sha256-U+FG7wDcMqNCSQuoHIM1qTn5rUn9lmblAsQOz/xn5Vo=",
     "packages/faces/artist/src/types/artwork.ts": "sha256-zl5/8g3JdxD0ideYKA4sRyqtVBXjkVk6JICmWSdmcfA=",
     "packages/faces/artist/src/types/community.ts": "sha256-JtVulyOxELGSwz4NG043xQG1bP+hBcmMuy1s2wjhiyo=",
     "packages/faces/artist/src/types/creative-tools.ts": "sha256-i1kt4Wflf6JRjeAUUCNyouyj2XbhlxDFMJ80BhI/B2g=",
@@ -7700,8 +7700,8 @@
         },
         {
           "path": "src/components/ArtistProfile/HeroBanner.svelte",
-          "checksum": "sha256-cZAXai0HepmPh/9dMJcWGh0XCc2vXZMWaZGHz5KOVdA=",
-          "size": 4661
+          "checksum": "sha256-YfDHneHv0T0aFx3TR0dhI60HmK8eJWnXzUAjLOXqbhs=",
+          "size": 5080
         },
         {
           "path": "src/components/ArtistProfile/index.ts",
@@ -7735,8 +7735,8 @@
         },
         {
           "path": "src/components/ArtistProfile/Timeline.svelte",
-          "checksum": "sha256-HpFdEGagk/MJFulIFhbWoaT4VKvd3+CsPDe/OGELb9Y=",
-          "size": 4511
+          "checksum": "sha256-pYTXPUJ+ObxLhvbKiAFqwRvXbbSx8nOd6Jiy+OETlME=",
+          "size": 4701
         },
         {
           "path": "src/components/ArtistTimeline/index.ts",
@@ -7745,8 +7745,8 @@
         },
         {
           "path": "src/components/ArtistTimeline.svelte",
-          "checksum": "sha256-Fl8lpqcVHrJGfaJk1+P5UJuTz0OYDzvbADErZ/0MIyU=",
-          "size": 9466
+          "checksum": "sha256-B/A9t/xM8UdSV5+UaDVkYrU3KAKSH3CsPzhSeMs5HAM=",
+          "size": 9656
         },
         {
           "path": "src/components/Artwork/Actions.svelte",
@@ -7790,8 +7790,8 @@
         },
         {
           "path": "src/components/Artwork/Stats.svelte",
-          "checksum": "sha256-/0XhiVXectj9kSJSRZ/C9f5/evTHXxgmAeL3iTqW0/Q=",
-          "size": 4064
+          "checksum": "sha256-n5dU2nSqUvYkRiSFx9sxzWIKG7lKF1X4PaTpNsLadh0=",
+          "size": 4354
         },
         {
           "path": "src/components/Artwork/Title.svelte",
@@ -7805,8 +7805,8 @@
         },
         {
           "path": "src/components/ArtworkCard.svelte",
-          "checksum": "sha256-BhD9LmXWYVDIMDXKwKOHWyA6rYiESaoEZdYuPIiXay8=",
-          "size": 9549
+          "checksum": "sha256-MS4Wcg+g66WM87w7HcZPIiIyXJt/EEKzwdlvvEzHPZU=",
+          "size": 9562
         },
         {
           "path": "src/components/Community/Collaboration/context.ts",
@@ -7815,13 +7815,13 @@
         },
         {
           "path": "src/components/Community/Collaboration/Contributors.svelte",
-          "checksum": "sha256-twohy1+vIdMyWT2f0h4Pns8jS5bhHZl8mpof768mGc0=",
-          "size": 5657
+          "checksum": "sha256-P/n79mIPTkpty2X4Mg+64yBYF/BtW1yTWrkDC/D3LZs=",
+          "size": 5694
         },
         {
           "path": "src/components/Community/Collaboration/Gallery.svelte",
-          "checksum": "sha256-IyMzRHLJikv91drDqLnP3FzFblFmjfxNcYsjG4GaftM=",
-          "size": 6108
+          "checksum": "sha256-/RYq9tSCsjsmuM7IL7L3+6+2bXd8ARITouWp+JNd3F8=",
+          "size": 6151
         },
         {
           "path": "src/components/Community/Collaboration/index.ts",
@@ -7865,8 +7865,8 @@
         },
         {
           "path": "src/components/Community/CritiqueCircle/Members.svelte",
-          "checksum": "sha256-9JhNpOZw+gM09t7Xfky50hp1mylpLT7CEEj2yKY722A=",
-          "size": 7338
+          "checksum": "sha256-u/08R3dK10AV/TG9YjViyhlgsqJliI51w+qnCtYMVfM=",
+          "size": 7377
         },
         {
           "path": "src/components/Community/CritiqueCircle/Queue.svelte",
@@ -7910,8 +7910,8 @@
         },
         {
           "path": "src/components/CreativeTools/CritiqueMode/Annotations.svelte",
-          "checksum": "sha256-O03EALmGG4ffUlFZmTQ+Cf6p7YuuSkhFalJ5q68NmsQ=",
-          "size": 5694
+          "checksum": "sha256-lBAzmOfgEIt4OZeJKqMkWeWZ5vXLToQbY1yeB6C6uhU=",
+          "size": 6035
         },
         {
           "path": "src/components/CreativeTools/CritiqueMode/context.svelte.ts",
@@ -7945,8 +7945,8 @@
         },
         {
           "path": "src/components/CreativeTools/WorkInProgress/Comments.svelte",
-          "checksum": "sha256-Nn0vFKnF58Dv/Ki25neXPSANaOE/NhrkyD2xX5KgH94=",
-          "size": 7827
+          "checksum": "sha256-3JXevwhEHWBdsFTVK2+Lguou3J95POLVRlczZuQWUT4=",
+          "size": 8021
         },
         {
           "path": "src/components/CreativeTools/WorkInProgress/Compare.svelte",
@@ -8140,18 +8140,18 @@
         },
         {
           "path": "src/components/MediaViewer/Root.svelte",
-          "checksum": "sha256-qiBK1q0sUCJoo/wtrPu7ugOoe9ROTSrleVPMGGIjUTo=",
-          "size": 8889
+          "checksum": "sha256-xj7dC00b9R6i0IAzTRQXWUFXO5FDGlEs26IKnwy7PPI=",
+          "size": 9382
         },
         {
           "path": "src/components/MediaViewer/ZoomControls.svelte",
-          "checksum": "sha256-1VoS2MZhAyHcp4UhtZ5EkMFeSyGrrMf4GMU09DfyP1k=",
-          "size": 4902
+          "checksum": "sha256-wby9XJ+JRj327wE2bBhEjdn6NWzOjYEQTMgm5RtnYUw=",
+          "size": 5117
         },
         {
           "path": "src/components/Monetization/DirectPurchase.svelte",
-          "checksum": "sha256-Ae62iyOuW6tmvkGLB9c2yzPX2W1z8rV/lRFglqeEKkY=",
-          "size": 25035
+          "checksum": "sha256-3BpwuXm3ovquQpFs8kDAdUcL9JxFG8Bndx4pdgGpPMw=",
+          "size": 25916
         },
         {
           "path": "src/components/Monetization/index.ts",
@@ -8180,8 +8180,8 @@
         },
         {
           "path": "src/components/PortfolioSection.svelte",
-          "checksum": "sha256-jhjDUwMcOutq8ula5gZ2E4/SLcAEO8egGzpaZduqLXk=",
-          "size": 5313
+          "checksum": "sha256-2gQ8aAOEGOFh5zmos3E3nPHlzIQ684yQspSAW1aYrpg=",
+          "size": 5503
         },
         {
           "path": "src/components/Transparency/AIDisclosure.svelte",
@@ -8340,8 +8340,8 @@
         },
         {
           "path": "src/types/artist.ts",
-          "checksum": "sha256-JYS/GygEOpvIL3z4rQKWRwZARUHlRTeKhwbfgBkOCm8=",
-          "size": 6351
+          "checksum": "sha256-U+FG7wDcMqNCSQuoHIM1qTn5rUn9lmblAsQOz/xn5Vo=",
+          "size": 6577
         },
         {
           "path": "src/types/artwork.ts",
