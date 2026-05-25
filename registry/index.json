@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-05-25T01:57:41.943Z",
+  "generatedAt": "2026-05-25T02:23:33.878Z",
   "ref": "greater-v0.9.1-rc.1",
   "version": "0.9.1-rc.1",
   "checksums": {
@@ -1360,7 +1360,7 @@
     "packages/shared/admin/src/Agents/types.ts": "sha256-eqK8lFK2qH0H96qttvXxRobFYjqQADtG6HKo0c6wYGU=",
     "packages/shared/admin/src/Analytics.svelte": "sha256-MyX4gIc2WV46JBYb1FEPQY+wEMw+dqbKrPx/zONYL+o=",
     "packages/shared/admin/src/context.svelte.ts": "sha256-YLYxhI8ljapxnRJa8cfbFVDjGSwrIOvvCTsG5TyL6u4=",
-    "packages/shared/admin/src/Cost/Alerts.svelte": "sha256-eoQJxtsnb03xDJLyPVy/wRzHKG/E1JrEzb67n2W5xXE=",
+    "packages/shared/admin/src/Cost/Alerts.svelte": "sha256-50dh1zTXF4gUZwPWDZg4/wzpAmRDinMayE/DbnbbCTU=",
     "packages/shared/admin/src/Cost/BudgetControls.svelte": "sha256-Ci7ERNJk1xXNyGezi5L7yL7Y2OvFcNtFhMC7M92T1Jg=",
     "packages/shared/admin/src/Cost/context.ts": "sha256-2rH2hvjOmqOjRPRy5k7jupwEVGy0dbGX1D23UFtK/rU=",
     "packages/shared/admin/src/Cost/Dashboard.svelte": "sha256-u1H9cub2mTsYLDwoNho/PBpvlZ/TWyrbRM1J1tQYSm0=",
@@ -1381,14 +1381,14 @@
     "packages/shared/admin/src/Settings.svelte": "sha256-odOfPLuuq+FBt9Q/RgjXU6K6nfQmiqxQCKC6CYSVA0A=",
     "packages/shared/admin/src/SeveredRelationships/context.ts": "sha256-k6U/70J2V1eiNc6DIdqxt4O2xRk5DpHoII6ATizM0Rk=",
     "packages/shared/admin/src/SeveredRelationships/index.ts": "sha256-bvBdf3VrwAU4aDH8ORS/5fKecvuXkVNK4nKEtxid6UU=",
-    "packages/shared/admin/src/SeveredRelationships/List.svelte": "sha256-Zuk/zf5r4MAtKt0Hx9cmQtGADQQ+LQEdJafLq7fVsdU=",
+    "packages/shared/admin/src/SeveredRelationships/List.svelte": "sha256-fhPepCp1NEaUreFQdbJP1mIN7UFATxBGEJ7AQEMPGNo=",
     "packages/shared/admin/src/SeveredRelationships/RecoveryPanel.svelte": "sha256-qPIhm6kgUGIQ8zpWDvMfoRG0HF/VlXAWDts7kt/dZnc=",
     "packages/shared/admin/src/SeveredRelationships/Root.svelte": "sha256-5N4siUyq0JoNdq+zQ6eMO8lCMUxx74Zj6+pqsr9+Kvc=",
     "packages/shared/admin/src/TrustGraph/context.ts": "sha256-MjQqliRSqalW8/T1NYgbYeHXgZ4FDCg5Ym9QjJoovLY=",
     "packages/shared/admin/src/TrustGraph/index.ts": "sha256-yQ1f6bqzgiFillfjLFvXCN7fGPjIUtOJSj4HNsCY/88=",
     "packages/shared/admin/src/TrustGraph/RelationshipList.svelte": "sha256-juIxxlmWw8No/BT913VthX+Fve/x4pJXgJMQutISwbs=",
     "packages/shared/admin/src/TrustGraph/Root.svelte": "sha256-RnKfjO2Vn2aZFXkeMITY9bBE7jPF/5KHVBvBo2XHaq8=",
-    "packages/shared/admin/src/TrustGraph/Visualization.svelte": "sha256-RBtnLSWaWbKZ/Lq6OUFhm7Pjx3Fyy7inDBaAYhB7qHg=",
+    "packages/shared/admin/src/TrustGraph/Visualization.svelte": "sha256-rxTSgA4+sYykDxVNBr1yAcOLFt1nFs8oR26R0ukrNAU=",
     "packages/shared/admin/src/Users.svelte": "sha256-eJnq6ySKkUKIFYdke6qok7zSM/e0BasyO9rUiN7gmGg=",
     "packages/shared/chat/src/ChatContainer.svelte": "sha256-RffmulXXyC6NRUZYjDAUF+BX4JzLZXAhv5neTCEdb58=",
     "packages/shared/chat/src/ChatHeader.svelte": "sha256-KlBPVy0gdgTJ0mgn4/InoGnwSxyuJvwsP0DS2q0kxYg=",
@@ -1409,7 +1409,7 @@
     "packages/shared/messaging/src/context.svelte.ts": "sha256-NihRfF2shXYMQTnQbjfYGKmyhNT+881dUYxrBEGFrKk=",
     "packages/shared/messaging/src/ConversationPicker.svelte": "sha256-GyuC58bLhCyxEV1cl8m1bykp3fKVsOKjPZ+/GeihVq8=",
     "packages/shared/messaging/src/Conversations.svelte": "sha256-kEPIvS+0HxWGaoiU/UVG2sbMyoVQGTGWzllB3Q71lD0=",
-    "packages/shared/messaging/src/ConversationWorkflowSummary.svelte": "sha256-1dbfzcaC40nFEyFdXGelgFB2yiiCkeMDPXCuP26M3n0=",
+    "packages/shared/messaging/src/ConversationWorkflowSummary.svelte": "sha256-+mO7cS42J9G7FplGDcvuUealcYVAqx47qH4WqUkaxPU=",
     "packages/shared/messaging/src/index.ts": "sha256-51SFnggIOSpqEXRczLt8ySe8GJM2LmokXYfhkNtVcp4=",
     "packages/shared/messaging/src/MediaUpload.svelte": "sha256-5ORpNjGoJKb1SXWhVzFZ80Frxi0e6VYP1oM1ow2Oejo=",
     "packages/shared/messaging/src/Message.svelte": "sha256-55HxJkzJIGsjHI36WPnrSgJC/ZNUFdvzFjUwpgcIFTY=",
@@ -1419,7 +1419,7 @@
     "packages/shared/messaging/src/types.ts": "sha256-hHc+ulSYjI46KKV/O+h845OcqMhB6feSn6oR7CV76JY=",
     "packages/shared/messaging/src/UnreadIndicator.svelte": "sha256-oo+td3vo+3SQR4zYbS0PNjHDoQ8j4qEoqyMrYrK7Z5s=",
     "packages/shared/messaging/src/utils.ts": "sha256-n5s8ZSURaYg3TP01VFafGTH43dn04IiTwLtAKMU1Hyk=",
-    "packages/shared/messaging/src/WorkflowThreadMoment.svelte": "sha256-IM+qoJZEMS44ujczVD9hiWnpPQBeb37zfG3JipVeFq0=",
+    "packages/shared/messaging/src/WorkflowThreadMoment.svelte": "sha256-FN/gYB5HCi3ltwxI0L3qjqep+jXwQE1zJSEAKtXnzlU=",
     "packages/shared/soul/src/AnchorAssuranceBadge.svelte": "sha256-IUAvzymXQ8r/oY6B5JmwdkHQ+mhW5aZzmMQC74KwkiE=",
     "packages/shared/soul/src/BestWayToContact.svelte": "sha256-IBt7PZbUifeYI0DjsiPxTYLBwJj2k5cX0mw/J6DGf9k=",
     "packages/shared/soul/src/ChannelsDisplay.svelte": "sha256-wNJoj3WNDXaqcmsxBOPQtuQJyeA/XX6jaH5wQaC4Vdg=",
@@ -9187,8 +9187,8 @@
         },
         {
           "path": "src/Cost/Alerts.svelte",
-          "checksum": "sha256-eoQJxtsnb03xDJLyPVy/wRzHKG/E1JrEzb67n2W5xXE=",
-          "size": 634
+          "checksum": "sha256-50dh1zTXF4gUZwPWDZg4/wzpAmRDinMayE/DbnbbCTU=",
+          "size": 640
         },
         {
           "path": "src/Cost/BudgetControls.svelte",
@@ -9292,8 +9292,8 @@
         },
         {
           "path": "src/SeveredRelationships/List.svelte",
-          "checksum": "sha256-Zuk/zf5r4MAtKt0Hx9cmQtGADQQ+LQEdJafLq7fVsdU=",
-          "size": 1171
+          "checksum": "sha256-fhPepCp1NEaUreFQdbJP1mIN7UFATxBGEJ7AQEMPGNo=",
+          "size": 1193
         },
         {
           "path": "src/SeveredRelationships/RecoveryPanel.svelte",
@@ -9327,8 +9327,8 @@
         },
         {
           "path": "src/TrustGraph/Visualization.svelte",
-          "checksum": "sha256-RBtnLSWaWbKZ/Lq6OUFhm7Pjx3Fyy7inDBaAYhB7qHg=",
-          "size": 6142
+          "checksum": "sha256-rxTSgA4+sYykDxVNBr1yAcOLFt1nFs8oR26R0ukrNAU=",
+          "size": 6577
         },
         {
           "path": "src/Users.svelte",
@@ -9551,8 +9551,8 @@
         },
         {
           "path": "src/ConversationWorkflowSummary.svelte",
-          "checksum": "sha256-1dbfzcaC40nFEyFdXGelgFB2yiiCkeMDPXCuP26M3n0=",
-          "size": 2309
+          "checksum": "sha256-+mO7cS42J9G7FplGDcvuUealcYVAqx47qH4WqUkaxPU=",
+          "size": 2583
         },
         {
           "path": "src/index.ts",
@@ -9601,8 +9601,8 @@
         },
         {
           "path": "src/WorkflowThreadMoment.svelte",
-          "checksum": "sha256-IM+qoJZEMS44ujczVD9hiWnpPQBeb37zfG3JipVeFq0=",
-          "size": 3306
+          "checksum": "sha256-FN/gYB5HCi3ltwxI0L3qjqep+jXwQE1zJSEAKtXnzlU=",
+          "size": 3580
         }
       ],
       "dependencies": [
