@@ -221,7 +221,9 @@
 		};
 	}
 
-	// Auto-connect on mount
+	// Auto-connect on mount. `$effect` must return either a cleanup
+	// function or void on every code path; explicit `undefined` on the
+	// alternative branch satisfies `tsc`'s strict-return check.
 	$effect(() => {
 		if (!mounted && timelineIntegration && autoConnect) {
 			mounted = true;
@@ -233,6 +235,7 @@
 				timelineIntegration?.disconnect();
 			};
 		}
+		return undefined;
 	});
 
 	// Handle status updates

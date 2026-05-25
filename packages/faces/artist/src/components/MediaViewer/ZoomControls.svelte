@@ -27,7 +27,10 @@ Reset zoom button.
 	const ZOOM_LEVELS = [0.5, 0.75, 1, 1.5, 2, 3, 4, 5] as const;
 
 	function normalizeZoomLevel(level: number): number {
-		let closest = ZOOM_LEVELS[0];
+		// Mirrors MediaViewer/Root.svelte. `ZOOM_LEVELS[0]` infers as
+		// literal `0.5`; widen the accumulator to `number` so any zoom
+		// level can be assigned during the loop.
+		let closest: number = ZOOM_LEVELS[0];
 		for (const candidate of ZOOM_LEVELS) {
 			if (Math.abs(candidate - level) < Math.abs(closest - level)) {
 				closest = candidate;
@@ -38,7 +41,7 @@ Reset zoom button.
 
 	function zoomStep(direction: 'in' | 'out'): number {
 		const normalized = normalizeZoomLevel(context.zoomLevel);
-		const index = ZOOM_LEVELS.indexOf(normalized);
+		const index = ZOOM_LEVELS.indexOf(normalized as (typeof ZOOM_LEVELS)[number]);
 		if (index === -1) return 1;
 
 		const nextIndex =

@@ -132,8 +132,11 @@ Features:
 	// Set initial tab
 	$effect(() => {
 		const tabs = availableTabs();
-		if (tabs.length > 0 && !tabs.includes(activeTab)) {
-			activeTab = tabs[0];
+		// `tabs[0]` is `TabType | undefined` under
+		// `noUncheckedIndexedAccess`; `tabs.length > 0` doesn't narrow it.
+		const first = tabs[0];
+		if (first && !tabs.includes(activeTab)) {
+			activeTab = first;
 		}
 	});
 
@@ -214,8 +217,21 @@ Features:
 			const totalValue = total();
 			if (!totalValue) throw new Error('Invalid selection');
 
+			// `TabType` (`'original' | 'prints' | 'licenses'`) is the
+			// UI-tab identifier (plural-form to match the `pricing.prints`
+			// / `pricing.licenses` array keys); `PurchaseOptions.type`
+			// (`'original' | 'print' | 'license'`) is the singular API
+			// payload form. Previous code assigned `activeTab` directly
+			// to `options.type`, which silently sent `'prints'` /
+			// `'licenses'` to the consumer's `onPurchase` handler --
+			// violating the declared `PurchaseOptions.type` contract. Map
+			// explicitly here. `tsc` strict-mode flagged this; the runtime
+			// fix matches the documented API.
+			const purchaseType: PurchaseOptions['type'] =
+				activeTab === 'original' ? 'original' : activeTab === 'prints' ? 'print' : 'license';
+
 			const options: PurchaseOptions = {
-				type: activeTab,
+				type: purchaseType,
 				price: totalValue.price,
 				currency: totalValue.currency,
 			};

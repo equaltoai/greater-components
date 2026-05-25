@@ -83,7 +83,9 @@ Collaboration.Contributors - Artist attribution chain
 				<div class="collab-contributors__member">
 					<img src={member.artist.avatar || ''} alt="" class="collab-contributors__avatar" />
 					<div class="collab-contributors__info">
-						<span class="collab-contributors__name">{member.artist.displayName}</span>
+						<span class="collab-contributors__name"
+							>{member.artist.displayName ?? member.artist.name}</span
+						>
 						<span class="collab-contributors__role">{member.role}</span>
 						{#if member.contribution}
 							<span class="collab-contributors__contribution">{member.contribution}</span>

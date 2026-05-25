@@ -109,7 +109,12 @@
 	 * Update a field
 	 */
 	function updateField(index: number, key: 'name' | 'value', value: string) {
-		fields[index] = { ...fields[index], [key]: value };
+		// `fields[index]` is `ProfileField | undefined` under
+		// `noUncheckedIndexedAccess`; spreading possibly-undefined makes
+		// every required property optional. Guard, then spread.
+		const existing = fields[index];
+		if (!existing) return;
+		fields[index] = { ...existing, [key]: value };
 	}
 
 	/**

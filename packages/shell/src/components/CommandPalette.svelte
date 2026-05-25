@@ -68,7 +68,24 @@ tokens via the bundled `shell.css`.
 	import type { CommandPaletteFilter, CommandPaletteGroup, CommandPaletteItem } from '../types.js';
 	import { filterAndRankItems, tokenizeQuery } from '../utils/fuzzy-filter.js';
 
-	interface Props extends Omit<HTMLAttributes<HTMLDivElement>, 'aria-label'> {
+	// Omit both `aria-label` and `onselect` from the inherited HTMLAttributes
+	// shape. They are both re-declared below with greater-specific contracts:
+	//
+	// - `aria-label` is intentionally not exposed as a prop; the dialog's
+	//   accessible name comes from the dedicated `label` prop (which is
+	//   wired to `aria-labelledby`). Omitting prevents consumers from
+	//   bypassing the labelledby pattern.
+	//
+	// - `onselect` would otherwise inherit the DOM text-selection event
+	//   shape `EventHandler<Event, HTMLDivElement>`. The component re-uses
+	//   the name for its API callback `(item: CommandPaletteItem) => void`,
+	//   which is the value bound by parents and invoked at lines 359, 413
+	//   below. The two signatures are mutually incompatible, so the inherit
+	//   must be dropped explicitly to satisfy `tsc`/`svelte-check` strict
+	//   mode. Runtime behavior is unaffected -- Svelte 5's `$props()` binds
+	//   the prop name from parent slot wiring, never from the underlying
+	//   DOM element's event attribute. Reported by host as #679.
+	interface Props extends Omit<HTMLAttributes<HTMLDivElement>, 'aria-label' | 'onselect'> {
 		/**
 		 * Whether the palette is open. Bind with `bind:open` or control via
 		 * `onopen` / `onclose`.

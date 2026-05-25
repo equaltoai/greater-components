@@ -84,7 +84,12 @@ Swipe gestures for touch devices.
 	const ZOOM_LEVELS = [0.5, 0.75, 1, 1.5, 2, 3, 4, 5] as const;
 
 	function normalizeZoomLevel(level: number): number {
-		let closest = ZOOM_LEVELS[0];
+		// `ZOOM_LEVELS[0]` infers as the literal `0.5`, so a naked `let`
+		// binds the variable to that singleton type and refuses
+		// assignments of other zoom levels in the loop. Widen explicitly
+		// to `number` (the function's contracted return type) for the
+		// internal accumulator.
+		let closest: number = ZOOM_LEVELS[0];
 		for (const candidate of ZOOM_LEVELS) {
 			if (Math.abs(candidate - level) < Math.abs(closest - level)) {
 				closest = candidate;
@@ -95,7 +100,11 @@ Swipe gestures for touch devices.
 
 	function zoomStep(direction: 'in' | 'out'): number {
 		const normalized = normalizeZoomLevel(context.zoomLevel);
-		const index = ZOOM_LEVELS.indexOf(normalized);
+		// `indexOf` on the `readonly [...]` typed tuple expects the
+		// element-union type; coerce via `as` since `normalized` is
+		// `number` and a runtime mismatch falls through to the `-1`
+		// guard below.
+		const index = ZOOM_LEVELS.indexOf(normalized as (typeof ZOOM_LEVELS)[number]);
 		if (index === -1) return 1;
 
 		const nextIndex =
@@ -177,16 +186,18 @@ Swipe gestures for touch devices.
 
 	// Touch handlers for swipe
 	function handleTouchStart(e: TouchEvent) {
-		if (e.touches && e.touches.length > 0) {
-			touchStartX = e.touches[0].clientX;
-			touchStartY = e.touches[0].clientY;
+		const first = e.touches?.[0];
+		if (first) {
+			touchStartX = first.clientX;
+			touchStartY = first.clientY;
 		}
 	}
 
 	function handleTouchEnd(e: TouchEvent) {
-		if (e.changedTouches && e.changedTouches.length > 0) {
-			const touchEndX = e.changedTouches[0].clientX;
-			const touchEndY = e.changedTouches[0].clientY;
+		const first = e.changedTouches?.[0];
+		if (first) {
+			const touchEndX = first.clientX;
+			const touchEndY = first.clientY;
 			const deltaX = touchEndX - touchStartX;
 			const deltaY = touchEndY - touchStartY;
 

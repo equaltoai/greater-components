@@ -21,6 +21,13 @@ export interface ListOptions {
 	json?: boolean;
 	/** Show detailed information for faces */
 	details?: boolean;
+	/**
+	 * Git ref / tag to list from (e.g. `'greater-v0.9.1-rc.2'`). When
+	 * supplied, the local in-memory registry is bypassed and the named
+	 * ref's `registry/index.json` is fetched from GitHub. Useful for
+	 * previewing an arbitrary published tag before adopting it.
+	 */
+	ref?: string;
 }
 
 /**

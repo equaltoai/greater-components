@@ -672,8 +672,18 @@ export const addAction = async (
 	} else {
 		logger.success(chalk.green('\n✓ Components added successfully!\n'));
 
-		// Show import examples based on what was installed
+		// Show import examples based on what was installed. When the user
+		// passed `--path X`, the import-hint paths should reflect that
+		// override rather than the components.json default aliases (so the
+		// hint matches the actual on-disk install location). Reported as
+		// host FYI #1 during Project 41 PR-A review; tracked as PR-E item 12.
 		logger.note(chalk.dim('Import and use in your components:'));
+
+		// `aliasLib` / `aliasComponents`: prefer the user's `--path` over
+		// the components.json alias. The relative path-from-cwd produced by
+		// `--path` is what was actually written to disk.
+		const aliasLib = options.path ? options.path : config.aliases.lib;
+		const aliasComponents = options.path ? options.path : config.aliases.components;
 
 		if (parseResult.byType.primitives.length > 0) {
 			const primitiveName = parseResult.byType.primitives[0]?.name;
@@ -681,9 +691,7 @@ export const addAction = async (
 				const functionName =
 					'create' + primitiveName.slice(0, 1).toUpperCase() + primitiveName.slice(1);
 				logger.note(
-					chalk.cyan(
-						`  import { ${functionName} } from '${config.aliases.lib}/primitives/${primitiveName}';`
-					)
+					chalk.cyan(`  import { ${functionName} } from '${aliasLib}/primitives/${primitiveName}';`)
 				);
 			}
 		}
@@ -692,9 +700,7 @@ export const addAction = async (
 			if (sharedName) {
 				const namespaceName = sharedName.slice(0, 1).toUpperCase() + sharedName.slice(1);
 				logger.note(
-					chalk.cyan(
-						`  import * as ${namespaceName} from '${config.aliases.components}/${sharedName}';`
-					)
+					chalk.cyan(`  import * as ${namespaceName} from '${aliasComponents}/${sharedName}';`)
 				);
 			}
 		}
@@ -706,9 +712,7 @@ export const addAction = async (
 				const target = getInstallTarget(patternFile.path, config, cwd);
 				const componentName = path.basename(target.relativePath).replace(/\.svelte$/, '');
 				logger.note(
-					chalk.cyan(
-						`  import ${componentName} from '${config.aliases.lib}/${target.relativePath}';`
-					)
+					chalk.cyan(`  import ${componentName} from '${aliasLib}/${target.relativePath}';`)
 				);
 			}
 		}

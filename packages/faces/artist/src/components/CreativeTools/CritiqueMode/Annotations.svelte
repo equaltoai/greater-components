@@ -25,9 +25,14 @@ CritiqueMode.Annotations - Visual annotation layer
 		other: '#6b7280',
 	};
 
-	// Get color for annotation
+	// Get color for annotation. Two `svelte-check` strict-mode adjustments:
+	// 1. The indexed access returns `string | undefined` under
+	//    `noUncheckedIndexedAccess`, so use `??` rather than `||` and
+	//    provide a string-typed fallback.
+	// 2. `categoryColors.other` would trigger
+	//    `noPropertyAccessFromIndexSignature`; use bracket notation.
 	function getColor(category?: string): string {
-		return categoryColors[category || 'other'] || categoryColors.other;
+		return categoryColors[category || 'other'] ?? categoryColors['other'] ?? '#6b7280';
 	}
 
 	// Handle annotation click

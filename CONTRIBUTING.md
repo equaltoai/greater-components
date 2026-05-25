@@ -243,6 +243,34 @@ description — the Greater steward will tell you on review.
 4. Add exports to the package.json
 5. Update the root `README.md` if needed
 
+#### Package-enumeration parity (enforced by CI audits)
+
+When you add a new top-level workspace package (parallel to
+`packages/primitives`, `packages/icons`, `packages/tokens` — NOT nested
+under `packages/{shared,faces}/`), **four enumeration sites must update
+together**. Two CI audits enforce this:
+
+| Enumeration site                                                   | Enforced by                                        |
+| ------------------------------------------------------------------ | -------------------------------------------------- |
+| `packages/cli/src/utils/transform.ts:CORE_PACKAGES`                | `scripts/audit-cli-package-enumeration-parity.mjs` |
+| `packages/cli/src/utils/dependency-resolver.ts:CORE_PACKAGE_NAMES` | (same)                                             |
+| `packages/cli/src/utils/fetch.ts:CORE_PACKAGE_NAMES`               | (same)                                             |
+| Root `package.json` `scripts.check:svelte`                         | `scripts/audit-svelte-check-parity.mjs`            |
+
+Additionally, every Svelte-containing package needs its own
+`tsconfig.check.json` (copy from any sibling — the file is uniform
+modulo the `extends` path depth). `audit-svelte-check-parity.mjs`
+flags missing tsconfigs.
+
+Both audits run on every PR via `.github/workflows/lint.yml` and are
+chained into `pnpm validate:check-parity` for local runs. They derive
+the canonical package list from `packages/*/package.json` filesystem
+discovery — adding a new package will fail CI until all sites are
+updated. This closes the structural gap that allowed issues #674 (CLI
+install routing) and #679 (CommandPalette type collision) to ship in
+greater-v0.9.1-rc.0 and -rc.1 respectively; see Project 41 (#680) for
+the full story.
+
 ### Component Guidelines
 
 For UI components:

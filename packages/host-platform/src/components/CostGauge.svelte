@@ -128,7 +128,14 @@ ratio crossing optional thresholds (default `warning: 0.75`, `danger: 0.9`).
 		danger: thresholds?.danger ?? 0.9,
 	});
 
-	const resolvedStatus = $derived<CostGaugeStatus>(() => {
+	// Svelte 5: `$derived(expr)` takes an EXPRESSION whose value is reactive;
+	// `$derived.by(fn)` takes a function that is RUN to produce the value.
+	// Passing a function literal to `$derived(...)` makes the derived value
+	// itself a function reference rather than the function's return value.
+	// Use `.by` here -- previous form was typing `resolvedStatus` as
+	// `() => CostGaugeStatus` and forcing every consumer site to call
+	// `resolvedStatus()`, which `svelte-check` correctly rejected.
+	const resolvedStatus = $derived.by<CostGaugeStatus>(() => {
 		if (status) return status;
 		if (ratio >= resolvedThresholds.danger) return 'danger';
 		if (ratio >= resolvedThresholds.warning) return 'warning';
@@ -141,7 +148,7 @@ ratio crossing optional thresholds (default `warning: 0.75`, `danger: 0.9`).
 			warning: { icon: '▲', label: 'Approaching limit' },
 			danger: { icon: '■', label: 'Over budget' },
 		};
-		return map[resolvedStatus()];
+		return map[resolvedStatus];
 	});
 
 	const formattedCurrent = $derived(
@@ -194,10 +201,10 @@ ratio crossing optional thresholds (default `warning: 0.75`, `danger: 0.9`).
 		return { hasMeter: true, ariaValueMax: limit, ariaValueNow: valueNow };
 	});
 
-	const rootClass = $derived(() =>
+	const rootClass = $derived.by(() =>
 		[
 			'gr-host-platform-cost-gauge',
-			`gr-host-platform-cost-gauge--status-${resolvedStatus()}`,
+			`gr-host-platform-cost-gauge--status-${resolvedStatus}`,
 			!meterContract.hasMeter && 'gr-host-platform-cost-gauge--no-meter',
 			className,
 		]
@@ -206,7 +213,7 @@ ratio crossing optional thresholds (default `warning: 0.75`, `danger: 0.9`).
 	);
 </script>
 
-<div class={rootClass()} {...restProps}>
+<div class={rootClass} {...restProps}>
 	{#if label}
 		<div
 			class={['gr-host-platform-cost-gauge__label', labelHidden && 'gr-sr-only']
@@ -273,7 +280,7 @@ ratio crossing optional thresholds (default `warning: 0.75`, `danger: 0.9`).
 			<span class="gr-host-platform-cost-gauge__separator" aria-hidden="true">/</span>
 			<span class="gr-host-platform-cost-gauge__limit">{formattedLimit}</span>
 			<span
-				class="gr-host-platform-cost-gauge__status gr-host-platform-cost-gauge__status--{resolvedStatus()}"
+				class="gr-host-platform-cost-gauge__status gr-host-platform-cost-gauge__status--{resolvedStatus}"
 				role="status"
 				aria-label={`Status: ${statusInfo.label}`}
 			>
