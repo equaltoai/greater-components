@@ -14,17 +14,15 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.9.1-rc.1](https://github.com/equaltoai/greater-components/compare/greater-v0.9.1-rc.0...greater-v0.9.1-rc.1) (2026-05-25)
 
-
 ### Bug Fixes
 
-* **cli:** route shell + host-platform installs to packages/&lt;name&gt; ([530a68e](https://github.com/equaltoai/greater-components/commit/530a68effb875d8a81bc239a335dfffd328f8eb4))
-* **cli:** route shell + host-platform installs to packages/&lt;name&gt; ([1222666](https://github.com/equaltoai/greater-components/commit/12226667e3ef2eebadbf0558f4451e24d65f880e))
-
+- **cli:** route shell + host-platform installs to packages/&lt;name&gt; ([530a68e](https://github.com/equaltoai/greater-components/commit/530a68effb875d8a81bc239a335dfffd328f8eb4))
+- **cli:** route shell + host-platform installs to packages/&lt;name&gt; ([1222666](https://github.com/equaltoai/greater-components/commit/12226667e3ef2eebadbf0558f4451e24d65f880e))
 
 ### Chores
 
-* backmerge premain into staging (restore release-branch ancestry after greater-v0.9.1-rc.0) ([e44b062](https://github.com/equaltoai/greater-components/commit/e44b062d9a93c08196232f12099e495847dab3b4))
-* backmerge premain into staging after greater-v0.9.1-rc.0 ([9e61853](https://github.com/equaltoai/greater-components/commit/9e61853b34418b586e687f71143c547ef149b4a0))
+- backmerge premain into staging (restore release-branch ancestry after greater-v0.9.1-rc.0) ([e44b062](https://github.com/equaltoai/greater-components/commit/e44b062d9a93c08196232f12099e495847dab3b4))
+- backmerge premain into staging after greater-v0.9.1-rc.0 ([9e61853](https://github.com/equaltoai/greater-components/commit/9e61853b34418b586e687f71143c547ef149b4a0))
 
 ## [0.9.1-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.9.0-rc.0...greater-v0.9.1-rc.0) (2026-05-24)
 
