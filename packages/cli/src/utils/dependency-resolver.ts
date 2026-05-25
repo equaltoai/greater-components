@@ -17,6 +17,24 @@ import type { ParsedItem } from './item-parser.js';
 import { logger } from './logger.js';
 import type { RegistryComponent, RegistryFace, RegistryShared } from './registry-index.js';
 
+/**
+ * Top-level workspace packages whose CLI registry `type` is `'shared'` but
+ * whose source actually lives at `packages/<name>/src/...` (parallel to
+ * `primitives` / `icons` / `tokens`), NOT under `packages/shared/<name>/`.
+ *
+ * Each entry here makes `mapRegistryFilePathToInstallPath` emit
+ * `greater/<name>/...` install paths (which `buildSourcePathCandidates`
+ * in `fetch.ts` resolves to `packages/<name>/src/...`) instead of the
+ * `shared/<name>/...` install paths that would route the fetcher into
+ * the wrong `packages/shared/<name>/src/...` location.
+ *
+ * **Keep this set in sync with the matching `CORE_PACKAGE_NAMES` in
+ * `fetch.ts` and the `CORE_PACKAGES` array in `transform.ts`.** Adding a
+ * new top-level package without updating all three breaks CLI install
+ * for that package (see issue #674 for the symptom: host installing
+ * `shell` from `greater-v0.9.1-rc.0` got `packages/shared/shell/...`
+ * candidate paths because `shell` was missing from this set).
+ */
 const CORE_PACKAGE_NAMES = new Set([
 	'primitives',
 	'icons',
@@ -25,6 +43,8 @@ const CORE_PACKAGE_NAMES = new Set([
 	'content',
 	'adapters',
 	'headless',
+	'shell',
+	'host-platform',
 ]);
 
 /**
@@ -156,7 +176,17 @@ function inferRegistryFileType(relativePath: string): ComponentMetadata['files']
 	return 'utils';
 }
 
-function mapRegistryFilePathToInstallPath(
+/**
+ * Convert a registry-recorded source path (e.g. `src/components/Foo.css`) into
+ * the install-relative path the CLI writes into a consumer's project tree
+ * (e.g. `greater/shell/components/Foo.css`). Exported for regression testing
+ * (see issue #674) — the routing decision here is what determines whether the
+ * fetcher in `fetch.ts` looks under `packages/<name>/src/...` or
+ * `packages/shared/<name>/src/...`. Misclassification of a top-level package
+ * as a shared module silently routes the fetcher to a non-existent location
+ * and returns 404 to consumers.
+ */
+export function mapRegistryFilePathToInstallPath(
 	name: string,
 	type: ResolvedDependency['type'],
 	sourcePath: string

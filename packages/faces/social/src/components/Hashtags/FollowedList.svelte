@@ -23,7 +23,8 @@ Hashtags.FollowedList - List of Followed Hashtags
 		try {
 			const result = await context.config.adapter.getFollowedHashtags();
 			hashtags =
-				result?.edges?.map((e: Record<string, unknown>) => e.node as Record<string, unknown>) || [];
+				result?.edges?.map((e: Record<string, unknown>) => e['node'] as Record<string, unknown>) ||
+				[];
 		} finally {
 			loading = false;
 		}
@@ -52,10 +53,10 @@ Hashtags.FollowedList - List of Followed Hashtags
 		<p>No followed hashtags.</p>
 	{:else}
 		<ul>
-			{#each hashtags as tag (tag.name)}
+			{#each hashtags as tag (tag['name'])}
 				<li>
-					{tag.name}
-					<button onclick={() => unfollow(tag.name as string)}>Unfollow</button>
+					{tag['name']}
+					<button onclick={() => unfollow(tag['name'] as string)}>Unfollow</button>
 				</li>
 			{/each}
 		</ul>

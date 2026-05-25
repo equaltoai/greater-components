@@ -49,6 +49,12 @@ jobs:
       - name: Svelte component type checking
         run: pnpm check:svelte
 
+      - name: Audit svelte-check parity (every Svelte-containing package is gated)
+        run: node scripts/audit-svelte-check-parity.mjs
+
+      - name: Audit CLI package-enumeration parity (every top-level package enumerated in CLI sites)
+        run: node scripts/audit-cli-package-enumeration-parity.mjs
+
       - name: Consumer TypeScript checks
         run: pnpm typecheck:consumer
 

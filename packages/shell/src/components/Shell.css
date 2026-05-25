@@ -1,0 +1,96 @@
+.gr-shell {
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: auto 1fr;
+	grid-template-areas:
+		'topbar'
+		'main';
+	background: var(--gr-semantic-background-base, var(--gr-color-gray-50, #f9fafb));
+	color: var(--gr-semantic-foreground-primary, var(--gr-color-gray-900, #111827));
+	min-height: 100%;
+}
+
+.gr-shell--full-height {
+	min-height: 100vh;
+	/* svh keeps Safari mobile from being clipped by the URL bar where supported */
+	min-height: 100svh;
+}
+
+/* Topbar */
+.gr-shell--has-topbar.gr-shell {
+	grid-template-rows: var(--gr-shell-topbar-height) 1fr;
+}
+.gr-shell__topbar {
+	grid-area: topbar;
+	min-width: 0;
+}
+
+/* Sidebar layouts */
+.gr-shell--has-sidebar.gr-shell--sidebar-left {
+	grid-template-columns: var(--gr-shell-sidebar-width-md) 1fr;
+	grid-template-areas:
+		'topbar topbar'
+		'sidebar main';
+}
+.gr-shell--has-sidebar.gr-shell--sidebar-right {
+	grid-template-columns: 1fr var(--gr-shell-sidebar-width-md);
+	grid-template-areas:
+		'topbar topbar'
+		'main sidebar';
+}
+
+/* When there is no topbar, drop the topbar row entirely. */
+.gr-shell:not(.gr-shell--has-topbar).gr-shell--has-sidebar {
+	grid-template-rows: 1fr;
+	grid-template-areas: 'sidebar main';
+}
+.gr-shell:not(.gr-shell--has-topbar).gr-shell--has-sidebar.gr-shell--sidebar-right {
+	grid-template-areas: 'main sidebar';
+}
+
+.gr-shell--sidebar-width-sm.gr-shell--sidebar-left,
+.gr-shell--sidebar-width-sm.gr-shell--sidebar-right {
+	grid-template-columns: var(--gr-shell-sidebar-width-sm) 1fr;
+}
+.gr-shell--sidebar-width-sm.gr-shell--sidebar-right {
+	grid-template-columns: 1fr var(--gr-shell-sidebar-width-sm);
+}
+.gr-shell--sidebar-width-lg.gr-shell--sidebar-left {
+	grid-template-columns: var(--gr-shell-sidebar-width-lg) 1fr;
+}
+.gr-shell--sidebar-width-lg.gr-shell--sidebar-right {
+	grid-template-columns: 1fr var(--gr-shell-sidebar-width-lg);
+}
+
+.gr-shell__sidebar {
+	grid-area: sidebar;
+	min-width: 0;
+	border-right: 1px solid var(--gr-semantic-border-subtle, var(--gr-color-gray-200, #e5e7eb));
+}
+.gr-shell--sidebar-right .gr-shell__sidebar {
+	border-right: none;
+	border-left: 1px solid var(--gr-semantic-border-subtle, var(--gr-color-gray-200, #e5e7eb));
+}
+
+.gr-shell__main {
+	grid-area: main;
+	min-width: 0;
+	display: block;
+}
+
+/* Responsive collapse: stack on narrow viewports. */
+@media (max-width: 48rem) {
+	.gr-shell--has-sidebar.gr-shell--sidebar-left,
+	.gr-shell--has-sidebar.gr-shell--sidebar-right {
+		grid-template-columns: 1fr;
+		grid-template-areas:
+			'topbar'
+			'sidebar'
+			'main';
+	}
+	.gr-shell__sidebar {
+		border-right: none;
+		border-left: none;
+		border-bottom: 1px solid var(--gr-semantic-border-subtle, var(--gr-color-gray-200, #e5e7eb));
+	}
+}

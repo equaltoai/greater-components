@@ -21,7 +21,8 @@ Admin.SeveredRelationships.List - Severed Instances List
 		try {
 			const result = await context.config.adapter.getSeveredRelationships();
 			relationships =
-				result?.edges?.map((e: Record<string, unknown>) => e.node as Record<string, unknown>) || [];
+				result?.edges?.map((e: Record<string, unknown>) => e['node'] as Record<string, unknown>) ||
+				[];
 		} finally {
 			loading = false;
 		}
@@ -38,10 +39,10 @@ Admin.SeveredRelationships.List - Severed Instances List
 		<p>No severed relationships.</p>
 	{:else}
 		<ul>
-			{#each relationships as rel (rel.id)}
+			{#each relationships as rel (rel['id'])}
 				<li>
-					{rel.remoteInstance} - {rel.reason} ({(rel.affectedFollowers as number) +
-						(rel.affectedFollowing as number)} affected)
+					{rel['remoteInstance']} - {rel['reason']} ({(rel['affectedFollowers'] as number) +
+						(rel['affectedFollowing'] as number)} affected)
 				</li>
 			{/each}
 		</ul>

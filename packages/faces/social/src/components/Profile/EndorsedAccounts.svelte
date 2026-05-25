@@ -103,9 +103,12 @@ Supports drag-and-drop reordering (for own profile).
 		if (!isOwnProfile || !enableReordering || draggingIndex === null) return;
 		event.preventDefault();
 
-		// Reorder array
+		// Reorder array. `splice` returns `T[]` and `[removed]` could be
+		// `undefined` under `noUncheckedIndexedAccess`; defensive guard
+		// even though `draggingIndex` is already range-checked above.
 		const newEndorsed = [...localEndorsed];
 		const [removed] = newEndorsed.splice(draggingIndex, 1);
+		if (!removed) return;
 		newEndorsed.splice(targetIndex, 0, removed);
 
 		localEndorsed = newEndorsed;

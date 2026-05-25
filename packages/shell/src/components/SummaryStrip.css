@@ -1,0 +1,54 @@
+.gr-shell-summary-strip {
+	display: grid;
+	min-width: 0;
+}
+
+.gr-shell-summary-strip--gap-sm {
+	gap: var(--gr-shell-gap-sm);
+}
+.gr-shell-summary-strip--gap-md {
+	gap: var(--gr-shell-gap-md);
+}
+.gr-shell-summary-strip--gap-lg {
+	gap: var(--gr-shell-gap-lg);
+}
+
+.gr-shell-summary-strip--columns-auto {
+	grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+}
+.gr-shell-summary-strip--columns-1 {
+	grid-template-columns: 1fr;
+}
+.gr-shell-summary-strip--columns-2 {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.gr-shell-summary-strip--columns-3 {
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.gr-shell-summary-strip--columns-4 {
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.gr-shell-summary-strip--columns-5 {
+	grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.gr-shell-summary-strip--columns-6 {
+	grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+@media (max-width: 48rem) {
+	.gr-shell-summary-strip--columns-3,
+	.gr-shell-summary-strip--columns-4,
+	.gr-shell-summary-strip--columns-5,
+	.gr-shell-summary-strip--columns-6 {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+@media (max-width: 30rem) {
+	.gr-shell-summary-strip--columns-2,
+	.gr-shell-summary-strip--columns-3,
+	.gr-shell-summary-strip--columns-4,
+	.gr-shell-summary-strip--columns-5,
+	.gr-shell-summary-strip--columns-6 {
+		grid-template-columns: 1fr;
+	}
+}

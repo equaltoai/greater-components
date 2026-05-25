@@ -1,0 +1,53 @@
+.gr-shell-page-title {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: var(--gr-shell-gap-md);
+	flex-wrap: wrap;
+	min-width: 0;
+}
+
+.gr-shell-page-title__text {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	min-width: 0;
+	flex: 1 1 24rem;
+}
+
+.gr-shell-page-title__eyebrow {
+	margin: 0;
+	font-size: 0.8125rem;
+	font-weight: 500;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	color: var(--gr-semantic-foreground-tertiary, var(--gr-color-gray-500, #6b7280));
+}
+
+.gr-shell-page-title__heading {
+	margin: 0;
+	font-size: 1.5rem;
+	line-height: 1.25;
+	font-weight: 700;
+	color: var(--gr-semantic-foreground-primary, var(--gr-color-gray-900, #111827));
+}
+
+.gr-shell-page-title__subtitle {
+	margin: 0;
+	font-size: 0.9375rem;
+	color: var(--gr-semantic-foreground-secondary, var(--gr-color-gray-700, #374151));
+}
+
+.gr-shell-page-title__description {
+	margin: 0;
+	font-size: 0.875rem;
+	color: var(--gr-semantic-foreground-tertiary, var(--gr-color-gray-500, #6b7280));
+	max-width: 60ch;
+}
+
+.gr-shell-page-title__actions {
+	display: flex;
+	align-items: center;
+	gap: var(--gr-shell-gap-sm);
+	flex-shrink: 0;
+}

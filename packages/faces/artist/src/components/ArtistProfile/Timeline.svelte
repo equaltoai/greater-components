@@ -65,7 +65,11 @@ Features:
 
 		const observer = new IntersectionObserver(
 			async (entries) => {
-				if (entries[0].isIntersecting && !isLoading) {
+				// `entries[0]` is typed `T | undefined` under
+				// `noUncheckedIndexedAccess`; the IO contract guarantees
+				// at least one entry but TS can't infer that.
+				const first = entries[0];
+				if (first?.isIntersecting && !isLoading) {
 					isLoading = true;
 					await onLoadMore();
 					isLoading = false;

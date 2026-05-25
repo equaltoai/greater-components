@@ -1,9 +1,9 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-05-24T17:33:08.813Z",
-  "ref": "greater-v0.9.0",
-  "version": "0.9.0",
+  "generatedAt": "2026-05-25T04:51:34.483Z",
+  "ref": "greater-v0.10.0-rc.1",
+  "version": "0.10.0-rc.1",
   "checksums": {
     "packages/primitives/src/assets/greater-default-profile.png": "sha256-fiYnr2MUUA1ZEBJHvY1Ppn00rF9WSgA8IAxwb0umSeU=",
     "packages/primitives/src/assets.d.ts": "sha256-mcuvYSPf1CA84g8LB5UTkxkmJIqwt8oxWdhiebocyfI=",
@@ -896,6 +896,49 @@
     "packages/content/src/components/CodeBlock.svelte": "sha256-rOSrHh383dE4rGjCMNq/tRle1/VgHuFohiDo2kECbQ4=",
     "packages/content/src/components/MarkdownRenderer.svelte": "sha256-QDI+xz6KliGlz3YV4aCWAoqUmX4cajonVHV/+1doQL0=",
     "packages/content/src/index.ts": "sha256-scEWe7C3B3+/JBaILqZd8c1ZiqZnKapfy8kz4SPFZSY=",
+    "packages/shell/src/components/Breadcrumb.css": "sha256-SW9UA4xhl8K1fKwS/h/Htyui7GujRdNCCznfRrPJ8qY=",
+    "packages/shell/src/components/Breadcrumb.svelte": "sha256-NP1cHv6jMKWSe4PYsafPn/ta/Hle13f154pY6IS/Rig=",
+    "packages/shell/src/components/Callout.css": "sha256-LnnrUMfn9/3VcHX6zcDZFSpqe7nKRMZKAI71Jkpgq+8=",
+    "packages/shell/src/components/Callout.svelte": "sha256-ph59kDztSXz4xJ+NHdg4dkyhyMM5kv/uGpl/ZvdzgmY=",
+    "packages/shell/src/components/CommandPalette.css": "sha256-/IGfp1GGTymIqO1Ti/TqyhNh4l6bvCqhd4On971rKCo=",
+    "packages/shell/src/components/CommandPalette.svelte": "sha256-8z2bmQco/JYDLpMBqza4zghCZXZHL4tZkFV8L1/GGyQ=",
+    "packages/shell/src/components/PageFrame.css": "sha256-uiWRrFQ2HAFj1yBpi2eSLVi2DEGdju5WB4Y+AHL0mlA=",
+    "packages/shell/src/components/PageFrame.svelte": "sha256-zesK3O34UhQcZTxOqhuqQqnxlm3TFWv0d+EuLqX05HI=",
+    "packages/shell/src/components/PageTitle.css": "sha256-jy/Vfn9B9VBstoMHrWA0oPdblW8hxPoRexTCf7c1TiU=",
+    "packages/shell/src/components/PageTitle.svelte": "sha256-oXCAc6rdDMjgL0IsvY98JkJL1CSmSjtjt7v4davQWQU=",
+    "packages/shell/src/components/Panel.css": "sha256-3mw/B4mA2dW6IHHEkN0cEGSKCZ1NLe/SQWvcAgHsyBU=",
+    "packages/shell/src/components/Panel.svelte": "sha256-NMHv2gdxA8mHvTQtaBg/j07Si5Mtnq4HXZxc3MozP9A=",
+    "packages/shell/src/components/Shell.css": "sha256-VvpaGQYzTvXo/rAZ02XGkS9gVI4IZeOzNjSoR/sc+4s=",
+    "packages/shell/src/components/Shell.svelte": "sha256-Ymj392rpzxZGM8SLoz28TGd68bcqFJlOUSIhZ6mwVbo=",
+    "packages/shell/src/components/Sidebar.css": "sha256-+4ATI7iyp9md6prETS8P7EN3Tmnyc6XDBEe8KRDX4Tk=",
+    "packages/shell/src/components/Sidebar.svelte": "sha256-9p0yVhTKggGRfJ6CuS+Yew608xAYy2ZRv3HYXw8I1wk=",
+    "packages/shell/src/components/StatCard.css": "sha256-0vRDyzUYkP8TP0Wft3/P0VjEl77URF8NhWfhJ6igrZ0=",
+    "packages/shell/src/components/StatCard.svelte": "sha256-ge9qWLTYOH8/hrbjvpIRzj/JVCFwAlC6Mbf3ehZdnGc=",
+    "packages/shell/src/components/SummaryStrip.css": "sha256-UmCUZShti+oqEmlDg2gKYXGcc0lS92d2EOtWy8ZCayI=",
+    "packages/shell/src/components/SummaryStrip.svelte": "sha256-NNogNLiDalDVA/J2I41BLjv4GxwAh/heQ1V6yw7mr/c=",
+    "packages/shell/src/components/Topbar.css": "sha256-e49AWpuwlaEBLxqeDvM8sMNuwlqugOB+54w1y+7ojME=",
+    "packages/shell/src/components/Topbar.svelte": "sha256-QXASS11a1RlKcnxqDskrt0PwkGTt7zvr+LrK2uWHm80=",
+    "packages/shell/src/index.ts": "sha256-NLhn3AXDEWBZsC7ACM0NX2/1Uq0CzDuQwYjVG4zGXhw=",
+    "packages/shell/src/styles/base.css": "sha256-INLODwNQNHYVsBKgGXbW/PENIwGo7NuIODzsRFuUUN8=",
+    "packages/shell/src/types.ts": "sha256-xRnEGFsxQoJKt05wbZb+rbvOVbkbNb5UCpXOSovR8hI=",
+    "packages/shell/src/utils/fuzzy-filter.ts": "sha256-ZopMxsr/aoZ3BqcmGydIR4DOwysud9oxTBLp88qVXt8=",
+    "packages/host-platform/src/components/ActivitySparkline.css": "sha256-M5jmOBJkZLPyqJ7v9irZ+pKWRT3mFFWSEvfuhTvtxPE=",
+    "packages/host-platform/src/components/ActivitySparkline.svelte": "sha256-/uonlTULps3w17cjm1/ZRLiXvL9HlU5P4pZ8/gyvONw=",
+    "packages/host-platform/src/components/CostGauge.css": "sha256-Nqt1VHD3Oo4dTazxtAkpohWq97YHnRKs2lI44IDCNbY=",
+    "packages/host-platform/src/components/CostGauge.svelte": "sha256-U34JLDXFm8ODylAg4uka1lwbbzt4ylCRcEXEvLD/kfs=",
+    "packages/host-platform/src/components/FleetCard.css": "sha256-rslZpcvYjpViDEP6F08QV9gGDTgCmiqYiQ95zuX2wXQ=",
+    "packages/host-platform/src/components/FleetCard.svelte": "sha256-vVyr8nmE+E/utrZzaXWP0cbHuRXKofAo3R8J7X00yJ4=",
+    "packages/host-platform/src/components/ProvisioningTimeline.css": "sha256-rphEj1C3PlOup0baAgJyDSkSiZmzvMX2JhOBlpGj+J4=",
+    "packages/host-platform/src/components/ProvisioningTimeline.svelte": "sha256-p5Vnk8hHwe/VUaYsZwZ33+Q9IG42UuzZLo8vAa5tCdw=",
+    "packages/host-platform/src/components/ReleaseTimeline.css": "sha256-UCzT8op2KiKophHU40Bcfv80iMmv22DjWH2nMAxfLNY=",
+    "packages/host-platform/src/components/ReleaseTimeline.svelte": "sha256-L8/Bx4pTa5DDE6kB8uxozkRjkMtDXqpLPUss8LR54/Y=",
+    "packages/host-platform/src/components/StackMatrix.css": "sha256-K59j8igR3hBFO2cFyaq3Rp0Dkjypg3+DM4wLCSWN9cY=",
+    "packages/host-platform/src/components/StackMatrix.svelte": "sha256-aMruAWkbvQmTTEXLd8Yp5kQdHegwLoj64//o2q5UGPo=",
+    "packages/host-platform/src/index.ts": "sha256-hFXD84EuQLU6bKXPyTkFUwxOewMy8fkcwkVzbRpAsTg=",
+    "packages/host-platform/src/styles/base.css": "sha256-razMHs+WCheiXksb3g4y90O42WAyMruExK9MiNmJbhc=",
+    "packages/host-platform/src/types.ts": "sha256-9wKDSQaj3aQ9OXIqdTbYM6O6sGbAxfpwa0I1119yBLg=",
+    "packages/host-platform/src/utils/formatters.ts": "sha256-kkUGG/4k60g54llCi+xp5RmnYrg8TuFqMiKgdgd01cE=",
+    "packages/host-platform/src/utils/sparkline.ts": "sha256-w8R8uqcnpPo2QK8crNVtabB10ChInLNOdNeQ6HxNUCM=",
     "packages/faces/social/src/adapters/batcher.ts": "sha256-6PnUshOPk84U+PSnkADYzhN9SpUrvwiy+tN10HPaVeE=",
     "packages/faces/social/src/adapters/cache.ts": "sha256-32jUHLAsYoK4U0JZ6hswGUlQOmwhJ5yquqhMqyfrc4I=",
     "packages/faces/social/src/adapters/graphql/client.ts": "sha256-yor+sP4J7hzK+igh2s4mujPOUZTRDN/e3nU1eccrSyo=",
@@ -909,7 +952,7 @@
     "packages/faces/social/src/app.d.ts": "sha256-2SefztlLM+Zcte8Kp+3UArYXJ6BL5NdQdr+IqLyOJcM=",
     "packages/faces/social/src/components/ActionBar.svelte": "sha256-X0WDW8ny1lzhigsgvl9w1B7G05f4reiMf58RFLJFMWQ=",
     "packages/faces/social/src/components/Auth/index.ts": "sha256-I2AozOALfKpQeqC0mbRy72f3JBlAwkB/NLgAqOAOsgc=",
-    "packages/faces/social/src/components/ComposeBox.svelte": "sha256-9lu6fbYIodgrOdC3NXb5W2QUE9JJNQlrkH9RSliEL68=",
+    "packages/faces/social/src/components/ComposeBox.svelte": "sha256-Z34YCX1uBhW5wIUDtxt8JfT45V+9V8/gXuyXBxhz2n4=",
     "packages/faces/social/src/components/ContentRenderer.svelte": "sha256-MTdVs16n8HmyNOHT1124Nb/KqQ7M7jrUQkJgjv3BZi0=",
     "packages/faces/social/src/components/Filters/context.svelte.ts": "sha256-mIoBx0MkzLYNEc7GdgmJyR+uOxu0R1wuV0Z6f3TkJiU=",
     "packages/faces/social/src/components/Filters/context.ts": "sha256-/bT3CNRb56JquXkckVAd4EI0uxWYj+ZiKNmknjedu3w=",
@@ -921,7 +964,7 @@
     "packages/faces/social/src/components/Hashtags/context.js": "sha256-lgpTt5VoxOAsgDU2M+/9kzKgDEGdq2CSZM62KGP2BxI=",
     "packages/faces/social/src/components/Hashtags/context.ts": "sha256-JBiI8nVosEqZEesmVk52pW0iKGEFSM/vrCinSzhtDWc=",
     "packages/faces/social/src/components/Hashtags/Controls.svelte": "sha256-+BWMGnivTQRitSlahjIw5wrtO/qNjmPcQuBavThphLE=",
-    "packages/faces/social/src/components/Hashtags/FollowedList.svelte": "sha256-tuNGwNew2Ie0X0VNEHfxMhFgIA2IGxS1LCN9gXrK2Io=",
+    "packages/faces/social/src/components/Hashtags/FollowedList.svelte": "sha256-utKUITdxXzjCxULwVMqY7frFycHpOYZN9nkb8QxPxq0=",
     "packages/faces/social/src/components/Hashtags/index.ts": "sha256-Q28pN0zmiXTaotRrKPqmSFy26dLD3ip0QCI7z0N/zFI=",
     "packages/faces/social/src/components/Hashtags/MutedList.svelte": "sha256-Y3+kQu0IIhyO7WaVsDt3tSkZbbbD787aqjLmw+Vm8AM=",
     "packages/faces/social/src/components/Hashtags/Root.svelte": "sha256-z1W2FFQNjmD5/RVLp/5i9X3f2P9YxGpadJdzFPhP/Bg=",
@@ -935,14 +978,14 @@
     "packages/faces/social/src/components/Lists/Settings.svelte": "sha256-5Fy+wgVGx0mvxeppuyhCrMXogfRpJk+r/uueB2DC1X8=",
     "packages/faces/social/src/components/Lists/Timeline.svelte": "sha256-LoQ4Dou22UX8hGlU7b1WdQvSj9Pi/elZpG01uAd9VoY=",
     "packages/faces/social/src/components/NotificationItem.svelte": "sha256-PFZIrOx8ziCOfEhUqCme8bJyKAbmrzZiHcpSO2EHIzY=",
-    "packages/faces/social/src/components/NotificationsFeed.svelte": "sha256-tV6YxsNcQIn/8Uo3tQ70L6fo5ZJKaOphrF6w3zfQCrU=",
-    "packages/faces/social/src/components/NotificationsFeedReactive.svelte": "sha256-UC3t1RimsK4GzsQUfSq8vW4MhNqcUQpom7xOMSkT0aA=",
+    "packages/faces/social/src/components/NotificationsFeed.svelte": "sha256-VSfnc1LB5DWsE5LENWqNEKJls0XoNnHjIXVFLEvi75I=",
+    "packages/faces/social/src/components/NotificationsFeedReactive.svelte": "sha256-3ZaU8AaGAbEmcdT/H+L09a0mukt3nMJ8pNSsjZ5X6Yc=",
     "packages/faces/social/src/components/Profile/AccountMigration.svelte": "sha256-3imnif4Rz1j3NoxN55yeBK+mPBTYsuDKHxJbkUADUPc=",
     "packages/faces/social/src/components/Profile/context.svelte.ts": "sha256-UgrnbuH3ZCDeOGn46jrM1w1HmmzRoaQfpEc9G+z5/rE=",
     "packages/faces/social/src/components/Profile/context.ts": "sha256-/bT3CNRb56JquXkckVAd4EI0uxWYj+ZiKNmknjedu3w=",
-    "packages/faces/social/src/components/Profile/Edit.svelte": "sha256-R5+Z9VnBcrSBTurmsmkk2bQpL32VzAOeRIW+U0dRnfc=",
-    "packages/faces/social/src/components/Profile/EndorsedAccounts.svelte": "sha256-QI9LvbQbY4BOTu1TFqKd0iCgq9bqkq15RvKuBUUrMSY=",
-    "packages/faces/social/src/components/Profile/FeaturedHashtags.svelte": "sha256-SZESZjcJzjLkgjcujpFy5TRpsoCH+AkeCHMqpBieAzM=",
+    "packages/faces/social/src/components/Profile/Edit.svelte": "sha256-cqz7XAF/eom/HgjdrkynH/q/LZrhFfwq9Z5G4Qq7CDk=",
+    "packages/faces/social/src/components/Profile/EndorsedAccounts.svelte": "sha256-TrRks4C/tJnpA6N1hd8vp/m/CUPh1UMTpGNtYWhixDk=",
+    "packages/faces/social/src/components/Profile/FeaturedHashtags.svelte": "sha256-6oXSPnI70F9cZOzuwIMVmJKXs+wK42qCblRU73tlTwE=",
     "packages/faces/social/src/components/Profile/Fields.svelte": "sha256-QPa69TZ+qnFFCRKj6Q2kn6+ZxgXXaoiWZyRxXmqT5Cg=",
     "packages/faces/social/src/components/Profile/FollowersList.svelte": "sha256-qE5qvThtldWy74/gvkOKVuWP7B5I8X78O2qqJsFlrWs=",
     "packages/faces/social/src/components/Profile/FollowingList.svelte": "sha256-zZnUZMtLLLPc/nyGIMTX1NmnszfrmbBRdGgrOSLW+zs=",
@@ -959,8 +1002,8 @@
     "packages/faces/social/src/components/Profile/Timeline.svelte": "sha256-lrbYxUFOel4cJwo2hiJcgBYyV+coIMBjvFrjUNasgLQ=",
     "packages/faces/social/src/components/Profile/TrustBadge.svelte": "sha256-TbBsYFr6+1cJJYmuKqTHZGpLNOcGAEV31dfccEiVqIc=",
     "packages/faces/social/src/components/Profile/VerifiedFields.svelte": "sha256-Mqg4McLW/XOj7DBERk+YL82VOyW07YNN2lXVp4JoYTg=",
-    "packages/faces/social/src/components/ProfileHeader.svelte": "sha256-Nfz3JvTkEm15zkMoGDPHVbK+vFMUmNQCzF9tmC3jd4Q=",
-    "packages/faces/social/src/components/RealtimeWrapper.svelte": "sha256-4YyFn1PtiM/n+kdURw7unY++dodmGjoLy6PvC0kRHvo=",
+    "packages/faces/social/src/components/ProfileHeader.svelte": "sha256-wYJxx9e5Gg0g17IwSRJlDoPRifGLREsePJKAWZDXO9E=",
+    "packages/faces/social/src/components/RealtimeWrapper.svelte": "sha256-P95sAhYAKFAxgeQ41Ww3861OzLwDSTOBihEb9W2zP+s=",
     "packages/faces/social/src/components/SettingsPanel.svelte": "sha256-n+Ca8cXXPu6ndzpmGJDEn/yy3SXx6+z/RTeg13uzzyU=",
     "packages/faces/social/src/components/Status/Actions.svelte": "sha256-K2NHBnftLL8PeujjQCYQKwdXi8aqQwNG8R210A+yPSs=",
     "packages/faces/social/src/components/Status/CommunityNotes.svelte": "sha256-41pkw6WJbe2e9Gwm+nrZ6koG+bof/TqzebTCPZpeWyA=",
@@ -980,7 +1023,7 @@
     "packages/faces/social/src/components/Timeline/LoadMore.svelte": "sha256-h2Qkk6sYP7fltXVAGeLcZNgFV0nH5cuAQcATolGFHmA=",
     "packages/faces/social/src/components/Timeline/Root.svelte": "sha256-8KMfTRWFazX5pi7k092G3nCdB7i/uqfkJoHbhkTdQRY=",
     "packages/faces/social/src/components/TimelineVirtualized.svelte": "sha256-QiZNQ9pJOSENahpJJS3R3lRHSryo0XRkckSX0wjuv7c=",
-    "packages/faces/social/src/components/TimelineVirtualizedReactive.svelte": "sha256-wF9ECecWCs9U2o8QQnpZCLVPskaxLM7GSQCD8uNB9KQ=",
+    "packages/faces/social/src/components/TimelineVirtualizedReactive.svelte": "sha256-8qgAHq7tcP4MUplmNH44EKx3kQfqsZcex9EAWABCBTI=",
     "packages/faces/social/src/generics/adapters.ts": "sha256-OQGSKHoGtXkCt6TKwOhYOrkJFzx4Nzi2tEIKvyNL0KA=",
     "packages/faces/social/src/generics/index.ts": "sha256-1J12dnWSSWFzBffByAVaxrEjo4w1wHd9Pvv9ZFHrDi0=",
     "packages/faces/social/src/greater-components-fediverse.css": "sha256-z2CS6GdB5T5L6AFt6m83Q+Win15ckZH71V0pf8N9G34=",
@@ -999,7 +1042,7 @@
     "packages/faces/social/src/mockData.ts": "sha256-4bTHyBTiEesD+0xsZuFR2RPurELEsigR6a4DYP14h2M=",
     "packages/faces/social/src/patterns/BookmarkManager.svelte": "sha256-E08cdokdyR6s2PNm47it7Ly6uBVcki5iEQcCzZHXyqY=",
     "packages/faces/social/src/patterns/ContentWarningHandler.svelte": "sha256-4+ilTz+HK3nUQGImQutOyalPO98HlSN/jDnoKgQqX8c=",
-    "packages/faces/social/src/patterns/CustomEmojiPicker.svelte": "sha256-HyjZbpcEY7JIGRWq5vbQDhfPdOtTEoOb37XamxbNeJ8=",
+    "packages/faces/social/src/patterns/CustomEmojiPicker.svelte": "sha256-iQBlQEMIz+4Pi0WDooNHGesDOOPpC6NYn66G1hVjEvE=",
     "packages/faces/social/src/patterns/FederationIndicator.svelte": "sha256-Jh/v252VLN8wxarpWI6mRzP26Q38c/fl/5XuGjwWOx0=",
     "packages/faces/social/src/patterns/index.ts": "sha256-cS6dCVI4gIhHS+0gd/lIBHqUbgiJWR2/H2WLPR4JCqs=",
     "packages/faces/social/src/patterns/InstancePicker.svelte": "sha256-1eUgvR3b1ByLk0i1Mu4B4FUaCU18JQyzklPtwBDj1OU=",
@@ -1092,16 +1135,16 @@
     "packages/faces/artist/src/components/ArtistProfile/Badges.svelte": "sha256-rkfqY9DtklEqo5A98zWfwwg1JFrpxD8eQgyh1uZI2EI=",
     "packages/faces/artist/src/components/ArtistProfile/context.ts": "sha256-Vxvqu77bG9FK/1rCi/B8Vso00XfEuBwx//fNYLsvM2Y=",
     "packages/faces/artist/src/components/ArtistProfile/Edit.svelte": "sha256-W8VnvXojaqQYaCAnz3yHz5vMCdmKfeKa7czPnUF0ZNk=",
-    "packages/faces/artist/src/components/ArtistProfile/HeroBanner.svelte": "sha256-cZAXai0HepmPh/9dMJcWGh0XCc2vXZMWaZGHz5KOVdA=",
+    "packages/faces/artist/src/components/ArtistProfile/HeroBanner.svelte": "sha256-YfDHneHv0T0aFx3TR0dhI60HmK8eJWnXzUAjLOXqbhs=",
     "packages/faces/artist/src/components/ArtistProfile/index.ts": "sha256-pfgnf444dYQ7qmQ2RjzOi5sistCeDyIgaGEUcJKTUmY=",
     "packages/faces/artist/src/components/ArtistProfile/Name.svelte": "sha256-vSEFf5RApu6Pb8aavOHfs1/xPvzJ0z9oGqomZg4Ohk8=",
     "packages/faces/artist/src/components/ArtistProfile/Root.svelte": "sha256-x4s6zVF88DGpNzRV2MvVXEMo6xqBDLxaV7uYPLAg6Rc=",
     "packages/faces/artist/src/components/ArtistProfile/Sections.svelte": "sha256-ExdxdakWSdIFNITFW7R/bysBlEZKaVqi1hc0IO3TmrM=",
     "packages/faces/artist/src/components/ArtistProfile/Statement.svelte": "sha256-hzZNF1l16cP/3fDTEibuDQNYAAPGnk6JWGyPvt684L4=",
     "packages/faces/artist/src/components/ArtistProfile/Stats.svelte": "sha256-lmWkQfmu1ZaCw4GHuw5907iqTFxAI1WNg5zgL6PttGM=",
-    "packages/faces/artist/src/components/ArtistProfile/Timeline.svelte": "sha256-HpFdEGagk/MJFulIFhbWoaT4VKvd3+CsPDe/OGELb9Y=",
+    "packages/faces/artist/src/components/ArtistProfile/Timeline.svelte": "sha256-pYTXPUJ+ObxLhvbKiAFqwRvXbbSx8nOd6Jiy+OETlME=",
     "packages/faces/artist/src/components/ArtistTimeline/index.ts": "sha256-DKtEBn2hsKq9aQQC3Se3sAH4Qyv9bcq9qftg00h6FZg=",
-    "packages/faces/artist/src/components/ArtistTimeline.svelte": "sha256-Fl8lpqcVHrJGfaJk1+P5UJuTz0OYDzvbADErZ/0MIyU=",
+    "packages/faces/artist/src/components/ArtistTimeline.svelte": "sha256-B/A9t/xM8UdSV5+UaDVkYrU3KAKSH3CsPzhSeMs5HAM=",
     "packages/faces/artist/src/components/Artwork/Actions.svelte": "sha256-6NHpKElejn6kEoBexel/w0ylSnQh/1fEIaOEW6/eg/8=",
     "packages/faces/artist/src/components/Artwork/AIDisclosure.svelte": "sha256-EiOQG1Z1mH8tUt9VkO7kwAusrd6+6UMXytlzbZ90+rE=",
     "packages/faces/artist/src/components/Artwork/Attribution.svelte": "sha256-i0Z0EtdJJuHakz4+QEn20xhbJkxOF8+Yz1dnRvVuO+8=",
@@ -1110,13 +1153,13 @@
     "packages/faces/artist/src/components/Artwork/index.ts": "sha256-Qoc+aLbbdwGiCI/sjnGqayeThQ1Wati1s9CHCQkVOmE=",
     "packages/faces/artist/src/components/Artwork/Metadata.svelte": "sha256-QmuYTap/58i88jvx/eofhTcQnEHcIXt6EYwxAu1yTXc=",
     "packages/faces/artist/src/components/Artwork/Root.svelte": "sha256-AsY2nREK/iZhP7sk59k+8zCnOLUon1h/l9BqPfmNuLw=",
-    "packages/faces/artist/src/components/Artwork/Stats.svelte": "sha256-/0XhiVXectj9kSJSRZ/C9f5/evTHXxgmAeL3iTqW0/Q=",
+    "packages/faces/artist/src/components/Artwork/Stats.svelte": "sha256-n5dU2nSqUvYkRiSFx9sxzWIKG7lKF1X4PaTpNsLadh0=",
     "packages/faces/artist/src/components/Artwork/Title.svelte": "sha256-ZqcJ9jNHOcU2ZjhGwu1mCYLnYKFghKQvlwoJx6hmF6s=",
     "packages/faces/artist/src/components/ArtworkCard/index.ts": "sha256-8WCCY+eNFMdUvZNHixwavoehS1ynoJij5DJstYi79J4=",
-    "packages/faces/artist/src/components/ArtworkCard.svelte": "sha256-BhD9LmXWYVDIMDXKwKOHWyA6rYiESaoEZdYuPIiXay8=",
+    "packages/faces/artist/src/components/ArtworkCard.svelte": "sha256-MS4Wcg+g66WM87w7HcZPIiIyXJt/EEKzwdlvvEzHPZU=",
     "packages/faces/artist/src/components/Community/Collaboration/context.ts": "sha256-QEdyLJ9WFTGa/cmoiJtkEfuX0/s1fWmC9sbuiYIzeIU=",
-    "packages/faces/artist/src/components/Community/Collaboration/Contributors.svelte": "sha256-twohy1+vIdMyWT2f0h4Pns8jS5bhHZl8mpof768mGc0=",
-    "packages/faces/artist/src/components/Community/Collaboration/Gallery.svelte": "sha256-IyMzRHLJikv91drDqLnP3FzFblFmjfxNcYsjG4GaftM=",
+    "packages/faces/artist/src/components/Community/Collaboration/Contributors.svelte": "sha256-P/n79mIPTkpty2X4Mg+64yBYF/BtW1yTWrkDC/D3LZs=",
+    "packages/faces/artist/src/components/Community/Collaboration/Gallery.svelte": "sha256-/RYq9tSCsjsmuM7IL7L3+6+2bXd8ARITouWp+JNd3F8=",
     "packages/faces/artist/src/components/Community/Collaboration/index.ts": "sha256-LD47twjpIz7jBrAgBygJBOqaRrygYMiwxL3EByBZwr8=",
     "packages/faces/artist/src/components/Community/Collaboration/Project.svelte": "sha256-Usf0KTzcPDbnFReVqkqYix8VeULsuhCQAJR8gLkhJ9Q=",
     "packages/faces/artist/src/components/Community/Collaboration/Root.svelte": "sha256-eJaMTTDC/rMN+YScBKuDVo3A3rK3+FJwAI00uOlcOwc=",
@@ -1125,7 +1168,7 @@
     "packages/faces/artist/src/components/Community/CritiqueCircle/context.ts": "sha256-KKeh9QWH9RxqUTF1/wNINIcZmMbCjY6cZcuG+mp65Dk=",
     "packages/faces/artist/src/components/Community/CritiqueCircle/History.svelte": "sha256-AZDAtMI/5ESEK2slbvvDYmgaeYiTA6A+5RDwXVPaOkQ=",
     "packages/faces/artist/src/components/Community/CritiqueCircle/index.ts": "sha256-Wf06sNkXwzfkhlGDmU2OCGb+VgiIzyTDwmtKKGuUVxM=",
-    "packages/faces/artist/src/components/Community/CritiqueCircle/Members.svelte": "sha256-9JhNpOZw+gM09t7Xfky50hp1mylpLT7CEEj2yKY722A=",
+    "packages/faces/artist/src/components/Community/CritiqueCircle/Members.svelte": "sha256-u/08R3dK10AV/TG9YjViyhlgsqJliI51w+qnCtYMVfM=",
     "packages/faces/artist/src/components/Community/CritiqueCircle/Queue.svelte": "sha256-fRoYzLMWiHT18kOG8Ce7IFT3wViF22LpH/eiBrrxVYI=",
     "packages/faces/artist/src/components/Community/CritiqueCircle/Root.svelte": "sha256-biSdTXDweeojYo5pPGtEBVslPPoWsf2Q2GfDOVa4yag=",
     "packages/faces/artist/src/components/Community/CritiqueCircle/Session.svelte": "sha256-8c2V6NIVSYJDBk7ufR+DL2KZBh/mRz8d+MRvssyLm5c=",
@@ -1134,14 +1177,14 @@
     "packages/faces/artist/src/components/CreativeTools/CommissionWorkflow/context.ts": "sha256-R9ijQmlffxBqrnWvVeSiHW6YDFQa1ea2eqWv6flUCDQ=",
     "packages/faces/artist/src/components/CreativeTools/CommissionWorkflow/index.ts": "sha256-Ude6a5Dkm8hgNJcS10v82biPxZcBkjwAun5weaOW6XE=",
     "packages/faces/artist/src/components/CreativeTools/CommissionWorkflow/Root.svelte": "sha256-osLVZxumZpihG3NcIaELrUidBrU18t3uGIPsJ3QYXRA=",
-    "packages/faces/artist/src/components/CreativeTools/CritiqueMode/Annotations.svelte": "sha256-O03EALmGG4ffUlFZmTQ+Cf6p7YuuSkhFalJ5q68NmsQ=",
+    "packages/faces/artist/src/components/CreativeTools/CritiqueMode/Annotations.svelte": "sha256-lBAzmOfgEIt4OZeJKqMkWeWZ5vXLToQbY1yeB6C6uhU=",
     "packages/faces/artist/src/components/CreativeTools/CritiqueMode/context.svelte.ts": "sha256-tbM984cw0gFEx4IrnKF8nqlt/D4tevKoyHJRWJGHwUs=",
     "packages/faces/artist/src/components/CreativeTools/CritiqueMode/Image.svelte": "sha256-tCUhfglTIm3LrDgbEsiof138EIyS0ireaibruyqZOJk=",
     "packages/faces/artist/src/components/CreativeTools/CritiqueMode/index.ts": "sha256-8zvKduPLqsyw1U+bTbgcZPO1TvFADJTe7QGGThIbi8w=",
     "packages/faces/artist/src/components/CreativeTools/CritiqueMode/Root.svelte": "sha256-zWSzOVJZFsIEous2G4mmvN0udnCrYOooa9V60Bzu54U=",
     "packages/faces/artist/src/components/CreativeTools/index.ts": "sha256-k4ES89dOEN9BSr+vDJB/T8e3pFBBIfDCjhpvhuRQpdk=",
     "packages/faces/artist/src/components/CreativeTools/ReferenceBoard.svelte": "sha256-eQKto7WkGbkx0Q5nMaguLyAmIjzACO5zMZEN20gnx3U=",
-    "packages/faces/artist/src/components/CreativeTools/WorkInProgress/Comments.svelte": "sha256-Nn0vFKnF58Dv/Ki25neXPSANaOE/NhrkyD2xX5KgH94=",
+    "packages/faces/artist/src/components/CreativeTools/WorkInProgress/Comments.svelte": "sha256-3JXevwhEHWBdsFTVK2+Lguou3J95POLVRlczZuQWUT4=",
     "packages/faces/artist/src/components/CreativeTools/WorkInProgress/Compare.svelte": "sha256-bgiNkEepbqwyOVPr6EF1Iau38KpY6ASwxQ0f4Q1EoKw=",
     "packages/faces/artist/src/components/CreativeTools/WorkInProgress/context.ts": "sha256-8Zd6GmpThnIWmb9CH56/StobzctTMji/JoWt3i/H6cM=",
     "packages/faces/artist/src/components/CreativeTools/WorkInProgress/Header.svelte": "sha256-xmDA+ut3ziurGiSNiBZQ1/U5uxdK3ZYNZtiinKikZqM=",
@@ -1180,15 +1223,15 @@
     "packages/faces/artist/src/components/MediaViewer/index.ts": "sha256-rLjVUZqKX9Jyi4uuUzwro0InzlVgYitp40q3YFlpzRY=",
     "packages/faces/artist/src/components/MediaViewer/MetadataPanel.svelte": "sha256-ahT3wAbnHVxMQSifH9Aez8qg1XLVx5aNrLATU46Djso=",
     "packages/faces/artist/src/components/MediaViewer/Navigation.svelte": "sha256-d+xVTVNoM896cPJWitkBcvQ6MBrn7KHx/j/jvPlTGEc=",
-    "packages/faces/artist/src/components/MediaViewer/Root.svelte": "sha256-qiBK1q0sUCJoo/wtrPu7ugOoe9ROTSrleVPMGGIjUTo=",
-    "packages/faces/artist/src/components/MediaViewer/ZoomControls.svelte": "sha256-1VoS2MZhAyHcp4UhtZ5EkMFeSyGrrMf4GMU09DfyP1k=",
-    "packages/faces/artist/src/components/Monetization/DirectPurchase.svelte": "sha256-Ae62iyOuW6tmvkGLB9c2yzPX2W1z8rV/lRFglqeEKkY=",
+    "packages/faces/artist/src/components/MediaViewer/Root.svelte": "sha256-xj7dC00b9R6i0IAzTRQXWUFXO5FDGlEs26IKnwy7PPI=",
+    "packages/faces/artist/src/components/MediaViewer/ZoomControls.svelte": "sha256-wby9XJ+JRj327wE2bBhEjdn6NWzOjYEQTMgm5RtnYUw=",
+    "packages/faces/artist/src/components/Monetization/DirectPurchase.svelte": "sha256-3BpwuXm3ovquQpFs8kDAdUcL9JxFG8Bndx4pdgGpPMw=",
     "packages/faces/artist/src/components/Monetization/index.ts": "sha256-rMMEbtBMXVx3TTbc2PDVol0M9qPQFSzVvwbBxSCKMPE=",
     "packages/faces/artist/src/components/Monetization/InstitutionalTools.svelte": "sha256-NCTPifwVDooZIZlsymYLmErufgWVbwy/ACiOCovDKJE=",
     "packages/faces/artist/src/components/Monetization/PremiumBadge.svelte": "sha256-OlD5NK8Cn60BxvjGKFum5K6t0IHMGMwUfHnVFcGap6U=",
     "packages/faces/artist/src/components/Monetization/ProtectionTools.svelte": "sha256-rysyZIi+oqMl1fi2bNHBXK5RwhlmNU2N9/e4sq7W30E=",
     "packages/faces/artist/src/components/Monetization/TipJar.svelte": "sha256-bznNJglJA73ucUNwsoGiZVwhrc+Bcl3DjnJJIevAhkI=",
-    "packages/faces/artist/src/components/PortfolioSection.svelte": "sha256-jhjDUwMcOutq8ula5gZ2E4/SLcAEO8egGzpaZduqLXk=",
+    "packages/faces/artist/src/components/PortfolioSection.svelte": "sha256-2gQ8aAOEGOFh5zmos3E3nPHlzIQ684yQspSAW1aYrpg=",
     "packages/faces/artist/src/components/Transparency/AIDisclosure.svelte": "sha256-XVkIqnZTTR72FHOcaD+sbdHVNz2z1MGOA0YCsaEIi/c=",
     "packages/faces/artist/src/components/Transparency/AIOptOutControls.svelte": "sha256-HgTv5l3PeM3z3IlS1+6yGUAepSKljHQiVRIqj1bAat0=",
     "packages/faces/artist/src/components/Transparency/EthicalSourcingBadge.svelte": "sha256-nsyVlNo4GVsbJcJSqwgaeAYgxZTpgOP3TWPiWK1A3Ok=",
@@ -1220,7 +1263,7 @@
     "packages/faces/artist/src/styles/index.css": "sha256-8KiG6c5rEq1fvbrTXphWrQuHV4VlL+pkwQY9sVBAAXs=",
     "packages/faces/artist/src/subscriptions/index.ts": "sha256-EJ53g8RCsC3gqnL6HC3xLysDOtrrtXVRkkfhZMooikM=",
     "packages/faces/artist/src/theme.css": "sha256-V8BN09El7jnzXMS8YPfaCWpdT4CMB4yiYokAQJkEw+A=",
-    "packages/faces/artist/src/types/artist.ts": "sha256-JYS/GygEOpvIL3z4rQKWRwZARUHlRTeKhwbfgBkOCm8=",
+    "packages/faces/artist/src/types/artist.ts": "sha256-U+FG7wDcMqNCSQuoHIM1qTn5rUn9lmblAsQOz/xn5Vo=",
     "packages/faces/artist/src/types/artwork.ts": "sha256-zl5/8g3JdxD0ideYKA4sRyqtVBXjkVk6JICmWSdmcfA=",
     "packages/faces/artist/src/types/community.ts": "sha256-JtVulyOxELGSwz4NG043xQG1bP+hBcmMuy1s2wjhiyo=",
     "packages/faces/artist/src/types/creative-tools.ts": "sha256-i1kt4Wflf6JRjeAUUCNyouyj2XbhlxDFMJ80BhI/B2g=",
@@ -1317,7 +1360,7 @@
     "packages/shared/admin/src/Agents/types.ts": "sha256-eqK8lFK2qH0H96qttvXxRobFYjqQADtG6HKo0c6wYGU=",
     "packages/shared/admin/src/Analytics.svelte": "sha256-MyX4gIc2WV46JBYb1FEPQY+wEMw+dqbKrPx/zONYL+o=",
     "packages/shared/admin/src/context.svelte.ts": "sha256-YLYxhI8ljapxnRJa8cfbFVDjGSwrIOvvCTsG5TyL6u4=",
-    "packages/shared/admin/src/Cost/Alerts.svelte": "sha256-eoQJxtsnb03xDJLyPVy/wRzHKG/E1JrEzb67n2W5xXE=",
+    "packages/shared/admin/src/Cost/Alerts.svelte": "sha256-50dh1zTXF4gUZwPWDZg4/wzpAmRDinMayE/DbnbbCTU=",
     "packages/shared/admin/src/Cost/BudgetControls.svelte": "sha256-Ci7ERNJk1xXNyGezi5L7yL7Y2OvFcNtFhMC7M92T1Jg=",
     "packages/shared/admin/src/Cost/context.ts": "sha256-2rH2hvjOmqOjRPRy5k7jupwEVGy0dbGX1D23UFtK/rU=",
     "packages/shared/admin/src/Cost/Dashboard.svelte": "sha256-u1H9cub2mTsYLDwoNho/PBpvlZ/TWyrbRM1J1tQYSm0=",
@@ -1338,14 +1381,14 @@
     "packages/shared/admin/src/Settings.svelte": "sha256-odOfPLuuq+FBt9Q/RgjXU6K6nfQmiqxQCKC6CYSVA0A=",
     "packages/shared/admin/src/SeveredRelationships/context.ts": "sha256-k6U/70J2V1eiNc6DIdqxt4O2xRk5DpHoII6ATizM0Rk=",
     "packages/shared/admin/src/SeveredRelationships/index.ts": "sha256-bvBdf3VrwAU4aDH8ORS/5fKecvuXkVNK4nKEtxid6UU=",
-    "packages/shared/admin/src/SeveredRelationships/List.svelte": "sha256-Zuk/zf5r4MAtKt0Hx9cmQtGADQQ+LQEdJafLq7fVsdU=",
+    "packages/shared/admin/src/SeveredRelationships/List.svelte": "sha256-fhPepCp1NEaUreFQdbJP1mIN7UFATxBGEJ7AQEMPGNo=",
     "packages/shared/admin/src/SeveredRelationships/RecoveryPanel.svelte": "sha256-qPIhm6kgUGIQ8zpWDvMfoRG0HF/VlXAWDts7kt/dZnc=",
     "packages/shared/admin/src/SeveredRelationships/Root.svelte": "sha256-5N4siUyq0JoNdq+zQ6eMO8lCMUxx74Zj6+pqsr9+Kvc=",
     "packages/shared/admin/src/TrustGraph/context.ts": "sha256-MjQqliRSqalW8/T1NYgbYeHXgZ4FDCg5Ym9QjJoovLY=",
     "packages/shared/admin/src/TrustGraph/index.ts": "sha256-yQ1f6bqzgiFillfjLFvXCN7fGPjIUtOJSj4HNsCY/88=",
     "packages/shared/admin/src/TrustGraph/RelationshipList.svelte": "sha256-juIxxlmWw8No/BT913VthX+Fve/x4pJXgJMQutISwbs=",
     "packages/shared/admin/src/TrustGraph/Root.svelte": "sha256-RnKfjO2Vn2aZFXkeMITY9bBE7jPF/5KHVBvBo2XHaq8=",
-    "packages/shared/admin/src/TrustGraph/Visualization.svelte": "sha256-RBtnLSWaWbKZ/Lq6OUFhm7Pjx3Fyy7inDBaAYhB7qHg=",
+    "packages/shared/admin/src/TrustGraph/Visualization.svelte": "sha256-rxTSgA4+sYykDxVNBr1yAcOLFt1nFs8oR26R0ukrNAU=",
     "packages/shared/admin/src/Users.svelte": "sha256-eJnq6ySKkUKIFYdke6qok7zSM/e0BasyO9rUiN7gmGg=",
     "packages/shared/chat/src/ChatContainer.svelte": "sha256-RffmulXXyC6NRUZYjDAUF+BX4JzLZXAhv5neTCEdb58=",
     "packages/shared/chat/src/ChatHeader.svelte": "sha256-KlBPVy0gdgTJ0mgn4/InoGnwSxyuJvwsP0DS2q0kxYg=",
@@ -1366,7 +1409,7 @@
     "packages/shared/messaging/src/context.svelte.ts": "sha256-NihRfF2shXYMQTnQbjfYGKmyhNT+881dUYxrBEGFrKk=",
     "packages/shared/messaging/src/ConversationPicker.svelte": "sha256-GyuC58bLhCyxEV1cl8m1bykp3fKVsOKjPZ+/GeihVq8=",
     "packages/shared/messaging/src/Conversations.svelte": "sha256-kEPIvS+0HxWGaoiU/UVG2sbMyoVQGTGWzllB3Q71lD0=",
-    "packages/shared/messaging/src/ConversationWorkflowSummary.svelte": "sha256-1dbfzcaC40nFEyFdXGelgFB2yiiCkeMDPXCuP26M3n0=",
+    "packages/shared/messaging/src/ConversationWorkflowSummary.svelte": "sha256-+mO7cS42J9G7FplGDcvuUealcYVAqx47qH4WqUkaxPU=",
     "packages/shared/messaging/src/index.ts": "sha256-51SFnggIOSpqEXRczLt8ySe8GJM2LmokXYfhkNtVcp4=",
     "packages/shared/messaging/src/MediaUpload.svelte": "sha256-5ORpNjGoJKb1SXWhVzFZ80Frxi0e6VYP1oM1ow2Oejo=",
     "packages/shared/messaging/src/Message.svelte": "sha256-55HxJkzJIGsjHI36WPnrSgJC/ZNUFdvzFjUwpgcIFTY=",
@@ -1376,7 +1419,7 @@
     "packages/shared/messaging/src/types.ts": "sha256-hHc+ulSYjI46KKV/O+h845OcqMhB6feSn6oR7CV76JY=",
     "packages/shared/messaging/src/UnreadIndicator.svelte": "sha256-oo+td3vo+3SQR4zYbS0PNjHDoQ8j4qEoqyMrYrK7Z5s=",
     "packages/shared/messaging/src/utils.ts": "sha256-n5s8ZSURaYg3TP01VFafGTH43dn04IiTwLtAKMU1Hyk=",
-    "packages/shared/messaging/src/WorkflowThreadMoment.svelte": "sha256-IM+qoJZEMS44ujczVD9hiWnpPQBeb37zfG3JipVeFq0=",
+    "packages/shared/messaging/src/WorkflowThreadMoment.svelte": "sha256-FN/gYB5HCi3ltwxI0L3qjqep+jXwQE1zJSEAKtXnzlU=",
     "packages/shared/soul/src/AnchorAssuranceBadge.svelte": "sha256-IUAvzymXQ8r/oY6B5JmwdkHQ+mhW5aZzmMQC74KwkiE=",
     "packages/shared/soul/src/BestWayToContact.svelte": "sha256-IBt7PZbUifeYI0DjsiPxTYLBwJj2k5cX0mw/J6DGf9k=",
     "packages/shared/soul/src/ChannelsDisplay.svelte": "sha256-wNJoj3WNDXaqcmsxBOPQtuQJyeA/XX6jaH5wQaC4Vdg=",
@@ -1403,7 +1446,7 @@
   "components": {
     "primitives": {
       "name": "primitives",
-      "version": "0.9.0",
+      "version": "0.10.0-rc.1",
       "description": "Primitive UI components for Greater Components",
       "type": "primitives",
       "files": [
@@ -2044,21 +2087,21 @@
         }
       ],
       "dependencies": [
-        { "name": "icons", "version": "0.9.0" },
-        { "name": "tokens", "version": "0.9.0" },
-        { "name": "utils", "version": "0.9.0" }
+        { "name": "icons", "version": "0.10.0-rc.1" },
+        { "name": "tokens", "version": "0.10.0-rc.1" },
+        { "name": "utils", "version": "0.10.0-rc.1" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-icons", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-utils", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-tokens", "version": "0.9.0" },
+        { "name": "@equaltoai/greater-components-icons", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-utils", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-tokens", "version": "0.10.0-rc.1" },
         { "name": "svelte", "version": "^5.55.1" }
       ],
       "tags": []
     },
     "headless": {
       "name": "headless",
-      "version": "0.9.0",
+      "version": "0.10.0-rc.1",
       "description": "Headless UI primitives for Greater Components - behavior without styling",
       "type": "primitives",
       "files": [
@@ -2208,7 +2251,7 @@
     },
     "icons": {
       "name": "icons",
-      "version": "0.9.0",
+      "version": "0.10.0-rc.1",
       "description": "Icon components for Greater Components",
       "type": "primitives",
       "files": [
@@ -5269,7 +5312,7 @@
     },
     "tokens": {
       "name": "tokens",
-      "version": "0.9.0",
+      "version": "0.10.0-rc.1",
       "description": "Design tokens for Greater Components",
       "type": "utilities",
       "files": [
@@ -5340,7 +5383,7 @@
     },
     "utils": {
       "name": "utils",
-      "version": "0.9.0",
+      "version": "0.10.0-rc.1",
       "description": "Utility functions for Greater Components",
       "type": "utilities",
       "files": [
@@ -5531,7 +5574,7 @@
     },
     "adapters": {
       "name": "adapters",
-      "version": "0.9.0",
+      "version": "0.10.0-rc.1",
       "description": "Transport adapters and state management for Greater Components",
       "type": "adapters",
       "files": [
@@ -5940,7 +5983,7 @@
     },
     "content": {
       "name": "content",
-      "version": "0.9.0",
+      "version": "0.10.0-rc.1",
       "description": "Content rendering components (CodeBlock, MarkdownRenderer) for Greater Components",
       "type": "utilities",
       "files": [
@@ -5960,7 +6003,7 @@
           "size": 1119
         }
       ],
-      "dependencies": [{ "name": "primitives", "version": "0.9.0" }],
+      "dependencies": [{ "name": "primitives", "version": "0.10.0-rc.1" }],
       "peerDependencies": [
         { "name": "hast-util-sanitize", "version": "^5.0.2" },
         { "name": "rehype-sanitize", "version": "^6.0.0" },
@@ -5970,8 +6013,257 @@
         { "name": "remark-rehype", "version": "^11.1.2" },
         { "name": "shiki", "version": "^4.0.2" },
         { "name": "unified", "version": "^11.0.5" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-tokens", "version": "0.9.0" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-tokens", "version": "0.10.0-rc.1" },
+        { "name": "svelte", "version": "^5.55.1" }
+      ],
+      "tags": []
+    },
+    "shell": {
+      "name": "shell",
+      "version": "0.10.0-rc.1",
+      "description": "App shell layout components for Greater Components (Shell, Sidebar, Topbar, Panel, StatCard, SummaryStrip, PageFrame, PageTitle, Breadcrumb, Callout)",
+      "type": "components",
+      "files": [
+        {
+          "path": "src/components/Breadcrumb.css",
+          "checksum": "sha256-SW9UA4xhl8K1fKwS/h/Htyui7GujRdNCCznfRrPJ8qY=",
+          "size": 885
+        },
+        {
+          "path": "src/components/Breadcrumb.svelte",
+          "checksum": "sha256-NP1cHv6jMKWSe4PYsafPn/ta/Hle13f154pY6IS/Rig=",
+          "size": 2695
+        },
+        {
+          "path": "src/components/Callout.css",
+          "checksum": "sha256-LnnrUMfn9/3VcHX6zcDZFSpqe7nKRMZKAI71Jkpgq+8=",
+          "size": 3118
+        },
+        {
+          "path": "src/components/Callout.svelte",
+          "checksum": "sha256-ph59kDztSXz4xJ+NHdg4dkyhyMM5kv/uGpl/ZvdzgmY=",
+          "size": 3357
+        },
+        {
+          "path": "src/components/CommandPalette.css",
+          "checksum": "sha256-/IGfp1GGTymIqO1Ti/TqyhNh4l6bvCqhd4On971rKCo=",
+          "size": 4969
+        },
+        {
+          "path": "src/components/CommandPalette.svelte",
+          "checksum": "sha256-8z2bmQco/JYDLpMBqza4zghCZXZHL4tZkFV8L1/GGyQ=",
+          "size": 24463
+        },
+        {
+          "path": "src/components/PageFrame.css",
+          "checksum": "sha256-uiWRrFQ2HAFj1yBpi2eSLVi2DEGdju5WB4Y+AHL0mlA=",
+          "size": 1410
+        },
+        {
+          "path": "src/components/PageFrame.svelte",
+          "checksum": "sha256-zesK3O34UhQcZTxOqhuqQqnxlm3TFWv0d+EuLqX05HI=",
+          "size": 2669
+        },
+        {
+          "path": "src/components/PageTitle.css",
+          "checksum": "sha256-jy/Vfn9B9VBstoMHrWA0oPdblW8hxPoRexTCf7c1TiU=",
+          "size": 1146
+        },
+        {
+          "path": "src/components/PageTitle.svelte",
+          "checksum": "sha256-oXCAc6rdDMjgL0IsvY98JkJL1CSmSjtjt7v4davQWQU=",
+          "size": 2220
+        },
+        {
+          "path": "src/components/Panel.css",
+          "checksum": "sha256-3mw/B4mA2dW6IHHEkN0cEGSKCZ1NLe/SQWvcAgHsyBU=",
+          "size": 2105
+        },
+        {
+          "path": "src/components/Panel.svelte",
+          "checksum": "sha256-NMHv2gdxA8mHvTQtaBg/j07Si5Mtnq4HXZxc3MozP9A=",
+          "size": 4013
+        },
+        {
+          "path": "src/components/Shell.css",
+          "checksum": "sha256-VvpaGQYzTvXo/rAZ02XGkS9gVI4IZeOzNjSoR/sc+4s=",
+          "size": 2657
+        },
+        {
+          "path": "src/components/Shell.svelte",
+          "checksum": "sha256-Ymj392rpzxZGM8SLoz28TGd68bcqFJlOUSIhZ6mwVbo=",
+          "size": 3487
+        },
+        {
+          "path": "src/components/Sidebar.css",
+          "checksum": "sha256-+4ATI7iyp9md6prETS8P7EN3Tmnyc6XDBEe8KRDX4Tk=",
+          "size": 2312
+        },
+        {
+          "path": "src/components/Sidebar.svelte",
+          "checksum": "sha256-9p0yVhTKggGRfJ6CuS+Yew608xAYy2ZRv3HYXw8I1wk=",
+          "size": 2335
+        },
+        {
+          "path": "src/components/StatCard.css",
+          "checksum": "sha256-0vRDyzUYkP8TP0Wft3/P0VjEl77URF8NhWfhJ6igrZ0=",
+          "size": 2726
+        },
+        {
+          "path": "src/components/StatCard.svelte",
+          "checksum": "sha256-ge9qWLTYOH8/hrbjvpIRzj/JVCFwAlC6Mbf3ehZdnGc=",
+          "size": 3964
+        },
+        {
+          "path": "src/components/SummaryStrip.css",
+          "checksum": "sha256-UmCUZShti+oqEmlDg2gKYXGcc0lS92d2EOtWy8ZCayI=",
+          "size": 1365
+        },
+        {
+          "path": "src/components/SummaryStrip.svelte",
+          "checksum": "sha256-NNogNLiDalDVA/J2I41BLjv4GxwAh/heQ1V6yw7mr/c=",
+          "size": 1798
+        },
+        {
+          "path": "src/components/Topbar.css",
+          "checksum": "sha256-e49AWpuwlaEBLxqeDvM8sMNuwlqugOB+54w1y+7ojME=",
+          "size": 1143
+        },
+        {
+          "path": "src/components/Topbar.svelte",
+          "checksum": "sha256-QXASS11a1RlKcnxqDskrt0PwkGTt7zvr+LrK2uWHm80=",
+          "size": 2393
+        },
+        {
+          "path": "src/index.ts",
+          "checksum": "sha256-NLhn3AXDEWBZsC7ACM0NX2/1Uq0CzDuQwYjVG4zGXhw=",
+          "size": 2511
+        },
+        {
+          "path": "src/styles/base.css",
+          "checksum": "sha256-INLODwNQNHYVsBKgGXbW/PENIwGo7NuIODzsRFuUUN8=",
+          "size": 2912
+        },
+        {
+          "path": "src/types.ts",
+          "checksum": "sha256-xRnEGFsxQoJKt05wbZb+rbvOVbkbNb5UCpXOSovR8hI=",
+          "size": 3967
+        },
+        {
+          "path": "src/utils/fuzzy-filter.ts",
+          "checksum": "sha256-ZopMxsr/aoZ3BqcmGydIR4DOwysud9oxTBLp88qVXt8=",
+          "size": 5020
+        }
+      ],
+      "dependencies": [
+        { "name": "headless", "version": "0.10.0-rc.1" },
+        { "name": "utils", "version": "0.10.0-rc.1" }
+      ],
+      "peerDependencies": [
+        { "name": "@equaltoai/greater-components-headless", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-utils", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-tokens", "version": "0.10.0-rc.1" },
+        { "name": "svelte", "version": "^5.55.1" }
+      ],
+      "tags": []
+    },
+    "host-platform": {
+      "name": "host-platform",
+      "version": "0.10.0-rc.1",
+      "description": "Hosted-platform data-display components for Greater Components (FleetCard, CostGauge, ActivitySparkline)",
+      "type": "components",
+      "files": [
+        {
+          "path": "src/components/ActivitySparkline.css",
+          "checksum": "sha256-M5jmOBJkZLPyqJ7v9irZ+pKWRT3mFFWSEvfuhTvtxPE=",
+          "size": 1533
+        },
+        {
+          "path": "src/components/ActivitySparkline.svelte",
+          "checksum": "sha256-/uonlTULps3w17cjm1/ZRLiXvL9HlU5P4pZ8/gyvONw=",
+          "size": 5142
+        },
+        {
+          "path": "src/components/CostGauge.css",
+          "checksum": "sha256-Nqt1VHD3Oo4dTazxtAkpohWq97YHnRKs2lI44IDCNbY=",
+          "size": 13886
+        },
+        {
+          "path": "src/components/CostGauge.svelte",
+          "checksum": "sha256-U34JLDXFm8ODylAg4uka1lwbbzt4ylCRcEXEvLD/kfs=",
+          "size": 10858
+        },
+        {
+          "path": "src/components/FleetCard.css",
+          "checksum": "sha256-rslZpcvYjpViDEP6F08QV9gGDTgCmiqYiQ95zuX2wXQ=",
+          "size": 4608
+        },
+        {
+          "path": "src/components/FleetCard.svelte",
+          "checksum": "sha256-vVyr8nmE+E/utrZzaXWP0cbHuRXKofAo3R8J7X00yJ4=",
+          "size": 7366
+        },
+        {
+          "path": "src/components/ProvisioningTimeline.css",
+          "checksum": "sha256-rphEj1C3PlOup0baAgJyDSkSiZmzvMX2JhOBlpGj+J4=",
+          "size": 6355
+        },
+        {
+          "path": "src/components/ProvisioningTimeline.svelte",
+          "checksum": "sha256-p5Vnk8hHwe/VUaYsZwZ33+Q9IG42UuzZLo8vAa5tCdw=",
+          "size": 7742
+        },
+        {
+          "path": "src/components/ReleaseTimeline.css",
+          "checksum": "sha256-UCzT8op2KiKophHU40Bcfv80iMmv22DjWH2nMAxfLNY=",
+          "size": 5801
+        },
+        {
+          "path": "src/components/ReleaseTimeline.svelte",
+          "checksum": "sha256-L8/Bx4pTa5DDE6kB8uxozkRjkMtDXqpLPUss8LR54/Y=",
+          "size": 9974
+        },
+        {
+          "path": "src/components/StackMatrix.css",
+          "checksum": "sha256-K59j8igR3hBFO2cFyaq3Rp0Dkjypg3+DM4wLCSWN9cY=",
+          "size": 5005
+        },
+        {
+          "path": "src/components/StackMatrix.svelte",
+          "checksum": "sha256-aMruAWkbvQmTTEXLd8Yp5kQdHegwLoj64//o2q5UGPo=",
+          "size": 8863
+        },
+        {
+          "path": "src/index.ts",
+          "checksum": "sha256-hFXD84EuQLU6bKXPyTkFUwxOewMy8fkcwkVzbRpAsTg=",
+          "size": 2233
+        },
+        {
+          "path": "src/styles/base.css",
+          "checksum": "sha256-razMHs+WCheiXksb3g4y90O42WAyMruExK9MiNmJbhc=",
+          "size": 1777
+        },
+        {
+          "path": "src/types.ts",
+          "checksum": "sha256-9wKDSQaj3aQ9OXIqdTbYM6O6sGbAxfpwa0I1119yBLg=",
+          "size": 6274
+        },
+        {
+          "path": "src/utils/formatters.ts",
+          "checksum": "sha256-kkUGG/4k60g54llCi+xp5RmnYrg8TuFqMiKgdgd01cE=",
+          "size": 2515
+        },
+        {
+          "path": "src/utils/sparkline.ts",
+          "checksum": "sha256-w8R8uqcnpPo2QK8crNVtabB10ChInLNOdNeQ6HxNUCM=",
+          "size": 3430
+        }
+      ],
+      "dependencies": [{ "name": "utils", "version": "0.10.0-rc.1" }],
+      "peerDependencies": [
+        { "name": "@equaltoai/greater-components-utils", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-tokens", "version": "0.10.0-rc.1" },
         { "name": "svelte", "version": "^5.55.1" }
       ],
       "tags": []
@@ -5980,7 +6272,7 @@
   "faces": {
     "social": {
       "name": "social",
-      "version": "0.9.0",
+      "version": "0.10.0-rc.1",
       "description": "Social/Twitter-style UI components for ActivityPub/Fediverse applications",
       "exports": [
         "Status",
@@ -6124,8 +6416,8 @@
         },
         {
           "path": "src/components/ComposeBox.svelte",
-          "checksum": "sha256-9lu6fbYIodgrOdC3NXb5W2QUE9JJNQlrkH9RSliEL68=",
-          "size": 13380
+          "checksum": "sha256-Z34YCX1uBhW5wIUDtxt8JfT45V+9V8/gXuyXBxhz2n4=",
+          "size": 14364
         },
         {
           "path": "src/components/ContentRenderer.svelte",
@@ -6184,8 +6476,8 @@
         },
         {
           "path": "src/components/Hashtags/FollowedList.svelte",
-          "checksum": "sha256-tuNGwNew2Ie0X0VNEHfxMhFgIA2IGxS1LCN9gXrK2Io=",
-          "size": 1347
+          "checksum": "sha256-utKUITdxXzjCxULwVMqY7frFycHpOYZN9nkb8QxPxq0=",
+          "size": 1363
         },
         {
           "path": "src/components/Hashtags/index.ts",
@@ -6254,13 +6546,13 @@
         },
         {
           "path": "src/components/NotificationsFeed.svelte",
-          "checksum": "sha256-tV6YxsNcQIn/8Uo3tQ70L6fo5ZJKaOphrF6w3zfQCrU=",
-          "size": 6425
+          "checksum": "sha256-VSfnc1LB5DWsE5LENWqNEKJls0XoNnHjIXVFLEvi75I=",
+          "size": 6392
         },
         {
           "path": "src/components/NotificationsFeedReactive.svelte",
-          "checksum": "sha256-UC3t1RimsK4GzsQUfSq8vW4MhNqcUQpom7xOMSkT0aA=",
-          "size": 10507
+          "checksum": "sha256-3ZaU8AaGAbEmcdT/H+L09a0mukt3nMJ8pNSsjZ5X6Yc=",
+          "size": 10698
         },
         {
           "path": "src/components/Profile/AccountMigration.svelte",
@@ -6279,18 +6571,18 @@
         },
         {
           "path": "src/components/Profile/Edit.svelte",
-          "checksum": "sha256-R5+Z9VnBcrSBTurmsmkk2bQpL32VzAOeRIW+U0dRnfc=",
-          "size": 10279
+          "checksum": "sha256-cqz7XAF/eom/HgjdrkynH/q/LZrhFfwq9Z5G4Qq7CDk=",
+          "size": 10517
         },
         {
           "path": "src/components/Profile/EndorsedAccounts.svelte",
-          "checksum": "sha256-QI9LvbQbY4BOTu1TFqKd0iCgq9bqkq15RvKuBUUrMSY=",
-          "size": 6874
+          "checksum": "sha256-TrRks4C/tJnpA6N1hd8vp/m/CUPh1UMTpGNtYWhixDk=",
+          "size": 7079
         },
         {
           "path": "src/components/Profile/FeaturedHashtags.svelte",
-          "checksum": "sha256-SZESZjcJzjLkgjcujpFy5TRpsoCH+AkeCHMqpBieAzM=",
-          "size": 7932
+          "checksum": "sha256-6oXSPnI70F9cZOzuwIMVmJKXs+wK42qCblRU73tlTwE=",
+          "size": 8137
         },
         {
           "path": "src/components/Profile/Fields.svelte",
@@ -6374,13 +6666,13 @@
         },
         {
           "path": "src/components/ProfileHeader.svelte",
-          "checksum": "sha256-Nfz3JvTkEm15zkMoGDPHVbK+vFMUmNQCzF9tmC3jd4Q=",
-          "size": 11684
+          "checksum": "sha256-wYJxx9e5Gg0g17IwSRJlDoPRifGLREsePJKAWZDXO9E=",
+          "size": 11714
         },
         {
           "path": "src/components/RealtimeWrapper.svelte",
-          "checksum": "sha256-4YyFn1PtiM/n+kdURw7unY++dodmGjoLy6PvC0kRHvo=",
-          "size": 6514
+          "checksum": "sha256-P95sAhYAKFAxgeQ41Ww3861OzLwDSTOBihEb9W2zP+s=",
+          "size": 6711
         },
         {
           "path": "src/components/SettingsPanel.svelte",
@@ -6479,8 +6771,8 @@
         },
         {
           "path": "src/components/TimelineVirtualizedReactive.svelte",
-          "checksum": "sha256-wF9ECecWCs9U2o8QQnpZCLVPskaxLM7GSQCD8uNB9KQ=",
-          "size": 12201
+          "checksum": "sha256-8qgAHq7tcP4MUplmNH44EKx3kQfqsZcex9EAWABCBTI=",
+          "size": 12392
         },
         {
           "path": "src/generics/adapters.ts",
@@ -6574,8 +6866,8 @@
         },
         {
           "path": "src/patterns/CustomEmojiPicker.svelte",
-          "checksum": "sha256-HyjZbpcEY7JIGRWq5vbQDhfPdOtTEoOb37XamxbNeJ8=",
-          "size": 34153
+          "checksum": "sha256-iQBlQEMIz+4Pi0WDooNHGesDOOPpC6NYn66G1hVjEvE=",
+          "size": 34556
         },
         {
           "path": "src/patterns/FederationIndicator.svelte",
@@ -6648,32 +6940,32 @@
         "tokens": "@equaltoai/greater-components/tokens/theme.css"
       },
       "dependencies": [
-        { "name": "adapters", "version": "0.9.0" },
-        { "name": "admin", "version": "0.9.0" },
-        { "name": "auth", "version": "0.9.0" },
-        { "name": "compose", "version": "0.9.0" },
-        { "name": "headless", "version": "0.9.0" },
-        { "name": "icons", "version": "0.9.0" },
-        { "name": "messaging", "version": "0.9.0" },
-        { "name": "notifications", "version": "0.9.0" },
-        { "name": "primitives", "version": "0.9.0" },
-        { "name": "search", "version": "0.9.0" },
-        { "name": "tokens", "version": "0.9.0" },
-        { "name": "utils", "version": "0.9.0" }
+        { "name": "adapters", "version": "0.10.0-rc.1" },
+        { "name": "admin", "version": "0.10.0-rc.1" },
+        { "name": "auth", "version": "0.10.0-rc.1" },
+        { "name": "compose", "version": "0.10.0-rc.1" },
+        { "name": "headless", "version": "0.10.0-rc.1" },
+        { "name": "icons", "version": "0.10.0-rc.1" },
+        { "name": "messaging", "version": "0.10.0-rc.1" },
+        { "name": "notifications", "version": "0.10.0-rc.1" },
+        { "name": "primitives", "version": "0.10.0-rc.1" },
+        { "name": "search", "version": "0.10.0-rc.1" },
+        { "name": "tokens", "version": "0.10.0-rc.1" },
+        { "name": "utils", "version": "0.10.0-rc.1" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-adapters", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-admin", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-auth", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-compose", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-headless", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-icons", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-messaging", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-notifications", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-search", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-tokens", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-utils", "version": "0.9.0" },
+        { "name": "@equaltoai/greater-components-adapters", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-admin", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-auth", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-compose", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-headless", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-icons", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-messaging", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-notifications", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-search", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-tokens", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-utils", "version": "0.10.0-rc.1" },
         { "name": "@graphql-typed-document-node/core", "version": "^3.2.0" },
         { "name": "@tanstack/svelte-virtual", "version": "^3.13.23" },
         { "name": "svelte", "version": "^5.55.1" }
@@ -6748,7 +7040,7 @@
     },
     "blog": {
       "name": "blog",
-      "version": "0.9.0",
+      "version": "0.10.0-rc.1",
       "description": "Blog/Medium-style UI components for long-form publishing applications",
       "exports": [
         "Article",
@@ -6979,21 +7271,21 @@
         "tokens": "@equaltoai/greater-components/tokens/theme.css"
       },
       "dependencies": [
-        { "name": "content", "version": "0.9.0" },
-        { "name": "headless", "version": "0.9.0" },
-        { "name": "icons", "version": "0.9.0" },
-        { "name": "primitives", "version": "0.9.0" },
-        { "name": "utils", "version": "0.9.0" }
+        { "name": "content", "version": "0.10.0-rc.1" },
+        { "name": "headless", "version": "0.10.0-rc.1" },
+        { "name": "icons", "version": "0.10.0-rc.1" },
+        { "name": "primitives", "version": "0.10.0-rc.1" },
+        { "name": "utils", "version": "0.10.0-rc.1" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-auth", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-content", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-headless", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-icons", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-search", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-tokens", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-utils", "version": "0.9.0" },
+        { "name": "@equaltoai/greater-components-auth", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-content", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-headless", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-icons", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-search", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-tokens", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-utils", "version": "0.10.0-rc.1" },
         { "name": "svelte", "version": "^5.55.1" }
       ],
       "types": [
@@ -7026,7 +7318,7 @@
     },
     "community": {
       "name": "community",
-      "version": "0.9.0",
+      "version": "0.10.0-rc.1",
       "description": "Community/Reddit-style UI components for forum-based discussion applications",
       "exports": [
         "Community",
@@ -7257,23 +7549,23 @@
         "tokens": "@equaltoai/greater-components/tokens/theme.css"
       },
       "dependencies": [
-        { "name": "content", "version": "0.9.0" },
-        { "name": "headless", "version": "0.9.0" },
-        { "name": "icons", "version": "0.9.0" },
-        { "name": "primitives", "version": "0.9.0" },
-        { "name": "utils", "version": "0.9.0" }
+        { "name": "content", "version": "0.10.0-rc.1" },
+        { "name": "headless", "version": "0.10.0-rc.1" },
+        { "name": "icons", "version": "0.10.0-rc.1" },
+        { "name": "primitives", "version": "0.10.0-rc.1" },
+        { "name": "utils", "version": "0.10.0-rc.1" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-admin", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-auth", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-content", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-headless", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-icons", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-notifications", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-search", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-tokens", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-utils", "version": "0.9.0" },
+        { "name": "@equaltoai/greater-components-admin", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-auth", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-content", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-headless", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-icons", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-notifications", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-search", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-tokens", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-utils", "version": "0.10.0-rc.1" },
         { "name": "svelte", "version": "^5.55.1" }
       ],
       "types": [
@@ -7314,7 +7606,7 @@
     },
     "artist": {
       "name": "artist",
-      "version": "0.9.0",
+      "version": "0.10.0-rc.1",
       "description": "Artist portfolio and gallery UI components for visual artists and creative professionals",
       "exports": [
         "Artwork",
@@ -7408,8 +7700,8 @@
         },
         {
           "path": "src/components/ArtistProfile/HeroBanner.svelte",
-          "checksum": "sha256-cZAXai0HepmPh/9dMJcWGh0XCc2vXZMWaZGHz5KOVdA=",
-          "size": 4661
+          "checksum": "sha256-YfDHneHv0T0aFx3TR0dhI60HmK8eJWnXzUAjLOXqbhs=",
+          "size": 5080
         },
         {
           "path": "src/components/ArtistProfile/index.ts",
@@ -7443,8 +7735,8 @@
         },
         {
           "path": "src/components/ArtistProfile/Timeline.svelte",
-          "checksum": "sha256-HpFdEGagk/MJFulIFhbWoaT4VKvd3+CsPDe/OGELb9Y=",
-          "size": 4511
+          "checksum": "sha256-pYTXPUJ+ObxLhvbKiAFqwRvXbbSx8nOd6Jiy+OETlME=",
+          "size": 4701
         },
         {
           "path": "src/components/ArtistTimeline/index.ts",
@@ -7453,8 +7745,8 @@
         },
         {
           "path": "src/components/ArtistTimeline.svelte",
-          "checksum": "sha256-Fl8lpqcVHrJGfaJk1+P5UJuTz0OYDzvbADErZ/0MIyU=",
-          "size": 9466
+          "checksum": "sha256-B/A9t/xM8UdSV5+UaDVkYrU3KAKSH3CsPzhSeMs5HAM=",
+          "size": 9656
         },
         {
           "path": "src/components/Artwork/Actions.svelte",
@@ -7498,8 +7790,8 @@
         },
         {
           "path": "src/components/Artwork/Stats.svelte",
-          "checksum": "sha256-/0XhiVXectj9kSJSRZ/C9f5/evTHXxgmAeL3iTqW0/Q=",
-          "size": 4064
+          "checksum": "sha256-n5dU2nSqUvYkRiSFx9sxzWIKG7lKF1X4PaTpNsLadh0=",
+          "size": 4354
         },
         {
           "path": "src/components/Artwork/Title.svelte",
@@ -7513,8 +7805,8 @@
         },
         {
           "path": "src/components/ArtworkCard.svelte",
-          "checksum": "sha256-BhD9LmXWYVDIMDXKwKOHWyA6rYiESaoEZdYuPIiXay8=",
-          "size": 9549
+          "checksum": "sha256-MS4Wcg+g66WM87w7HcZPIiIyXJt/EEKzwdlvvEzHPZU=",
+          "size": 9562
         },
         {
           "path": "src/components/Community/Collaboration/context.ts",
@@ -7523,13 +7815,13 @@
         },
         {
           "path": "src/components/Community/Collaboration/Contributors.svelte",
-          "checksum": "sha256-twohy1+vIdMyWT2f0h4Pns8jS5bhHZl8mpof768mGc0=",
-          "size": 5657
+          "checksum": "sha256-P/n79mIPTkpty2X4Mg+64yBYF/BtW1yTWrkDC/D3LZs=",
+          "size": 5694
         },
         {
           "path": "src/components/Community/Collaboration/Gallery.svelte",
-          "checksum": "sha256-IyMzRHLJikv91drDqLnP3FzFblFmjfxNcYsjG4GaftM=",
-          "size": 6108
+          "checksum": "sha256-/RYq9tSCsjsmuM7IL7L3+6+2bXd8ARITouWp+JNd3F8=",
+          "size": 6151
         },
         {
           "path": "src/components/Community/Collaboration/index.ts",
@@ -7573,8 +7865,8 @@
         },
         {
           "path": "src/components/Community/CritiqueCircle/Members.svelte",
-          "checksum": "sha256-9JhNpOZw+gM09t7Xfky50hp1mylpLT7CEEj2yKY722A=",
-          "size": 7338
+          "checksum": "sha256-u/08R3dK10AV/TG9YjViyhlgsqJliI51w+qnCtYMVfM=",
+          "size": 7377
         },
         {
           "path": "src/components/Community/CritiqueCircle/Queue.svelte",
@@ -7618,8 +7910,8 @@
         },
         {
           "path": "src/components/CreativeTools/CritiqueMode/Annotations.svelte",
-          "checksum": "sha256-O03EALmGG4ffUlFZmTQ+Cf6p7YuuSkhFalJ5q68NmsQ=",
-          "size": 5694
+          "checksum": "sha256-lBAzmOfgEIt4OZeJKqMkWeWZ5vXLToQbY1yeB6C6uhU=",
+          "size": 6035
         },
         {
           "path": "src/components/CreativeTools/CritiqueMode/context.svelte.ts",
@@ -7653,8 +7945,8 @@
         },
         {
           "path": "src/components/CreativeTools/WorkInProgress/Comments.svelte",
-          "checksum": "sha256-Nn0vFKnF58Dv/Ki25neXPSANaOE/NhrkyD2xX5KgH94=",
-          "size": 7827
+          "checksum": "sha256-3JXevwhEHWBdsFTVK2+Lguou3J95POLVRlczZuQWUT4=",
+          "size": 8021
         },
         {
           "path": "src/components/CreativeTools/WorkInProgress/Compare.svelte",
@@ -7848,18 +8140,18 @@
         },
         {
           "path": "src/components/MediaViewer/Root.svelte",
-          "checksum": "sha256-qiBK1q0sUCJoo/wtrPu7ugOoe9ROTSrleVPMGGIjUTo=",
-          "size": 8889
+          "checksum": "sha256-xj7dC00b9R6i0IAzTRQXWUFXO5FDGlEs26IKnwy7PPI=",
+          "size": 9382
         },
         {
           "path": "src/components/MediaViewer/ZoomControls.svelte",
-          "checksum": "sha256-1VoS2MZhAyHcp4UhtZ5EkMFeSyGrrMf4GMU09DfyP1k=",
-          "size": 4902
+          "checksum": "sha256-wby9XJ+JRj327wE2bBhEjdn6NWzOjYEQTMgm5RtnYUw=",
+          "size": 5117
         },
         {
           "path": "src/components/Monetization/DirectPurchase.svelte",
-          "checksum": "sha256-Ae62iyOuW6tmvkGLB9c2yzPX2W1z8rV/lRFglqeEKkY=",
-          "size": 25035
+          "checksum": "sha256-3BpwuXm3ovquQpFs8kDAdUcL9JxFG8Bndx4pdgGpPMw=",
+          "size": 25916
         },
         {
           "path": "src/components/Monetization/index.ts",
@@ -7888,8 +8180,8 @@
         },
         {
           "path": "src/components/PortfolioSection.svelte",
-          "checksum": "sha256-jhjDUwMcOutq8ula5gZ2E4/SLcAEO8egGzpaZduqLXk=",
-          "size": 5313
+          "checksum": "sha256-2gQ8aAOEGOFh5zmos3E3nPHlzIQ684yQspSAW1aYrpg=",
+          "size": 5503
         },
         {
           "path": "src/components/Transparency/AIDisclosure.svelte",
@@ -8048,8 +8340,8 @@
         },
         {
           "path": "src/types/artist.ts",
-          "checksum": "sha256-JYS/GygEOpvIL3z4rQKWRwZARUHlRTeKhwbfgBkOCm8=",
-          "size": 6351
+          "checksum": "sha256-U+FG7wDcMqNCSQuoHIM1qTn5rUn9lmblAsQOz/xn5Vo=",
+          "size": 6577
         },
         {
           "path": "src/types/artwork.ts",
@@ -8147,23 +8439,23 @@
         "tokens": "@equaltoai/greater-components/tokens/theme.css"
       },
       "dependencies": [
-        { "name": "adapters", "version": "0.9.0" },
-        { "name": "headless", "version": "0.9.0" },
-        { "name": "icons", "version": "0.9.0" },
-        { "name": "primitives", "version": "0.9.0" },
-        { "name": "tokens", "version": "0.9.0" },
-        { "name": "utils", "version": "0.9.0" }
+        { "name": "adapters", "version": "0.10.0-rc.1" },
+        { "name": "headless", "version": "0.10.0-rc.1" },
+        { "name": "icons", "version": "0.10.0-rc.1" },
+        { "name": "primitives", "version": "0.10.0-rc.1" },
+        { "name": "tokens", "version": "0.10.0-rc.1" },
+        { "name": "utils", "version": "0.10.0-rc.1" }
       ],
       "peerDependencies": [
         { "name": "@apollo/client", "version": "^4.1.7" },
-        { "name": "@equaltoai/greater-components-adapters", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-auth", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-headless", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-icons", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-notifications", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-tokens", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-utils", "version": "0.9.0" },
+        { "name": "@equaltoai/greater-components-adapters", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-auth", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-headless", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-icons", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-notifications", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-tokens", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-utils", "version": "0.10.0-rc.1" },
         { "name": "svelte", "version": "^5.55.1" }
       ],
       "types": [
@@ -8205,7 +8497,7 @@
     },
     "agent": {
       "name": "agent",
-      "version": "0.9.0",
+      "version": "0.10.0-rc.1",
       "description": "Agent-first face compositions and route-shell boundaries for Greater Components.",
       "exports": [
         "AgentGenesisWorkspace",
@@ -8281,18 +8573,18 @@
         "tokens": "@equaltoai/greater-components/tokens/theme.css"
       },
       "dependencies": [
-        { "name": "agent", "version": "0.9.0" },
-        { "name": "chat", "version": "0.9.0" },
-        { "name": "messaging", "version": "0.9.0" },
-        { "name": "notifications", "version": "0.9.0" },
-        { "name": "soul", "version": "0.9.0" }
+        { "name": "agent", "version": "0.10.0-rc.1" },
+        { "name": "chat", "version": "0.10.0-rc.1" },
+        { "name": "messaging", "version": "0.10.0-rc.1" },
+        { "name": "notifications", "version": "0.10.0-rc.1" },
+        { "name": "soul", "version": "0.10.0-rc.1" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-agent", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-chat", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-messaging", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-notifications", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-soul", "version": "0.9.0" },
+        { "name": "@equaltoai/greater-components-agent", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-chat", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-messaging", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-notifications", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-soul", "version": "0.10.0-rc.1" },
         { "name": "svelte", "version": "^5.55.1" }
       ],
       "types": [
@@ -8321,7 +8613,7 @@
   "shared": {
     "auth": {
       "name": "auth",
-      "version": "0.9.0",
+      "version": "0.10.0-rc.1",
       "description": "Authentication components for ActivityPub/Fediverse applications",
       "exports": [
         "Root",
@@ -8421,14 +8713,14 @@
         }
       ],
       "dependencies": [
-        { "name": "headless", "version": "0.9.0" },
-        { "name": "icons", "version": "0.9.0" },
-        { "name": "primitives", "version": "0.9.0" }
+        { "name": "headless", "version": "0.10.0-rc.1" },
+        { "name": "icons", "version": "0.10.0-rc.1" },
+        { "name": "primitives", "version": "0.10.0-rc.1" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-headless", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-icons", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.9.0" },
+        { "name": "@equaltoai/greater-components-headless", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-icons", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.10.0-rc.1" },
         { "name": "svelte", "version": "^5.55.1" }
       ],
       "types": [
@@ -8452,7 +8744,7 @@
     },
     "compose": {
       "name": "compose",
-      "version": "0.9.0",
+      "version": "0.10.0-rc.1",
       "description": "Post/content composer components for ActivityPub/Fediverse applications",
       "exports": [
         "Root",
@@ -8587,16 +8879,16 @@
       ],
       "dependencies": [
         { "name": "adapters", "version": "latest" },
-        { "name": "headless", "version": "0.9.0" },
-        { "name": "icons", "version": "0.9.0" },
-        { "name": "primitives", "version": "0.9.0" },
-        { "name": "utils", "version": "0.9.0" }
+        { "name": "headless", "version": "0.10.0-rc.1" },
+        { "name": "icons", "version": "0.10.0-rc.1" },
+        { "name": "primitives", "version": "0.10.0-rc.1" },
+        { "name": "utils", "version": "0.10.0-rc.1" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-headless", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-icons", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-utils", "version": "0.9.0" },
+        { "name": "@equaltoai/greater-components-headless", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-icons", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-utils", "version": "0.10.0-rc.1" },
         { "name": "svelte", "version": "^5.55.1" }
       ],
       "types": [
@@ -8613,7 +8905,7 @@
     },
     "notifications": {
       "name": "notifications",
-      "version": "0.9.0",
+      "version": "0.10.0-rc.1",
       "description": "Notification components for ActivityPub/Fediverse applications",
       "exports": [
         "Root",
@@ -8707,16 +8999,16 @@
         }
       ],
       "dependencies": [
-        { "name": "adapters", "version": "0.9.0" },
-        { "name": "icons", "version": "0.9.0" },
-        { "name": "primitives", "version": "0.9.0" },
-        { "name": "utils", "version": "0.9.0" }
+        { "name": "adapters", "version": "0.10.0-rc.1" },
+        { "name": "icons", "version": "0.10.0-rc.1" },
+        { "name": "primitives", "version": "0.10.0-rc.1" },
+        { "name": "utils", "version": "0.10.0-rc.1" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-adapters", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-icons", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-utils", "version": "0.9.0" },
+        { "name": "@equaltoai/greater-components-adapters", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-icons", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-utils", "version": "0.10.0-rc.1" },
         { "name": "svelte", "version": "^5.55.1" }
       ],
       "types": [
@@ -8738,7 +9030,7 @@
     },
     "search": {
       "name": "search",
-      "version": "0.9.0",
+      "version": "0.10.0-rc.1",
       "description": "Search components for ActivityPub/Fediverse applications with federated search support",
       "exports": [
         "Root",
@@ -8808,16 +9100,16 @@
         }
       ],
       "dependencies": [
-        { "name": "headless", "version": "0.9.0" },
-        { "name": "icons", "version": "0.9.0" },
-        { "name": "primitives", "version": "0.9.0" },
-        { "name": "utils", "version": "0.9.0" }
+        { "name": "headless", "version": "0.10.0-rc.1" },
+        { "name": "icons", "version": "0.10.0-rc.1" },
+        { "name": "primitives", "version": "0.10.0-rc.1" },
+        { "name": "utils", "version": "0.10.0-rc.1" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-headless", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-icons", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-utils", "version": "0.9.0" },
+        { "name": "@equaltoai/greater-components-headless", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-icons", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-utils", "version": "0.10.0-rc.1" },
         { "name": "svelte", "version": "^5.55.1" }
       ],
       "types": [
@@ -8834,7 +9126,7 @@
     },
     "admin": {
       "name": "admin",
-      "version": "0.9.0",
+      "version": "0.10.0-rc.1",
       "description": "Admin dashboard components for ActivityPub instance management",
       "exports": [
         "Root",
@@ -8895,8 +9187,8 @@
         },
         {
           "path": "src/Cost/Alerts.svelte",
-          "checksum": "sha256-eoQJxtsnb03xDJLyPVy/wRzHKG/E1JrEzb67n2W5xXE=",
-          "size": 634
+          "checksum": "sha256-50dh1zTXF4gUZwPWDZg4/wzpAmRDinMayE/DbnbbCTU=",
+          "size": 640
         },
         {
           "path": "src/Cost/BudgetControls.svelte",
@@ -9000,8 +9292,8 @@
         },
         {
           "path": "src/SeveredRelationships/List.svelte",
-          "checksum": "sha256-Zuk/zf5r4MAtKt0Hx9cmQtGADQQ+LQEdJafLq7fVsdU=",
-          "size": 1171
+          "checksum": "sha256-fhPepCp1NEaUreFQdbJP1mIN7UFATxBGEJ7AQEMPGNo=",
+          "size": 1193
         },
         {
           "path": "src/SeveredRelationships/RecoveryPanel.svelte",
@@ -9035,8 +9327,8 @@
         },
         {
           "path": "src/TrustGraph/Visualization.svelte",
-          "checksum": "sha256-RBtnLSWaWbKZ/Lq6OUFhm7Pjx3Fyy7inDBaAYhB7qHg=",
-          "size": 6142
+          "checksum": "sha256-rxTSgA4+sYykDxVNBr1yAcOLFt1nFs8oR26R0ukrNAU=",
+          "size": 6577
         },
         {
           "path": "src/Users.svelte",
@@ -9046,14 +9338,14 @@
       ],
       "dependencies": [
         { "name": "adapters", "version": "latest" },
-        { "name": "headless", "version": "0.9.0" },
-        { "name": "icons", "version": "0.9.0" },
-        { "name": "primitives", "version": "0.9.0" }
+        { "name": "headless", "version": "0.10.0-rc.1" },
+        { "name": "icons", "version": "0.10.0-rc.1" },
+        { "name": "primitives", "version": "0.10.0-rc.1" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-headless", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-icons", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.9.0" },
+        { "name": "@equaltoai/greater-components-headless", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-icons", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.10.0-rc.1" },
         { "name": "svelte", "version": "^5.55.1" }
       ],
       "types": [
@@ -9071,7 +9363,7 @@
     },
     "chat": {
       "name": "chat",
-      "version": "0.9.0",
+      "version": "0.10.0-rc.1",
       "description": "AI chat interface components with streaming responses, tool calls, and settings",
       "exports": [
         "Container",
@@ -9172,15 +9464,15 @@
         }
       ],
       "dependencies": [
-        { "name": "content", "version": "0.9.0" },
-        { "name": "icons", "version": "0.9.0" },
-        { "name": "primitives", "version": "0.9.0" }
+        { "name": "content", "version": "0.10.0-rc.1" },
+        { "name": "icons", "version": "0.10.0-rc.1" },
+        { "name": "primitives", "version": "0.10.0-rc.1" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-content", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-headless", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-icons", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.9.0" },
+        { "name": "@equaltoai/greater-components-content", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-headless", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-icons", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.10.0-rc.1" },
         { "name": "svelte", "version": "^5.55.1" }
       ],
       "types": [
@@ -9218,7 +9510,7 @@
     },
     "messaging": {
       "name": "messaging",
-      "version": "0.9.0",
+      "version": "0.10.0-rc.1",
       "description": "Direct messaging components for ActivityPub/Fediverse applications",
       "exports": [
         "Root",
@@ -9259,8 +9551,8 @@
         },
         {
           "path": "src/ConversationWorkflowSummary.svelte",
-          "checksum": "sha256-1dbfzcaC40nFEyFdXGelgFB2yiiCkeMDPXCuP26M3n0=",
-          "size": 2309
+          "checksum": "sha256-+mO7cS42J9G7FplGDcvuUealcYVAqx47qH4WqUkaxPU=",
+          "size": 2583
         },
         {
           "path": "src/index.ts",
@@ -9309,21 +9601,21 @@
         },
         {
           "path": "src/WorkflowThreadMoment.svelte",
-          "checksum": "sha256-IM+qoJZEMS44ujczVD9hiWnpPQBeb37zfG3JipVeFq0=",
-          "size": 3306
+          "checksum": "sha256-FN/gYB5HCi3ltwxI0L3qjqep+jXwQE1zJSEAKtXnzlU=",
+          "size": 3580
         }
       ],
       "dependencies": [
-        { "name": "compose", "version": "0.9.0" },
-        { "name": "headless", "version": "0.9.0" },
-        { "name": "icons", "version": "0.9.0" },
-        { "name": "primitives", "version": "0.9.0" }
+        { "name": "compose", "version": "0.10.0-rc.1" },
+        { "name": "headless", "version": "0.10.0-rc.1" },
+        { "name": "icons", "version": "0.10.0-rc.1" },
+        { "name": "primitives", "version": "0.10.0-rc.1" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-compose", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-headless", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-icons", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.9.0" },
+        { "name": "@equaltoai/greater-components-compose", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-headless", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-icons", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.10.0-rc.1" },
         { "name": "svelte", "version": "^5.55.1" }
       ],
       "types": [
@@ -9344,7 +9636,7 @@
     },
     "soul": {
       "name": "soul",
-      "version": "0.9.0",
+      "version": "0.10.0-rc.1",
       "description": "Reachability, contact-preferences, and anchor-assurance UI for lesser-soul v3.",
       "exports": [
         "ChannelsDisplay",
@@ -9406,14 +9698,14 @@
         }
       ],
       "dependencies": [
-        { "name": "adapters", "version": "0.9.0" },
-        { "name": "primitives", "version": "0.9.0" },
-        { "name": "utils", "version": "0.9.0" }
+        { "name": "adapters", "version": "0.10.0-rc.1" },
+        { "name": "primitives", "version": "0.10.0-rc.1" },
+        { "name": "utils", "version": "0.10.0-rc.1" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-adapters", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.9.0" },
-        { "name": "@equaltoai/greater-components-utils", "version": "0.9.0" },
+        { "name": "@equaltoai/greater-components-adapters", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.10.0-rc.1" },
+        { "name": "@equaltoai/greater-components-utils", "version": "0.10.0-rc.1" },
         { "name": "svelte", "version": "^5.55.1" }
       ],
       "types": [
@@ -9431,7 +9723,7 @@
     },
     "agent": {
       "name": "agent",
-      "version": "0.9.0",
+      "version": "0.10.0-rc.1",
       "description": "Agent-first workflow surfaces, contracts, package boundaries, and rollout shape metadata for Greater Components.",
       "exports": [
         "AgentIdentityCard",

@@ -67,6 +67,16 @@ const PACKAGE_CONFIGS = {
 		srcDir: 'src',
 		extensions: ['.svelte', '.ts', '.js'],
 	},
+	shell: {
+		type: 'components',
+		srcDir: 'src',
+		extensions: ['.svelte', '.ts', '.js', '.css'],
+	},
+	'host-platform': {
+		type: 'components',
+		srcDir: 'src',
+		extensions: ['.svelte', '.ts', '.js', '.css'],
+	},
 	fediverse: {
 		type: 'components',
 		srcDir: 'src',

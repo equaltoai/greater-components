@@ -139,25 +139,99 @@ git commit -s -m "docs: update README with installation instructions"
 
 ### Pull Request Process
 
-1. Ensure all tests pass and coverage requirements are met
-2. Update documentation as needed
-3. Add a changeset for your changes:
+1. Open the PR — `.github/PULL_REQUEST_TEMPLATE.md` populates the
+   description automatically. The template includes the
+   **component-milestone parity checklist**, the
+   **stewardship-guarantees checklist**, validation commands, and a
+   release-flow handoff plan. Fill out every applicable section.
+2. Ensure all CI gates pass (lint, format, typecheck, test, build,
+   Playwright a11y matrix, registry / package validations, DCO,
+   promotion rehearsal). Coverage threshold is 75%.
+3. Update documentation alongside any user-facing change:
+   `docs/component-inventory.md`, `docs/api-reference.md`, and a
+   playground demo under `apps/playground/src/routes/`.
+4. **Optionally** add a changeset when you want this PR's changes to
+   appear in the next published release notes (see the
+   [Changesets](#changesets) section below for when one is required
+   vs. optional):
    ```bash
    pnpm changeset
    ```
-4. Create a pull request with a clear description
-5. Link any related issues
-6. Wait for code review and address feedback
+   — Pick **minor** for additive component / API work; **patch** for
+   bug fixes; **major** is reserved for breaking changes (which require
+   `evolve-component-surface` stewardship approval and explicit
+   consumer coordination).
+5. Regenerate the CLI registry whenever package source changes:
+   ```bash
+   pnpm generate-registry
+   pnpm validate:registry
+   ```
+   Commit the regenerated `registry/index.json` alongside the source
+   change. **Never hand-edit `registry/index.json` or `registry/latest.json`** —
+   they're managed by automation and the strict checksum validator
+   rejects drift.
+6. Link any related issues and wait for code review.
+
+#### Component-milestone parity (Project 39 G4.1 / #661)
+
+Every PR that ships a new component or extends a public surface MUST
+include all of the following in the same PR train. The PR template
+checklist enforces this; the Greater steward will not approve a PR
+missing any item without an explicit `N/A` justification.
+
+- Source (component + CSS + types)
+- Tests (unit + a11y + strict-CSP + unique-id-across-instances)
+- Documentation (`component-inventory.md`, `api-reference.md`)
+- Playground demo (`apps/playground/src/routes/<feature>/`)
+- CLI registry entry (`packages/cli/src/registry/index.ts`)
+- Generated registry refresh (`registry/index.json` via
+  `pnpm generate-registry`)
+- Greater-components root-barrel wiring
+- Docs workflow update (`.github/workflows/docs.yml`) for new
+  workspace packages
 
 ### Changesets
 
-This project uses [Changesets](https://github.com/changesets/changesets) for version management:
+This project uses [Changesets](https://github.com/changesets/changesets)
+for version management, but **changesets are optional** — the
+`Changeset (Optional)` workflow does not require one for docs-only,
+test-only, CI-config, or release-coordination PRs (see
+`.github/workflows/changeset-required.yml` for the exact policy that
+runs in CI, and `AGENTS.md` for the steward's posture).
 
-1. Run `pnpm changeset` when you make changes
-2. Select the packages affected
-3. Choose the version bump type (major, minor, patch)
-4. Write a summary of your changes
-5. Commit the generated changeset file
+**Add a changeset when:**
+
+- You change a published package's runtime / build / export surface
+  (anything under `packages/*` that affects consumers' installed
+  output).
+- You bump a dependency that consumers will receive.
+- You make any change you want to appear in the release notes.
+
+**Skip the changeset when:**
+
+- The PR only edits `docs/`, `apps/playground/`, `apps/docs/`, tests,
+  CI workflows, repo tooling, ADRs, or stewardship docs (CONTRIBUTING,
+  AGENTS, CODEOWNERS).
+- The PR is a release-coordination commit that the
+  `release-components` skill will follow (RC promotion, stable
+  promotion, backmerges).
+- The PR is purely a registry regeneration with no source change.
+
+When you do add one:
+
+1. Run `pnpm changeset`.
+2. Select the packages affected.
+3. Choose the version bump type (`major` / `minor` / `patch`). Use
+   `minor` for additive component or API work; `major` only for
+   breaking changes (which need `evolve-component-surface` stewardship
+   approval).
+4. Write a summary of your changes — release-please rolls these into
+   the consolidated changelog on the next version bump.
+5. Commit the generated `.changeset/<slug>.md` file with the rest of
+   your changes.
+
+If you're unsure whether your change needs a changeset, ask in the PR
+description — the Greater steward will tell you on review.
 
 ## Package Development
 
@@ -168,6 +242,34 @@ This project uses [Changesets](https://github.com/changesets/changesets) for ver
 3. Extend `tsconfig.base.json` for TypeScript config
 4. Add exports to the package.json
 5. Update the root `README.md` if needed
+
+#### Package-enumeration parity (enforced by CI audits)
+
+When you add a new top-level workspace package (parallel to
+`packages/primitives`, `packages/icons`, `packages/tokens` — NOT nested
+under `packages/{shared,faces}/`), **four enumeration sites must update
+together**. Two CI audits enforce this:
+
+| Enumeration site                                                   | Enforced by                                        |
+| ------------------------------------------------------------------ | -------------------------------------------------- |
+| `packages/cli/src/utils/transform.ts:CORE_PACKAGES`                | `scripts/audit-cli-package-enumeration-parity.mjs` |
+| `packages/cli/src/utils/dependency-resolver.ts:CORE_PACKAGE_NAMES` | (same)                                             |
+| `packages/cli/src/utils/fetch.ts:CORE_PACKAGE_NAMES`               | (same)                                             |
+| Root `package.json` `scripts.check:svelte`                         | `scripts/audit-svelte-check-parity.mjs`            |
+
+Additionally, every Svelte-containing package needs its own
+`tsconfig.check.json` (copy from any sibling — the file is uniform
+modulo the `extends` path depth). `audit-svelte-check-parity.mjs`
+flags missing tsconfigs.
+
+Both audits run on every PR via `.github/workflows/lint.yml` and are
+chained into `pnpm validate:check-parity` for local runs. They derive
+the canonical package list from `packages/*/package.json` filesystem
+discovery — adding a new package will fail CI until all sites are
+updated. This closes the structural gap that allowed issues #674 (CLI
+install routing) and #679 (CommandPalette type collision) to ship in
+greater-v0.9.1-rc.0 and -rc.1 respectively; see Project 41 (#680) for
+the full story.
 
 ### Component Guidelines
 
@@ -201,12 +303,49 @@ All components must meet WCAG 2.1 AA standards:
 
 ## Release Process
 
-Releases are automated through GitHub Actions:
+**greater-components does NOT publish to npm.** It is distributed via the
+shadcn-style **Greater CLI**: consumers `npm install -g` a GitHub
+Release tarball, then run `greater init` / `greater add <component>` /
+`greater update --ref <tag>` to copy component **source** (not bundles)
+into their own project. Per-file SHA256 checksums in
+`registry/index.json` verify integrity on install.
 
-1. Changesets create a release PR
-2. Maintainers review and merge the PR
-3. GitHub Actions automatically publishes to npm
-4. Tags and releases are created on GitHub
+Releases follow the **three-branch flow**:
+
+1. **`staging`** — entry point. Feature PRs merge here. Branch
+   protection requires the full CI gate set to pass before merge.
+2. **`premain`** — RC track. The `release-components` skill promotes
+   `staging → premain` when an RC is ready. `release-please` opens a
+   release PR there using `release-please-config.premain.json`. Merging
+   it cuts an **RC tag** (`greater-vX.Y.Z-rc.N`) and publishes the RC
+   GitHub Release with the CLI tarball asset attached. Consumers
+   (lesser-host, sim) validate by pinning via
+   `greater update --ref greater-vX.Y.Z-rc.N`.
+3. **`main`** — stable. After RC validation, `release-components`
+   promotes `premain → main`. A second `release-please` PR cuts the
+   **stable tag** (`greater-vX.Y.Z`) and publishes the stable GitHub
+   Release. Once stable ships, automation **backmerges** main →
+   premain → staging to keep the branches in sync.
+
+**Discipline:**
+
+- **Published tags are immutable.** A bad release is fixed by a new
+  patch (`greater-vX.Y.Z+1`), never by re-pointing the tag.
+- **GitHub Release assets are never deleted.** Older releases are
+  consumer rollback targets via `greater update --ref <prior-tag>`.
+- **Merge type matters.** Branches that already carry `origin/main` /
+  `origin/premain` ancestry MUST be merged with **"Create a merge
+  commit"** (preserve-topology) — squashing loses ancestry and breaks
+  the next promotion rehearsal. Pure staging-based branches can
+  squash-merge safely. The `Rehearse staging promotion path` CI job
+  detects the right mode automatically; local engineers can verify with
+  `node scripts/rehearse-release-promotion.js --candidate HEAD` and
+  `--simulate-squash`.
+- **No skipped gates.** Compressed soak periods require explicit
+  operator authorization documented in a release-coordination issue.
+
+See also: the `release-components` skill (`.claude/skills/release-components/SKILL.md`)
+for the full RC / stable promotion playbook.
 
 ## Questions?
 

@@ -2,8 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import { onMount, onDestroy, untrack } from 'svelte';
 
-	import { Button } from '@equaltoai/greater-components-primitives';
-	import { TextField } from '@equaltoai/greater-components-primitives';
+	import { Button, TextField } from '@equaltoai/greater-components-primitives';
 	import { useStableId } from '@equaltoai/greater-components-utils';
 	import type {
 		ComposeBoxProps,
@@ -33,6 +32,8 @@
 			]
 		>;
 		style?: string;
+		/** Additional CSS classes applied to the compose-box root. @public */
+		class?: string;
 	}
 
 	let {
@@ -80,9 +81,12 @@
 	let focused = $state(false);
 	let showCharacterCount = $state(false);
 
-	// Element references
+	// Element references. The CW input is a `<TextField>` whose internal
+	// `<input>` is not bind-exposed, so a `.focus()` ref isn't reachable
+	// here today. The auto-focus-on-CW-toggle was a stub call against an
+	// unfocusable component instance and has been removed; see follow-up
+	// issue for `TextField.inputRef`-bindable to restore the UX cleanly.
 	let textareaElement = $state<HTMLTextAreaElement>();
-	let cwTextareaElement = $state<HTMLTextAreaElement>();
 	let containerElement = $state<HTMLDivElement>();
 
 	// Auto-save draft timer
@@ -106,7 +110,11 @@
 
 	type CharacterCountTone = 'default' | 'warning' | 'error';
 
-	const characterCountTone = $derived<CharacterCountTone>(() => {
+	// `$derived(expr)` takes an expression; passing an arrow function
+	// makes the derived value itself a function reference. Use
+	// `.by(fn)` for lazy computation. Same pattern that previously
+	// snuck through host-platform's CostGauge (Project 41 PR-A).
+	const characterCountTone = $derived.by<CharacterCountTone>(() => {
 		if (isOverLimit) return 'error';
 		if (isAtSoftLimit) return 'warning';
 		return 'default';
@@ -156,16 +164,14 @@
 		}
 	}
 
-	// Toggle content warning
+	// Toggle content warning. The CW input is rendered as a `<TextField>`
+	// (a styled wrapper) so we cannot reach its internal `<input>` to call
+	// `.focus()` from here without TextField exposing a bindable
+	// inputRef. Tracked as a follow-up enhancement; the prior `.focus()`
+	// call referenced a component instance that never honored it, so
+	// removing it changes no observable behavior.
 	function toggleContentWarning() {
 		hasContentWarning = !hasContentWarning;
-		if (hasContentWarning) {
-			setTimeout(() => {
-				if (cwTextareaElement) {
-					cwTextareaElement.focus();
-				}
-			}, 0);
-		}
 		scheduleDraftSave();
 	}
 
@@ -347,7 +353,6 @@
 	{#if hasContentWarning}
 		<div class="gr-compose-box__content-warning">
 			<TextField
-				bind:this={cwTextareaElement}
 				id={cwId}
 				bind:value={contentWarning}
 				placeholder={cwPlaceholder}
@@ -394,8 +399,8 @@
 			<div
 				id={charCountId}
 				class="gr-compose-box__char-count"
-				class:gr-compose-box__char-count--warning={characterCountTone() === 'warning'}
-				class:gr-compose-box__char-count--error={characterCountTone() === 'error'}
+				class:gr-compose-box__char-count--warning={characterCountTone === 'warning'}
+				class:gr-compose-box__char-count--error={characterCountTone === 'error'}
 				aria-live="polite"
 				aria-atomic="true"
 			>
@@ -410,9 +415,13 @@
 				attachments: mediaAttachments,
 				onRemove: handleMediaRemove,
 				onDescriptionEdit: (id, description) => {
-					const index = mediaAttachments.findIndex((a) => a.id === id);
-					if (index !== -1) {
-						mediaAttachments[index].description = description;
+					// `findIndex` narrows index to `>= 0` when matched, but
+					// `mediaAttachments[index]` is still typed
+					// `T | undefined` under `noUncheckedIndexedAccess`.
+					// Use `find` instead and mutate via the object reference.
+					const attachment = mediaAttachments.find((a) => a.id === id);
+					if (attachment) {
+						attachment.description = description;
 						scheduleDraftSave();
 					}
 				},

@@ -101,6 +101,17 @@
 
 		const nonRoot = baseNodes.filter((node) => !node.isRoot);
 		const root = baseNodes.find((node) => node.isRoot) ?? baseNodes[0];
+		// `baseNodes.length === 0` was returned for above, so `baseNodes[0]`
+		// is guaranteed defined here, but TS's `noUncheckedIndexedAccess`
+		// doesn't track that narrowing across the early return. Explicit
+		// guard satisfies the type checker without `!` (which is forbidden
+		// by `@typescript-eslint/no-non-null-assertion`).
+		if (!root) {
+			positionedNodes = [];
+			renderedEdges = [];
+			uniqueActorCount = 0;
+			return;
+		}
 		const radius = Math.min(width, height) / 2 - 60;
 
 		const positioned: PositionedNode[] = [
