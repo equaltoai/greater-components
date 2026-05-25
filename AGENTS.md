@@ -122,6 +122,15 @@ CI expectations:
 - Changesets are optional (not required for PRs to `staging`); releases are automated via release-please on `premain`/`main`.
 - Any branch targeting `staging` must also be promotion-safe: before shipping, rehearse the exact merge path `candidate -> staging`, `staging -> premain`, and `staging -> main`. If the RC lane remains in play for that train, also rehearse `premain -> main`. If any conflict appears in that chain, resolve it on the staging-targeted branch before merge so promotions stay clean.
 
+### Package-enumeration parity (automated gates)
+
+Adding a new top-level workspace package (parallel to `packages/primitives`, NOT nested under `packages/{shared,faces}/`) requires updating four enumeration sites in lockstep. Two audit scripts enforce this on every staging PR via `.github/workflows/lint.yml`:
+
+- `scripts/audit-svelte-check-parity.mjs` — every Svelte-containing package must have `tsconfig.check.json` AND be enumerated in root `package.json` `scripts.check:svelte`.
+- `scripts/audit-cli-package-enumeration-parity.mjs` — every top-level package must appear in all three CLI files: `transform.ts:CORE_PACKAGES`, `dependency-resolver.ts:CORE_PACKAGE_NAMES`, `fetch.ts:CORE_PACKAGE_NAMES`.
+
+Both run locally via `pnpm validate:check-parity` (also chained into `pnpm validate:package`). They derive the canonical list from `packages/*/package.json` discovery. See Project 41 (#680) for the story: issue #674 (CLI install routing) shipped because three CLI sites had to update together and one was missed; issue #679 (CommandPalette type collision) shipped because the workspace `check:svelte` script wasn't covering `shell` / `host-platform`. The audits make both failure modes CI-visible.
+
 ## CLI: Build + Install Locally
 
 The CLI lives in `packages/cli` and installs the `greater` binary (Node 24 required):
