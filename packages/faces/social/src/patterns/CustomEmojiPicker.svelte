@@ -378,9 +378,13 @@
 			grouped[cat].push(emoji);
 		});
 
-		// Sort each category by usage count
+		// Sort each category by usage count. The `grouped[cat]` lookup
+		// returns `T | undefined` under `noUncheckedIndexedAccess` even
+		// though `cat` came from `Object.keys(grouped)`; pull-to-local
+		// gives TS the narrowing it can't infer across the lookup.
 		Object.keys(grouped).forEach((cat) => {
-			grouped[cat].sort((a, b) => (b.usageCount || 0) - (a.usageCount || 0));
+			const list = grouped[cat];
+			if (list) list.sort((a, b) => (b.usageCount || 0) - (a.usageCount || 0));
 		});
 
 		return grouped;
@@ -389,8 +393,11 @@
 	const unicodeEmojisByCategory = $derived.by(() => {
 		const grouped: Record<string, UnicodeEmoji[]> = {};
 		unicodeEmojis.forEach((emoji) => {
-			if (!grouped[emoji.category]) grouped[emoji.category] = [];
-			grouped[emoji.category].push(emoji);
+			// `noUncheckedIndexedAccess` re-types the second lookup as
+			// possibly undefined; bind to a local that's narrowed by the
+			// fallback assignment.
+			const list = (grouped[emoji.category] ??= []);
+			list.push(emoji);
 		});
 		return grouped;
 	});
@@ -705,9 +712,9 @@
 							</section>
 						{/if}
 					{/each}
-				{:else if unicodeEmojisByCategory[selectedCategory]?.length > 0}
+				{:else if (unicodeEmojisByCategory[selectedCategory]?.length ?? 0) > 0}
 					<div class="emoji-picker__grid">
-						{#each unicodeEmojisByCategory[selectedCategory] as emoji (emoji.char)}
+						{#each unicodeEmojisByCategory[selectedCategory] ?? [] as emoji (emoji.char)}
 							<button
 								class="emoji-picker__emoji"
 								onclick={() => selectUnicodeEmoji(emoji)}
@@ -841,9 +848,9 @@
 					{/each}
 				{:else}
 					<!-- Show selected category -->
-					{#if emojisByCategory[selectedCategory]?.length > 0}
+					{#if (emojisByCategory[selectedCategory]?.length ?? 0) > 0}
 						<div class="emoji-picker__grid">
-							{#each emojisByCategory[selectedCategory] as emoji (emoji.shortcode)}
+							{#each emojisByCategory[selectedCategory] ?? [] as emoji (emoji.shortcode)}
 								<button
 									class="emoji-picker__emoji"
 									class:emoji-picker__emoji--favorite={favoriteEmojis.includes(emoji.shortcode)}
