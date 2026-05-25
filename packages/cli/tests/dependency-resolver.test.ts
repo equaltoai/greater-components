@@ -315,6 +315,130 @@ describe('Dependency Resolution', () => {
 		});
 	});
 
+	describe('mapRegistryFilePathToInstallPath (issue #674 regression)', () => {
+		// Issue #674: host installing `shell` from greater-v0.9.1-rc.0 received
+		// 404s because the CLI routed shell's registry-shared files into the
+		// `packages/shared/shell/...` location, which does not exist. The fix
+		// adds top-level packages (`shell`, `host-platform`) to
+		// `CORE_PACKAGE_NAMES`, which makes this function emit
+		// `greater/<name>/...` install paths instead of `shared/<name>/...`.
+		//
+		// These tests lock in the routing decision so a future top-level
+		// package addition can't silently regress install routing.
+
+		it('routes shell (type=shared) into greater/shell/, NOT shared/shell/', async () => {
+			const { mapRegistryFilePathToInstallPath } =
+				await import('../src/utils/dependency-resolver.js');
+
+			expect(
+				mapRegistryFilePathToInstallPath('shell', 'shared', 'src/components/Breadcrumb.css')
+			).toBe('greater/shell/components/Breadcrumb.css');
+
+			expect(
+				mapRegistryFilePathToInstallPath('shell', 'shared', 'src/components/CommandPalette.svelte')
+			).toBe('greater/shell/components/CommandPalette.svelte');
+
+			expect(mapRegistryFilePathToInstallPath('shell', 'shared', 'src/types.ts')).toBe(
+				'greater/shell/types.ts'
+			);
+
+			expect(mapRegistryFilePathToInstallPath('shell', 'shared', 'src/base.css')).toBe(
+				'greater/shell/base.css'
+			);
+		});
+
+		it('routes host-platform (type=shared) into greater/host-platform/, NOT shared/host-platform/', async () => {
+			const { mapRegistryFilePathToInstallPath } =
+				await import('../src/utils/dependency-resolver.js');
+
+			expect(
+				mapRegistryFilePathToInstallPath(
+					'host-platform',
+					'shared',
+					'src/components/FleetCard.svelte'
+				)
+			).toBe('greater/host-platform/components/FleetCard.svelte');
+
+			expect(
+				mapRegistryFilePathToInstallPath('host-platform', 'shared', 'src/components/CostGauge.css')
+			).toBe('greater/host-platform/components/CostGauge.css');
+
+			expect(
+				mapRegistryFilePathToInstallPath('host-platform', 'shared', 'src/utils/format.ts')
+			).toBe('greater/host-platform/utils/format.ts');
+		});
+
+		it('keeps existing core packages routed under greater/<name>/', async () => {
+			const { mapRegistryFilePathToInstallPath } =
+				await import('../src/utils/dependency-resolver.js');
+
+			// Sanity check the historical routing for the original CORE_PACKAGE_NAMES
+			// members so adding new entries can't accidentally break the old ones.
+			expect(mapRegistryFilePathToInstallPath('primitives', 'shared', 'src/Button.svelte')).toBe(
+				'greater/primitives/Button.svelte'
+			);
+			expect(mapRegistryFilePathToInstallPath('icons', 'shared', 'src/Search.svelte')).toBe(
+				'greater/icons/Search.svelte'
+			);
+			expect(mapRegistryFilePathToInstallPath('tokens', 'shared', 'src/tokens.css')).toBe(
+				'greater/tokens/tokens.css'
+			);
+			expect(mapRegistryFilePathToInstallPath('headless', 'shared', 'src/focus-trap.ts')).toBe(
+				'greater/headless/focus-trap.ts'
+			);
+		});
+
+		it('keeps genuine shared modules (non-core) routed under shared/<name>/', async () => {
+			const { mapRegistryFilePathToInstallPath } =
+				await import('../src/utils/dependency-resolver.js');
+
+			// Real shared modules — `composer`, `notifications`, etc. — are
+			// intentionally NOT in CORE_PACKAGE_NAMES; they live at
+			// `packages/shared/<name>/`, so the fetcher must continue to look
+			// for them at `shared/<name>/...`.
+			expect(mapRegistryFilePathToInstallPath('composer', 'shared', 'src/Composer.svelte')).toBe(
+				'shared/composer/Composer.svelte'
+			);
+			expect(
+				mapRegistryFilePathToInstallPath('notifications', 'shared', 'src/NotificationList.svelte')
+			).toBe('shared/notifications/NotificationList.svelte');
+		});
+
+		it('routes faces independently of CORE_PACKAGE_NAMES', async () => {
+			const { mapRegistryFilePathToInstallPath } =
+				await import('../src/utils/dependency-resolver.js');
+
+			expect(mapRegistryFilePathToInstallPath('social', 'face', 'src/Timeline.svelte')).toBe(
+				'greater/faces/social/Timeline.svelte'
+			);
+			// Even if a face's name collides with a CORE_PACKAGE_NAMES entry, the
+			// `face` type takes precedence (faces are emitted under
+			// `greater/faces/<name>/`, never the bare `greater/<name>/`).
+			expect(mapRegistryFilePathToInstallPath('shell', 'face', 'src/Surface.svelte')).toBe(
+				'greater/faces/shell/Surface.svelte'
+			);
+		});
+
+		it('handles paths that do not start with src/', async () => {
+			const { mapRegistryFilePathToInstallPath } =
+				await import('../src/utils/dependency-resolver.js');
+
+			expect(mapRegistryFilePathToInstallPath('shell', 'shared', 'index.ts')).toBe(
+				'greater/shell/index.ts'
+			);
+		});
+
+		it('returns null for non-mappable types', async () => {
+			const { mapRegistryFilePathToInstallPath } =
+				await import('../src/utils/dependency-resolver.js');
+
+			expect(mapRegistryFilePathToInstallPath('button', 'primitive', 'src/Button.svelte')).toBe(
+				null
+			);
+			expect(mapRegistryFilePathToInstallPath('modal', 'compound', 'src/Modal.svelte')).toBe(null);
+		});
+	});
+
 	describe('groupByType', () => {
 		it('groups resolved dependencies by type', async () => {
 			const { getComponent } = await import('../src/registry/index.js');
