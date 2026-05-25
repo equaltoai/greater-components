@@ -157,6 +157,12 @@ export interface ArtistData {
 	slug: string;
 	/** Display name */
 	name: string;
+	/**
+	 * Alternative display name. Optional; when omitted, components fall
+	 * back to `name`. Useful for consumers integrating with Mastodon-shaped
+	 * data (whose `display_name` field maps here).
+	 */
+	displayName?: string;
 	/** Username/handle */
 	username: string;
 	/** Pronouns */

@@ -86,7 +86,7 @@ Collaboration.Gallery - Collaborative gallery display
 					<div class="collab-gallery__contributor-section">
 						<h4 class="collab-gallery__contributor-name">{contributor}</h4>
 						<div class="collab-gallery__contributor-grid">
-							{#each assets.filter( (a) => a.url.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i) ) as asset (asset.id)}
+							{#each assets.filter( (a: { url: string; id: string; name: string }) => a.url.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i) ) as asset (asset.id)}
 								<div class="collab-gallery__item collab-gallery__item--small">
 									<img src={asset.url} alt={asset.name} />
 								</div>

@@ -39,7 +39,7 @@ Click handler to open MediaViewer or navigate
 		/**
 		 * Display variant
 		 */
-		variant?: 'grid' | 'row' | 'list' | 'masonry';
+		variant?: 'grid' | 'row' | 'list' | 'masonry' | 'featured';
 
 		/**
 		 * Show info overlay on hover

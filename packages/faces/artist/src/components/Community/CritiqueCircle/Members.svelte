@@ -105,7 +105,9 @@ CritiqueCircle.Members - Circle membership management
 					<img src={member.artist.avatar || ''} alt="" class="critique-members__avatar" />
 					<div class="critique-members__info">
 						<div class="critique-members__name-row">
-							<span class="critique-members__name">{member.artist.displayName}</span>
+							<span class="critique-members__name"
+								>{member.artist.displayName ?? member.artist.name}</span
+							>
 							<span class={`critique-members__badge critique-members__badge--${member.role}`}>
 								{badge.label}
 							</span>

@@ -101,6 +101,10 @@ Features:
 
 		if (draggedIndex !== -1 && targetIndex !== -1) {
 			const [removed] = currentItems.splice(draggedIndex, 1);
+			// `splice` returns `T[]` and `[removed]` could be `undefined`
+			// under `noUncheckedIndexedAccess` even though the index was
+			// just verified non-negative.
+			if (!removed) return;
 			currentItems.splice(targetIndex, 0, removed);
 			onReorder?.(currentItems.map((i) => i.id));
 		}
