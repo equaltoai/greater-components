@@ -150,9 +150,12 @@ Supports drag-and-drop reordering and management (for own profile).
 		if (!isOwnProfile || !enableReordering || draggingIndex === null) return;
 		event.preventDefault();
 
-		// Reorder array
+		// Reorder array. `splice` returns `T[]` and `[removed]` could be
+		// `undefined` under `noUncheckedIndexedAccess`; defensive guard
+		// even though `draggingIndex` is already range-checked above.
 		const newHashtags = [...localHashtags];
 		const [removed] = newHashtags.splice(draggingIndex, 1);
+		if (!removed) return;
 		newHashtags.splice(targetIndex, 0, removed);
 
 		localHashtags = newHashtags;

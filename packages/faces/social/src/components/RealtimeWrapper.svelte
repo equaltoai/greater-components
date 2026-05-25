@@ -152,6 +152,10 @@
 				}
 			};
 		}
+		// `$effect` must return either a cleanup function or void on every
+		// code path; explicit `undefined` on the alternative branch
+		// satisfies `tsc`'s strict-return check.
+		return undefined;
 	});
 
 	// Monitor connection status

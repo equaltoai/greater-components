@@ -16,7 +16,7 @@
 
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import type { Notification, NotificationGroup, NotificationsFeedProps } from '../types';
+	import type { NotificationsFeedProps } from '../types';
 	import { groupNotifications } from '../utils/notificationGrouping';
 	import NotificationItem from './NotificationItem.svelte';
 
