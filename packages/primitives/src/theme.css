@@ -241,6 +241,159 @@ body.gr-scroll-locked {
 	}
 }
 
+/* Link Styles */
+.gr-link {
+	/* Base styles */
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--gr-spacing-scale-2);
+	font-family: var(--gr-typography-fontFamily-sans);
+	font-weight: var(--gr-typography-fontWeight-medium);
+	line-height: var(--gr-typography-lineHeight-normal);
+	border-radius: var(--gr-radii-md);
+	color: var(--gr-semantic-action-link-default);
+	cursor: pointer;
+	text-decoration: none;
+	white-space: nowrap;
+	transition-property: color, background-color, box-shadow, transform;
+	transition-duration: var(--gr-motion-duration-fast);
+	transition-timing-function: var(--gr-motion-easing-out);
+}
+
+.gr-link:focus {
+	outline: none;
+}
+
+.gr-link:focus-visible {
+	outline: var(--gr-semantic-focus-ring-width, 2px) solid var(--gr-semantic-focus-ring);
+	outline-offset: var(--gr-semantic-focus-ring-offset, 2px);
+	box-shadow: none;
+}
+
+.gr-link:hover {
+	color: var(--gr-semantic-action-link-hover);
+}
+
+.gr-link:active {
+	color: var(--gr-semantic-action-link-active);
+	transform: translateY(1px);
+}
+
+/* Size variants (ignored for inline; inline inherits surrounding text) */
+.gr-link--size-sm {
+	padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
+	font-size: var(--gr-typography-fontSize-sm);
+	min-height: 2rem;
+}
+
+.gr-link--size-md {
+	padding: var(--gr-spacing-scale-3) var(--gr-spacing-scale-4);
+	font-size: var(--gr-typography-fontSize-base);
+	min-height: 2.5rem;
+}
+
+.gr-link--size-lg {
+	padding: var(--gr-spacing-scale-4) var(--gr-spacing-scale-6);
+	font-size: var(--gr-typography-fontSize-lg);
+	min-height: 3rem;
+}
+
+/* Variant: default — outline-Button visual weight without literal border */
+.gr-link--default {
+	background-color: transparent;
+}
+
+.gr-link--default:hover {
+	background-color: var(--gr-semantic-background-secondary);
+	box-shadow: var(--gr-shadows-elevation-sm);
+}
+
+[data-theme='dark'] .gr-link--default:hover {
+	background-color: var(--gr-semantic-background-raised, var(--gr-semantic-background-tertiary));
+	box-shadow: 0 0 0 1px var(--gr-semantic-action-link-default);
+}
+
+.gr-link--default:active {
+	background-color: var(--gr-semantic-background-tertiary);
+}
+
+/* Variant: ghost — minimal background, color-only */
+.gr-link--ghost {
+	background-color: transparent;
+}
+
+.gr-link--ghost:hover {
+	background-color: var(--gr-semantic-background-secondary);
+}
+
+.gr-link--ghost:active {
+	background-color: var(--gr-semantic-background-tertiary);
+}
+
+/* Variant: subtle — muted text, restores link color on hover */
+.gr-link--subtle {
+	background-color: transparent;
+	color: var(--gr-semantic-foreground-secondary);
+}
+
+.gr-link--subtle:hover {
+	color: var(--gr-semantic-action-link-hover);
+	background-color: var(--gr-semantic-background-secondary);
+}
+
+.gr-link--subtle:active {
+	color: var(--gr-semantic-action-link-active);
+	background-color: var(--gr-semantic-background-tertiary);
+}
+
+/* Variant: inline — underlined link inside body text; inherits font */
+.gr-link--inline {
+	display: inline;
+	gap: 0;
+	padding: 0;
+	min-height: 0;
+	border-radius: 0;
+	font: inherit;
+	color: var(--gr-semantic-action-link-default);
+	text-decoration: underline;
+	text-underline-offset: 0.15em;
+	white-space: normal;
+}
+
+.gr-link--inline:hover {
+	color: var(--gr-semantic-action-link-hover);
+	background-color: transparent;
+	box-shadow: none;
+	text-decoration: underline;
+}
+
+.gr-link--inline:active {
+	color: var(--gr-semantic-action-link-active);
+	background-color: transparent;
+	transform: none;
+}
+
+.gr-link--inline:visited {
+	color: var(--gr-semantic-action-link-active);
+}
+
+/* Active-route state: consumers wire aria-current="page" from their router */
+.gr-link[aria-current='page'] {
+	font-weight: var(--gr-typography-fontWeight-semibold);
+}
+
+/* Reduced motion: skip transforms and box-shadow transitions */
+@media (prefers-reduced-motion: reduce) {
+	.gr-link {
+		transition: none;
+	}
+
+	.gr-link:active {
+		transform: none;
+	}
+}
+
 /* Alert Styles */
 .gr-alert {
 	display: flex;

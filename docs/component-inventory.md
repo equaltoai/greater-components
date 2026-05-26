@@ -56,7 +56,7 @@ This package provides **41 interactive and layout components** for building any 
 
 - Advanced interactions (drag-drop, streaming text)
 
-### All 41 Components (Complete List)
+### All 42 Components (Complete List)
 
 **Form Controls (9):**
 
@@ -129,6 +129,10 @@ This package provides **41 interactive and layout components** for building any 
 - Heading - Semantic h1-h6 with typography control
 
 - Text - Paragraph/span/div with typography control
+
+**Navigation (1):**
+
+- Link - Semantic anchor for in-app navigation with modifier-key-gated SPA-router callback
 
 **Theme System (4):**
 
@@ -1182,6 +1186,74 @@ This package provides **41 interactive and layout components** for building any 
 ```
 
 **Reference:** See [api-reference.md#text](./api-reference.md#text) for complete API
+
+#### Link
+
+**Purpose:** Semantic anchor primitive for in-app navigation. Preserves browser link
+affordances (right-click "Open in new tab", middle-click, Cmd/Ctrl-click, copy link
+address) while integrating with SPA routers via a modifier-key-gated `onnavigate`
+callback. Renders a real `<a href>` with implicit `role="link"`.
+
+**When to Use:**
+
+- In-app navigation controls that should expose `role="link"` to assistive tech
+- Any anchor where consumers want the design system's color/focus/hover treatment
+- SPA-router integration that preserves Cmd/Ctrl/middle-click "Open in new tab" intents
+- External links (`target="_blank"` auto-injects `rel="noopener noreferrer"`)
+- Inline links inside body text (`variant="inline"`)
+
+**When NOT to Use:**
+
+- For state-changing actions (use `Button` — the Button-vs-Link distinction is
+  action-vs-navigation, not visual)
+- For unavailable destinations (no `disabled` prop — disabled navigation is an a11y
+  anti-pattern; remove the link or use a different affordance instead)
+
+**Key Props:**
+
+- `href`: string (required)
+- `variant`: 'default' | 'ghost' | 'subtle' | 'inline'
+- `size`: 'sm' | 'md' | 'lg' (ignored for `inline`)
+- `onnavigate?: (ev: MouseEvent, href: string) => void` — fires only on unmodified
+  left-click; modifier-key clicks and middle/right-click pass through to native
+  browser behavior
+- Standard `<a>` attributes forwarded: `target`, `rel`, `download`, `aria-label`,
+  `aria-current`, `id`, `data-*`
+
+**Quick Example:**
+
+```svelte
+<script>
+	import { Link } from '$lib/greater/primitives';
+	import { navigate } from '$lib/router';
+</script>
+
+<!-- In-app SPA nav with modifier-key gating preserved -->
+<Link
+	href={`/portal/instances/${slug}/budgets`}
+	variant="ghost"
+	onnavigate={(ev, href) => {
+		ev.preventDefault();
+		navigate(href);
+	}}
+>
+	Budgets
+</Link>
+
+<!-- External link in new tab; rel auto-injected -->
+<Link href="https://docs.example.com" target="_blank">Documentation</Link>
+
+<!-- Inline link inside body text -->
+<Text>See the <Link href="/portal/usage" variant="inline">Usage</Link> page.</Text>
+```
+
+**Deliberate non-features:**
+
+- No Space-key activation — Space on `<a>` scrolls the page natively; intercepting
+  would be an a11y anti-pattern
+- No `disabled` prop — disabled navigation is an a11y anti-pattern
+
+**Reference:** See [api-reference.md#link](./api-reference.md#link) for complete API
 
 ### What This Package Does NOT Provide
 
