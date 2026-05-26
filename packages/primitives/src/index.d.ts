@@ -46,6 +46,7 @@ import Card from './components/Card.svelte';
 import Container from './components/Container.svelte';
 import Heading from './components/Heading.svelte';
 import Text from './components/Text.svelte';
+import Link from './components/Link.svelte';
 import Section from './components/Section.svelte';
 import ThemeSwitcher from './components/ThemeSwitcher.svelte';
 import ThemeProvider from './components/ThemeProvider.svelte';
@@ -106,6 +107,8 @@ export {
 	Heading,
 	/** Paragraph and inline text component with size, weight, and color variants. */
 	Text,
+	/** Semantic anchor primitive for in-app navigation with modifier-key-gated SPA-router callback. */
+	Link,
 	/** Semantic section wrapper with consistent vertical spacing. */
 	Section,
 	/** Theme switcher for toggling between color schemes. */
@@ -175,6 +178,7 @@ export type ContainerProps = ComponentProps<typeof Container>;
 export type SectionProps = ComponentProps<typeof Section>;
 export type HeadingProps = ComponentProps<typeof Heading>;
 export type TextProps = ComponentProps<typeof Text>;
+export type LinkProps = ComponentProps<typeof Link>;
 export type ThemeSwitcherProps = ComponentProps<typeof ThemeSwitcher>;
 export type ThemeProviderProps = ComponentProps<typeof ThemeProvider>;
 export type BadgeProps = ComponentProps<typeof Badge>;
