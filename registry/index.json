@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-05-25T14:40:05.039Z",
+  "generatedAt": "2026-05-26T03:06:51.832Z",
   "ref": "greater-v0.10.0",
   "version": "0.10.0",
   "checksums": {
@@ -37,6 +37,8 @@
     "packages/primitives/src/components/Heading.svelte.d.ts": "sha256-PvoPUjrvU2zOaXYWbgkZZNRE8qMg2Jx7B3vBp8v/Kfw=",
     "packages/primitives/src/components/IconBadge.svelte": "sha256-kl6PCEtl6Ys63aXiHu9yz0JhbvThOBLZu9fozwVbk54=",
     "packages/primitives/src/components/IconBadge.svelte.d.ts": "sha256-451lSVgNMmxq69y/tl1ZOfqwAoG9w8rZpMIpoul28BM=",
+    "packages/primitives/src/components/Link.svelte": "sha256-yG+okvfpFcTa8KltWBIosJ5kuV2RiViWO0XsjEYm2EM=",
+    "packages/primitives/src/components/Link.svelte.d.ts": "sha256-h17/IpRbQX9xySta8J/mkZh5NiPTzH7xfs32n8HCFuE=",
     "packages/primitives/src/components/List.svelte": "sha256-9FcW7tgg2Bz/I3tC80WAsswmB4qWa7q74+5vUY2no6w=",
     "packages/primitives/src/components/List.svelte.d.ts": "sha256-kQQKN8WiXDbkaE7agL85+hxnNgng+P1ry4hiGr9t8Oo=",
     "packages/primitives/src/components/ListItem.svelte": "sha256-0vEfQt33/3wnjLM2uqjG68NAu6aPg59Ma+WSNyejeeU=",
@@ -111,11 +113,11 @@
     "packages/primitives/src/components/ThemeSwitcher.svelte.d.ts": "sha256-5gEI/eMnbVuBQ+3ZGuzp7z7+72y6cyHhVrJeOZ2GCRs=",
     "packages/primitives/src/components/Tooltip.svelte": "sha256-SE3drzVXEWW6Eu3Rg1E8EwZbPCL6xwsOD6rNqcsnruE=",
     "packages/primitives/src/components/Tooltip.svelte.d.ts": "sha256-AONAs4rh/azRKJJyEf8DXerK0GYMYbb4FPpK9wsWAJE=",
-    "packages/primitives/src/index.d.ts": "sha256-hGjXFKeQ3ZvVc0+dXaEMMYHMSrSfZMGSbAS8MEfjYWY=",
-    "packages/primitives/src/index.ts": "sha256-a6qCP88DqcK7y7Xm6xl6eU1UGHSvXZ0hxyjgUDK/6gQ=",
+    "packages/primitives/src/index.d.ts": "sha256-xj+jFNpOODDs8tuegB9l4CTiNPIJ1/Lm1nz3uAl4RvY=",
+    "packages/primitives/src/index.ts": "sha256-ou/opXa4LkdKEnHGRp0mOl2S1D7eZyq0EwzsTl8QqTg=",
     "packages/primitives/src/stores/preferences.d.ts": "sha256-GL7rI1+5S8FcclMz8SCqfGyjyhRjcU4FXocMVq8SCJw=",
     "packages/primitives/src/stores/preferences.ts": "sha256-VCztWHIEKWganxzse2nh21Ngv4QkwMCbB3pJvxTqrgs=",
-    "packages/primitives/src/theme.css": "sha256-eanN4xv2AaDR1S6mSWxHJY8JJ3O9A8T27WsSRH6YMe8=",
+    "packages/primitives/src/theme.css": "sha256-uEWixXZs8vG/vqICu/80Gxs9RqSdVcOu+Rk8oy0SmvU=",
     "packages/primitives/src/transitions/fadeDown.d.ts": "sha256-FXf0D6TrZynSTiPhD0oDMMUlosk/uwgvq+VJyrfNnWI=",
     "packages/primitives/src/transitions/fadeDown.ts": "sha256-jLBp3teCghGZrIvdIjNXAvWCFrJxM1kqby0xcR1Kl/c=",
     "packages/primitives/src/transitions/fadeUp.d.ts": "sha256-qlEMPIsb+G2gXwRngGnYieiP1JeP/5iWnKw7tJhgRWU=",
@@ -1611,6 +1613,16 @@
           "size": 1104
         },
         {
+          "path": "src/components/Link.svelte",
+          "checksum": "sha256-yG+okvfpFcTa8KltWBIosJ5kuV2RiViWO0XsjEYm2EM=",
+          "size": 4652
+        },
+        {
+          "path": "src/components/Link.svelte.d.ts",
+          "checksum": "sha256-h17/IpRbQX9xySta8J/mkZh5NiPTzH7xfs32n8HCFuE=",
+          "size": 3122
+        },
+        {
           "path": "src/components/List.svelte",
           "checksum": "sha256-9FcW7tgg2Bz/I3tC80WAsswmB4qWa7q74+5vUY2no6w=",
           "size": 1305
@@ -1982,13 +1994,13 @@
         },
         {
           "path": "src/index.d.ts",
-          "checksum": "sha256-hGjXFKeQ3ZvVc0+dXaEMMYHMSrSfZMGSbAS8MEfjYWY=",
-          "size": 9540
+          "checksum": "sha256-xj+jFNpOODDs8tuegB9l4CTiNPIJ1/Lm1nz3uAl4RvY=",
+          "size": 9746
         },
         {
           "path": "src/index.ts",
-          "checksum": "sha256-a6qCP88DqcK7y7Xm6xl6eU1UGHSvXZ0hxyjgUDK/6gQ=",
-          "size": 10073
+          "checksum": "sha256-ou/opXa4LkdKEnHGRp0mOl2S1D7eZyq0EwzsTl8QqTg=",
+          "size": 10279
         },
         {
           "path": "src/stores/preferences.d.ts",
@@ -2002,8 +2014,8 @@
         },
         {
           "path": "src/theme.css",
-          "checksum": "sha256-eanN4xv2AaDR1S6mSWxHJY8JJ3O9A8T27WsSRH6YMe8=",
-          "size": 104591
+          "checksum": "sha256-uEWixXZs8vG/vqICu/80Gxs9RqSdVcOu+Rk8oy0SmvU=",
+          "size": 108482
         },
         {
           "path": "src/transitions/fadeDown.d.ts",
