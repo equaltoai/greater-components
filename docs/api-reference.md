@@ -11,6 +11,7 @@ Complete API documentation for all Greater Components packages.
   - [Overlays & Menus](#overlays--menus)
   - [Display & Status](#display--status)
   - [Layout & Typography](#layout--typography)
+  - [Navigation](#navigation)
   - [Theme System](#theme-system)
   - [Settings Components](#settings-components)
   - [Transitions](#transitions)
@@ -1086,6 +1087,121 @@ Paragraph and inline text with typography control.
 | `color`    | `'primary' \| 'secondary' \| 'error' \| 'success'` | `'primary'` | Text color            |
 | `truncate` | `boolean`                                          | `false`     | Truncate overflow     |
 | `lines`    | `number`                                           | -           | Lines before truncate |
+
+---
+
+### Navigation
+
+#### Link
+
+Semantic anchor primitive for in-app navigation. Renders a real `<a href>` with
+implicit `role="link"`, preserving browser link affordances (right-click "Open in
+new tab", middle-click, Cmd/Ctrl-click, copy link address) while integrating with
+SPA routers via a modifier-key-gated `onnavigate` callback.
+
+**Props:**
+
+| Prop           | Type                                           | Default     | Description                                   |
+| -------------- | ---------------------------------------------- | ----------- | --------------------------------------------- |
+| `href`         | `string`                                       | -           | Target URL (required)                         |
+| `variant`      | `'default' \| 'ghost' \| 'subtle' \| 'inline'` | `'default'` | Visual variant                                |
+| `size`         | `'sm' \| 'md' \| 'lg'`                         | `'md'`      | Size (ignored when `variant="inline"`)        |
+| `onnavigate`   | `(ev: MouseEvent, href: string) => void`       | -           | SPA-router intercept callback (gated)         |
+| `target`       | `HTMLAnchorAttributes['target']`               | -           | Standard `<a>` target                         |
+| `rel`          | `string`                                       | -           | Standard `<a>` rel (auto-injected when blank) |
+| `download`     | `string \| boolean`                            | -           | Standard `<a>` download                       |
+| `aria-label`   | `string`                                       | -           | Accessible name override                      |
+| `aria-current` | `'page' \| 'step' \| ...`                      | -           | Active-route state (consumer-managed)         |
+| `class`        | `string`                                       | -           | Additional CSS classes                        |
+| `children`     | `Snippet`                                      | -           | Link content (required)                       |
+
+Plus any other standard `<a>` attributes (`id`, `data-*`, etc.) forwarded via
+rest-props.
+
+**Modifier-key gating contract:**
+
+The `onnavigate` callback fires ONLY when ALL of the following are true:
+
+- `ev.button === 0` (left-click; excludes middle [1] and right-click [2])
+- No `metaKey` / `ctrlKey` / `shiftKey` / `altKey` modifier
+- `ev.defaultPrevented === false` (no upstream handler called `preventDefault`)
+
+All other clicks (middle / right / modifier-key combinations) pass through to
+native browser behavior so users can "Open in new tab", "Open in new window",
+or "Copy link address" as expected. Keyboard Enter activation uses the same
+gating predicate (browser-native click on `<a href>` with `button=0` and no
+modifiers).
+
+**Variants:**
+
+- `default` — primary nav-link affordance (outline-Button visual weight, no
+  literal border). Use for top-level navigation surfaces.
+- `ghost` — subdued nav link with no background. Use inside cards, tables,
+  or surfaces with their own visual frame.
+- `subtle` — muted secondary link. Use for breadcrumbs, footer-level nav,
+  or low-emphasis destinations.
+- `inline` — underlined link inside body text. Inherits font size and family
+  from the surrounding text; ignores `size` prop.
+
+**Automatic `rel` injection:**
+
+When `target="_blank"` is set and no `rel` is provided, Link automatically
+injects `rel="noopener noreferrer"` to prevent reverse tabnabbing. A
+consumer-supplied `rel` overrides this auto-injection.
+
+**Active route state:**
+
+Consumers wire `aria-current="page"` from their router's active-route state.
+Link forwards the attribute and applies a `[aria-current="page"]` CSS hook for
+distinct visual treatment (bolder font-weight by default). Link is
+router-agnostic by design — no `NavLink` wrapper or `active` prop.
+
+**Deliberate non-features:**
+
+- **No Space-key activation.** Space on `<a>` is intentionally not native
+  (Space scrolls the page); intercepting it would be an a11y anti-pattern.
+- **No `disabled` prop.** Disabled navigation is an a11y anti-pattern;
+  consumers should remove the link or use a different affordance when
+  navigation is unavailable.
+- **`:visited` styling restricted to color only** for `inline` variant per
+  browser CSS-privacy rules (prevents cross-origin browsing-history leaks).
+
+**Examples:**
+
+```svelte
+<script>
+	import { Link } from '@equaltoai/greater-components-primitives';
+	import { navigate } from '$lib/router';
+</script>
+
+<!-- In-app SPA navigation; modifier-key clicks pass through -->
+<Link
+	href={`/portal/instances/${slug}/budgets`}
+	variant="ghost"
+	onnavigate={(ev, href) => {
+		ev.preventDefault();
+		navigate(href);
+	}}
+>
+	Budgets
+</Link>
+
+<!-- External link in new tab; rel="noopener noreferrer" auto-injected -->
+<Link href="https://docs.example.com" target="_blank" variant="default">Documentation</Link>
+
+<!-- Inline link inside body text -->
+<Text size="sm">
+	See the <Link href="/portal/usage" variant="inline">Usage</Link> page.
+</Text>
+
+<!-- Active-route state from your router -->
+<Link href="/portal/instances" aria-current="page">Instances</Link>
+
+<!-- Download attribute (Trust-API attestations, log bundles, CSV exports) -->
+<Link href="/api/attestation.json" download="attestation.json" variant="ghost">
+	Download attestation
+</Link>
+```
 
 ---
 

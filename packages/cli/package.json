@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-cli",
   "private": true,
-  "version": "0.10.0",
+  "version": "0.10.1-rc.0",
   "description": "CLI for adding Greater Components to your project",
   "type": "module",
   "bin": {
@@ -51,7 +51,7 @@
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^7.0.1",
-    "@sveltejs/kit": "^2.57.1",
+    "@sveltejs/kit": "^2.61.1",
     "@sveltejs/vite-plugin-svelte": "^7.0.0",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^25.6.0",

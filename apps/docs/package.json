@@ -19,7 +19,7 @@
   "devDependencies": {
     "@docsearch/js": "^4.6.2",
     "@sveltejs/adapter-static": "^3.0.10",
-    "@sveltejs/kit": "^2.57.1",
+    "@sveltejs/kit": "^2.61.1",
     "@sveltejs/vite-plugin-svelte": "^7.0.0",
     "@types/node": "^25.6.0",
     "clsx": "^2.1.1",
