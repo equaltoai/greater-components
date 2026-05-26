@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components-shell",
-  "version": "0.10.0",
+  "version": "0.10.1-rc.0",
   "type": "module",
   "description": "App shell layout components for Greater Components (Shell, Sidebar, Topbar, Panel, StatCard, SummaryStrip, PageFrame, PageTitle, Breadcrumb, Callout)",
   "license": "AGPL-3.0-only",
