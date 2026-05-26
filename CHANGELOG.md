@@ -12,6 +12,44 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.10.1](https://github.com/equaltoai/greater-components/compare/greater-v0.10.0...greater-v0.10.1) (2026-05-26)
+
+### Features
+
+- **primitives:** add Link primitive for in-app navigation ([#700](https://github.com/equaltoai/greater-components/issues/700)) ([12f8f10](https://github.com/equaltoai/greater-components/commit/12f8f10c5320d6d3943d605f463a316c3c360a66))
+- **primitives:** add Link primitive for in-app navigation ([#700](https://github.com/equaltoai/greater-components/issues/700)) ([b03fc88](https://github.com/equaltoai/greater-components/commit/b03fc8851eaa771f63799777260ab55418f3d14a))
+
+### Docs
+
+- **primitives:** document Link primitive with playground demo ([#700](https://github.com/equaltoai/greater-components/issues/700)) ([bba14bf](https://github.com/equaltoai/greater-components/commit/bba14bf097c69c1f11d7dd4fa1bb8a7e0e548dcd))
+
+### Chores
+
+- **deps:** clear 4 moderate CVEs (ws, @sveltejs/kit, viem, brace-expansion override) ([4bd1cbe](https://github.com/equaltoai/greater-components/commit/4bd1cbe481f1c81c1a2f8a63b21586ee4d94977f))
+- **deps:** clear 4 moderate CVEs (ws, @sveltejs/kit, viem, brace-expansion override) ([97bf8ef](https://github.com/equaltoai/greater-components/commit/97bf8efb6c910279fa3cbac303a785013afc217a))
+- **premain:** release greater 0.10.1-rc.0 ([62a68ab](https://github.com/equaltoai/greater-components/commit/62a68ab60ec6fbdd36fb8d593e03c1449d9ca04a))
+- **premain:** release greater 0.10.1-rc.0 ([4f509cb](https://github.com/equaltoai/greater-components/commit/4f509cbe8bf459922348eac2f80c661245656a97))
+- **release:** prepare metadata ([adc4984](https://github.com/equaltoai/greater-components/commit/adc4984a4bb34e003b792b0b989073940404bcdd))
+
+## [0.10.1-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.10.0-rc.1...greater-v0.10.1-rc.0) (2026-05-26)
+
+### Features
+
+- **primitives:** add Link primitive for in-app navigation ([#700](https://github.com/equaltoai/greater-components/issues/700)) ([12f8f10](https://github.com/equaltoai/greater-components/commit/12f8f10c5320d6d3943d605f463a316c3c360a66))
+- **primitives:** add Link primitive for in-app navigation ([#700](https://github.com/equaltoai/greater-components/issues/700)) ([b03fc88](https://github.com/equaltoai/greater-components/commit/b03fc8851eaa771f63799777260ab55418f3d14a))
+
+### Docs
+
+- **primitives:** document Link primitive with playground demo ([#700](https://github.com/equaltoai/greater-components/issues/700)) ([bba14bf](https://github.com/equaltoai/greater-components/commit/bba14bf097c69c1f11d7dd4fa1bb8a7e0e548dcd))
+
+### Chores
+
+- **deps:** clear 4 moderate CVEs (ws, @sveltejs/kit, viem, brace-expansion override) ([4bd1cbe](https://github.com/equaltoai/greater-components/commit/4bd1cbe481f1c81c1a2f8a63b21586ee4d94977f))
+- **deps:** clear 4 moderate CVEs (ws, @sveltejs/kit, viem, brace-expansion override) ([97bf8ef](https://github.com/equaltoai/greater-components/commit/97bf8efb6c910279fa3cbac303a785013afc217a))
+- **main:** release greater 0.10.0 ([e54edbd](https://github.com/equaltoai/greater-components/commit/e54edbd53cc792f8a5a9a9d1fe7362c5261e52ef))
+- **main:** release greater 0.10.0 ([091aa31](https://github.com/equaltoai/greater-components/commit/091aa31e127d10a9673112467cbcfd6b62e14a64))
+- **release:** prepare metadata ([1318861](https://github.com/equaltoai/greater-components/commit/1318861ad698296f425bb543955f3568d8075aa8))
+
 ## [0.10.0](https://github.com/equaltoai/greater-components/compare/greater-v0.9.0...greater-v0.10.0) (2026-05-25)
 
 ### Features
