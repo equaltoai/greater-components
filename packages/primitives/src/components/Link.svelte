@@ -120,6 +120,7 @@ integration and full browser link affordances.
 		target,
 		rel,
 		onclick,
+		style: _style,
 		...restProps
 	}: Props = $props();
 
