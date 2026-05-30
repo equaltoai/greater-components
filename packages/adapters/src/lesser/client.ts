@@ -7,6 +7,7 @@ export type LesserSoulBodyBinding = LesserSoulAgentBinding;
 export type LesserSoulInventoryItem = components['schemas']['SoulInventoryItem'];
 export type LesserSoulsMineResponse = components['schemas']['SoulsMineResponse'];
 export type LesserSoulIncorporateResponse = components['schemas']['SoulIncorporateResponse'];
+export type LesserAgent = components['schemas']['Agent'];
 
 export type LesserFetchLike = FetchLike;
 
@@ -59,6 +60,13 @@ export class LesserSoulClient {
 
 	async getMySouls(): Promise<LesserSoulsMineResponse> {
 		return this.requestJson('/api/v1/souls/mine');
+	}
+
+	async getAgentByUsername(username: string): Promise<LesserAgent> {
+		const normalized = username.trim();
+		if (!normalized) throw new Error('username is required');
+
+		return this.requestJson(`/api/v1/agents/${encodeURIComponent(normalized)}`);
 	}
 
 	async incorporateSoul(
