@@ -68,6 +68,24 @@
       "tags": ["announcements"]
     },
     {
+      "method": "GET",
+      "path": "/api/v1/exports",
+      "tags": ["exports"],
+      "note": "Private export listing exposes account export jobs; pending upstream root fix equaltoai/lesser#1121."
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/exports/{id}",
+      "tags": ["exports"],
+      "note": "Private export status exposes account export metadata; pending upstream root fix equaltoai/lesser#1121."
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/exports/{id}/download",
+      "tags": ["exports"],
+      "note": "Private export download exposes account export data; pending upstream root fix equaltoai/lesser#1121."
+    },
+    {
       "method": "POST",
       "path": "/api/v1/follow_requests/{account_id}/authorize",
       "tags": ["follow_requests"]
@@ -165,13 +183,13 @@
   ],
   "meta": {
     "spec_path": "docs/lesser/contracts/openapi.yaml",
-    "generated_at": "2026-05-23T20:40:49.741Z",
+    "generated_at": "2026-05-30T16:44:37.208Z",
     "has_global_security": false,
     "has_security_schemes": true,
     "security_scheme_names": ["bearerAuth", "oauth2", "setupBearer"],
     "total_paths": 293,
-    "sensitive_checked": 169,
+    "sensitive_checked": 172,
     "with_security": 115,
-    "without_security": 32
+    "without_security": 35
   }
 }
