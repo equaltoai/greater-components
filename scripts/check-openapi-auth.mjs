@@ -108,7 +108,9 @@ function isPublicByDesign(method, path) {
 
 function isSensitiveOperation(method, path) {
 	const normalized = method.toLowerCase();
-	return MUTATING_METHODS.has(normalized) || (normalized === 'get' && SENSITIVE_GET_PATHS.has(path));
+	return (
+		MUTATING_METHODS.has(normalized) || (normalized === 'get' && SENSITIVE_GET_PATHS.has(path))
+	);
 }
 
 function getSensitiveGetNote(method, path) {
@@ -298,11 +300,9 @@ function runSelfTest() {
 		);
 		writeFileSync(tempBaselinePath, JSON.stringify(baseline, null, 2) + '\n', 'utf-8');
 
-		const exportChild = spawnSync(
-			process.execPath,
-			[SCRIPT_PATH, '--baseline', tempBaselinePath],
-			{ encoding: 'utf-8' }
-		);
+		const exportChild = spawnSync(process.execPath, [SCRIPT_PATH, '--baseline', tempBaselinePath], {
+			encoding: 'utf-8',
+		});
 		if (exportChild.error) {
 			throw exportChild.error;
 		}
@@ -313,8 +313,7 @@ function runSelfTest() {
 			`missing export GET baseline check should exit 1, got ${exportChild.status ?? 'null'}`
 		);
 		assertSelfTest(
-			exportOutput.includes('NEW gaps') &&
-				exportOutput.includes('/api/v1/exports/{id}/download'),
+			exportOutput.includes('NEW gaps') && exportOutput.includes('/api/v1/exports/{id}/download'),
 			'missing export GET baseline check should report export download under NEW gaps'
 		);
 	} finally {
