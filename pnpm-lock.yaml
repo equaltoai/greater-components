@@ -236,6 +236,9 @@ importers:
       '@equaltoai/greater-components-headless':
         specifier: workspace:*
         version: link:../../packages/headless
+      '@equaltoai/greater-components-host-platform':
+        specifier: workspace:*
+        version: link:../../packages/host-platform
       '@equaltoai/greater-components-icons':
         specifier: workspace:*
         version: link:../../packages/icons
@@ -245,6 +248,9 @@ importers:
       '@equaltoai/greater-components-primitives':
         specifier: workspace:*
         version: link:../../packages/primitives
+      '@equaltoai/greater-components-shell':
+        specifier: workspace:*
+        version: link:../../packages/shell
       '@equaltoai/greater-components-social':
         specifier: workspace:*
         version: link:../../packages/faces/social
