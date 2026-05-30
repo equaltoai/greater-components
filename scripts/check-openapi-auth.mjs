@@ -17,45 +17,46 @@
  *   contracts, not here.
  *
  * USAGE:
- *   node scripts/check-openapi-auth.mjs [--baseline PATH] [--strict]
+ *   node scripts/check-openapi-auth.mjs [--baseline PATH] [--strict] [--self-test]
  *
  *   --baseline  Path to baseline JSON (default: docs/lesser/contracts/openapi-auth-baseline.json)
  *   --strict    Treat known upstream gaps as errors (exit non-zero)
  *   --write-baseline  Update the baseline to reflect current state
+ *   --self-test       Run the built-in regression test
  */
 
-import { parse as parseYaml } from 'yaml';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { parse as parseYaml, stringify as stringifyYaml } from 'yaml';
+import { spawnSync } from 'node:child_process';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 
 // ── Paths ──────────────────────────────────────────────────────────────────
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const SCRIPT_PATH = fileURLToPath(import.meta.url);
+const __dirname = dirname(SCRIPT_PATH);
 const ROOT = resolve(__dirname, '..');
 const DEFAULT_SPEC = resolve(ROOT, 'docs', 'lesser', 'contracts', 'openapi.yaml');
 const DEFAULT_BASELINE = resolve(ROOT, 'docs', 'lesser', 'contracts', 'openapi-auth-baseline.json');
 
 // ── Known public endpoints ─────────────────────────────────────────────────
-const KNOWN_PUBLIC_PREFIXES = [
-	'/.well-known/', // WebFinger, nodeinfo, etc.
-	'/nodeinfo/', // nodeinfo (alternative path)
-	'/oauth/', // OAuth authorization/token flow
-	'/api/v1/apps', // OAuth app registration (public)
-	'/api/v1/instance', // Instance metadata
-	'/api/v1/custom_emojis', // Public emoji listing
-	'/api/v1/trends', // Public trends
-	'/api/v1/directory', // Public profile directory
-	'/api/v2/instance', // Instance metadata v2
-];
-
 const KNOWN_PUBLIC_PATHS = new Map([
 	['POST /api/v1/accounts', 'public account registration'],
+	['POST /api/v1/apps', 'OAuth app registration (public)'],
 	['POST /api/v1/auth/webauthn/login/begin', 'WebAuthn login challenge (no prior auth)'],
 	['POST /api/v1/auth/webauthn/login/finish', 'WebAuthn login completion (no prior auth)'],
 	['POST /auth/wallet/challenge', 'wallet auth challenge (no prior auth)'],
 	['POST /auth/wallet/login', 'wallet login (no prior auth)'],
 	['POST /auth/wallet/verify', 'wallet verification (no prior auth)'],
+	['GET /oauth/authorize', 'OAuth authorization flow'],
+	['POST /oauth/authorize', 'OAuth authorization flow'],
+	['POST /oauth/consent', 'OAuth consent flow'],
+	['POST /oauth/device/code', 'OAuth device code flow'],
+	['POST /oauth/device/verify', 'OAuth device verification flow'],
+	['POST /oauth/register', 'OAuth dynamic client registration'],
+	['POST /oauth/revoke', 'OAuth token revocation'],
+	['POST /oauth/token', 'OAuth token exchange'],
 	['POST /inbox', 'shared ActivityPub inbox (HTTP Signatures, not bearer)'],
 	['POST /users/{username}/inbox', 'user ActivityPub inbox (HTTP Signatures, not bearer)'],
 	['POST /users/{username}/outbox', 'user ActivityPub outbox (HTTP Signatures, not bearer)'],
@@ -78,11 +79,6 @@ function isPublicByDesign(method, path) {
 	const key = `${method.toUpperCase()} ${path}`;
 	if (KNOWN_PUBLIC_PATHS.has(key)) {
 		return KNOWN_PUBLIC_PATHS.get(key);
-	}
-	for (const prefix of KNOWN_PUBLIC_PREFIXES) {
-		if (path.startsWith(prefix)) {
-			return `matches public prefix: ${prefix}`;
-		}
 	}
 	return null;
 }
@@ -146,6 +142,107 @@ function loadBaseline(baselinePath) {
 	}
 }
 
+function partitionGapsByBaseline(gaps, knownGapKeys) {
+	const newGaps = [];
+	const knownGaps = [];
+	for (const gap of gaps) {
+		const key = `${gap.method} ${gap.path}`;
+		if (knownGapKeys.has(key)) {
+			knownGaps.push(gap);
+		} else {
+			newGaps.push(gap);
+		}
+	}
+	return { newGaps, knownGaps };
+}
+
+function assertSelfTest(condition, message) {
+	if (!condition) {
+		throw new Error(message);
+	}
+}
+
+function runSelfTest() {
+	const spec = loadOpenapi(DEFAULT_SPEC);
+	const knownGapKeys = loadBaseline(DEFAULT_BASELINE);
+	const rotateSecretKey = 'POST /api/v1/apps/{id}/rotate_secret';
+	const publicRootKeys = [
+		'POST /api/v1/apps',
+		'POST /oauth/consent',
+		'POST /oauth/device/code',
+		'POST /oauth/device/verify',
+		'POST /oauth/register',
+		'POST /oauth/revoke',
+		'POST /oauth/token',
+	];
+
+	const rotateSecret = spec.paths?.['/api/v1/apps/{id}/rotate_secret']?.post;
+	assertSelfTest(
+		rotateSecret && typeof rotateSecret === 'object',
+		'self-test fixture missing POST /api/v1/apps/{id}/rotate_secret'
+	);
+	assertSelfTest(
+		'security' in rotateSecret,
+		'self-test fixture expected rotate_secret to have a security block before mutation'
+	);
+	assertSelfTest(
+		!isPublicByDesign('post', '/api/v1/apps/{id}/rotate_secret'),
+		'rotate_secret must not be exempted by the public allowlist'
+	);
+	assertSelfTest(
+		!isPublicByDesign('post', '/oauth/protected/subresource'),
+		'unknown OAuth subresources must not be exempted by the public allowlist'
+	);
+
+	const current = auditAuth(spec);
+	for (const key of publicRootKeys) {
+		assertSelfTest(
+			!current.gaps.some((gap) => `${gap.method} ${gap.path}` === key),
+			`genuinely public endpoint should remain exempt: ${key}`
+		);
+	}
+
+	const stripped = structuredClone(spec);
+	delete stripped.paths['/api/v1/apps/{id}/rotate_secret'].post.security;
+	const strippedResult = auditAuth(stripped);
+	const { newGaps } = partitionGapsByBaseline(strippedResult.gaps, knownGapKeys);
+	assertSelfTest(
+		newGaps.some((gap) => `${gap.method} ${gap.path}` === rotateSecretKey),
+		'stripping rotate_secret security should produce a NEW auth gap'
+	);
+
+	const tempDir = mkdtempSync(resolve(tmpdir(), 'greater-openapi-auth-'));
+	try {
+		const tempSpecPath = resolve(tempDir, 'openapi.yaml');
+		writeFileSync(tempSpecPath, stringifyYaml(stripped), 'utf-8');
+		const child = spawnSync(
+			process.execPath,
+			[SCRIPT_PATH, '--spec', tempSpecPath, '--baseline', DEFAULT_BASELINE],
+			{ encoding: 'utf-8' }
+		);
+		if (child.error) {
+			throw child.error;
+		}
+
+		const combinedOutput = `${child.stdout}\n${child.stderr}`;
+		assertSelfTest(
+			child.status === 1,
+			`stripped rotate_secret check should exit 1, got ${child.status ?? 'null'}`
+		);
+		assertSelfTest(
+			combinedOutput.includes('NEW gaps') &&
+				combinedOutput.includes('/api/v1/apps/{id}/rotate_secret'),
+			'stripped rotate_secret check should report rotate_secret under NEW gaps'
+		);
+	} finally {
+		rmSync(tempDir, { recursive: true, force: true });
+	}
+
+	console.log(
+		'Self-test passed: rotate_secret security removal is a new gap; exact public paths remain exempt.'
+	);
+}
+
 function writeBaseline(baselinePath, gaps, meta) {
 	const baseline = {
 		_comment:
@@ -173,6 +270,7 @@ function printUsage() {
 	console.error('  --baseline PATH     Path to baseline JSON');
 	console.error('  --strict            Treat known upstream gaps as errors');
 	console.error('  --write-baseline    Update the baseline to reflect current state');
+	console.error('  --self-test         Run the built-in regression test');
 	console.error('  --help              Show this help');
 }
 
@@ -184,6 +282,7 @@ function parseCliArgs() {
 			baseline: { type: 'string' },
 			strict: { type: 'boolean', default: false },
 			'write-baseline': { type: 'boolean', default: false },
+			'self-test': { type: 'boolean', default: false },
 			help: { type: 'boolean', default: false },
 		},
 		allowPositionals: false,
@@ -197,6 +296,11 @@ function main() {
 
 	if (args.help) {
 		printUsage();
+		process.exit(0);
+	}
+
+	if (args['self-test']) {
+		runSelfTest();
 		process.exit(0);
 	}
 
@@ -235,16 +339,7 @@ function main() {
 	// ── Check mode ───────────────────────────────────────────────────────
 	const knownGapKeys = loadBaseline(baselinePath);
 
-	const newGaps = [];
-	const knownGaps = [];
-	for (const gap of result.gaps) {
-		const key = `${gap.method} ${gap.path}`;
-		if (knownGapKeys.has(key)) {
-			knownGaps.push(gap);
-		} else {
-			newGaps.push(gap);
-		}
-	}
+	const { newGaps, knownGaps } = partitionGapsByBaseline(result.gaps, knownGapKeys);
 
 	// Print report
 	console.log('='.repeat(72));
