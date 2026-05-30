@@ -34,6 +34,9 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
 
+      - name: Audit lockfile integrity
+        run: pnpm audit:lockfile-integrity
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
