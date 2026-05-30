@@ -2,6 +2,12 @@ import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/svelte';
 import ActivitySparkline from '../src/components/ActivitySparkline.svelte';
 
+const MAX_EXPECTED_SPARKLINE_POINTS = 1000;
+
+function countPathPoints(path: string): number {
+	return (path.match(/[ML]/g) ?? []).length;
+}
+
 describe('ActivitySparkline', () => {
 	it('renders an informative <svg role="img"> with <title> when label is supplied', () => {
 		const { container } = render(ActivitySparkline, {
@@ -76,6 +82,26 @@ describe('ActivitySparkline', () => {
 		const d = path?.getAttribute('d') ?? '';
 		expect(d.startsWith('M')).toBe(true);
 		expect(d.includes('L')).toBe(true);
+	});
+
+	it('renders large untrusted data without emitting an unbounded path', () => {
+		const data = Array.from({ length: 500_000 }, (_, i) => {
+			if (i % 99_991 === 0) return Number.NaN;
+			if (i % 131_071 === 0) return Number.POSITIVE_INFINITY;
+			if (i % 262_147 === 0) return Number.NEGATIVE_INFINITY;
+			return Math.cos(i / 75) * 12 + (i % 53);
+		});
+
+		const { container } = render(ActivitySparkline, {
+			data,
+			label: 'Untrusted activity',
+		});
+
+		const path = container.querySelector('path.gr-host-platform-activity-sparkline__path');
+		const d = path?.getAttribute('d') ?? '';
+		expect(d).toMatch(/^M/);
+		expect(d).not.toMatch(/NaN|Infinity/);
+		expect(countPathPoints(d)).toBeLessThanOrEqual(MAX_EXPECTED_SPARKLINE_POINTS);
 	});
 
 	it('applies the tone modifier class (paired with label text — never color-only)', () => {

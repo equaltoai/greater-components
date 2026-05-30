@@ -1,6 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { buildSparklinePath } from '../src/utils/sparkline.js';
 
+const MAX_EXPECTED_SPARKLINE_POINTS = 1000;
+
+function countPathPoints(path: string): number {
+	return (path.match(/[ML]/g) ?? []).length;
+}
+
 describe('buildSparklinePath', () => {
 	it('returns an empty path on an empty series', () => {
 		const result = buildSparklinePath({ data: [], width: 100, height: 28 });
@@ -60,5 +66,47 @@ describe('buildSparklinePath', () => {
 	it('handles a single sample by anchoring it at the start', () => {
 		const result = buildSparklinePath({ data: [5], width: 100, height: 28 });
 		expect(result.path).toMatch(/^M\d/);
+	});
+
+	it('skips non-finite samples instead of emitting invalid SVG coordinates', () => {
+		const result = buildSparklinePath({
+			data: [1, Number.NaN, 2, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY, 3],
+			width: 100,
+			height: 28,
+		});
+
+		expect(result.path).toMatch(/^M/);
+		expect(result.path).not.toMatch(/NaN|Infinity/);
+		expect(countPathPoints(result.path)).toBe(3);
+		expect(result.range).toEqual({ min: 1, max: 3 });
+	});
+
+	it('returns a no-op path when every sample is non-finite', () => {
+		const result = buildSparklinePath({
+			data: [Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY],
+			width: 100,
+			height: 28,
+		});
+
+		expect(result.path).toBe('');
+		expect(result.last).toEqual({ x: 0, y: 14 });
+		expect(result.range).toEqual({ min: 0, max: 0 });
+	});
+
+	it('bounds output for a 500k-sample untrusted series containing non-finite values', () => {
+		const data = Array.from({ length: 500_000 }, (_, i) => {
+			if (i % 100_003 === 0) return Number.NaN;
+			if (i % 131_071 === 0) return Number.POSITIVE_INFINITY;
+			if (i % 262_147 === 0) return Number.NEGATIVE_INFINITY;
+			return Math.sin(i / 50) * 20 + (i % 97);
+		});
+
+		const result = buildSparklinePath({ data, width: 100, height: 28 });
+
+		expect(result.path).toMatch(/^M/);
+		expect(result.path).not.toMatch(/NaN|Infinity/);
+		expect(countPathPoints(result.path)).toBeLessThanOrEqual(MAX_EXPECTED_SPARKLINE_POINTS);
+		expect(Number.isFinite(result.last.x)).toBe(true);
+		expect(Number.isFinite(result.last.y)).toBe(true);
 	});
 });
