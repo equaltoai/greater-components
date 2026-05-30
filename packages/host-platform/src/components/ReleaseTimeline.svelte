@@ -105,6 +105,30 @@ runtime style writes. All styling via stable `--gr-*` tokens.
 		return map;
 	});
 
+	const allowedLinkProtocols = new Set(['http:', 'https:', 'mailto:']);
+	const relativeUrlBase = 'https://example.invalid';
+
+	/**
+	 * Return an href safe to render into an `<a>` tag, or null for unsafe values.
+	 *
+	 * Allows relative URLs plus absolute http:, https:, and mailto: URLs. Unsafe
+	 * schemes such as javascript:, data:, and vbscript: return null.
+	 */
+	function toSafeHref(value?: string | null): string | null {
+		if (typeof value !== 'string') return null;
+
+		const href = value.trim();
+		if (!href) return null;
+
+		try {
+			const parsed = new URL(href, relativeUrlBase);
+			if (!allowedLinkProtocols.has(parsed.protocol)) return null;
+			return encodeURI(href);
+		} catch {
+			return null;
+		}
+	}
+
 	/**
 	 * True when the input string represents a date that should be interpreted
 	 * as a calendar day rather than a precise instant — e.g. a bare
@@ -183,6 +207,7 @@ runtime style writes. All styling via stable `--gr-*` tokens.
 				{@const isoDate = dateIsoAttr(release.date)}
 				{@const adoptionText = (formatAdoption ?? defaultFormatAdoption)(release.adoption)}
 				{@const adoptionRatio = numericAdoption(release.adoption)}
+				{@const safeHref = toSafeHref(release.href)}
 				<li
 					id={stableId.value ? `${stableId.value}-rel-${release.id}` : undefined}
 					class={[
@@ -251,12 +276,12 @@ runtime style writes. All styling via stable `--gr-*` tokens.
 								</p>
 							{/if}
 						{/if}
-						{#if release.href || itemActions}
+						{#if safeHref || itemActions}
 							<div class="gr-host-platform-release-timeline__actions" role="group">
-								{#if release.href}
+								{#if safeHref}
 									<a
 										class="gr-host-platform-release-timeline__link"
-										href={release.href}
+										href={safeHref}
 										aria-label={`Release notes for ${release.version}`}
 									>
 										Release notes
