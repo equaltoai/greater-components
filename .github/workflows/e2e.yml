@@ -21,6 +21,9 @@ jobs:
     strategy:
       matrix:
         browser: [chromium, firefox]
+    # TEMPORARY (#745): keep the Firefox leg running for visibility, but do not
+    # gate #744 while the Playwright-download runner/CDN root cause is fixed.
+    continue-on-error: ${{ matrix.browser == 'firefox' }}
 
     steps:
       - name: Checkout repository
@@ -40,8 +43,39 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install Playwright browsers
-        run: pnpm --filter @equaltoai/greater-components-testing exec playwright install --with-deps ${{ matrix.browser }}
+      - name: Resolve Playwright version
+        id: playwright-version
+        working-directory: packages/testing
+        run: |
+          version="$(
+            node -e "const { createRequire } = require('node:module'); const fromTesting = createRequire(process.cwd() + '/package.json'); process.stdout.write(fromTesting('@playwright/test/package.json').version);"
+          )"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "Playwright version: ${version}"
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}-${{ matrix.browser }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}-
+
+      - name: Prepare Playwright ${{ matrix.browser }}
+        timeout-minutes: 10
+        working-directory: packages/testing
+        run: |
+          if [ "${{ matrix.browser }}" = "chromium" ]; then
+            if command -v google-chrome >/dev/null 2>&1; then
+              google-chrome --version
+              echo "PLAYWRIGHT_E2E_USE_SYSTEM_CHROME=true" >> "$GITHUB_ENV"
+              pnpm exec playwright install-deps chromium
+            else
+              pnpm exec playwright install chromium --with-deps
+            fi
+          else
+            pnpm exec playwright install firefox --with-deps
+          fi
 
       - name: Build packages
         run: pnpm build
