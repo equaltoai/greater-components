@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-05-29T06:30:24.723Z",
+  "generatedAt": "2026-05-30T11:50:48.768Z",
   "ref": "greater-v0.10.1",
   "version": "0.10.1",
   "checksums": {
@@ -37,7 +37,7 @@
     "packages/primitives/src/components/Heading.svelte.d.ts": "sha256-PvoPUjrvU2zOaXYWbgkZZNRE8qMg2Jx7B3vBp8v/Kfw=",
     "packages/primitives/src/components/IconBadge.svelte": "sha256-kl6PCEtl6Ys63aXiHu9yz0JhbvThOBLZu9fozwVbk54=",
     "packages/primitives/src/components/IconBadge.svelte.d.ts": "sha256-451lSVgNMmxq69y/tl1ZOfqwAoG9w8rZpMIpoul28BM=",
-    "packages/primitives/src/components/Link.svelte": "sha256-yG+okvfpFcTa8KltWBIosJ5kuV2RiViWO0XsjEYm2EM=",
+    "packages/primitives/src/components/Link.svelte": "sha256-YY1VcbLCFZBcP5tYvr6txpbxcI58AaiKQBqS0iDaTr0=",
     "packages/primitives/src/components/Link.svelte.d.ts": "sha256-h17/IpRbQX9xySta8J/mkZh5NiPTzH7xfs32n8HCFuE=",
     "packages/primitives/src/components/List.svelte": "sha256-9FcW7tgg2Bz/I3tC80WAsswmB4qWa7q74+5vUY2no6w=",
     "packages/primitives/src/components/List.svelte.d.ts": "sha256-kQQKN8WiXDbkaE7agL85+hxnNgng+P1ry4hiGr9t8Oo=",
@@ -899,7 +899,7 @@
     "packages/content/src/components/MarkdownRenderer.svelte": "sha256-QDI+xz6KliGlz3YV4aCWAoqUmX4cajonVHV/+1doQL0=",
     "packages/content/src/index.ts": "sha256-scEWe7C3B3+/JBaILqZd8c1ZiqZnKapfy8kz4SPFZSY=",
     "packages/shell/src/components/Breadcrumb.css": "sha256-SW9UA4xhl8K1fKwS/h/Htyui7GujRdNCCznfRrPJ8qY=",
-    "packages/shell/src/components/Breadcrumb.svelte": "sha256-NP1cHv6jMKWSe4PYsafPn/ta/Hle13f154pY6IS/Rig=",
+    "packages/shell/src/components/Breadcrumb.svelte": "sha256-Wy1+D8ogvJ7egWGxelLqprshUgz2uqrncc1W8HSc9Ms=",
     "packages/shell/src/components/Callout.css": "sha256-LnnrUMfn9/3VcHX6zcDZFSpqe7nKRMZKAI71Jkpgq+8=",
     "packages/shell/src/components/Callout.svelte": "sha256-ph59kDztSXz4xJ+NHdg4dkyhyMM5kv/uGpl/ZvdzgmY=",
     "packages/shell/src/components/CommandPalette.css": "sha256-/IGfp1GGTymIqO1Ti/TqyhNh4l6bvCqhd4On971rKCo=",
@@ -924,6 +924,7 @@
     "packages/shell/src/styles/base.css": "sha256-INLODwNQNHYVsBKgGXbW/PENIwGo7NuIODzsRFuUUN8=",
     "packages/shell/src/types.ts": "sha256-xRnEGFsxQoJKt05wbZb+rbvOVbkbNb5UCpXOSovR8hI=",
     "packages/shell/src/utils/fuzzy-filter.ts": "sha256-ZopMxsr/aoZ3BqcmGydIR4DOwysud9oxTBLp88qVXt8=",
+    "packages/shell/src/utils/safe-href.ts": "sha256-5LJjvZP1lV7HojkVIvxKuySP+mF+FgNL2FyTP9bGysY=",
     "packages/host-platform/src/components/ActivitySparkline.css": "sha256-M5jmOBJkZLPyqJ7v9irZ+pKWRT3mFFWSEvfuhTvtxPE=",
     "packages/host-platform/src/components/ActivitySparkline.svelte": "sha256-/uonlTULps3w17cjm1/ZRLiXvL9HlU5P4pZ8/gyvONw=",
     "packages/host-platform/src/components/CostGauge.css": "sha256-Nqt1VHD3Oo4dTazxtAkpohWq97YHnRKs2lI44IDCNbY=",
@@ -933,14 +934,14 @@
     "packages/host-platform/src/components/ProvisioningTimeline.css": "sha256-rphEj1C3PlOup0baAgJyDSkSiZmzvMX2JhOBlpGj+J4=",
     "packages/host-platform/src/components/ProvisioningTimeline.svelte": "sha256-p5Vnk8hHwe/VUaYsZwZ33+Q9IG42UuzZLo8vAa5tCdw=",
     "packages/host-platform/src/components/ReleaseTimeline.css": "sha256-UCzT8op2KiKophHU40Bcfv80iMmv22DjWH2nMAxfLNY=",
-    "packages/host-platform/src/components/ReleaseTimeline.svelte": "sha256-L8/Bx4pTa5DDE6kB8uxozkRjkMtDXqpLPUss8LR54/Y=",
+    "packages/host-platform/src/components/ReleaseTimeline.svelte": "sha256-UoZlC3xAeOn+Sz+p0byrHXAmG/2oJ40LPQkVekXZhdY=",
     "packages/host-platform/src/components/StackMatrix.css": "sha256-K59j8igR3hBFO2cFyaq3Rp0Dkjypg3+DM4wLCSWN9cY=",
     "packages/host-platform/src/components/StackMatrix.svelte": "sha256-aMruAWkbvQmTTEXLd8Yp5kQdHegwLoj64//o2q5UGPo=",
     "packages/host-platform/src/index.ts": "sha256-hFXD84EuQLU6bKXPyTkFUwxOewMy8fkcwkVzbRpAsTg=",
     "packages/host-platform/src/styles/base.css": "sha256-razMHs+WCheiXksb3g4y90O42WAyMruExK9MiNmJbhc=",
     "packages/host-platform/src/types.ts": "sha256-9wKDSQaj3aQ9OXIqdTbYM6O6sGbAxfpwa0I1119yBLg=",
     "packages/host-platform/src/utils/formatters.ts": "sha256-kkUGG/4k60g54llCi+xp5RmnYrg8TuFqMiKgdgd01cE=",
-    "packages/host-platform/src/utils/sparkline.ts": "sha256-w8R8uqcnpPo2QK8crNVtabB10ChInLNOdNeQ6HxNUCM=",
+    "packages/host-platform/src/utils/sparkline.ts": "sha256-j+qDcXr+pTHHVFNCTtly1D0gVIUpVVjq+wxCCDVkTFc=",
     "packages/faces/social/src/adapters/batcher.ts": "sha256-6PnUshOPk84U+PSnkADYzhN9SpUrvwiy+tN10HPaVeE=",
     "packages/faces/social/src/adapters/cache.ts": "sha256-32jUHLAsYoK4U0JZ6hswGUlQOmwhJ5yquqhMqyfrc4I=",
     "packages/faces/social/src/adapters/graphql/client.ts": "sha256-yor+sP4J7hzK+igh2s4mujPOUZTRDN/e3nU1eccrSyo=",
@@ -1614,8 +1615,8 @@
         },
         {
           "path": "src/components/Link.svelte",
-          "checksum": "sha256-yG+okvfpFcTa8KltWBIosJ5kuV2RiViWO0XsjEYm2EM=",
-          "size": 4652
+          "checksum": "sha256-YY1VcbLCFZBcP5tYvr6txpbxcI58AaiKQBqS0iDaTr0=",
+          "size": 4669
         },
         {
           "path": "src/components/Link.svelte.d.ts",
@@ -6044,8 +6045,8 @@
         },
         {
           "path": "src/components/Breadcrumb.svelte",
-          "checksum": "sha256-NP1cHv6jMKWSe4PYsafPn/ta/Hle13f154pY6IS/Rig=",
-          "size": 2695
+          "checksum": "sha256-Wy1+D8ogvJ7egWGxelLqprshUgz2uqrncc1W8HSc9Ms=",
+          "size": 2861
         },
         {
           "path": "src/components/Callout.css",
@@ -6166,6 +6167,11 @@
           "path": "src/utils/fuzzy-filter.ts",
           "checksum": "sha256-ZopMxsr/aoZ3BqcmGydIR4DOwysud9oxTBLp88qVXt8=",
           "size": 5020
+        },
+        {
+          "path": "src/utils/safe-href.ts",
+          "checksum": "sha256-5LJjvZP1lV7HojkVIvxKuySP+mF+FgNL2FyTP9bGysY=",
+          "size": 1125
         }
       ],
       "dependencies": [
@@ -6233,8 +6239,8 @@
         },
         {
           "path": "src/components/ReleaseTimeline.svelte",
-          "checksum": "sha256-L8/Bx4pTa5DDE6kB8uxozkRjkMtDXqpLPUss8LR54/Y=",
-          "size": 9974
+          "checksum": "sha256-UoZlC3xAeOn+Sz+p0byrHXAmG/2oJ40LPQkVekXZhdY=",
+          "size": 10724
         },
         {
           "path": "src/components/StackMatrix.css",
@@ -6268,8 +6274,8 @@
         },
         {
           "path": "src/utils/sparkline.ts",
-          "checksum": "sha256-w8R8uqcnpPo2QK8crNVtabB10ChInLNOdNeQ6HxNUCM=",
-          "size": 3430
+          "checksum": "sha256-j+qDcXr+pTHHVFNCTtly1D0gVIUpVVjq+wxCCDVkTFc=",
+          "size": 5481
         }
       ],
       "dependencies": [{ "name": "utils", "version": "0.10.1" }],
