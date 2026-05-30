@@ -21,6 +21,9 @@ jobs:
     strategy:
       matrix:
         browser: [chromium, firefox]
+    # TEMPORARY (#745): keep the Firefox leg running for visibility, but do not
+    # gate #744 while the Playwright-download runner/CDN root cause is fixed.
+    continue-on-error: ${{ matrix.browser == 'firefox' }}
 
     steps:
       - name: Checkout repository
