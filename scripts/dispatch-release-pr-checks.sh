@@ -79,6 +79,25 @@ date_to_epoch() {
 	date -d "${value}" +%s 2>/dev/null
 }
 
+is_numeric_run_id() {
+	local value="$1"
+	[[ "${value}" =~ ^[0-9]+$ ]]
+}
+
+fail_invalid_run_id() {
+	local context="$1"
+	local workflow="$2"
+	local run_id="$3"
+
+	set_status "${context}" "failure" "Could not find fresh dispatched ${context} run"
+	if [[ -z "${run_id}" ]]; then
+		echo "::error::release-pr-checks: could not find fresh dispatched ${workflow} run" >&2
+	else
+		printf '::error::release-pr-checks: resolved %s run ID is not numeric: %q\n' "${workflow}" "${run_id}" >&2
+	fi
+	return 1
+}
+
 validate_dispatched_run() {
 	local run_id="$1"
 	local dispatch_started_epoch="$2"
@@ -157,6 +176,7 @@ find_fresh_dispatched_run() {
 	local workflow="$1"
 	local dispatch_started_epoch="$2"
 
+	# The caller captures stdout as run_id; keep all diagnostics on stderr.
 	for (( attempt = 1; attempt <= RUN_LOOKUP_ATTEMPTS; attempt++ )); do
 		local runs_json
 		runs_json="$(
@@ -195,6 +215,10 @@ find_fresh_dispatched_run() {
 		fi
 
 		local run_id="${candidate_run_ids[0]}"
+		if ! is_numeric_run_id "${run_id}"; then
+			printf '::error::release-pr-checks: resolved %s run ID is not numeric: %q\n' "${workflow}" "${run_id}" >&2
+			return 1
+		fi
 		if ! validate_dispatched_run "${run_id}" "${dispatch_started_epoch}" "${workflow}" "true"; then
 			return 1
 		fi
@@ -242,21 +266,32 @@ run_workflow_check() {
 		return 1
 	fi
 
-	if [[ -z "${run_id}" ]]; then
-		set_status "${context}" "failure" "Could not find deterministic dispatched ${context} run"
-		echo "::error::release-pr-checks: could not find deterministic dispatched ${workflow} run"
+	if ! is_numeric_run_id "${run_id}"; then
+		fail_invalid_run_id "${context}" "${workflow}" "${run_id}"
 		return 1
 	fi
 
 	local run_url
+	if ! is_numeric_run_id "${run_id}"; then
+		fail_invalid_run_id "${context}" "${workflow}" "${run_id}"
+		return 1
+	fi
 	run_url="$(gh run view "${run_id}" --json url --jq '.url')"
 
+	if ! is_numeric_run_id "${run_id}"; then
+		fail_invalid_run_id "${context}" "${workflow}" "${run_id}"
+		return 1
+	fi
 	if gh run watch "${run_id}" --exit-status; then
 		set_status "${context}" "success" "${context} passed" "${run_url}"
 		return 0
 	fi
 
 	local conclusion
+	if ! is_numeric_run_id "${run_id}"; then
+		fail_invalid_run_id "${context}" "${workflow}" "${run_id}"
+		return 1
+	fi
 	conclusion="$(gh run view "${run_id}" --json conclusion --jq '.conclusion // "failure"')"
 	set_status "${context}" "failure" "${context} ${conclusion}" "${run_url}"
 	return 1
