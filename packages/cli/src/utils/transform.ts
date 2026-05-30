@@ -195,18 +195,34 @@ export function transformPath(importPath: string, mappings: PathMapping[]): stri
 	return null; // No transformation needed
 }
 
+const SCRIPT_FILE_EXTENSION_RE = /\.(?:svelte\.)?[cm]?[jt]s$/;
+
 function normalizeTransformFilePath(filePath?: string): string {
 	return filePath?.replace(/\\/g, '/').replace(/^\/+/, '') ?? '';
+}
+
+function isHeadlessPrimitiveSourceFile(filePath?: string): boolean {
+	const normalized = normalizeTransformFilePath(filePath);
+	if (!normalized) return false;
+
+	if (normalized.startsWith('lib/primitives/')) return true;
+	if (normalized.includes('/')) return false;
+
+	const rootFile = normalized.replace(SCRIPT_FILE_EXTENSION_RE, '');
+	return (
+		rootFile !== normalized && (HEADLESS_PRIMITIVE_SUBPATHS as readonly string[]).includes(rootFile)
+	);
 }
 
 function isFlattenedFaceLibInstall(filePath?: string): boolean {
 	const normalized = normalizeTransformFilePath(filePath);
 	if (!normalized) return false;
 
+	if (isHeadlessPrimitiveSourceFile(normalized)) return false;
 	if (normalized.startsWith('lib/lib/')) return true;
 	if (normalized.includes('/')) return false;
 
-	return /\.(?:svelte\.)?[cm]?[jt]s$/.test(normalized);
+	return SCRIPT_FILE_EXTENSION_RE.test(normalized);
 }
 
 function isLibComponentInstall(filePath?: string): boolean {

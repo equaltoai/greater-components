@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-05-30T11:50:48.768Z",
+  "generatedAt": "2026-05-30T16:57:50.245Z",
   "ref": "greater-v0.10.1",
   "version": "0.10.1",
   "checksums": {
@@ -921,7 +921,7 @@
     "packages/shell/src/components/Topbar.css": "sha256-e49AWpuwlaEBLxqeDvM8sMNuwlqugOB+54w1y+7ojME=",
     "packages/shell/src/components/Topbar.svelte": "sha256-QXASS11a1RlKcnxqDskrt0PwkGTt7zvr+LrK2uWHm80=",
     "packages/shell/src/index.ts": "sha256-NLhn3AXDEWBZsC7ACM0NX2/1Uq0CzDuQwYjVG4zGXhw=",
-    "packages/shell/src/styles/base.css": "sha256-INLODwNQNHYVsBKgGXbW/PENIwGo7NuIODzsRFuUUN8=",
+    "packages/shell/src/styles/base.css": "sha256-9aQezHdlFN9B4Ccb07tZ7/D2YwIXsoAeFfAKC6TuUbg=",
     "packages/shell/src/types.ts": "sha256-xRnEGFsxQoJKt05wbZb+rbvOVbkbNb5UCpXOSovR8hI=",
     "packages/shell/src/utils/fuzzy-filter.ts": "sha256-ZopMxsr/aoZ3BqcmGydIR4DOwysud9oxTBLp88qVXt8=",
     "packages/shell/src/utils/safe-href.ts": "sha256-5LJjvZP1lV7HojkVIvxKuySP+mF+FgNL2FyTP9bGysY=",
@@ -5989,7 +5989,7 @@
         { "name": "@graphql-typed-document-node/core", "version": "^3.2.0" },
         { "name": "graphql", "version": "^16.13.2" },
         { "name": "graphql-ws", "version": "^6.0.8" },
-        { "name": "viem", "version": "^2.51.0" },
+        { "name": "viem", "version": "2.51.3" },
         { "name": "svelte", "version": "^5.55.1" }
       ],
       "tags": []
@@ -6155,8 +6155,8 @@
         },
         {
           "path": "src/styles/base.css",
-          "checksum": "sha256-INLODwNQNHYVsBKgGXbW/PENIwGo7NuIODzsRFuUUN8=",
-          "size": 2912
+          "checksum": "sha256-9aQezHdlFN9B4Ccb07tZ7/D2YwIXsoAeFfAKC6TuUbg=",
+          "size": 2689
         },
         {
           "path": "src/types.ts",

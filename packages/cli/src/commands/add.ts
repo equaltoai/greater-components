@@ -690,9 +690,10 @@ export const addAction = async (
 			if (primitiveName) {
 				const functionName =
 					'create' + primitiveName.slice(0, 1).toUpperCase() + primitiveName.slice(1);
-				logger.note(
-					chalk.cyan(`  import { ${functionName} } from '${aliasLib}/primitives/${primitiveName}';`)
-				);
+				const primitiveImportPath = options.path
+					? `${aliasLib}/${primitiveName}`
+					: `${aliasLib}/primitives/${primitiveName}`;
+				logger.note(chalk.cyan(`  import { ${functionName} } from '${primitiveImportPath}';`));
 			}
 		}
 		if (parseResult.byType.shared.length > 0) {
