@@ -32,6 +32,14 @@ export interface SparklinePathInput {
 	max?: number;
 }
 
+const MAX_SPARKLINE_POINTS = 1000;
+
+interface NormalizedSparklineData {
+	values: number[];
+	min: number;
+	max: number;
+}
+
 export interface SparklinePathOutput {
 	/** Full SVG `d` attribute for `<path>`. */
 	path: string;
@@ -61,24 +69,35 @@ export function buildSparklinePath(input: SparklinePathInput): SparklinePathOutp
 	const innerWidth = Math.max(0, width - 2 * padding);
 	const innerHeight = Math.max(0, height - 2 * padding);
 
-	const dataMin = input.min ?? Math.min(...data);
-	const dataMaxRaw = input.max ?? Math.max(...data);
+	const normalized = normalizeSparklineData(data, MAX_SPARKLINE_POINTS);
+	if (normalized.values.length === 0) {
+		return { path: '', last: { x: 0, y: height / 2 }, range: { min: 0, max: 0 } };
+	}
+
+	const inputMin = input.min;
+	const inputMax = input.max;
+	const dataMin =
+		typeof inputMin === 'number' && Number.isFinite(inputMin) ? inputMin : normalized.min;
+	const dataMaxRaw =
+		typeof inputMax === 'number' && Number.isFinite(inputMax) ? inputMax : normalized.max;
 	// Ensure max > min so the divisor isn't zero. For constant series we
 	// extend the range by 1 unit so the line sits at the midpoint.
 	const dataMax = dataMaxRaw > dataMin ? dataMaxRaw : dataMin + 1;
 
 	const range = { min: dataMin, max: dataMax };
 
-	const stepX = data.length > 1 ? innerWidth / (data.length - 1) : 0;
+	const values = normalized.values;
+	const stepX = values.length > 1 ? innerWidth / (values.length - 1) : 0;
 	const verticalSpan = dataMax - dataMin;
 
 	let path = '';
 	let lastX = 0;
 	let lastY = 0;
-	for (let i = 0; i < data.length; i++) {
-		const raw = data[i]!;
+	for (let i = 0; i < values.length; i++) {
+		const raw = values[i];
+		if (raw === undefined) continue;
 		const xRaw = padding + i * stepX;
-		const yRatio = verticalSpan === 0 ? 0.5 : 1 - (raw - dataMin) / verticalSpan;
+		const yRatio = toSparklineYRatio(raw, dataMin, verticalSpan);
 		const yRaw = padding + yRatio * innerHeight;
 		const x = roundFixed(xRaw);
 		const y = roundFixed(yRaw);
@@ -97,4 +116,58 @@ export function buildSparklinePath(input: SparklinePathInput): SparklinePathOutp
  */
 function roundFixed(n: number): number {
 	return Math.round(n * 1000) / 1000;
+}
+
+function normalizeSparklineData(data: number[], maxPoints: number): NormalizedSparklineData {
+	let min = Number.POSITIVE_INFINITY;
+	let max = Number.NEGATIVE_INFINITY;
+	const values: number[] = [];
+
+	const recordFiniteSample = (sample: number): boolean => {
+		if (!Number.isFinite(sample)) return false;
+		if (sample < min) min = sample;
+		if (sample > max) max = sample;
+		return true;
+	};
+
+	if (data.length <= maxPoints) {
+		for (let i = 0; i < data.length; i++) {
+			const sample = data[i];
+			if (sample === undefined) continue;
+			if (recordFiniteSample(sample)) values.push(sample);
+		}
+
+		return { values, min, max };
+	}
+
+	for (let bucket = 0; bucket < maxPoints; bucket++) {
+		const start = Math.floor((bucket * data.length) / maxPoints);
+		const end = Math.floor(((bucket + 1) * data.length) / maxPoints);
+
+		let count = 0;
+		let mean = 0;
+		let fallback = 0;
+		for (let i = start; i < end; i++) {
+			const sample = data[i];
+			if (sample === undefined) continue;
+			if (!recordFiniteSample(sample)) continue;
+
+			count += 1;
+			fallback = sample;
+			mean += (sample - mean) / count;
+		}
+
+		if (count > 0) values.push(Number.isFinite(mean) ? mean : fallback);
+	}
+
+	return { values, min, max };
+}
+
+function toSparklineYRatio(value: number, min: number, verticalSpan: number): number {
+	if (!Number.isFinite(verticalSpan) || verticalSpan <= 0) return 0.5;
+
+	const ratio = 1 - (value - min) / verticalSpan;
+	if (!Number.isFinite(ratio)) return 0.5;
+
+	return Math.min(1, Math.max(0, ratio));
 }
