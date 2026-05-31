@@ -8,9 +8,16 @@ export function createDemoPlaywrightConfig(
 	const envRuntime = process.env['PLAYGROUND_RUNTIME']?.toLowerCase() === 'csr' ? 'csr' : null;
 	const envToggle = process.env['PLAYGROUND_CSR_ONLY'] === 'true';
 	const shouldForceCsr = runtime === 'csr' || envRuntime === 'csr' || envToggle;
+	const shouldUseSystemChrome = process.env['PLAYWRIGHT_E2E_USE_SYSTEM_CHROME'] === 'true';
 
 	const baseCommand = 'pnpm --filter @equaltoai/playground dev --host 127.0.0.1 --port 4173';
 	const playgroundDevCommand = shouldForceCsr ? `${baseCommand} --mode csr` : baseCommand;
+	const chromiumProject = {
+		name: runtime === 'csr' ? 'csr-chromium' : 'chromium',
+		use: shouldUseSystemChrome
+			? { ...devices['Desktop Chrome'], channel: 'chrome' }
+			: { ...devices['Desktop Chrome'] },
+	};
 
 	return defineConfig({
 		testDir: './tests/demo',
@@ -35,10 +42,7 @@ export function createDemoPlaywrightConfig(
 			trace: 'on-first-retry',
 		},
 		projects: [
-			{
-				name: runtime === 'csr' ? 'csr-chromium' : 'chromium',
-				use: { ...devices['Desktop Chrome'] },
-			},
+			chromiumProject,
 			{
 				name: runtime === 'csr' ? 'csr-firefox' : 'firefox',
 				use: { ...devices['Desktop Firefox'] },

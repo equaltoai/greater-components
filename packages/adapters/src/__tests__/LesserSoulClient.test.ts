@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
 	LesserSoulClient,
 	LesserSoulClientError,
+	type LesserAgent,
 	type LesserSoulIncorporateResponse,
 	type LesserSoulsMineResponse,
 } from '../lesser/client';
@@ -65,6 +66,63 @@ describe('LesserSoulClient', () => {
 		expect(url).toBe('https://lesser.example/api/v1/souls/mine');
 		expect(headers.get('authorization')).toBe('Bearer test-token');
 		expect(response.souls[0]?.agent.ens_name).toBe('agent-1.lessersoul.eth');
+	});
+
+	it('fetches local agent metadata by username', async () => {
+		const responseBody: LesserAgent = {
+			username: 'agent-1',
+			display_name: 'Agent One',
+			verified: true,
+			quarantine_active: false,
+			agent_type: 'assistant',
+			agent_version: 'gpt-5-mini',
+			agent_capabilities: {
+				can_boost: true,
+				can_dm: true,
+				can_follow: true,
+				can_post: true,
+				can_reply: true,
+				max_posts_per_hour: 10,
+				requires_approval: false,
+			},
+			mcp_access: {
+				authorization_server_url: 'https://lesser.example/.well-known/oauth-authorization-server',
+				guidance: [],
+				mcp_url: 'https://lesser.example/mcp/agent-1',
+				protected_resource_url: 'https://lesser.example/.well-known/oauth-protected-resource',
+				registration_url: 'https://lesser.example/oauth/register',
+				scopes: [],
+			},
+			identity_semantics: {
+				soul_binding_state: 'BOUND',
+				continuity_state: 'CONTINUOUS',
+				continuity_summary: 'continuity preserved',
+				identity_label: 'agent-1',
+				identity_state: 'STABLE',
+				lifecycle_state: 'ACTIVE',
+				body_identity_preserved: true,
+				timeline_presence_preserved: true,
+				memory_references_preserved: true,
+				attribution_label: 'agent',
+				moderation_label: 'agent',
+			},
+		};
+
+		fetchMock.mockResolvedValueOnce(jsonResponse(responseBody));
+
+		const response = await client.getAgentByUsername(' agent-1 ');
+		const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+		const headers = new Headers(init.headers);
+
+		expect(url).toBe('https://lesser.example/api/v1/agents/agent-1');
+		expect(headers.get('authorization')).toBe('Bearer test-token');
+		expect(response.agent_version).toBe('gpt-5-mini');
+		expect(response.display_name).toBe('Agent One');
+	});
+
+	it('rejects blank agent usernames', async () => {
+		await expect(client.getAgentByUsername('   ')).rejects.toThrow('username is required');
+		expect(fetchMock).not.toHaveBeenCalled();
 	});
 
 	it('incorporates a soul by agent id', async () => {

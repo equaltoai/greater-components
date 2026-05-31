@@ -44,6 +44,47 @@ describe('Breadcrumb.svelte', () => {
 		expect(container.querySelectorAll('span.gr-shell-breadcrumb__current').length).toBe(2);
 	});
 
+	it('drops unsafe href protocols while preserving allowed breadcrumb links', () => {
+		const { container } = render(Breadcrumb, {
+			items: [
+				{ label: 'Relative', href: '/relative' },
+				{ label: 'HTTP', href: 'http://example.com/path' },
+				{ label: 'HTTPS', href: 'https://example.com/path' },
+				{ label: 'Email', href: 'mailto:hello@example.com' },
+				{ label: 'JavaScript', href: 'javascript:alert(1)' },
+				{ label: 'Data', href: 'data:text/html,<script>alert(1)</script>' },
+				{ label: 'VBScript', href: 'vbscript:msgbox(1)' },
+				{ label: 'Current', current: true },
+			],
+		});
+
+		const anchors = Array.from(container.querySelectorAll('a.gr-shell-breadcrumb__link'));
+		expect(anchors.map((anchor) => anchor.textContent?.trim())).toEqual([
+			'Relative',
+			'HTTP',
+			'HTTPS',
+			'Email',
+		]);
+		expect(anchors.map((anchor) => anchor.getAttribute('href'))).toEqual([
+			'/relative',
+			'http://example.com/path',
+			'https://example.com/path',
+			'mailto:hello@example.com',
+		]);
+
+		for (const label of ['JavaScript', 'Data', 'VBScript']) {
+			expect(
+				anchors.some((anchor) => anchor.textContent?.trim() === label),
+				`${label} should not render as a clickable breadcrumb anchor`
+			).toBe(false);
+		}
+
+		const staticLabels = Array.from(
+			container.querySelectorAll('span.gr-shell-breadcrumb__current')
+		).map((span) => span.textContent?.trim());
+		expect(staticLabels).toEqual(expect.arrayContaining(['JavaScript', 'Data', 'VBScript']));
+	});
+
 	it('marks the last item as current with aria-current="page" when no explicit current set', () => {
 		const { container } = render(Breadcrumb, {
 			items: [

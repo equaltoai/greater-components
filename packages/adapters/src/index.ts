@@ -62,6 +62,7 @@ export type {
 export { LesserSoulClient, LesserSoulClientError, createLesserSoulClient } from './lesser/index.js';
 export type {
 	LesserFetchLike,
+	LesserAgent,
 	LesserSoulAgentIdentity,
 	LesserSoulAgentBinding,
 	LesserSoulBodyBinding,

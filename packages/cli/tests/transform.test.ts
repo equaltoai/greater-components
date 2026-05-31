@@ -300,6 +300,37 @@ import type { GenericStatus } from '../generics/index.js';`;
 		expect(result.content).toContain("from './types'");
 	});
 
+	it('leaves headless primitive type and utility imports relative to the lib alias', () => {
+		const source = readFileSync(
+			new URL('../../headless/src/primitives/button.ts', import.meta.url),
+			'utf8'
+		);
+
+		const result = transformImports(source, config, 'lib/primitives/button.ts');
+
+		expect(result.transformedCount).toBe(0);
+		expect(result.transformedPaths).toEqual([]);
+		expect(result.content).toContain("from '../types/common.js'");
+		expect(result.content).toContain("from '../utils/id.js'");
+		expect(result.content).toContain("from '../utils/keyboard.js'");
+		expect(result.content).not.toContain("from './types/common.js'");
+		expect(result.content).not.toContain("from './utils/id.js'");
+	});
+
+	it('leaves headless primitive imports alone after add maps files to root-relative paths', () => {
+		const source = readFileSync(
+			new URL('../../headless/src/primitives/button.ts', import.meta.url),
+			'utf8'
+		);
+
+		const result = transformImports(source, config, 'button.ts');
+
+		expect(result.transformedCount).toBe(0);
+		expect(result.content).toContain("from '../types/common.js'");
+		expect(result.content).toContain("from '../utils/id.js'");
+		expect(result.content).toContain("from '../utils/keyboard.js'");
+	});
+
 	it('rewrites social component imports from flattened lib utilities', () => {
 		const content = `<script lang="ts">
 \timport type { TimelineIntegrationConfig } from '../lib/integration';

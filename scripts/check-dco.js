@@ -30,10 +30,87 @@ function parseCommit(sha) {
 	};
 }
 
-function validSignoff(commit) {
+function normalizeEmail(email) {
+	return email.trim().toLowerCase();
+}
+
+function routedStewardAgent(commit) {
+	const loginPattern = /^([a-z0-9](?:[a-z0-9-]*[a-z0-9])?)-steward\[bot\]$/i;
+	const emailPattern =
+		/^[0-9]+\+([a-z0-9](?:[a-z0-9-]*[a-z0-9])?)-steward\[bot\]@users\.noreply\.github\.com$/i;
+	const loginMatch = commit.authorName.trim().match(loginPattern);
+	const emailMatch = commit.authorEmail.trim().match(emailPattern);
+	if (!loginMatch || !emailMatch) return undefined;
+
+	const loginAgent = loginMatch[1].toLowerCase();
+	const emailAgent = emailMatch[1].toLowerCase();
+	return loginAgent === emailAgent ? loginAgent : undefined;
+}
+
+function matchesRoutedStewardSignoff(commit, signoffEmail) {
+	const agent = routedStewardAgent(commit);
+	if (!agent) return false;
+
+	/*
+	 * Aron-approved narrow exception: routed TheoryMCP commits are authored by
+	 * the GitHub App bot (<agent>-steward[bot] / numeric+<agent>-steward[bot]
+	 * noreply email), while the auditable DCO identity is the steward agent
+	 * mailbox. Accept only that corresponding <agent>.equaltoai@theorymcp.ai
+	 * signoff. Human commits and all non-routed bots still require strict
+	 * author-email == signoff-email matching.
+	 */
+	return normalizeEmail(signoffEmail) === `${agent}.equaltoai@theorymcp.ai`;
+}
+
+function githubBotNoreplyLogin(email) {
+	const match = email
+		.trim()
+		.match(/^(?:(?:[0-9]+)\+)?([^@]+\[bot\])@users\.noreply\.github\.com$/i);
+	return match?.[1]?.toLowerCase();
+}
+
+function matchesGitHubBotNoreplySignoff(commit, signoffEmail) {
+	const authorLogin = commit.authorName.trim().toLowerCase();
+	if (!authorLogin.endsWith('[bot]')) return false;
+
+	const authorEmailLogin = githubBotNoreplyLogin(commit.authorEmail);
+	const signoffEmailLogin = githubBotNoreplyLogin(signoffEmail);
+	return (
+		authorEmailLogin !== undefined &&
+		signoffEmailLogin !== undefined &&
+		authorLogin === authorEmailLogin &&
+		authorLogin === signoffEmailLogin
+	);
+}
+
+function matchingSignoff(commit) {
 	const signoffPattern = /^Signed-off-by:\s*(.*?)\s*<([^>]+)>\s*$/gim;
-	const matches = [...commit.body.matchAll(signoffPattern)];
-	return matches.length > 0;
+	const authorEmail = normalizeEmail(commit.authorEmail);
+
+	for (const match of commit.body.matchAll(signoffPattern)) {
+		const signoff = {
+			name: match[1].trim(),
+			email: match[2].trim(),
+			githubBotNoreply: false,
+			routedSteward: false,
+		};
+		const signoffEmail = normalizeEmail(signoff.email);
+		if (signoffEmail === authorEmail) return signoff;
+		if (matchesGitHubBotNoreplySignoff(commit, signoff.email)) {
+			signoff.githubBotNoreply = true;
+			return signoff;
+		}
+		if (matchesRoutedStewardSignoff(commit, signoff.email)) {
+			signoff.routedSteward = true;
+			return signoff;
+		}
+	}
+
+	return undefined;
+}
+
+function validSignoff(commit) {
+	return matchingSignoff(commit) !== undefined;
 }
 
 function remediationConfigEnabled() {
@@ -104,8 +181,17 @@ for (const commit of parsedCommits) {
 		continue;
 	}
 
-	if (validSignoff(commit)) {
-		console.log(`dco: ${commit.sha} signed off by ${commit.authorName} <${commit.authorEmail}>`);
+	const signoff = matchingSignoff(commit);
+	if (signoff) {
+		let allowlistNote = '';
+		if (signoff.routedSteward) {
+			allowlistNote = ' via routed TheoryMCP App allowlist';
+		} else if (signoff.githubBotNoreply) {
+			allowlistNote = ' via GitHub bot noreply normalization';
+		}
+		console.log(
+			`dco: ${commit.sha} signed off by ${signoff.name} <${signoff.email}>${allowlistNote}`
+		);
 		continue;
 	}
 
@@ -122,7 +208,7 @@ for (const commit of parsedCommits) {
 	}
 
 	error(
-		`Commit ${commit.sha} is missing Signed-off-by for ${commit.authorName} <${commit.authorEmail}>`
+		`Commit ${commit.sha} is missing Signed-off-by matching ${commit.authorName} <${commit.authorEmail}>`
 	);
 	failed = true;
 }

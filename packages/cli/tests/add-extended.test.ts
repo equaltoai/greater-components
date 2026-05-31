@@ -16,6 +16,7 @@ import * as registryFaces from '../src/registry/faces.js';
 import * as packages from '../src/utils/packages.js';
 import * as fetchUtils from '../src/utils/fetch.js';
 import * as files from '../src/utils/files.js';
+import { logger } from '../src/utils/logger.js';
 
 const mockFs = new MockFileSystem();
 
@@ -332,6 +333,49 @@ describe('Add Command Extended', () => {
 	});
 
 	describe('Dependencies', () => {
+		it('prints a primitive import hint matching the --path write target', async () => {
+			const { addAction } = await import('../src/commands/add.js');
+			const { getComponent } = await import('../src/registry/index.js');
+
+			(getComponent as any).mockReturnValue(MOCK_BUTTON_COMPONENT);
+			vi.mocked(fetchUtils.fetchComponents).mockResolvedValue(
+				new Map([['primitive:button', MOCK_BUTTON_COMPONENT.files]])
+			);
+
+			await addAction(['button'], { cwd: '/', path: 'src/lib/foo', yes: true });
+
+			expect(files.writeComponentFilesWithTransform).toHaveBeenCalledWith(
+				[expect.objectContaining({ path: 'button.ts' })],
+				'/src/lib/foo',
+				expect.any(Object)
+			);
+
+			const notes = vi.mocked(logger.note).mock.calls.map(([message]) => String(message));
+			expect(notes).toContain("  import { createButton } from 'src/lib/foo/button';");
+			expect(notes.join('\\n')).not.toContain('src/lib/foo/primitives/button');
+		});
+
+		it('keeps the default primitive import hint aligned with the alias write target', async () => {
+			const { addAction } = await import('../src/commands/add.js');
+			const { getComponent } = await import('../src/registry/index.js');
+
+			(getComponent as any).mockReturnValue(MOCK_BUTTON_COMPONENT);
+			vi.mocked(fetchUtils.fetchComponents).mockResolvedValue(
+				new Map([['primitive:button', MOCK_BUTTON_COMPONENT.files]])
+			);
+
+			await addAction(['button'], { cwd: '/', yes: true });
+
+			expect(files.writeComponentFilesWithTransform).toHaveBeenCalledWith(
+				[expect.objectContaining({ path: 'button.ts' })],
+				'/src/lib/primitives',
+				expect.any(Object)
+			);
+
+			const notes = vi.mocked(logger.note).mock.calls.map(([message]) => String(message));
+			expect(notes).toContain("  import { createButton } from '$lib/primitives/button';");
+		});
+
 		it('installs missing dependencies', async () => {
 			const { addAction } = await import('../src/commands/add.js');
 			const { getComponent } = await import('../src/registry/index.js');

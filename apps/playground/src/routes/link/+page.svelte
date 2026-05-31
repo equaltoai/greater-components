@@ -1,12 +1,21 @@
 <script lang="ts">
 	import { Link, Text, Heading } from '@equaltoai/greater-components-primitives';
 
-	let navigationLog = $state<string[]>([]);
+	type NavigationLogEntry = {
+		id: number;
+		label: string;
+	};
+
+	let nextNavigationLogId = 0;
+	let navigationLog = $state<NavigationLogEntry[]>([]);
 
 	function fakeNavigate(ev: MouseEvent, href: string) {
 		ev.preventDefault();
 		navigationLog = [
-			`${new Date().toLocaleTimeString()} — would navigate to: ${href}`,
+			{
+				id: nextNavigationLogId++,
+				label: `${new Date().toLocaleTimeString()} — would navigate to: ${href}`,
+			},
 			...navigationLog.slice(0, 9),
 		];
 	}
@@ -114,8 +123,8 @@
 			<Text>No navigations yet — click a link above.</Text>
 		{:else}
 			<ul class="log">
-				{#each navigationLog as entry (entry)}
-					<li>{entry}</li>
+				{#each navigationLog as entry (entry.id)}
+					<li>{entry.label}</li>
 				{/each}
 			</ul>
 		{/if}
