@@ -54,26 +54,14 @@
 /*
  * Default --gr-shell-* tokens (consumers may override).
  *
- * Defined on every shell component root class so a standalone `Panel`,
- * `StatCard`, `Callout`, etc. — rendered outside a `Shell` / `PageFrame`
- * ancestor — still gets sensible defaults rather than `var()` resolving
- * to empty. Consumers can override any token by setting it on a higher
- * ancestor (or by overriding `.gr-shell` / `.gr-shell-page-frame` to
- * theme the whole tree).
+ * Defaults live on zero-specificity `:where(:root)` so standalone shell
+ * components that import `shell.css` inherit sensible values. Shell
+ * component root classes intentionally do not redeclare these public tokens:
+ * a closer ancestor such as `.my-theme`, `.gr-shell`, or
+ * `.gr-shell-page-frame` can set `--gr-shell-*` once and have that value
+ * inherit through the whole shell subtree.
  */
-:where(
-	.gr-shell,
-	.gr-shell-page-frame,
-	.gr-shell-topbar,
-	.gr-shell-sidebar,
-	.gr-shell-panel,
-	.gr-shell-statcard,
-	.gr-shell-summary-strip,
-	.gr-shell-page-title,
-	.gr-shell-breadcrumb,
-	.gr-shell-callout,
-	.gr-shell-command-palette
-) {
+:where(:root) {
 	--gr-shell-sidebar-width-sm: 14rem;
 	--gr-shell-sidebar-width-md: 16rem;
 	--gr-shell-sidebar-width-lg: 20rem;

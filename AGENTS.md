@@ -168,6 +168,37 @@ greater --help
 - Fall back to the general GitHub plugin or `gh` only for capabilities the routed tools do not expose, such as diffs, inline review comments, unresolved threads, Actions logs, labels, search, approvals, or large local pushes. State the fallback reason when a GitHub write uses a non-routed path.
 - Routed provenance does not relax Greater gates: preserve component API stability, pinned Lesser/Lesser Host contract sync, WCAG 2.1 AA accessibility, CLI registry integrity, theming token stability, Mastodon-compatible behavior where applicable, and AGPL/dependency discipline.
 
+## Project MCP Trust Posture
+
+- `.mcp.json` intentionally registers the `greater_lab` remote MCP server at
+  `https://lab.theorymcp.ai/equaltoai/agents/greater/mcp`. The endpoint is
+  first-party EqualToAI/TheoryMCP steward-routing infrastructure for this repo,
+  not a general-purpose developer tool server.
+- Ownership: `lab.theorymcp.ai` is operated as EqualToAI/TheoryMCP infrastructure
+  for routed steward-agent sessions. The `greater_lab` route is scoped to the
+  Greater steward identity and exposes managed tools such as memory, email,
+  knowledge, and bounded GitHub operations.
+- Prefer `mcp__greater_lab__` GitHub tools for supported GitHub work because they
+  preserve routed-agent provenance, constrain writes to server-authorized repo
+  surfaces, and keep memory/email/GitHub actions attributable to the Greater
+  steward. Use fallback GitHub tooling only for capabilities the routed tools do
+  not expose, and state the fallback reason.
+- Trust assumptions: contributors and agents who enable the project MCP config
+  trust DNS/TLS resolution for `lab.theorymcp.ai`, the TheoryMCP service's tool
+  descriptions/resources/responses, and its server-side authorization policy for
+  the Greater steward route. Enabling project MCP connects the IDE agent to an
+  external server that controls tool behavior; never pass local secrets, tokens,
+  private keys, seed phrases, or unrelated repository contents through MCP tools.
+- Contributor consent: opening the repository does not by itself require using
+  the endpoint, but enabling project MCP in a compatible client is an informed
+  trust decision. Contributors who do not accept that remote-tool trust model
+  should leave project MCP disabled and use ordinary local/GitHub workflows.
+- Endpoint pinning / allowlist recommendation: keep any non-interactive client,
+  proxy, firewall, or enterprise MCP policy pinned to the exact HTTPS origin and
+  path above. Prefer certificate/SPKI pinning or an exact egress allowlist where
+  the client/runtime supports it without interactive prompts. Do not add local
+  approval gates that break non-interactive steward operation.
+
 ## Environment & Tooling Notes
 
 - Husky with lint-staged formats staged files and runs lightweight checks; fix failures locally before retrying the commit.

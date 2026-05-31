@@ -209,6 +209,12 @@ describe('Link.svelte', () => {
 			expect(link?.getAttribute('data-testid')).toBe('nav-link-budgets');
 		});
 
+		it('strips consumer-supplied style attributes from rest-props', () => {
+			const { container } = renderLink({ href: '/x', style: 'color:red' });
+			const link = container.querySelector('a');
+			expect(link?.hasAttribute('style')).toBe(false);
+		});
+
 		it('appends consumer-supplied class to base class list', () => {
 			const { container } = renderLink({ href: '/x', class: 'custom-class extra' });
 			const link = container.querySelector('a');

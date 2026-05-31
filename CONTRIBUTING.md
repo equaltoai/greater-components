@@ -101,6 +101,29 @@ By making a contribution to this project, I certify that:
 
 ## Development Workflow
 
+### Project MCP informed consent
+
+The root `.mcp.json` is intentionally committed so MCP-enabled developer clients
+can discover the `greater_lab` steward endpoint:
+`https://lab.theorymcp.ai/equaltoai/agents/greater/mcp`. `lab.theorymcp.ai` is
+first-party EqualToAI/TheoryMCP infrastructure used for routed steward-agent
+sessions. It is the preferred GitHub path for Greater steward work because it
+preserves agent provenance and scopes GitHub/email/memory/knowledge tools through
+server-side policy.
+
+If you accept or enable this project MCP configuration, your IDE agent connects
+to an external server that controls the exposed MCP tool descriptions, resources,
+and responses. Treat that as a trust decision: do not send local secrets, tokens,
+wallet keys, seed phrases, private customer data, or unrelated repository content
+through MCP tools. If you do not want that remote-tool trust posture, leave
+project MCP disabled and contribute using the normal local Git and GitHub flow.
+
+Recommended network control: pin or allowlist the exact HTTPS endpoint above in
+any non-interactive MCP client, proxy, firewall, or enterprise policy that
+supports it. Prefer certificate/SPKI pinning where available. The repository does
+not add approval prompts around `greater_lab`; non-interactive steward operation
+is an accepted governance requirement.
+
 ### Code Style
 
 - We use ESLint and Prettier for code formatting
