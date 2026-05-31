@@ -62,6 +62,27 @@ function matchesRoutedStewardSignoff(commit, signoffEmail) {
 	return normalizeEmail(signoffEmail) === `${agent}.equaltoai@theorymcp.ai`;
 }
 
+function githubBotNoreplyLogin(email) {
+	const match = email
+		.trim()
+		.match(/^(?:(?:[0-9]+)\+)?([^@]+\[bot\])@users\.noreply\.github\.com$/i);
+	return match?.[1]?.toLowerCase();
+}
+
+function matchesGitHubBotNoreplySignoff(commit, signoffEmail) {
+	const authorLogin = commit.authorName.trim().toLowerCase();
+	if (!authorLogin.endsWith('[bot]')) return false;
+
+	const authorEmailLogin = githubBotNoreplyLogin(commit.authorEmail);
+	const signoffEmailLogin = githubBotNoreplyLogin(signoffEmail);
+	return (
+		authorEmailLogin !== undefined &&
+		signoffEmailLogin !== undefined &&
+		authorLogin === authorEmailLogin &&
+		authorLogin === signoffEmailLogin
+	);
+}
+
 function matchingSignoff(commit) {
 	const signoffPattern = /^Signed-off-by:\s*(.*?)\s*<([^>]+)>\s*$/gim;
 	const authorEmail = normalizeEmail(commit.authorEmail);
@@ -70,10 +91,15 @@ function matchingSignoff(commit) {
 		const signoff = {
 			name: match[1].trim(),
 			email: match[2].trim(),
+			githubBotNoreply: false,
 			routedSteward: false,
 		};
 		const signoffEmail = normalizeEmail(signoff.email);
 		if (signoffEmail === authorEmail) return signoff;
+		if (matchesGitHubBotNoreplySignoff(commit, signoff.email)) {
+			signoff.githubBotNoreply = true;
+			return signoff;
+		}
 		if (matchesRoutedStewardSignoff(commit, signoff.email)) {
 			signoff.routedSteward = true;
 			return signoff;
@@ -157,7 +183,12 @@ for (const commit of parsedCommits) {
 
 	const signoff = matchingSignoff(commit);
 	if (signoff) {
-		const allowlistNote = signoff.routedSteward ? ' via routed TheoryMCP App allowlist' : '';
+		let allowlistNote = '';
+		if (signoff.routedSteward) {
+			allowlistNote = ' via routed TheoryMCP App allowlist';
+		} else if (signoff.githubBotNoreply) {
+			allowlistNote = ' via GitHub bot noreply normalization';
+		}
 		console.log(
 			`dco: ${commit.sha} signed off by ${signoff.name} <${signoff.email}>${allowlistNote}`
 		);

@@ -139,6 +139,35 @@ const tests = [
 			}),
 	],
 	[
+		'GitHub bot numeric noreply author with canonical bot signoff passes',
+		() =>
+			withRepo((cwd) => {
+				const base = git(cwd, ['rev-parse', 'HEAD']);
+				commit(cwd, {
+					authorName: 'github-actions[bot]',
+					authorEmail: '41898282+github-actions[bot]@users.noreply.github.com',
+					body: 'Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>',
+				});
+
+				const result = expectDcoPass(cwd, base);
+				assert.match(result.stdout, /GitHub bot noreply normalization/);
+			}),
+	],
+	[
+		'GitHub bot numeric noreply author cannot use a different bot signoff',
+		() =>
+			withRepo((cwd) => {
+				const base = git(cwd, ['rev-parse', 'HEAD']);
+				commit(cwd, {
+					authorName: 'github-actions[bot]',
+					authorEmail: '41898282+github-actions[bot]@users.noreply.github.com',
+					body: 'Signed-off-by: dependabot[bot] <dependabot[bot]@users.noreply.github.com>',
+				});
+
+				expectDcoFail(cwd, base);
+			}),
+	],
+	[
 		'non-allowlisted bot author with mismatched signoff fails',
 		() =>
 			withRepo((cwd) => {
