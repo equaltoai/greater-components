@@ -245,18 +245,35 @@ function runSelfTest() {
 		);
 	}
 	for (const key of exportGetKeys) {
+		const [, path] = key.split(' ');
+		const operation = spec.paths?.[path]?.get;
 		assertSelfTest(
-			current.gaps.some((gap) => `${gap.method} ${gap.path}` === key),
-			`sensitive private-data GET should be audited as an auth gap: ${key}`
+			operation && typeof operation === 'object',
+			`self-test fixture missing sensitive private-data GET: ${key}`
 		);
 		assertSelfTest(
-			currentPartition.knownGaps.some((gap) => `${gap.method} ${gap.path}` === key),
-			`sensitive private-data GET should be baselined as a known gap: ${key}`
+			isSensitiveOperation('get', path),
+			`sensitive private-data GET should be in the audit target set: ${key}`
 		);
-		assertSelfTest(
-			!currentPartition.newGaps.some((gap) => `${gap.method} ${gap.path}` === key),
-			`sensitive private-data GET should not be classified as NEW when baselined: ${key}`
-		);
+		if ('security' in operation) {
+			assertSelfTest(
+				!current.gaps.some((gap) => `${gap.method} ${gap.path}` === key),
+				`secured sensitive private-data GET should not be reported as a gap: ${key}`
+			);
+			assertSelfTest(
+				!knownGapKeys.has(key),
+				`secured sensitive private-data GET should not remain in the baseline: ${key}`
+			);
+		} else {
+			assertSelfTest(
+				currentPartition.knownGaps.some((gap) => `${gap.method} ${gap.path}` === key),
+				`sensitive private-data GET without security should be baselined as a known gap: ${key}`
+			);
+			assertSelfTest(
+				!currentPartition.newGaps.some((gap) => `${gap.method} ${gap.path}` === key),
+				`sensitive private-data GET should not be classified as NEW when baselined: ${key}`
+			);
+		}
 	}
 
 	const stripped = structuredClone(spec);
@@ -292,17 +309,18 @@ function runSelfTest() {
 			'stripped rotate_secret check should report rotate_secret under NEW gaps'
 		);
 
-		const tempBaselinePath = resolve(tempDir, 'openapi-auth-baseline.json');
-		const baseline = JSON.parse(readFileSync(DEFAULT_BASELINE, 'utf-8'));
-		const removedExportKey = 'GET /api/v1/exports/{id}/download';
-		baseline.known_gaps = baseline.known_gaps.filter(
-			(gap) => `${gap.method} ${gap.path}` !== removedExportKey
-		);
-		writeFileSync(tempBaselinePath, JSON.stringify(baseline, null, 2) + '\n', 'utf-8');
+		const exportSpec = structuredClone(spec);
+		delete exportSpec.paths['/api/v1/exports/{id}/download'].get.security;
+		const tempExportSpecPath = resolve(tempDir, 'openapi-export-gap.yaml');
+		writeFileSync(tempExportSpecPath, stringifyYaml(exportSpec), 'utf-8');
 
-		const exportChild = spawnSync(process.execPath, [SCRIPT_PATH, '--baseline', tempBaselinePath], {
-			encoding: 'utf-8',
-		});
+		const exportChild = spawnSync(
+			process.execPath,
+			[SCRIPT_PATH, '--spec', tempExportSpecPath, '--baseline', DEFAULT_BASELINE],
+			{
+				encoding: 'utf-8',
+			}
+		);
 		if (exportChild.error) {
 			throw exportChild.error;
 		}
@@ -321,7 +339,7 @@ function runSelfTest() {
 	}
 
 	console.log(
-		'Self-test passed: rotate_secret security removal is a new gap; export GET gaps are audited/baselined; exact public paths remain exempt.'
+		'Self-test passed: rotate_secret and export GET security removals are new gaps; exact public paths remain exempt.'
 	);
 }
 

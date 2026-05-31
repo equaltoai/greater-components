@@ -4,42 +4,7 @@
   "known_gaps": [
     {
       "method": "POST",
-      "path": "/api/v1/agents/delegate",
-      "tags": ["agents"]
-    },
-    {
-      "method": "PATCH",
-      "path": "/api/v1/agents/{username}",
-      "tags": ["agents"]
-    },
-    {
-      "method": "DELETE",
-      "path": "/api/v1/agents/{username}",
-      "tags": ["agents"]
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/agents/{username}/access-leases",
-      "tags": ["agents"]
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/agents/{username}/access-leases/challenge/agent",
-      "tags": ["agents"]
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/agents/{username}/access-leases/challenge/principal",
-      "tags": ["agents"]
-    },
-    {
-      "method": "POST",
       "path": "/api/v1/agents/{username}/access-leases/{leaseID}/renew/challenge",
-      "tags": ["agents"]
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/agents/{username}/access-leases/{leaseID}/revoke",
       "tags": ["agents"]
     },
     {
@@ -59,137 +24,19 @@
     },
     {
       "method": "POST",
-      "path": "/api/v1/agents/{username}/runtime-sessions/{sessionID}/revoke",
-      "tags": ["agents"]
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/announcements/{id}/dismiss",
-      "tags": ["announcements"]
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/exports",
-      "tags": ["exports"],
-      "note": "Private export listing exposes account export jobs; pending upstream root fix equaltoai/lesser#1121."
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/exports/{id}",
-      "tags": ["exports"],
-      "note": "Private export status exposes account export metadata; pending upstream root fix equaltoai/lesser#1121."
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/exports/{id}/download",
-      "tags": ["exports"],
-      "note": "Private export download exposes account export data; pending upstream root fix equaltoai/lesser#1121."
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/follow_requests/{account_id}/authorize",
-      "tags": ["follow_requests"]
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/follow_requests/{account_id}/reject",
-      "tags": ["follow_requests"]
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/moderation/flag",
-      "tags": ["moderation"]
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/moderation/review",
-      "tags": ["moderation"]
-    },
-    {
-      "method": "PUT",
-      "path": "/api/v1/moderation/trust",
-      "tags": ["moderation"]
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/notes",
-      "tags": ["notes"]
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/notes/{id}/vote",
-      "tags": ["notes"]
-    },
-    {
-      "method": "POST",
       "path": "/api/v1/notifications/deliver",
       "tags": ["notifications"]
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/push/subscription",
-      "tags": ["push"]
-    },
-    {
-      "method": "PUT",
-      "path": "/api/v1/push/subscription",
-      "tags": ["push"]
-    },
-    {
-      "method": "DELETE",
-      "path": "/api/v1/push/subscription",
-      "tags": ["push"]
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/reports",
-      "tags": ["reports"]
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/reputation/export",
-      "tags": ["reputation"]
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/reputation/import",
-      "tags": ["reputation"]
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/reputation/verify",
-      "tags": ["reputation"]
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/statuses/{id}/translate",
-      "tags": ["statuses"]
-    },
-    {
-      "method": "DELETE",
-      "path": "/api/v1/suggestions/{account_id}",
-      "tags": ["suggestions"]
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/vouches",
-      "tags": ["vouches"]
-    },
-    {
-      "method": "DELETE",
-      "path": "/api/v1/vouches/{vouch_id}",
-      "tags": ["vouches"]
     }
   ],
   "meta": {
-    "spec_path": "docs/lesser/contracts/openapi.yaml",
-    "generated_at": "2026-05-30T16:44:37.208Z",
+    "spec_path": "/home/aron/ai-workspace/codebases/equaltoai/greater-components/docs/lesser/contracts/openapi.yaml",
+    "generated_at": "2026-05-31T17:38:52.882Z",
     "has_global_security": false,
     "has_security_schemes": true,
     "security_scheme_names": ["bearerAuth", "oauth2", "setupBearer"],
-    "total_paths": 293,
+    "total_paths": 294,
     "sensitive_checked": 172,
-    "with_security": 115,
-    "without_security": 35
+    "with_security": 146,
+    "without_security": 5
   }
 }
