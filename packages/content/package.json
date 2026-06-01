@@ -55,7 +55,7 @@
     "remark-gfm": "^4.0.1",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
-    "shiki": "^4.0.2",
+    "shiki": "^4.1.0",
     "unified": "^11.0.5"
   },
   "devDependencies": {
@@ -65,12 +65,12 @@
     "@sveltejs/vite-plugin-svelte": "^7.0.0",
     "@testing-library/svelte": "^5.3.1",
     "@types/hast": "^3.0.4",
-    "@types/node": "^25.6.0",
+    "@types/node": "^25.9.1",
     "@vitest/coverage-v8": "^4.1.4",
-    "jsdom": "^29.0.2",
+    "jsdom": "^29.1.1",
     "svelte": "^5.55.1",
     "typescript": "^6.0.2",
-    "vite": "^8.0.8",
+    "vite": "^8.0.15",
     "vitest": "^4.1.4"
   },
   "private": true
