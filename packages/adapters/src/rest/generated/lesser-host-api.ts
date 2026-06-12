@@ -132,6 +132,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/soul/agents/register/{id}/principal-declaration/preflight": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Build Host-owned principal declaration signing material
+         * @description Returns the canonical JCS payload and 32-byte digest that the principal wallet must sign with EIP-191
+         *     `personal_sign` before calling registration verify. Clients must sign `message_hex` as hex bytes; they
+         *     should not reconstruct this digest locally.
+         */
+        post: operations["soulRegisterPrincipalDeclarationPreflight"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/soul/agents/register/{id}/verify": {
         parameters: {
             query?: never;
@@ -348,6 +370,201 @@ export interface paths {
         get: operations["soulInstanceGetMintConversation"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/instance/agents/register/begin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Begin an instance-key soul registration bootstrap request
+         * @description Server-to-server route for managed Lesser instances. The bearer token is the managed InstanceKey provisioned for
+         *     the authenticated instance; Host validates it by `sha256(raw_key)` and then enforces that the requested domain
+         *     belongs to the same managed instance slug. This route never uses portal/control-plane session auth.
+         */
+        post: operations["soulInstanceRegisterBegin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/instance/agents/register/{id}/principal-declaration/preflight": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Build principal declaration signing material for an instance-key registration
+         * @description Server-to-server route for managed Lesser instances. Returns Host-owned JCS canonical material and the 32-byte
+         *     digest the principal wallet must sign. The bearer token is the managed InstanceKey; this route never uses
+         *     portal/control-plane session auth.
+         */
+        post: operations["soulInstanceRegisterPrincipalDeclarationPreflight"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/instance/agents/register/{id}/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Verify proofs and principal approval for an instance-key registration
+         * @description Server-to-server route for managed Lesser instances. The bearer token is the managed InstanceKey; Host validates
+         *     the key by hash, enforces the registration's domain remains inside the instance boundary, and returns the
+         *     Safe-ready mint operation metadata for the hosted-bound soul workflow.
+         */
+        post: operations["soulInstanceRegisterVerify"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/instance/agents/register/{id}/mint-conversation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Start or continue an instance-key registration mint conversation over SSE
+         * @description Streams the assistant response using `text/event-stream` for a registration owned by the authenticated managed
+         *     instance. The bearer token is the managed InstanceKey and Host enforces the registration's domain boundary before
+         *     streaming. Canonical SSE event names and payload schemas are published in
+         *     `docs/contracts/soul-mint-conversation-sse.json`.
+         */
+        post: operations["soulInstanceStartRegistrationMintConversationSSE"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/instance/agents/register/{id}/mint-conversation/{conversationId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get an instance-key registration mint-conversation record
+         * @description Server-to-server route for managed Lesser instances. Returns the bounded private conversation record for a
+         *     registration inside the authenticated instance boundary.
+         */
+        get: operations["soulInstanceGetRegistrationMintConversation"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/instance/agents/register/{id}/mint-conversation/{conversationId}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Complete an instance-key registration mint conversation and persist declarations
+         * @description Server-to-server route for managed Lesser instances. Completes a conversation inside the authenticated instance
+         *     boundary and persists the produced declarations for finalize preflight/finalize.
+         */
+        post: operations["soulInstanceCompleteRegistrationMintConversation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/instance/agents/register/{id}/mint-conversation/{conversationId}/finalize/preflight": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Build finalize preflight data for an instance-key registration mint conversation
+         * @description Server-to-server route for managed Lesser instances. Returns signing material and the finalize request template
+         *     for hosted/off-chain publication inside the authenticated instance boundary.
+         */
+        post: operations["soulInstanceMintConversationFinalizePreflight"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/instance/agents/register/{id}/mint-conversation/{conversationId}/finalize/begin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Compatibility alias for instance-key finalize preflight
+         * @description Server-to-server alias for finalize preflight. Returns the same response shape as
+         *     `/finalize/preflight` and never uses portal/control-plane session auth.
+         */
+        post: operations["soulInstanceMintConversationFinalizeBegin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/instance/agents/register/{id}/mint-conversation/{conversationId}/finalize": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Finalize and publish an instance-key registration mint conversation
+         * @description Server-to-server route for managed Lesser instances. Publishes the hosted/off-chain registration artifact,
+         *     returns the activated agent identity, publication evidence, and promotion continuity fields Lesser needs to bind
+         *     local body state. The bearer token is the managed InstanceKey and Host enforces the instance/domain boundary.
+         */
+        post: operations["soulInstanceMintConversationFinalize"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1104,6 +1321,12 @@ export interface components {
             mint_operation_id?: string;
             /** @enum {string} */
             mint_operation_status?: "pending" | "proposed" | "executed" | "failed";
+            /** @enum {string} */
+            anchor_state?: "hosted_offchain" | "immutable_onchain";
+            /** @enum {string} */
+            onchain_binding_status?: "unavailable" | "pending" | "proposed" | "executed" | "failed";
+            onchain_binding_available?: boolean;
+            hosted_offchain_finalizable?: boolean;
             principal_address?: string;
             latest_conversation_id?: string;
             /** @enum {string} */
@@ -1180,6 +1403,30 @@ export interface components {
             wallet: components["schemas"]["WalletChallengeResponse"];
             proofs: components["schemas"]["SoulRegistryProofInstructions"][];
             promotion?: components["schemas"]["SoulAgentPromotion"];
+        };
+        SoulAgentRegistrationPrincipalDeclarationPreflightRequest: {
+            principal_address: string;
+            principal_declaration: string;
+            /** Format: date-time */
+            declared_at: string;
+        };
+        SoulAgentRegistrationPrincipalDeclarationPreflightResponse: {
+            /** @enum {string} */
+            version: "1";
+            principal_address: string;
+            signer_address: string;
+            /** @enum {string} */
+            signing_method: "eip191_personal_sign";
+            /** @enum {string} */
+            message_encoding: "hex_bytes";
+            /** @description 32-byte digest encoded as 0x-prefixed hex; sign these bytes with EIP-191 personal_sign. */
+            message_hex: string;
+            /** @description Alias of message_hex for clients that name the signing bytes as a digest. */
+            digest_hex: string;
+            /** @description Host-owned JCS canonical JSON that produced digest_hex. */
+            canonical_json: string;
+            /** Format: date-time */
+            declared_at: string;
         };
         SoulAgentRegistrationVerifyRequest: {
             signature: string;
@@ -1279,6 +1526,7 @@ export interface components {
                 request_id?: string;
             };
         };
+        SoulInstanceBootstrapErrorEnvelope: components["schemas"]["soul-instance-bootstrap.error.schema"];
         SoulMintConversationFinalizeBeginRequest: {
             boundary_signatures: {
                 [key: string]: string;
@@ -1357,12 +1605,7 @@ export interface components {
                 [key: string]: unknown;
             };
         };
-        SoulMintConversationFinalizeResponse: {
-            /** @enum {string} */
-            version: "1";
-            agent: components["schemas"]["soul-agent-identity.schema"];
-            published_version: number;
-        };
+        SoulMintConversationFinalizeResponse: components["schemas"]["soul-instance-bootstrap.finalize.response.schema"];
         /** GET /api/v1/soul/agents/{agentId}/channels/preferences response */
         "soul-agent-channel-preferences.response.schema": {
             agentId: string;
@@ -1521,6 +1764,25 @@ export interface components {
             mint_tx_hash?: string;
             /** Format: date-time */
             minted_at?: string;
+            /** @enum {string} */
+            policy_version?: "hosted-bound-soul/v1";
+            /** @enum {string} */
+            anchor_state?: "hosted_offchain" | "immutable_onchain";
+            /** @enum {string} */
+            operational_binding?: "hosted_bound_soul";
+            /** @enum {string} */
+            capability_policy_version?: "capability-policy/v1";
+            /** @enum {string} */
+            caller_access_payment_policy_version?: "caller-access-payment/v1";
+            email_default_allowed?: boolean;
+            /** @enum {string} */
+            phone_entitlement_status?: "not_entitled" | "provisioned" | "paid";
+            sms_allowed?: boolean;
+            voice_allowed?: boolean;
+            /** @enum {string} */
+            public_paid_caller_access?: "denied" | "grantable";
+            /** @enum {string} */
+            policy_migration_state?: "implicit_default_v1" | "persisted_v1";
             /** Format: date-time */
             updated_at?: string;
             $defs: {
@@ -1575,6 +1837,101 @@ export interface components {
             count: number;
             has_more: boolean;
             next_cursor?: string;
+        };
+        publication: {
+            agent_id: string;
+            published_version: number;
+            registration_uri?: string;
+            registration_s3_key?: string;
+            versioned_registration_uri?: string;
+            versioned_registration_s3_key?: string;
+            /** @enum {string} */
+            anchor_state?: "hosted_offchain" | "immutable_onchain";
+            /** Format: date-time */
+            published_at?: string;
+        };
+        promotion: {
+            agent_id: string;
+            registration_id?: string;
+            /** @enum {string} */
+            stage?: "requested" | "approved" | "minted" | "reviewing" | "ready_to_finalize" | "graduated";
+            /** @enum {string} */
+            request_status?: "requested" | "verified" | "minted" | "graduated";
+            /** @enum {string} */
+            review_status?: "not_started" | "conversation_in_progress" | "draft_ready" | "published";
+            /** @enum {string} */
+            readiness_status?: "awaiting_verification" | "awaiting_mint" | "ready_for_conversation" | "ready_for_finalize" | "graduated";
+            /** @enum {string} */
+            anchor_state?: "hosted_offchain" | "immutable_onchain";
+            latest_conversation_id?: string;
+            /** @enum {string} */
+            latest_conversation_status?: "in_progress" | "completed" | "failed";
+            published_version?: number;
+            /** Format: date-time */
+            graduated_at?: string;
+        };
+        /** Instance-key soul bootstrap finalize response */
+        "soul-instance-bootstrap.finalize.response.schema": {
+            /** @constant */
+            version: "1";
+            agent_id: string;
+            agent: components["schemas"]["soul-agent-identity.schema"];
+            published_version: number;
+            publication: components["schemas"]["publication"];
+            promotion?: components["schemas"]["promotion"];
+            $defs: {
+                publication: {
+                    agent_id: string;
+                    published_version: number;
+                    registration_uri?: string;
+                    registration_s3_key?: string;
+                    versioned_registration_uri?: string;
+                    versioned_registration_s3_key?: string;
+                    /** @enum {string} */
+                    anchor_state?: "hosted_offchain" | "immutable_onchain";
+                    /** Format: date-time */
+                    published_at?: string;
+                };
+                promotion: {
+                    agent_id: string;
+                    registration_id?: string;
+                    /** @enum {string} */
+                    stage?: "requested" | "approved" | "minted" | "reviewing" | "ready_to_finalize" | "graduated";
+                    /** @enum {string} */
+                    request_status?: "requested" | "verified" | "minted" | "graduated";
+                    /** @enum {string} */
+                    review_status?: "not_started" | "conversation_in_progress" | "draft_ready" | "published";
+                    /** @enum {string} */
+                    readiness_status?: "awaiting_verification" | "awaiting_mint" | "ready_for_conversation" | "ready_for_finalize" | "graduated";
+                    /** @enum {string} */
+                    anchor_state?: "hosted_offchain" | "immutable_onchain";
+                    latest_conversation_id?: string;
+                    /** @enum {string} */
+                    latest_conversation_status?: "in_progress" | "completed" | "failed";
+                    published_version?: number;
+                    /** Format: date-time */
+                    graduated_at?: string;
+                };
+            };
+        };
+        /** Instance-key soul bootstrap error envelope */
+        "soul-instance-bootstrap.error.schema": {
+            error: {
+                /** @enum {string} */
+                code: "soul_instance.unauthorized" | "soul_instance.invalid_request" | "soul_instance.boundary_violation" | "soul_instance.conflict" | "soul_instance.not_found" | "soul_instance.internal";
+                message: string;
+                status_code?: number;
+                /** @description Client-safe metadata for validation or tenant-boundary failures. Raw instance keys and host session tokens never appear here. */
+                details?: {
+                    /** @enum {string} */
+                    boundary?: "instance_domain";
+                    field?: string;
+                    reason?: string;
+                } & {
+                    [key: string]: unknown;
+                };
+                request_id?: string;
+            };
         };
         /**
          * POST /api/v1/soul/x402/grants request
@@ -2562,6 +2919,77 @@ export interface operations {
             };
         };
     };
+    soulRegisterPrincipalDeclarationPreflight: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SoulAgentRegistrationPrincipalDeclarationPreflightRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulAgentRegistrationPrincipalDeclarationPreflightResponse"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
     soulRegisterVerify: {
         parameters: {
             query?: never;
@@ -3001,7 +3429,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SoulMintConversationFinalizeResponse"];
+                    "application/json": components["schemas"]["soul-instance-bootstrap.finalize.response.schema"];
                 };
             };
             /** @description Invalid request */
@@ -3418,6 +3846,716 @@ export interface operations {
             };
         };
     };
+    soulInstanceRegisterBegin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SoulAgentRegistrationBeginRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulAgentRegistrationBeginResponse"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Missing, invalid, or revoked instance key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Tenant/domain boundary mismatch */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+        };
+    };
+    soulInstanceRegisterPrincipalDeclarationPreflight: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SoulAgentRegistrationPrincipalDeclarationPreflightRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulAgentRegistrationPrincipalDeclarationPreflightResponse"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Missing, invalid, or revoked instance key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Tenant/domain boundary mismatch */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Registration not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+        };
+    };
+    soulInstanceRegisterVerify: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SoulAgentRegistrationVerifyRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulAgentRegistrationVerifyResponse"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Missing, invalid, or revoked instance key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Tenant/domain boundary mismatch */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Registration not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+        };
+    };
+    soulInstanceStartRegistrationMintConversationSSE: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SoulMintConversationSSEInput"];
+            };
+        };
+        responses: {
+            /** @description SSE stream of mint-conversation events */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/event-stream": string;
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Missing, invalid, or revoked instance key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Tenant/domain boundary mismatch */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Registration not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+        };
+    };
+    soulInstanceGetRegistrationMintConversation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                conversationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulInstanceMintConversationResponse"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Missing, invalid, or revoked instance key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Tenant/domain boundary mismatch */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Conversation not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+        };
+    };
+    soulInstanceCompleteRegistrationMintConversation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                conversationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["SoulMintConversationCompleteRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversation"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Missing, invalid, or revoked instance key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Tenant/domain boundary mismatch */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Conversation not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+        };
+    };
+    soulInstanceMintConversationFinalizePreflight: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                conversationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SoulMintConversationFinalizeBeginRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversationFinalizePreflightResponse"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Missing, invalid, or revoked instance key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Tenant/domain boundary mismatch */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Conversation not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+        };
+    };
+    soulInstanceMintConversationFinalizeBegin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                conversationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SoulMintConversationFinalizeBeginRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversationFinalizePreflightResponse"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Missing, invalid, or revoked instance key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Tenant/domain boundary mismatch */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Conversation not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+        };
+    };
+    soulInstanceMintConversationFinalize: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                conversationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SoulMintConversationFinalizeRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.finalize.response.schema"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Missing, invalid, or revoked instance key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Tenant/domain boundary mismatch */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Conversation not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+        };
+    };
     soulAgentCompleteMintConversation: {
         parameters: {
             query?: never;
@@ -3656,7 +4794,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SoulMintConversationFinalizeResponse"];
+                    "application/json": components["schemas"]["soul-instance-bootstrap.finalize.response.schema"];
                 };
             };
             /** @description Invalid request */

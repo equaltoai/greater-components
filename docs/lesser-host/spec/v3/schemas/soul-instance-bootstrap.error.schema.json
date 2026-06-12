@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/soul-instance-bootstrap.error.schema.json",
+  "title": "Instance-key soul bootstrap error envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["error"],
+  "properties": {
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "soul_instance.unauthorized",
+            "soul_instance.invalid_request",
+            "soul_instance.boundary_violation",
+            "soul_instance.conflict",
+            "soul_instance.not_found",
+            "soul_instance.internal"
+          ]
+        },
+        "message": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "status_code": { "type": "integer", "minimum": 400, "maximum": 599 },
+        "details": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Client-safe metadata for validation or tenant-boundary failures. Raw instance keys and host session tokens never appear here.",
+          "properties": {
+            "boundary": { "type": "string", "enum": ["instance_domain"] },
+            "field": { "type": "string", "minLength": 1, "maxLength": 128 },
+            "reason": { "type": "string", "minLength": 1, "maxLength": 128 }
+          }
+        },
+        "request_id": { "type": "string", "minLength": 1, "maxLength": 128 }
+      }
+    }
+  }
+}

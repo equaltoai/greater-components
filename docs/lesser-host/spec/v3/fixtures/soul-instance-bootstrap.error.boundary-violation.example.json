@@ -1,0 +1,13 @@
+{
+  "error": {
+    "code": "soul_instance.boundary_violation",
+    "message": "resource is outside the authenticated instance boundary",
+    "status_code": 403,
+    "details": {
+      "field": "domain",
+      "reason": "tenant_domain_mismatch",
+      "boundary": "instance_domain"
+    },
+    "request_id": "req_instance_bootstrap_boundary_example"
+  }
+}
