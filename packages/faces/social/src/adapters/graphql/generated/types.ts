@@ -1029,6 +1029,7 @@ export type AgentWorkflowSurface = {
   readonly lifecycle: ReadonlyArray<AgentLifecycleStep>;
   readonly request?: Maybe<SoulRequestCard>;
   readonly review?: Maybe<ReviewDecisionCard>;
+  readonly soulBootstrap: SoulBootstrapState;
   readonly username: Scalars['String']['output'];
 };
 
@@ -1145,6 +1146,14 @@ export type BedrockTrainingOptions = {
   readonly earlyStoppingEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   readonly maxTrainingTime?: InputMaybe<Scalars['Int']['input']>;
   readonly outputS3Path?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type BeginSoulBootstrapInput = {
+  readonly capabilities?: InputMaybe<ReadonlyArray<Scalars['String']['input']>>;
+  readonly correlationKey?: InputMaybe<Scalars['String']['input']>;
+  readonly idempotencyKey?: InputMaybe<Scalars['String']['input']>;
+  readonly username: Scalars['String']['input'];
+  readonly walletAddress: Scalars['String']['input'];
 };
 
 export type Bitrate = {
@@ -1269,6 +1278,14 @@ export type CommunityNotePayload = {
   readonly __typename: 'CommunityNotePayload';
   readonly note: CommunityNote;
   readonly object: Object;
+};
+
+export type CompleteSoulBootstrapConversationInput = {
+  readonly conversationId: Scalars['ID']['input'];
+  readonly correlationKey?: InputMaybe<Scalars['String']['input']>;
+  readonly idempotencyKey?: InputMaybe<Scalars['String']['input']>;
+  readonly registrationId?: InputMaybe<Scalars['ID']['input']>;
+  readonly username: Scalars['String']['input'];
 };
 
 export type ConnectionType =
@@ -1966,6 +1983,19 @@ export type FilterTestResult = {
   readonly matchScore: Scalars['Float']['output'];
   readonly matchedRules: ReadonlyArray<Scalars['String']['output']>;
   readonly severity: Scalars['String']['output'];
+};
+
+export type FinalizeSoulBootstrapInput = {
+  readonly boundarySignaturesJson?: InputMaybe<Scalars['String']['input']>;
+  readonly conversationId: Scalars['ID']['input'];
+  readonly correlationKey?: InputMaybe<Scalars['String']['input']>;
+  readonly expectedVersion?: InputMaybe<Scalars['Int']['input']>;
+  readonly idempotencyKey?: InputMaybe<Scalars['String']['input']>;
+  readonly issuedAt?: InputMaybe<Scalars['Time']['input']>;
+  readonly registrationId?: InputMaybe<Scalars['ID']['input']>;
+  readonly selfAttestation?: InputMaybe<Scalars['String']['input']>;
+  readonly signature?: InputMaybe<Scalars['String']['input']>;
+  readonly username: Scalars['String']['input'];
 };
 
 export type FinalizeSoulPromotionInput = {
@@ -2865,6 +2895,7 @@ export type Mutation = {
   readonly attemptReconnection: ReconnectionPayload;
   readonly authorizeAgentAccessLeaseSessionKey: AgentAccessLease;
   readonly autosaveDraft: Draft;
+  readonly beginSoulBootstrap: SoulBootstrapMutationPayload;
   readonly blockActor: Relationship;
   readonly bookmarkObject: Object;
   readonly cancelImport: ImportJob;
@@ -2872,6 +2903,7 @@ export type Mutation = {
   readonly cancelScheduledStatus: Scalars['Boolean']['output'];
   readonly clearAdminInstanceOverrides: AdminInstanceConfig;
   readonly clearNotifications: Scalars['Boolean']['output'];
+  readonly completeSoulBootstrapConversation: SoulBootstrapMutationPayload;
   readonly createAgentAccessLease: AgentAccessLease;
   readonly createAgentAccessLeaseAgentChallenge: AgentAccessLeaseChallenge;
   readonly createAgentAccessLeasePrincipalChallenge: AgentAccessLeaseChallenge;
@@ -2914,6 +2946,7 @@ export type Mutation = {
   readonly dismissNotification: Scalars['Boolean']['output'];
   readonly exchangeAgentAccessLeaseToken: AgentAccessLeaseTokenPayload;
   readonly exportReputation: PortableReputation;
+  readonly finalizeSoulBootstrap: SoulBootstrapMutationPayload;
   readonly finalizeSoulPromotion: DroneWorkflowMutationPayload;
   readonly flagObject: FlagPayload;
   readonly followActor: Activity;
@@ -2931,6 +2964,8 @@ export type Mutation = {
   readonly pauseFederation: FederationManagementStatus;
   readonly pinObject: Object;
   readonly preloadMedia: ReadonlyArray<MediaStream>;
+  readonly prepareSoulBootstrapFinalize: SoulBootstrapMutationPayload;
+  readonly prepareSoulBootstrapPrincipalDeclaration: SoulBootstrapMutationPayload;
   readonly publishDraft: Article;
   readonly registerAccount: RegisterAccountPayload;
   readonly registerAgent: RegisterAgentPayload;
@@ -2959,6 +2994,7 @@ export type Mutation = {
   readonly scheduleStatus: ScheduledStatus;
   readonly sendDirectMessage: SendMessagePayload;
   readonly sendMessage: SendMessagePayload;
+  readonly sendSoulBootstrapConversationMessage: SoulBootstrapMutationPayload;
   readonly setFederationLimit: FederationLimit;
   readonly setInstanceBudget: InstanceBudget;
   readonly shareObject: Object;
@@ -3004,6 +3040,8 @@ export type Mutation = {
   readonly updateUserPreferences: UserPreferences;
   readonly uploadMedia: UploadMediaPayload;
   readonly verifyReputation: ReputationVerificationResult;
+  readonly verifySoulBootstrapPrincipalDeclaration: SoulBootstrapMutationPayload;
+  readonly verifySoulBootstrapWallet: SoulBootstrapMutationPayload;
   readonly voteCommunityNote: CommunityNote;
   readonly withdrawFromQuotes: WithdrawQuotePayload;
 };
@@ -3194,6 +3232,11 @@ export type MutationAutosaveDraftArgs = {
 };
 
 
+export type MutationBeginSoulBootstrapArgs = {
+  input: BeginSoulBootstrapInput;
+};
+
+
 export type MutationBlockActorArgs = {
   id: Scalars['ID']['input'];
 };
@@ -3221,6 +3264,11 @@ export type MutationCancelScheduledStatusArgs = {
 
 export type MutationClearAdminInstanceOverridesArgs = {
   features: ReadonlyArray<InstanceConfigFeature>;
+};
+
+
+export type MutationCompleteSoulBootstrapConversationArgs = {
+  input: CompleteSoulBootstrapConversationInput;
 };
 
 
@@ -3434,6 +3482,11 @@ export type MutationExchangeAgentAccessLeaseTokenArgs = {
 };
 
 
+export type MutationFinalizeSoulBootstrapArgs = {
+  input: FinalizeSoulBootstrapInput;
+};
+
+
 export type MutationFinalizeSoulPromotionArgs = {
   input: FinalizeSoulPromotionInput;
 };
@@ -3525,6 +3578,16 @@ export type MutationPinObjectArgs = {
 
 export type MutationPreloadMediaArgs = {
   mediaIds: ReadonlyArray<Scalars['ID']['input']>;
+};
+
+
+export type MutationPrepareSoulBootstrapFinalizeArgs = {
+  input: PrepareSoulBootstrapFinalizeInput;
+};
+
+
+export type MutationPrepareSoulBootstrapPrincipalDeclarationArgs = {
+  input: PrepareSoulBootstrapPrincipalDeclarationInput;
 };
 
 
@@ -3694,6 +3757,11 @@ export type MutationSendMessageArgs = {
   mediaIds?: InputMaybe<ReadonlyArray<Scalars['ID']['input']>>;
   sensitive?: InputMaybe<Scalars['Boolean']['input']>;
   spoilerText?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type MutationSendSoulBootstrapConversationMessageArgs = {
+  input: SendSoulBootstrapConversationMessageInput;
 };
 
 
@@ -3943,6 +4011,16 @@ export type MutationUploadMediaArgs = {
 
 export type MutationVerifyReputationArgs = {
   document: Scalars['String']['input'];
+};
+
+
+export type MutationVerifySoulBootstrapPrincipalDeclarationArgs = {
+  input: VerifySoulBootstrapPrincipalDeclarationInput;
+};
+
+
+export type MutationVerifySoulBootstrapWalletArgs = {
+  input: VerifySoulBootstrapWalletInput;
 };
 
 
@@ -4221,6 +4299,25 @@ export type PostingPreferences = {
   readonly defaultVisibility: Visibility;
 };
 
+export type PrepareSoulBootstrapFinalizeInput = {
+  readonly boundarySignaturesJson?: InputMaybe<Scalars['String']['input']>;
+  readonly conversationId: Scalars['ID']['input'];
+  readonly correlationKey?: InputMaybe<Scalars['String']['input']>;
+  readonly idempotencyKey?: InputMaybe<Scalars['String']['input']>;
+  readonly registrationId?: InputMaybe<Scalars['ID']['input']>;
+  readonly username: Scalars['String']['input'];
+};
+
+export type PrepareSoulBootstrapPrincipalDeclarationInput = {
+  readonly correlationKey?: InputMaybe<Scalars['String']['input']>;
+  readonly declaredAt: Scalars['Time']['input'];
+  readonly idempotencyKey?: InputMaybe<Scalars['String']['input']>;
+  readonly principalAddress: Scalars['String']['input'];
+  readonly principalDeclaration: Scalars['String']['input'];
+  readonly registrationId?: InputMaybe<Scalars['ID']['input']>;
+  readonly username: Scalars['String']['input'];
+};
+
 export type Priority =
   | 'CRITICAL'
   | 'HIGH'
@@ -4476,6 +4573,7 @@ export type Query = {
   readonly seriesBySlug?: Maybe<Series>;
   readonly severedRelationships: SeveredRelationshipConnection;
   readonly slowQueries: ReadonlyArray<QueryPerformance>;
+  readonly soulBootstrap?: Maybe<SoulBootstrapSurface>;
   readonly statusFavouritedBy: ActorListPage;
   readonly statusHistory: ReadonlyArray<StatusEdit>;
   readonly statusRebloggedBy: ActorListPage;
@@ -5146,6 +5244,11 @@ export type QuerySlowQueriesArgs = {
 };
 
 
+export type QuerySoulBootstrapArgs = {
+  username: Scalars['String']['input'];
+};
+
+
 export type QueryStatusFavouritedByArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -5580,6 +5683,16 @@ export type SendMessagePayload = {
   readonly message: Object;
 };
 
+export type SendSoulBootstrapConversationMessageInput = {
+  readonly conversationId?: InputMaybe<Scalars['ID']['input']>;
+  readonly correlationKey?: InputMaybe<Scalars['String']['input']>;
+  readonly idempotencyKey?: InputMaybe<Scalars['String']['input']>;
+  readonly message: Scalars['String']['input'];
+  readonly model?: InputMaybe<Scalars['String']['input']>;
+  readonly registrationId?: InputMaybe<Scalars['ID']['input']>;
+  readonly username: Scalars['String']['input'];
+};
+
 export type Sentiment =
   | 'MIXED'
   | 'NEGATIVE'
@@ -5755,6 +5868,120 @@ export type SoulAgentIdentity = {
 export type SoulBindingState =
   | 'BOUND'
   | 'UNBOUND';
+
+export type SoulBootstrapCorrelationState = {
+  readonly __typename: 'SoulBootstrapCorrelationState';
+  readonly beginIdempotencyKey?: Maybe<Scalars['String']['output']>;
+  readonly conversationIdempotencyKey?: Maybe<Scalars['String']['output']>;
+  readonly correlationKey?: Maybe<Scalars['String']['output']>;
+  readonly finalizeIdempotencyKey?: Maybe<Scalars['String']['output']>;
+  readonly lastHostRequestId?: Maybe<Scalars['String']['output']>;
+  readonly principalDeclarationIdempotencyKey?: Maybe<Scalars['String']['output']>;
+  readonly walletVerificationIdempotencyKey?: Maybe<Scalars['String']['output']>;
+};
+
+export type SoulBootstrapErrorState = {
+  readonly __typename: 'SoulBootstrapErrorState';
+  readonly at?: Maybe<Scalars['Time']['output']>;
+  readonly code: Scalars['String']['output'];
+  readonly hostRequestId?: Maybe<Scalars['String']['output']>;
+  readonly message: Scalars['String']['output'];
+  readonly source?: Maybe<Scalars['String']['output']>;
+  readonly statusCode?: Maybe<Scalars['Int']['output']>;
+};
+
+export type SoulBootstrapIdentityTarget = {
+  readonly __typename: 'SoulBootstrapIdentityTarget';
+  readonly bodyId: Scalars['ID']['output'];
+  readonly displayName?: Maybe<Scalars['String']['output']>;
+  readonly owner?: Maybe<AgentSurfaceActor>;
+  readonly username: Scalars['String']['output'];
+};
+
+export type SoulBootstrapMutationPayload = {
+  readonly __typename: 'SoulBootstrapMutationPayload';
+  readonly bootstrap: SoulBootstrapSurface;
+  readonly error?: Maybe<SoulBootstrapErrorState>;
+  readonly executable: Scalars['Boolean']['output'];
+};
+
+export type SoulBootstrapPhase =
+  | 'BEGIN'
+  | 'COMPLETE'
+  | 'CONVERSATION'
+  | 'ERROR'
+  | 'FINALIZE'
+  | 'NOT_STARTED'
+  | 'PRINCIPAL_DECLARATION'
+  | 'WALLET_VERIFICATION';
+
+export type SoulBootstrapPublicationEvidence = {
+  readonly __typename: 'SoulBootstrapPublicationEvidence';
+  readonly agentId?: Maybe<Scalars['ID']['output']>;
+  readonly anchorState?: Maybe<Scalars['String']['output']>;
+  readonly publishedAt?: Maybe<Scalars['Time']['output']>;
+  readonly publishedVersion?: Maybe<Scalars['Int']['output']>;
+  readonly registrationS3Key?: Maybe<Scalars['String']['output']>;
+  readonly registrationUri?: Maybe<Scalars['String']['output']>;
+  readonly versionedRegistrationS3Key?: Maybe<Scalars['String']['output']>;
+  readonly versionedRegistrationUri?: Maybe<Scalars['String']['output']>;
+};
+
+export type SoulBootstrapSigningCheckpoint = {
+  readonly __typename: 'SoulBootstrapSigningCheckpoint';
+  readonly boundaryRequirementsJson?: Maybe<Scalars['String']['output']>;
+  readonly canonicalJson?: Maybe<Scalars['String']['output']>;
+  readonly completedAt?: Maybe<Scalars['Time']['output']>;
+  readonly declaredAt?: Maybe<Scalars['Time']['output']>;
+  readonly digestHex?: Maybe<Scalars['String']['output']>;
+  readonly expectedVersion?: Maybe<Scalars['Int']['output']>;
+  readonly finalizeRequestTemplateJson?: Maybe<Scalars['String']['output']>;
+  readonly hostRequestId?: Maybe<Scalars['String']['output']>;
+  readonly issuedAt?: Maybe<Scalars['Time']['output']>;
+  readonly message?: Maybe<Scalars['String']['output']>;
+  readonly messageEncoding?: Maybe<Scalars['String']['output']>;
+  readonly messageHex?: Maybe<Scalars['String']['output']>;
+  readonly name: Scalars['String']['output'];
+  readonly nextVersion?: Maybe<Scalars['Int']['output']>;
+  readonly principalAddress?: Maybe<Scalars['String']['output']>;
+  readonly registrationPreviewJson?: Maybe<Scalars['String']['output']>;
+  readonly signerAddress?: Maybe<Scalars['String']['output']>;
+  readonly signingMethod?: Maybe<Scalars['String']['output']>;
+  readonly status: Scalars['String']['output'];
+  readonly version?: Maybe<Scalars['String']['output']>;
+};
+
+export type SoulBootstrapState = {
+  readonly __typename: 'SoulBootstrapState';
+  readonly bodyId: Scalars['ID']['output'];
+  readonly correlation?: Maybe<SoulBootstrapCorrelationState>;
+  readonly error?: Maybe<SoulBootstrapErrorState>;
+  readonly hostConversationId?: Maybe<Scalars['ID']['output']>;
+  readonly hostRegistrationId?: Maybe<Scalars['ID']['output']>;
+  readonly hostSoulAgentId?: Maybe<Scalars['ID']['output']>;
+  readonly phase: SoulBootstrapPhase;
+  readonly principalAddress?: Maybe<Scalars['String']['output']>;
+  readonly publication?: Maybe<SoulBootstrapPublicationEvidence>;
+  readonly signingCheckpoints: ReadonlyArray<SoulBootstrapSigningCheckpoint>;
+  readonly state: Scalars['String']['output'];
+  readonly updatedAt?: Maybe<Scalars['Time']['output']>;
+  readonly username: Scalars['String']['output'];
+  readonly walletAddress?: Maybe<Scalars['String']['output']>;
+};
+
+export type SoulBootstrapSurface = {
+  readonly __typename: 'SoulBootstrapSurface';
+  readonly body: SoulBootstrapIdentityTarget;
+  readonly error?: Maybe<SoulBootstrapErrorState>;
+  readonly executable: Scalars['Boolean']['output'];
+  readonly existingSoulAgentId?: Maybe<Scalars['ID']['output']>;
+  readonly hostBridgeAvailable: Scalars['Boolean']['output'];
+  readonly nextAction?: Maybe<Scalars['String']['output']>;
+  readonly soulBindingState: SoulBindingState;
+  readonly state: SoulBootstrapState;
+  readonly username: Scalars['String']['output'];
+  readonly workflow: AgentWorkflowSurface;
+};
 
 export type SoulInventoryItem = {
   readonly __typename: 'SoulInventoryItem';
@@ -6463,6 +6690,26 @@ export type UserPreferences = {
   readonly reading: ReadingPreferences;
   readonly reblogFilters: ReadonlyArray<ReblogFilter>;
   readonly streaming: StreamingPreferences;
+};
+
+export type VerifySoulBootstrapPrincipalDeclarationInput = {
+  readonly correlationKey?: InputMaybe<Scalars['String']['input']>;
+  readonly declaredAt: Scalars['Time']['input'];
+  readonly idempotencyKey?: InputMaybe<Scalars['String']['input']>;
+  readonly principalAddress: Scalars['String']['input'];
+  readonly principalDeclaration: Scalars['String']['input'];
+  readonly principalSignature: Scalars['String']['input'];
+  readonly registrationId?: InputMaybe<Scalars['ID']['input']>;
+  readonly signature: Scalars['String']['input'];
+  readonly username: Scalars['String']['input'];
+};
+
+export type VerifySoulBootstrapWalletInput = {
+  readonly correlationKey?: InputMaybe<Scalars['String']['input']>;
+  readonly idempotencyKey?: InputMaybe<Scalars['String']['input']>;
+  readonly registrationId?: InputMaybe<Scalars['ID']['input']>;
+  readonly signature: Scalars['String']['input'];
+  readonly username: Scalars['String']['input'];
 };
 
 export type ViewerRole = {
