@@ -12,6 +12,29 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.10.3-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.10.2-rc.0...greater-v0.10.3-rc.0) (2026-06-13)
+
+
+### Features
+
+* **adapters:** add soul bootstrap facade ([eaf6d36](https://github.com/equaltoai/greater-components/commit/eaf6d36141467ccbf59b7a73e234ebf93cd6fa16))
+* **adapters:** add soul bootstrap facade ([abefba1](https://github.com/equaltoai/greater-components/commit/abefba1aaeecb0645405052bf4736730f80a55f3))
+
+
+### Tests
+
+* **adapters:** cover Project 44 bootstrap facade flow ([f216997](https://github.com/equaltoai/greater-components/commit/f216997ce133095cef97d3b2c1018418f857277a))
+* **adapters:** cover Project 44 bootstrap facade flow ([215b5b7](https://github.com/equaltoai/greater-components/commit/215b5b7d7e5900b71d7c0d9bbebb53fb1975fc68))
+
+
+### Chores
+
+* **main:** release greater 0.10.2 ([a07c476](https://github.com/equaltoai/greater-components/commit/a07c4767297ac093d11ff01f6049a5a86cd453d7))
+* **main:** release greater 0.10.2 ([00453ae](https://github.com/equaltoai/greater-components/commit/00453aea254059b2edfa5cd71f78bba139b6eca1))
+* **release:** prepare metadata ([dafe065](https://github.com/equaltoai/greater-components/commit/dafe06531d82792e94a5580e27f75e8739bdf4b5))
+* sync project 44 contracts ([d16c30b](https://github.com/equaltoai/greater-components/commit/d16c30b1127d76d699fe08cf31c46b4cb54d7887))
+* sync Project 44 Lesser and Host contracts ([66b5edf](https://github.com/equaltoai/greater-components/commit/66b5edf7f5d2c5af85f57aad390d63ed2b568c27))
+
 ## [0.10.2](https://github.com/equaltoai/greater-components/compare/greater-v0.10.1...greater-v0.10.2) (2026-05-31)
 
 ### Features
