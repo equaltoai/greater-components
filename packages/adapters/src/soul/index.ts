@@ -9,6 +9,11 @@ export {
 	createSoulBootstrapClient,
 	normalizeSoulBootstrapError,
 } from './bootstrap.js';
+export {
+	SoulBootstrapSigningPlanError,
+	createSoulBootstrapSigningPlan,
+	createSoulBootstrapSigningPlans,
+} from './bootstrapSigningPlan.js';
 export type {
 	ErrorEnvelope,
 	FetchLike,
@@ -71,6 +76,24 @@ export type {
 	VerifySoulBootstrapPrincipalDeclarationInput,
 	VerifySoulBootstrapWalletInput,
 } from './bootstrap.js';
+export type {
+	SoulBootstrapFinalizeRequestTemplate,
+	SoulBootstrapFinalizeSigningPlan,
+	SoulBootstrapHexBytesSigningInstruction,
+	SoulBootstrapHexString,
+	SoulBootstrapMessageEncoding,
+	SoulBootstrapPrincipalDeclarationSigningPlan,
+	SoulBootstrapPrincipalDeclarationSubmitInput,
+	SoulBootstrapSigningMethod,
+	SoulBootstrapSigningPlan,
+	SoulBootstrapSigningPlanErrorCode,
+	SoulBootstrapSigningPlanErrorOptions,
+	SoulBootstrapSigningPlanKind,
+	SoulBootstrapSigningPlanSource,
+	SoulBootstrapUtf8SigningInstruction,
+	SoulBootstrapWalletChallengeSigningPlan,
+	SoulBootstrapWalletSigningInstruction,
+} from './bootstrapSigningPlan.js';
 
 export { resolveSoulAgentIdFromEnsTextRecord } from './ens.js';
 export type { ResolveSoulAgentIdFromEnsTextRecordOptions } from './ens.js';

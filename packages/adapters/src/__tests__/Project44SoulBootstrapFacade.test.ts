@@ -2,14 +2,18 @@ import { describe, expect, it, vi } from 'vitest';
 
 import {
 	SoulBootstrapClientError,
+	SoulBootstrapSigningPlanError,
 	createSoulBootstrapClient,
+	createSoulBootstrapSigningPlan,
 	normalizeSoulBootstrapError,
 	type SoulBootstrapErrorCategory,
 	type SoulBootstrapGraphQLClient,
 	type SoulBootstrapGraphQLResult,
+	type SoulBootstrapSigningCheckpoint,
 	type SoulBootstrapSurface,
 } from '../index';
 import {
+	createProject44SoulBootstrapSurface,
 	createProject44SoulBootstrapErrorState,
 	project44SoulBootstrapFixtures,
 	project44SoulBootstrapIds,
@@ -30,6 +34,12 @@ const rootFieldByOperation: Record<string, string> = {
 };
 
 const expectedOperationNames = Object.keys(rootFieldByOperation);
+const project44PrincipalDeclaration = 'Agent Zero declares this Project 44 principal.';
+const project44Signatures = {
+	walletChallenge: '0xwallet-signature-from-sim-wallet',
+	principalDeclaration: '0xprincipal-signature',
+	finalizeSelfAttestation: '0xfinalize-signature-from-sim-wallet',
+} as const;
 
 const disallowedHostCredentialKeys = [
 	'hostBaseUrl',
@@ -99,6 +109,40 @@ function parseGraphQLCalls(fetchMock: ReturnType<typeof createProject44Fetch>) {
 	});
 }
 
+function createSigningPlanSurface(
+	checkpoint: SoulBootstrapSigningCheckpoint,
+	options: Parameters<typeof createProject44SoulBootstrapSurface>[0] = {}
+): SoulBootstrapSurface {
+	return createProject44SoulBootstrapSurface({
+		phase:
+			checkpoint.name === 'finalize'
+				? 'FINALIZE'
+				: checkpoint.name === 'principal_declaration'
+					? 'PRINCIPAL_DECLARATION'
+					: 'WALLET_VERIFICATION',
+		state: `${checkpoint.name}.ready`,
+		nextAction: `${checkpoint.name}.sign`,
+		principalAddress:
+			checkpoint.name === 'wallet' ? null : project44SoulBootstrapIds.principalAddress,
+		hostConversationId:
+			checkpoint.name === 'finalize' ? project44SoulBootstrapIds.conversationId : null,
+		signingCheckpoints: [checkpoint],
+		...options,
+	});
+}
+
+function expectSigningPlanError(
+	createPlan: () => unknown,
+	code: InstanceType<typeof SoulBootstrapSigningPlanError>['code']
+) {
+	expect(createPlan).toThrow(SoulBootstrapSigningPlanError);
+	try {
+		createPlan();
+	} catch (error) {
+		expect(error).toMatchObject({ code });
+	}
+}
+
 async function runProject44BootstrapFlow(fetchMock = createProject44Fetch()) {
 	const client = createSoulBootstrapClient({
 		httpEndpoint: '/graphql',
@@ -113,33 +157,30 @@ async function runProject44BootstrapFlow(fetchMock = createProject44Fetch()) {
 		idempotencyKey: project44SoulBootstrapIds.beginIdempotencyKey,
 		correlationKey: project44SoulBootstrapIds.correlationKey,
 	});
-	const walletResult = await client.verifyWallet({
-		username: project44SoulBootstrapIds.username,
-		registrationId: project44SoulBootstrapIds.registrationId,
-		signature: '0xwallet-signature-from-sim-wallet',
-		idempotencyKey: project44SoulBootstrapIds.walletIdempotencyKey,
-		correlationKey: project44SoulBootstrapIds.correlationKey,
-	});
+	const walletPlan = createSoulBootstrapSigningPlan(beginResult, 'wallet_challenge');
+	const walletResult = await client.verifyWallet(
+		walletPlan.createSubmitInput(project44Signatures.walletChallenge)
+	);
 	const principalPreflightResult = await client.preparePrincipalDeclaration({
 		username: project44SoulBootstrapIds.username,
 		registrationId: project44SoulBootstrapIds.registrationId,
 		principalAddress: project44SoulBootstrapIds.principalAddress,
-		principalDeclaration: 'Agent Zero declares this Project 44 principal.',
+		principalDeclaration: project44PrincipalDeclaration,
 		declaredAt: project44SoulBootstrapIds.declaredAt,
 		idempotencyKey: project44SoulBootstrapIds.principalIdempotencyKey,
 		correlationKey: project44SoulBootstrapIds.correlationKey,
 	});
-	const principalVerifiedResult = await client.verifyPrincipalDeclaration({
-		username: project44SoulBootstrapIds.username,
-		registrationId: project44SoulBootstrapIds.registrationId,
-		signature: '0xwallet-principal-signature',
-		principalAddress: project44SoulBootstrapIds.principalAddress,
-		principalDeclaration: 'Agent Zero declares this Project 44 principal.',
-		principalSignature: '0xprincipal-signature',
-		declaredAt: project44SoulBootstrapIds.declaredAt,
-		idempotencyKey: project44SoulBootstrapIds.principalIdempotencyKey,
-		correlationKey: project44SoulBootstrapIds.correlationKey,
-	});
+	const principalPlan = createSoulBootstrapSigningPlan(
+		principalPreflightResult,
+		'principal_declaration'
+	);
+	const principalVerifiedResult = await client.verifyPrincipalDeclaration(
+		principalPlan.createSubmitInput({
+			walletChallengeSignature: project44Signatures.walletChallenge,
+			principalDeclaration: project44PrincipalDeclaration,
+			principalSignature: project44Signatures.principalDeclaration,
+		})
+	);
 	const conversationMessageResult = await client.sendConversationMessage({
 		username: project44SoulBootstrapIds.username,
 		registrationId: project44SoulBootstrapIds.registrationId,
@@ -164,18 +205,13 @@ async function runProject44BootstrapFlow(fetchMock = createProject44Fetch()) {
 		idempotencyKey: project44SoulBootstrapIds.finalizeIdempotencyKey,
 		correlationKey: project44SoulBootstrapIds.correlationKey,
 	});
-	const finalizeResult = await client.finalize({
-		username: project44SoulBootstrapIds.username,
-		registrationId: project44SoulBootstrapIds.registrationId,
-		conversationId: project44SoulBootstrapIds.conversationId,
-		boundarySignaturesJson: '{"wallet":"0xwallet","principal":"0xprincipal"}',
-		issuedAt: project44SoulBootstrapIds.issuedAt,
-		expectedVersion: 3,
-		signature: '0xfinalize-signature-from-sim-wallet',
-		selfAttestation: 'Sim confirms final Project 44 bootstrap attestation.',
-		idempotencyKey: project44SoulBootstrapIds.finalizeIdempotencyKey,
-		correlationKey: project44SoulBootstrapIds.correlationKey,
-	});
+	const finalizePlan = createSoulBootstrapSigningPlan(
+		finalizePreflightResult,
+		'finalize_self_attestation'
+	);
+	const finalizeResult = await client.finalize(
+		finalizePlan.createSubmitInput(project44Signatures.finalizeSelfAttestation)
+	);
 
 	return {
 		fetchMock,
@@ -247,32 +283,274 @@ describe('Project 44 Soul bootstrap facade fixtures', () => {
 		expect(principalCheckpoint).toMatchObject(project44SoulBootstrapSigning.principalDeclaration);
 		expect(finalizeCheckpoint).toMatchObject(project44SoulBootstrapSigning.finalize);
 		expect(principalCheckpoint?.canonicalJson).toContain('"source":"lesser"');
-		expect(principalCheckpoint?.digestHex).toBe('0xprincipal-digest-from-lesser');
-		expect(finalizeCheckpoint?.finalizeRequestTemplateJson).toContain(
-			'"registrationId":"registration-project-44"'
-		);
-		expect(finalizeCheckpoint?.digestHex).toBe('0xfinalize-digest-from-lesser');
+		expect(principalCheckpoint?.signingMethod).toBe('eip191_personal_sign');
+		expect(principalCheckpoint?.messageEncoding).toBe('hex_bytes');
+		expect(principalCheckpoint?.messageHex).toBe(principalCheckpoint?.digestHex);
+		expect(finalizeCheckpoint?.finalizeRequestTemplateJson).toContain('"expected_version":3');
+		expect(finalizeCheckpoint?.signingMethod).toBe('eip191_personal_sign');
+		expect(finalizeCheckpoint?.messageEncoding).toBe('hex_bytes');
+		expect(finalizeCheckpoint?.messageHex).toBe(finalizeCheckpoint?.digestHex);
 
 		expect(callByOperation.get('VerifySoulBootstrapWallet')?.body.variables).toMatchObject({
 			input: {
-				signature: '0xwallet-signature-from-sim-wallet',
+				signature: project44Signatures.walletChallenge,
 			},
 		});
 		expect(
 			callByOperation.get('VerifySoulBootstrapPrincipalDeclaration')?.body.variables
 		).toMatchObject({
 			input: {
-				signature: '0xwallet-principal-signature',
-				principalSignature: '0xprincipal-signature',
+				signature: project44Signatures.walletChallenge,
+				principalDeclaration: project44PrincipalDeclaration,
+				principalSignature: project44Signatures.principalDeclaration,
 			},
 		});
 		expect(callByOperation.get('FinalizeSoulBootstrap')?.body.variables).toMatchObject({
 			input: {
-				signature: '0xfinalize-signature-from-sim-wallet',
+				selfAttestation: project44Signatures.finalizeSelfAttestation,
+				boundarySignaturesJson: '{"project-44-continuity":"0xboundary"}',
 				expectedVersion: 3,
 				issuedAt: project44SoulBootstrapIds.issuedAt,
 			},
 		});
+		expect(
+			'signature' in
+				(callByOperation.get('FinalizeSoulBootstrap')?.body.variables.input as Record<
+					string,
+					unknown
+				>)
+		).toBe(false);
+	});
+
+	it('returns typed wallet, principal, and finalize signing plans with adapter-owned submission mapping', async () => {
+		const { results } = await runProject44BootstrapFlow();
+
+		const walletPlan = createSoulBootstrapSigningPlan(results.beginResult, 'wallet_challenge');
+		expect(walletPlan).toMatchObject({
+			kind: 'wallet_challenge',
+			checkpointName: 'wallet',
+			registrationId: project44SoulBootstrapIds.registrationId,
+			walletAddress: project44SoulBootstrapIds.walletAddress,
+			signing: {
+				method: 'eip191_personal_sign',
+				messageEncoding: 'utf8',
+				message: project44SoulBootstrapSigning.walletChallenge.message,
+				signerAddress: project44SoulBootstrapIds.walletAddress,
+			},
+		});
+		expect(walletPlan.createSubmitInput(project44Signatures.walletChallenge)).toEqual({
+			username: project44SoulBootstrapIds.username,
+			registrationId: project44SoulBootstrapIds.registrationId,
+			signature: project44Signatures.walletChallenge,
+			idempotencyKey: project44SoulBootstrapIds.walletIdempotencyKey,
+			correlationKey: project44SoulBootstrapIds.correlationKey,
+		});
+
+		const principalPlan = createSoulBootstrapSigningPlan(
+			results.principalPreflightResult,
+			'principal_declaration'
+		);
+		expect(principalPlan).toMatchObject({
+			kind: 'principal_declaration',
+			checkpointName: 'principal_declaration',
+			principalAddress: project44SoulBootstrapIds.principalAddress,
+			declaredAt: project44SoulBootstrapIds.declaredAt,
+			signing: {
+				method: 'eip191_personal_sign',
+				messageEncoding: 'hex_bytes',
+				messageHex: project44SoulBootstrapSigning.principalDeclaration.messageHex,
+				digestHex: project44SoulBootstrapSigning.principalDeclaration.digestHex,
+				canonicalJson: project44SoulBootstrapSigning.principalDeclaration.canonicalJson,
+				signerAddress: project44SoulBootstrapIds.principalAddress,
+			},
+		});
+		expect(
+			principalPlan.createSubmitInput({
+				walletChallengeSignature: project44Signatures.walletChallenge,
+				principalDeclaration: project44PrincipalDeclaration,
+				principalSignature: project44Signatures.principalDeclaration,
+			})
+		).toEqual({
+			username: project44SoulBootstrapIds.username,
+			registrationId: project44SoulBootstrapIds.registrationId,
+			signature: project44Signatures.walletChallenge,
+			principalAddress: project44SoulBootstrapIds.principalAddress,
+			principalDeclaration: project44PrincipalDeclaration,
+			principalSignature: project44Signatures.principalDeclaration,
+			declaredAt: project44SoulBootstrapIds.declaredAt,
+			idempotencyKey: project44SoulBootstrapIds.principalIdempotencyKey,
+			correlationKey: project44SoulBootstrapIds.correlationKey,
+		});
+
+		const finalizePlan = createSoulBootstrapSigningPlan(
+			results.finalizePreflightResult,
+			'finalize_self_attestation'
+		);
+		expect(finalizePlan).toMatchObject({
+			kind: 'finalize_self_attestation',
+			checkpointName: 'finalize',
+			conversationId: project44SoulBootstrapIds.conversationId,
+			expectedVersion: 3,
+			nextVersion: 4,
+			finalizeRequestTemplate: {
+				boundarySignaturesJson: '{"project-44-continuity":"0xboundary"}',
+				issuedAt: project44SoulBootstrapIds.issuedAt,
+				expectedVersion: 3,
+				selfAttestation: '',
+			},
+			signing: {
+				method: 'eip191_personal_sign',
+				messageEncoding: 'hex_bytes',
+				messageHex: project44SoulBootstrapSigning.finalize.messageHex,
+				digestHex: project44SoulBootstrapSigning.finalize.digestHex,
+				canonicalJson: project44SoulBootstrapSigning.finalize.canonicalJson,
+				signerAddress: project44SoulBootstrapIds.walletAddress,
+			},
+		});
+		expect(finalizePlan.createSubmitInput(project44Signatures.finalizeSelfAttestation)).toEqual({
+			username: project44SoulBootstrapIds.username,
+			registrationId: project44SoulBootstrapIds.registrationId,
+			conversationId: project44SoulBootstrapIds.conversationId,
+			boundarySignaturesJson: '{"project-44-continuity":"0xboundary"}',
+			issuedAt: project44SoulBootstrapIds.issuedAt,
+			expectedVersion: 3,
+			selfAttestation: project44Signatures.finalizeSelfAttestation,
+			idempotencyKey: project44SoulBootstrapIds.finalizeIdempotencyKey,
+			correlationKey: project44SoulBootstrapIds.correlationKey,
+		});
+	});
+
+	it('fails closed on unsupported signing semantics, malformed digest payloads, and unknown checkpoints', () => {
+		const principalCheckpoint =
+			project44SoulBootstrapFixtures.principalDeclarationPreflight.state.signingCheckpoints[0];
+		const finalizeCheckpoint =
+			project44SoulBootstrapFixtures.finalizePreflight.state.signingCheckpoints[0];
+		const walletCheckpoint =
+			project44SoulBootstrapFixtures.walletChallenge.state.signingCheckpoints[0];
+
+		expectSigningPlanError(
+			() =>
+				createSoulBootstrapSigningPlan(
+					createSigningPlanSurface({
+						...principalCheckpoint,
+						signingMethod: 'eip712',
+					}),
+					'principal_declaration'
+				),
+			'unsupported_signing_method'
+		);
+		expectSigningPlanError(
+			() =>
+				createSoulBootstrapSigningPlan(
+					createSigningPlanSurface({
+						...principalCheckpoint,
+						messageEncoding: 'utf8',
+					}),
+					'principal_declaration'
+				),
+			'unsupported_message_encoding'
+		);
+		expectSigningPlanError(
+			() =>
+				createSoulBootstrapSigningPlan(
+					createSigningPlanSurface({
+						...principalCheckpoint,
+						messageHex: null,
+					}),
+					'principal_declaration'
+				),
+			'missing_payload'
+		);
+		expectSigningPlanError(
+			() =>
+				createSoulBootstrapSigningPlan(
+					createSigningPlanSurface({
+						...principalCheckpoint,
+						digestHex: '0xnot-hex',
+					}),
+					'principal_declaration'
+				),
+			'malformed_hex'
+		);
+		expectSigningPlanError(
+			() =>
+				createSoulBootstrapSigningPlan(
+					createSigningPlanSurface({
+						...principalCheckpoint,
+						digestHex: `0x${'f'.repeat(64)}`,
+					}),
+					'principal_declaration'
+				),
+			'digest_message_mismatch'
+		);
+		expectSigningPlanError(
+			() =>
+				createSoulBootstrapSigningPlan(
+					createSigningPlanSurface({
+						...finalizeCheckpoint,
+						finalizeRequestTemplateJson:
+							'{"issued_at":"2026-06-12T12:10:00Z","expected_version":3,"self_attestation":""}',
+					}),
+					'finalize_self_attestation'
+				),
+			'missing_template_field'
+		);
+		expectSigningPlanError(
+			() =>
+				createSoulBootstrapSigningPlan(
+					createSigningPlanSurface({
+						...finalizeCheckpoint,
+						expectedVersion: null,
+					}),
+					'finalize_self_attestation'
+				),
+			'missing_template_field'
+		);
+		expectSigningPlanError(
+			() =>
+				createSoulBootstrapSigningPlan(
+					createSigningPlanSurface(finalizeCheckpoint, {
+						signingCheckpoints: [finalizeCheckpoint],
+						hostConversationId: project44SoulBootstrapIds.conversationId,
+						hostRegistrationId: project44SoulBootstrapIds.registrationId,
+						principalAddress: project44SoulBootstrapIds.principalAddress,
+					}).state,
+					'finalize_self_attestation'
+				).createSubmitInput('   '),
+			'missing_signature'
+		);
+		expectSigningPlanError(
+			() =>
+				createSoulBootstrapSigningPlan(
+					createProject44SoulBootstrapSurface({
+						phase: 'WALLET_VERIFICATION',
+						state: 'awaiting_wallet_signature',
+						signingCheckpoints: [
+							{
+								...walletCheckpoint,
+								name: 'wallet_challenge',
+							},
+						],
+					}),
+					'wallet_challenge'
+				),
+			'unknown_checkpoint'
+		);
+		expectSigningPlanError(
+			() =>
+				createSoulBootstrapSigningPlan(
+					{
+						...createProject44SoulBootstrapSurface({
+							phase: 'WALLET_VERIFICATION',
+							state: 'awaiting_wallet_signature',
+							signingCheckpoints: [walletCheckpoint],
+						}).state,
+						correlation: null,
+					},
+					'wallet_challenge'
+				),
+			'missing_correlation'
+		);
 	});
 
 	it('normalizes missing trust and missing instance key surfaces for Sim routes', async () => {
