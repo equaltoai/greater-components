@@ -14,26 +14,23 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.10.3](https://github.com/equaltoai/greater-components/compare/greater-v0.10.2...greater-v0.10.3) (2026-06-13)
 
-
 ### Features
 
-* **adapters:** add soul bootstrap facade ([eaf6d36](https://github.com/equaltoai/greater-components/commit/eaf6d36141467ccbf59b7a73e234ebf93cd6fa16))
-* **adapters:** add soul bootstrap facade ([abefba1](https://github.com/equaltoai/greater-components/commit/abefba1aaeecb0645405052bf4736730f80a55f3))
-
+- **adapters:** add soul bootstrap facade ([eaf6d36](https://github.com/equaltoai/greater-components/commit/eaf6d36141467ccbf59b7a73e234ebf93cd6fa16))
+- **adapters:** add soul bootstrap facade ([abefba1](https://github.com/equaltoai/greater-components/commit/abefba1aaeecb0645405052bf4736730f80a55f3))
 
 ### Tests
 
-* **adapters:** cover Project 44 bootstrap facade flow ([f216997](https://github.com/equaltoai/greater-components/commit/f216997ce133095cef97d3b2c1018418f857277a))
-* **adapters:** cover Project 44 bootstrap facade flow ([215b5b7](https://github.com/equaltoai/greater-components/commit/215b5b7d7e5900b71d7c0d9bbebb53fb1975fc68))
-
+- **adapters:** cover Project 44 bootstrap facade flow ([f216997](https://github.com/equaltoai/greater-components/commit/f216997ce133095cef97d3b2c1018418f857277a))
+- **adapters:** cover Project 44 bootstrap facade flow ([215b5b7](https://github.com/equaltoai/greater-components/commit/215b5b7d7e5900b71d7c0d9bbebb53fb1975fc68))
 
 ### Chores
 
-* **premain:** release greater 0.10.3-rc.0 ([077f63b](https://github.com/equaltoai/greater-components/commit/077f63b7983bd25a8799975ed5e38d0284af97af))
-* **premain:** release greater 0.10.3-rc.0 ([439112e](https://github.com/equaltoai/greater-components/commit/439112ef6c0781199e7d7a139e4b11e9c198af10))
-* **release:** prepare metadata ([eddca7d](https://github.com/equaltoai/greater-components/commit/eddca7dc9b5f82f410249e9a3db5720fe3b78388))
-* sync project 44 contracts ([d16c30b](https://github.com/equaltoai/greater-components/commit/d16c30b1127d76d699fe08cf31c46b4cb54d7887))
-* sync Project 44 Lesser and Host contracts ([66b5edf](https://github.com/equaltoai/greater-components/commit/66b5edf7f5d2c5af85f57aad390d63ed2b568c27))
+- **premain:** release greater 0.10.3-rc.0 ([077f63b](https://github.com/equaltoai/greater-components/commit/077f63b7983bd25a8799975ed5e38d0284af97af))
+- **premain:** release greater 0.10.3-rc.0 ([439112e](https://github.com/equaltoai/greater-components/commit/439112ef6c0781199e7d7a139e4b11e9c198af10))
+- **release:** prepare metadata ([eddca7d](https://github.com/equaltoai/greater-components/commit/eddca7dc9b5f82f410249e9a3db5720fe3b78388))
+- sync project 44 contracts ([d16c30b](https://github.com/equaltoai/greater-components/commit/d16c30b1127d76d699fe08cf31c46b4cb54d7887))
+- sync Project 44 Lesser and Host contracts ([66b5edf](https://github.com/equaltoai/greater-components/commit/66b5edf7f5d2c5af85f57aad390d63ed2b568c27))
 
 ## [0.10.3-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.10.2-rc.0...greater-v0.10.3-rc.0) (2026-06-13)
 
