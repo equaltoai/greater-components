@@ -14,18 +14,16 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.10.4-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.10.3-rc.0...greater-v0.10.4-rc.0) (2026-06-13)
 
-
 ### Features
 
-* **adapters:** add soul bootstrap signing plans ([a31788c](https://github.com/equaltoai/greater-components/commit/a31788c67ed7ffb74335379d0da7d3f9b65bd740))
-* **adapters:** add soul-bootstrap signing plans ([35410df](https://github.com/equaltoai/greater-components/commit/35410dfb70db896f119be65f3908391f00b43a44))
-
+- **adapters:** add soul bootstrap signing plans ([a31788c](https://github.com/equaltoai/greater-components/commit/a31788c67ed7ffb74335379d0da7d3f9b65bd740))
+- **adapters:** add soul-bootstrap signing plans ([35410df](https://github.com/equaltoai/greater-components/commit/35410dfb70db896f119be65f3908391f00b43a44))
 
 ### Chores
 
-* **main:** release greater 0.10.3 ([f401a47](https://github.com/equaltoai/greater-components/commit/f401a479e244ba668920883e7e0ed6244ad52d25))
-* **main:** release greater 0.10.3 ([2652edd](https://github.com/equaltoai/greater-components/commit/2652eddb9bb7ca30a6280d6518605e22aefb0b67))
-* **release:** prepare metadata ([7cfac32](https://github.com/equaltoai/greater-components/commit/7cfac322031257a4c52c19f2238bfb698de92bdb))
+- **main:** release greater 0.10.3 ([f401a47](https://github.com/equaltoai/greater-components/commit/f401a479e244ba668920883e7e0ed6244ad52d25))
+- **main:** release greater 0.10.3 ([2652edd](https://github.com/equaltoai/greater-components/commit/2652eddb9bb7ca30a6280d6518605e22aefb0b67))
+- **release:** prepare metadata ([7cfac32](https://github.com/equaltoai/greater-components/commit/7cfac322031257a4c52c19f2238bfb698de92bdb))
 
 ## [0.10.3](https://github.com/equaltoai/greater-components/compare/greater-v0.10.2...greater-v0.10.3) (2026-06-13)
 
