@@ -12,6 +12,21 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.10.4](https://github.com/equaltoai/greater-components/compare/greater-v0.10.3...greater-v0.10.4) (2026-06-13)
+
+
+### Features
+
+* **adapters:** add soul bootstrap signing plans ([a31788c](https://github.com/equaltoai/greater-components/commit/a31788c67ed7ffb74335379d0da7d3f9b65bd740))
+* **adapters:** add soul-bootstrap signing plans ([35410df](https://github.com/equaltoai/greater-components/commit/35410dfb70db896f119be65f3908391f00b43a44))
+
+
+### Chores
+
+* **premain:** release greater 0.10.4-rc.0 ([c988e13](https://github.com/equaltoai/greater-components/commit/c988e13888488a967509f883a75ad897b02f1462))
+* **premain:** release greater 0.10.4-rc.0 ([3528d60](https://github.com/equaltoai/greater-components/commit/3528d60a7f2e8f215a2f509af8524f75f1512360))
+* **release:** prepare metadata ([9033879](https://github.com/equaltoai/greater-components/commit/9033879271ba5859503d8159fa5987054ff6c119))
+
 ## [0.10.4-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.10.3-rc.0...greater-v0.10.4-rc.0) (2026-06-13)
 
 ### Features
