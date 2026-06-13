@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-06-13T00:22:54.904Z",
+  "generatedAt": "2026-06-13T02:38:40.647Z",
   "ref": "greater-v0.10.3",
   "version": "0.10.3",
   "checksums": {
@@ -821,7 +821,7 @@
     "packages/adapters/src/fetch.ts": "sha256-rZeRGln/6oHdH9fnTpk40P/M8Puesx3kgIV3LCyNquA=",
     "packages/adapters/src/fixtures/lesser.ts": "sha256-T8RxdwFIXpkNDa8eokqyDMOoaBeZYHOvv4Ydi8O6Mtw=",
     "packages/adapters/src/fixtures/mastodon.ts": "sha256-hw9cbIlcUSVl3cFy3CvbA6+W9YZggV8OwkFlqiE58Vw=",
-    "packages/adapters/src/fixtures/soul-bootstrap.ts": "sha256-Nc6kiEwMfeevl272KoQuPn9HDdw8eXf1/RFsnZGtjJ0=",
+    "packages/adapters/src/fixtures/soul-bootstrap.ts": "sha256-hiRkTjPCCgAuBfrPlefQlgiTj17Iwz1uxdXe+eD14q8=",
     "packages/adapters/src/graphql/cache.d.ts": "sha256-3YyrtfDiMSwiqju/cWC+4AprTMRm/ACRKfd46UcRr/E=",
     "packages/adapters/src/graphql/cache.ts": "sha256-l0A4zZ3Qo/gEXWbZLAvpMOK7O/qCwC0mkaF/EsRfW+4=",
     "packages/adapters/src/graphql/client.d.ts": "sha256-pJIC62N40bdFXhryg13X0HezmJFinzT2I9n/6qK1iJo=",
@@ -837,7 +837,7 @@
     "packages/adapters/src/HttpPollingClient.d.ts": "sha256-6UbsJSk+ur6Rth93w5bnSj3HOl2teXThMIBozc0TQqI=",
     "packages/adapters/src/HttpPollingClient.ts": "sha256-3VvR+Q3A9QuT9IKrT2s2OP48Ir5wDbDiL3NFp6fhO0w=",
     "packages/adapters/src/index.d.ts": "sha256-N9rD+C+FY2TCOW91GXIb5Cqm9lMS5na3I8MoSewctBE=",
-    "packages/adapters/src/index.ts": "sha256-o3Nv3vKCLH7WNegjccDPwpSmuWrgqcmmvSl49gFiuFs=",
+    "packages/adapters/src/index.ts": "sha256-bGVRLRFsynge2Y2zBvFUdJh6qKj8g9xl//kKYpK0lBM=",
     "packages/adapters/src/lesser/client.ts": "sha256-1zz1lpu6roGoTtOC/LIwXsT8oLHXkFV4TA8OblQ2Zhs=",
     "packages/adapters/src/lesser/index.ts": "sha256-/G5V2Tcie3s4/bPAszGUu+RGRRiz6nhnEXbge7XGxTw=",
     "packages/adapters/src/logger.d.ts": "sha256-EWrIRS5/xIIlNv5OLPY+Rf37HgYqrYhXxGlfPX8oNgc=",
@@ -861,9 +861,10 @@
     "packages/adapters/src/rest/generated/lesser-api.ts": "sha256-R4+G4pYedVrS/cEauHzryu+mjwduJMaU8/ME1wz2ago=",
     "packages/adapters/src/rest/generated/lesser-host-api.ts": "sha256-iJSILrpsG1NZdwRYsi+q0MNJsSDCLFvFOjvS0GlqwdA=",
     "packages/adapters/src/soul/bootstrap.ts": "sha256-cuFa5TPV35xQwTTlK+LBycBk+Wik8dTo5JahWOesyt8=",
+    "packages/adapters/src/soul/bootstrapSigningPlan.ts": "sha256-6fzPYUdPR9k/hQDuz9jmsPg8angSevxWctnopcx3+zE=",
     "packages/adapters/src/soul/client.ts": "sha256-AmLlG5YoBhg6PK0PXZe65Gl6GkFpJjBmFNbEt1A9Gnc=",
     "packages/adapters/src/soul/ens.ts": "sha256-CI8WkwLMw8ZXNPrN+LpQdK81vud8ecgQc3xOXFMvK2o=",
-    "packages/adapters/src/soul/index.ts": "sha256-4d6Rqpeg5BrFhySwAJJZdxkqmY0AoFBkOMcVR3YQYYc=",
+    "packages/adapters/src/soul/index.ts": "sha256-G0rbiCkDgesMwHnX1S2dgM4fvBBuo5Je0uIYLRUUGKQ=",
     "packages/adapters/src/SseClient.d.ts": "sha256-fxMEJHoDY/ae3mkTtv9yw5N1jfD5wLSrJ4ixrJ+TYoU=",
     "packages/adapters/src/SseClient.ts": "sha256-XJ1v33MnEkm1CRobboaQ0hOpTvFjDOkd1GX6UocQ2Q4=",
     "packages/adapters/src/stores/adminStreamingStore.d.ts": "sha256-SjxwZTLzZw3QyuExX+Wt0TR7TzXTI6z+yb/aTRSyQ0M=",
@@ -5615,8 +5616,8 @@
         },
         {
           "path": "src/fixtures/soul-bootstrap.ts",
-          "checksum": "sha256-Nc6kiEwMfeevl272KoQuPn9HDdw8eXf1/RFsnZGtjJ0=",
-          "size": 15392
+          "checksum": "sha256-hiRkTjPCCgAuBfrPlefQlgiTj17Iwz1uxdXe+eD14q8=",
+          "size": 15759
         },
         {
           "path": "src/graphql/cache.d.ts",
@@ -5695,8 +5696,8 @@
         },
         {
           "path": "src/index.ts",
-          "checksum": "sha256-o3Nv3vKCLH7WNegjccDPwpSmuWrgqcmmvSl49gFiuFs=",
-          "size": 10011
+          "checksum": "sha256-bGVRLRFsynge2Y2zBvFUdJh6qKj8g9xl//kKYpK0lBM=",
+          "size": 10691
         },
         {
           "path": "src/lesser/client.ts",
@@ -5814,6 +5815,11 @@
           "size": 21739
         },
         {
+          "path": "src/soul/bootstrapSigningPlan.ts",
+          "checksum": "sha256-6fzPYUdPR9k/hQDuz9jmsPg8angSevxWctnopcx3+zE=",
+          "size": 22145
+        },
+        {
           "path": "src/soul/client.ts",
           "checksum": "sha256-AmLlG5YoBhg6PK0PXZe65Gl6GkFpJjBmFNbEt1A9Gnc=",
           "size": 18446
@@ -5825,8 +5831,8 @@
         },
         {
           "path": "src/soul/index.ts",
-          "checksum": "sha256-4d6Rqpeg5BrFhySwAJJZdxkqmY0AoFBkOMcVR3YQYYc=",
-          "size": 2170
+          "checksum": "sha256-G0rbiCkDgesMwHnX1S2dgM4fvBBuo5Je0uIYLRUUGKQ=",
+          "size": 2945
         },
         {
           "path": "src/SseClient.d.ts",
