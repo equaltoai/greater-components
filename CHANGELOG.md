@@ -12,6 +12,77 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.10.2](https://github.com/equaltoai/greater-components/compare/greater-v0.10.1...greater-v0.10.2) (2026-05-31)
+
+### Features
+
+- **adapters:** expose lesser agent metadata lookup ([0a35646](https://github.com/equaltoai/greater-components/commit/0a35646ec94ddb40dacfc99a464c1dccdb2d7c4a))
+- **adapters:** expose Lesser agent metadata lookup ([e09db50](https://github.com/equaltoai/greater-components/commit/e09db50fb91faf69cf895841ebefbff9fb7ef57a))
+
+### Bug Fixes
+
+- **adapters:** pin viem to registry ox ([24ee849](https://github.com/equaltoai/greater-components/commit/24ee849fc16a6743a024fe3324157a1b40f8e50f))
+- **adapters:** pin viem to registry ox ([b71f748](https://github.com/equaltoai/greater-components/commit/b71f748ee822cc597609e7f97db4dbfa26748a91)), closes [#715](https://github.com/equaltoai/greater-components/issues/715)
+- **ci:** bind release check dispatch runs ([bd009cc](https://github.com/equaltoai/greater-components/commit/bd009cc13ce76572a66f1690d324d368acb6afd6))
+- **ci:** bind release check dispatch runs ([dac01bd](https://github.com/equaltoai/greater-components/commit/dac01bdbf86cd63a65a01a0980a4e4ad627d82c4)), closes [#718](https://github.com/equaltoai/greater-components/issues/718)
+- **ci:** cache chromium-only Playwright install ([542e78e](https://github.com/equaltoai/greater-components/commit/542e78e0efb88b8976b9996a2d341164e3804784))
+- **ci:** cache chromium-only Playwright install ([d493461](https://github.com/equaltoai/greater-components/commit/d49346174b1bb4113cdf891290800f118ab7f259))
+- **ci:** make firefox e2e non-blocking ([5ca68aa](https://github.com/equaltoai/greater-components/commit/5ca68aad1046b2ecff018b541ae4dde6a6895fcb))
+- **ci:** normalize GitHub bot DCO signoffs ([ccb01ea](https://github.com/equaltoai/greater-components/commit/ccb01eae12d0df36d9f0432c620fc43c175c1425))
+- **ci:** normalize GitHub bot DCO signoffs ([387e401](https://github.com/equaltoai/greater-components/commit/387e401a6e8fc2346e213d874804baa3766ce12d))
+- **ci:** pin Playwright for a11y installs ([0354502](https://github.com/equaltoai/greater-components/commit/0354502e723ae1c72c450f8a9562acbe9db2ecec))
+- **ci:** require DCO signoff to match author ([3653b74](https://github.com/equaltoai/greater-components/commit/3653b7425251223e574baa2ce8bd28e63c6c859d))
+- **ci:** require DCO signoff to match author ([c2a0016](https://github.com/equaltoai/greater-components/commit/c2a00161463edcc797c98272f342f53c57f26c01)), closes [#717](https://github.com/equaltoai/greater-components/issues/717)
+- **ci:** use system Chrome for a11y runs ([4e47a41](https://github.com/equaltoai/greater-components/commit/4e47a41226b7e47c7ff986d36eb5ab233cd5e94f))
+- **ci:** use system Chrome for e2e runs ([99949db](https://github.com/equaltoai/greater-components/commit/99949db1637f483cfb40af06eb77b6920f464cd9))
+- **ci:** use system Chrome for e2e runs ([cb8dd1a](https://github.com/equaltoai/greater-components/commit/cb8dd1a14b7daf83c329caea1167839972cadbdc))
+- **ci:** validate release check run IDs ([9ea6b7a](https://github.com/equaltoai/greater-components/commit/9ea6b7a370d05d3ff3afeb8803a647728c2dc416))
+- **ci:** validate release check run IDs ([612bdfb](https://github.com/equaltoai/greater-components/commit/612bdfbb4b004a5809dbdb1617fc23dc7f3109a6)), closes [#719](https://github.com/equaltoai/greater-components/issues/719)
+- **cli:** correct primitive --path import hint ([ace3756](https://github.com/equaltoai/greater-components/commit/ace3756c298751c3615bb860f0cbbd487be378aa))
+- **cli:** correct primitive --path import hint ([173db22](https://github.com/equaltoai/greater-components/commit/173db22666a43f6f85151d31184bb95b2e05d819)), closes [#725](https://github.com/equaltoai/greater-components/issues/725)
+- **cli:** preserve primitive relative imports ([7e35fee](https://github.com/equaltoai/greater-components/commit/7e35feeb9abcdfa7bff3e4f1ff50b631b434cc17))
+- **cli:** preserve primitive relative imports ([1df7f53](https://github.com/equaltoai/greater-components/commit/1df7f53f013efb34e8e01f7d90d39c6509fca4c3)), closes [#722](https://github.com/equaltoai/greater-components/issues/722)
+- **host-platform:** bound sparkline path generation ([aefbd46](https://github.com/equaltoai/greater-components/commit/aefbd4672c07bdd062da7fb754b0bc6e51c5542e))
+- **host-platform:** bound sparkline path generation ([32edeed](https://github.com/equaltoai/greater-components/commit/32edeed04a1ed4087807751b1d659909a7f5c93d)), closes [#713](https://github.com/equaltoai/greater-components/issues/713)
+- **host-platform:** guard release timeline href protocols ([a6128bc](https://github.com/equaltoai/greater-components/commit/a6128bcc7c593fdd4a8865d6a393ea3ae64c4cf0))
+- **host-platform:** guard release timeline href protocols ([f72f12e](https://github.com/equaltoai/greater-components/commit/f72f12e972e90b8ada82e55c56dce963e3cd19b8)), closes [#711](https://github.com/equaltoai/greater-components/issues/711)
+- **host-platform:** guard release timeline href protocols ([ce5bf1a](https://github.com/equaltoai/greater-components/commit/ce5bf1aa18ef3209dab73a3c574883d1ffaf8f6c)), closes [#711](https://github.com/equaltoai/greater-components/issues/711)
+- **playground:** build CSS deps before playground ([32ce981](https://github.com/equaltoai/greater-components/commit/32ce9819754a07e577f63f011aba0b85ddcab721))
+- **playground:** build CSS deps before playground ([f8e9e95](https://github.com/equaltoai/greater-components/commit/f8e9e95b970b43f3ee983ab1b6d8ae62221b0cf1)), closes [#724](https://github.com/equaltoai/greater-components/issues/724)
+- **playground:** key Link navigation log entries ([77e1c75](https://github.com/equaltoai/greater-components/commit/77e1c758683dfce0625eca9ef94ff80caa7c611b))
+- **playground:** key Link navigation log entries ([419c064](https://github.com/equaltoai/greater-components/commit/419c064c12138594b06751a6d6d9d21b6bf812a3)), closes [#714](https://github.com/equaltoai/greater-components/issues/714)
+- **primitives:** strip Link inline style rest props ([bb0b0b0](https://github.com/equaltoai/greater-components/commit/bb0b0b0489f1b17b1d7be5ca50c9c1f88e6ef21e))
+- **primitives:** strip Link inline style rest props ([940a749](https://github.com/equaltoai/greater-components/commit/940a749a401d01b6b4f3b908e166e8d2959141c4)), closes [#712](https://github.com/equaltoai/greater-components/issues/712)
+- **security:** audit export GET auth gaps ([e1ca7e8](https://github.com/equaltoai/greater-components/commit/e1ca7e8f44d20dd5e4554652360adcb0711b6e59))
+- **security:** audit export GET auth gaps ([00398b7](https://github.com/equaltoai/greater-components/commit/00398b79bc1a657b40ffb740bad670757377c57f))
+- **security:** require exact OpenAPI public auth matches ([9683f2f](https://github.com/equaltoai/greater-components/commit/9683f2fbcff79c0ee424e9a799014fc90c6bd90b))
+- **security:** require exact OpenAPI public auth matches ([3f28632](https://github.com/equaltoai/greater-components/commit/3f286323c49da1913309031e70464ae0939b586c)), closes [#721](https://github.com/equaltoai/greater-components/issues/721)
+- **shell:** guard breadcrumb href protocols ([db19612](https://github.com/equaltoai/greater-components/commit/db19612ca6eb2ee286265d4b2268cde02e77b70a))
+- **shell:** guard breadcrumb href protocols ([f6922e6](https://github.com/equaltoai/greater-components/commit/f6922e6e643c7464e11e8af795f7f6bd0a76fcd2))
+- **shell:** inherit shell layout token defaults ([9d36e50](https://github.com/equaltoai/greater-components/commit/9d36e50733290dc1e83fe06b0a0d3145dbc7f20c))
+- **shell:** inherit shell layout token defaults ([c6852f5](https://github.com/equaltoai/greater-components/commit/c6852f5269bda43664a2150fe6874efdb5691f4d)), closes [#723](https://github.com/equaltoai/greater-components/issues/723)
+
+### Docs
+
+- **security:** document greater_lab MCP trust posture ([dc68830](https://github.com/equaltoai/greater-components/commit/dc688304cf76fe18d68ec4627f93608df99f96ea))
+- **security:** document greater_lab MCP trust posture ([bba1902](https://github.com/equaltoai/greater-components/commit/bba19027e5575bfce7b803fe8b7ded756f0011c3)), closes [#716](https://github.com/equaltoai/greater-components/issues/716)
+
+### CI
+
+- **e2e:** make firefox setup failure non-blocking ([fa4552b](https://github.com/equaltoai/greater-components/commit/fa4552ba7b3d131c6174dbab47e604820119fa65))
+
+### Chores
+
+- **contracts:** sync Lesser v1.4.13 and Host v0.4.6 ([f81eb6f](https://github.com/equaltoai/greater-components/commit/f81eb6f0c4833935adba97286a48b06461bc9400))
+- **contracts:** sync Lesser v1.4.13 and Host v0.4.6 ([6e6655f](https://github.com/equaltoai/greater-components/commit/6e6655fce3131f324467ee20d263022e04c4a759))
+- **license:** remove conflict markers from AGPL text ([8bdb6ee](https://github.com/equaltoai/greater-components/commit/8bdb6ee9f418a340fe8aacee903ea7c02dbbdbc8))
+- **license:** remove conflict markers from AGPL text ([4dce612](https://github.com/equaltoai/greater-components/commit/4dce6126d4a4a4b005508a6545ed6964895aa64f)), closes [#753](https://github.com/equaltoai/greater-components/issues/753)
+- **premain:** release greater 0.10.2-rc.0 ([ab1d249](https://github.com/equaltoai/greater-components/commit/ab1d2499969a9e7552f09d3b90248ad3103f31ce))
+- **premain:** release greater 0.10.2-rc.0 ([28caa3e](https://github.com/equaltoai/greater-components/commit/28caa3e87989a23cdac55ee49bf077f482474c82))
+- **registry:** regenerate Project 43 M1 manifest ([9d09d1a](https://github.com/equaltoai/greater-components/commit/9d09d1a00acab79f8f0c2441f0ff3961f48f33fc)), closes [#734](https://github.com/equaltoai/greater-components/issues/734)
+- **release:** prepare metadata ([19fd325](https://github.com/equaltoai/greater-components/commit/19fd325b7ba0bf6d2201c9bc953b5aa21d9e85fd))
+- **release:** refresh Project 43 M3 validation artifacts ([a5bd06f](https://github.com/equaltoai/greater-components/commit/a5bd06fd25d67084cda8835c08bd6879daff2d98))
+
 ## [0.10.2-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.10.1-rc.0...greater-v0.10.2-rc.0) (2026-05-31)
 
 ### Features

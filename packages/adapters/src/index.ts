@@ -76,7 +76,11 @@ export type {
 export {
 	LesserHostSoulClient,
 	LesserHostSoulClientError,
+	SoulBootstrapClient,
+	SoulBootstrapClientError,
 	createLesserHostSoulClient,
+	createSoulBootstrapClient,
+	normalizeSoulBootstrapError,
 	resolveSoulAgentIdFromEnsTextRecord,
 } from './soul/index.js';
 export type {
@@ -113,6 +117,30 @@ export type {
 	SoulSearchQuery,
 	SoulSearchResponse,
 	SoulSearchResult,
+	BeginSoulBootstrapInput,
+	CompleteSoulBootstrapConversationInput,
+	FinalizeSoulBootstrapInput,
+	PrepareSoulBootstrapFinalizeInput,
+	PrepareSoulBootstrapPrincipalDeclarationInput,
+	SendSoulBootstrapConversationMessageInput,
+	SoulBootstrapActionableError,
+	SoulBootstrapClientConfig,
+	SoulBootstrapCorrelationState,
+	SoulBootstrapCurrentInput,
+	SoulBootstrapErrorCategory,
+	SoulBootstrapErrorState,
+	SoulBootstrapGraphQLClient,
+	SoulBootstrapGraphQLError,
+	SoulBootstrapMutationPayload,
+	SoulBootstrapMutationResult,
+	SoulBootstrapPhase,
+	SoulBootstrapPublicationEvidence,
+	SoulBootstrapResult,
+	SoulBootstrapSigningCheckpoint,
+	SoulBootstrapState,
+	SoulBootstrapSurface,
+	VerifySoulBootstrapPrincipalDeclarationInput,
+	VerifySoulBootstrapWalletInput,
 } from './soul/index.js';
 
 // Messaging handlers (Lesser → shared/messaging)

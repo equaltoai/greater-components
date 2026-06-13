@@ -1,0 +1,407 @@
+# Project 44 soul bootstrap facade operations.
+# These are Lesser same-origin GraphQL operations only; browser callers must not
+# call Lesser Host write routes or hold Host control-plane credentials.
+
+fragment SoulBootstrapErrorFields on SoulBootstrapErrorState {
+	code
+	message
+	source
+	statusCode
+	hostRequestId
+	at
+}
+
+fragment SoulBootstrapCorrelationFields on SoulBootstrapCorrelationState {
+	correlationKey
+	beginIdempotencyKey
+	walletVerificationIdempotencyKey
+	principalDeclarationIdempotencyKey
+	conversationIdempotencyKey
+	finalizeIdempotencyKey
+	lastHostRequestId
+}
+
+fragment SoulBootstrapPublicationFields on SoulBootstrapPublicationEvidence {
+	agentId
+	anchorState
+	publishedAt
+	publishedVersion
+	registrationS3Key
+	registrationUri
+	versionedRegistrationS3Key
+	versionedRegistrationUri
+}
+
+fragment SoulBootstrapSigningCheckpointFields on SoulBootstrapSigningCheckpoint {
+	name
+	status
+	message
+	messageEncoding
+	messageHex
+	canonicalJson
+	digestHex
+	boundaryRequirementsJson
+	registrationPreviewJson
+	finalizeRequestTemplateJson
+	signingMethod
+	signerAddress
+	principalAddress
+	version
+	expectedVersion
+	nextVersion
+	issuedAt
+	declaredAt
+	completedAt
+	hostRequestId
+}
+
+fragment SoulBootstrapStateFields on SoulBootstrapState {
+	bodyId
+	username
+	state
+	phase
+	walletAddress
+	principalAddress
+	hostRegistrationId
+	hostConversationId
+	hostSoulAgentId
+	updatedAt
+	signingCheckpoints {
+		...SoulBootstrapSigningCheckpointFields
+	}
+	publication {
+		...SoulBootstrapPublicationFields
+	}
+	error {
+		...SoulBootstrapErrorFields
+	}
+	correlation {
+		...SoulBootstrapCorrelationFields
+	}
+}
+
+fragment SoulBootstrapActorFields on AgentSurfaceActor {
+	id
+	name
+	role
+	handle
+	avatarLabel
+	statusLabel
+}
+
+fragment SoulBootstrapMetricFields on AgentSurfaceMetric {
+	label
+	value
+	detail
+}
+
+fragment SoulBootstrapArtifactFields on AgentSurfaceArtifact {
+	id
+	title
+	description
+	href
+	emphasis
+}
+
+fragment SoulBootstrapIdentityFields on AgentIdentityCard {
+	id
+	name
+	handle
+	summary
+	currentPhase
+	currentState
+	steward {
+		...SoulBootstrapActorFields
+	}
+	tags
+	metrics {
+		...SoulBootstrapMetricFields
+	}
+}
+
+fragment SoulBootstrapRequestFields on SoulRequestCard {
+	id
+	title
+	summary
+	requestedBy {
+		...SoulBootstrapActorFields
+	}
+	submittedAt
+	constraints
+	artifacts {
+		...SoulBootstrapArtifactFields
+	}
+	routeDecision
+	currentState
+}
+
+fragment SoulBootstrapReviewFindingFields on ReviewFinding {
+	id
+	title
+	detail
+	severity
+}
+
+fragment SoulBootstrapReviewFields on ReviewDecisionCard {
+	id
+	title
+	decision
+	reviewer {
+		...SoulBootstrapActorFields
+	}
+	decisionSummary
+	findings {
+		...SoulBootstrapReviewFindingFields
+	}
+	evidence {
+		...SoulBootstrapArtifactFields
+	}
+}
+
+fragment SoulBootstrapDeclarationFields on DeclarationPreviewCard {
+	id
+	title
+	statement
+	confidence
+	owner {
+		...SoulBootstrapActorFields
+	}
+	declaredScope
+	risks
+	supportingArtifacts {
+		...SoulBootstrapArtifactFields
+	}
+}
+
+fragment SoulBootstrapCheckpointSignerFields on SignatureCheckpointSigner {
+	id
+	name
+	role
+	status
+	note
+}
+
+fragment SoulBootstrapCheckpointFields on SignatureCheckpointCard {
+	id
+	title
+	readinessLabel
+	approvalMemo
+	dueAt
+	signers {
+		...SoulBootstrapCheckpointSignerFields
+	}
+}
+
+fragment SoulBootstrapGraduationFields on GraduationSummaryCard {
+	id
+	title
+	readiness
+	summary
+	launchOwner {
+		...SoulBootstrapActorFields
+	}
+	completedMilestones
+	exitCriteria
+	nextStep
+	metrics {
+		...SoulBootstrapMetricFields
+	}
+}
+
+fragment SoulBootstrapContinuityFollowUpFields on ContinuityFollowUp {
+	id
+	title
+	summary
+	owner {
+		...SoulBootstrapActorFields
+	}
+	cadence
+}
+
+fragment SoulBootstrapContinuityFields on ContinuityPanel {
+	id
+	title
+	objective
+	owner {
+		...SoulBootstrapActorFields
+	}
+	feedbackLoop
+	metrics {
+		...SoulBootstrapMetricFields
+	}
+	followUps {
+		...SoulBootstrapContinuityFollowUpFields
+	}
+}
+
+fragment SoulBootstrapLifecycleStepFields on AgentLifecycleStep {
+	phase
+	title
+	summary
+	state
+	status
+}
+
+fragment SoulBootstrapConversationFields on AgentWorkflowConversationState {
+	conversationId
+	folder
+	requestState
+	unread
+	previewStatusId
+	requestedAt
+	acceptedAt
+	declinedAt
+	updatedAt
+}
+
+fragment SoulBootstrapIdentitySemanticsFields on AgentIdentitySemantics {
+	identityState
+	identityLabel
+	lifecycleState
+	soulBindingState
+	soulAgentId
+	continuityState
+	continuitySummary
+	bodyIdentityPreserved
+	timelinePresencePreserved
+	memoryReferencesPreserved
+	attributionLabel
+	moderationLabel
+}
+
+fragment SoulBootstrapWorkflowFields on AgentWorkflowSurface {
+	username
+	currentPhase
+	currentState
+	identity {
+		...SoulBootstrapIdentityFields
+	}
+	request {
+		...SoulBootstrapRequestFields
+	}
+	review {
+		...SoulBootstrapReviewFields
+	}
+	declaration {
+		...SoulBootstrapDeclarationFields
+	}
+	checkpoint {
+		...SoulBootstrapCheckpointFields
+	}
+	graduation {
+		...SoulBootstrapGraduationFields
+	}
+	continuity {
+		...SoulBootstrapContinuityFields
+	}
+	lifecycle {
+		...SoulBootstrapLifecycleStepFields
+	}
+	conversation {
+		...SoulBootstrapConversationFields
+	}
+	soulBootstrap {
+		...SoulBootstrapStateFields
+	}
+	identitySemantics {
+		...SoulBootstrapIdentitySemanticsFields
+	}
+}
+
+fragment SoulBootstrapIdentityTargetFields on SoulBootstrapIdentityTarget {
+	bodyId
+	username
+	displayName
+	owner {
+		...SoulBootstrapActorFields
+	}
+}
+
+fragment SoulBootstrapSurfaceFields on SoulBootstrapSurface {
+	username
+	executable
+	existingSoulAgentId
+	hostBridgeAvailable
+	nextAction
+	soulBindingState
+	body {
+		...SoulBootstrapIdentityTargetFields
+	}
+	state {
+		...SoulBootstrapStateFields
+	}
+	error {
+		...SoulBootstrapErrorFields
+	}
+	workflow {
+		...SoulBootstrapWorkflowFields
+	}
+}
+
+fragment SoulBootstrapMutationPayloadFields on SoulBootstrapMutationPayload {
+	executable
+	error {
+		...SoulBootstrapErrorFields
+	}
+	bootstrap {
+		...SoulBootstrapSurfaceFields
+	}
+}
+
+query SoulBootstrap($username: String!) {
+	soulBootstrap(username: $username) {
+		...SoulBootstrapSurfaceFields
+	}
+}
+
+mutation BeginSoulBootstrap($input: BeginSoulBootstrapInput!) {
+	beginSoulBootstrap(input: $input) {
+		...SoulBootstrapMutationPayloadFields
+	}
+}
+
+mutation VerifySoulBootstrapWallet($input: VerifySoulBootstrapWalletInput!) {
+	verifySoulBootstrapWallet(input: $input) {
+		...SoulBootstrapMutationPayloadFields
+	}
+}
+
+mutation PrepareSoulBootstrapPrincipalDeclaration(
+	$input: PrepareSoulBootstrapPrincipalDeclarationInput!
+) {
+	prepareSoulBootstrapPrincipalDeclaration(input: $input) {
+		...SoulBootstrapMutationPayloadFields
+	}
+}
+
+mutation VerifySoulBootstrapPrincipalDeclaration(
+	$input: VerifySoulBootstrapPrincipalDeclarationInput!
+) {
+	verifySoulBootstrapPrincipalDeclaration(input: $input) {
+		...SoulBootstrapMutationPayloadFields
+	}
+}
+
+mutation SendSoulBootstrapConversationMessage($input: SendSoulBootstrapConversationMessageInput!) {
+	sendSoulBootstrapConversationMessage(input: $input) {
+		...SoulBootstrapMutationPayloadFields
+	}
+}
+
+mutation CompleteSoulBootstrapConversation($input: CompleteSoulBootstrapConversationInput!) {
+	completeSoulBootstrapConversation(input: $input) {
+		...SoulBootstrapMutationPayloadFields
+	}
+}
+
+mutation PrepareSoulBootstrapFinalize($input: PrepareSoulBootstrapFinalizeInput!) {
+	prepareSoulBootstrapFinalize(input: $input) {
+		...SoulBootstrapMutationPayloadFields
+	}
+}
+
+mutation FinalizeSoulBootstrap($input: FinalizeSoulBootstrapInput!) {
+	finalizeSoulBootstrap(input: $input) {
+		...SoulBootstrapMutationPayloadFields
+	}
+}
