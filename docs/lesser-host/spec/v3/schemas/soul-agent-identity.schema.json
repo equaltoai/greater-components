@@ -90,6 +90,17 @@
     "status": { "type": "string", "minLength": 1, "maxLength": 64 },
     "mint_tx_hash": { "type": "string", "minLength": 1, "maxLength": 128 },
     "minted_at": { "type": "string", "format": "date-time" },
+    "policy_version": { "type": "string", "enum": ["hosted-bound-soul/v1"] },
+    "anchor_state": { "type": "string", "enum": ["hosted_offchain", "immutable_onchain"] },
+    "operational_binding": { "type": "string", "enum": ["hosted_bound_soul"] },
+    "capability_policy_version": { "type": "string", "enum": ["capability-policy/v1"] },
+    "caller_access_payment_policy_version": { "type": "string", "enum": ["caller-access-payment/v1"] },
+    "email_default_allowed": { "type": "boolean" },
+    "phone_entitlement_status": { "type": "string", "enum": ["not_entitled", "provisioned", "paid"] },
+    "sms_allowed": { "type": "boolean" },
+    "voice_allowed": { "type": "boolean" },
+    "public_paid_caller_access": { "type": "string", "enum": ["denied", "grantable"] },
+    "policy_migration_state": { "type": "string", "enum": ["implicit_default_v1", "persisted_v1"] },
     "updated_at": { "type": "string", "format": "date-time" }
   }
 }

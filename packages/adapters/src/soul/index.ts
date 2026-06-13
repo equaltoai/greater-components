@@ -3,6 +3,12 @@ export {
 	LesserHostSoulClientError,
 	createLesserHostSoulClient,
 } from './client.js';
+export {
+	SoulBootstrapClient,
+	SoulBootstrapClientError,
+	createSoulBootstrapClient,
+	normalizeSoulBootstrapError,
+} from './bootstrap.js';
 export type {
 	ErrorEnvelope,
 	FetchLike,
@@ -39,6 +45,32 @@ export type {
 	SoulSearchResponse,
 	SoulSearchResult,
 } from './client.js';
+export type {
+	BeginSoulBootstrapInput,
+	CompleteSoulBootstrapConversationInput,
+	FinalizeSoulBootstrapInput,
+	PrepareSoulBootstrapFinalizeInput,
+	PrepareSoulBootstrapPrincipalDeclarationInput,
+	SendSoulBootstrapConversationMessageInput,
+	SoulBootstrapActionableError,
+	SoulBootstrapClientConfig,
+	SoulBootstrapCorrelationState,
+	SoulBootstrapCurrentInput,
+	SoulBootstrapErrorCategory,
+	SoulBootstrapErrorState,
+	SoulBootstrapGraphQLClient,
+	SoulBootstrapGraphQLError,
+	SoulBootstrapMutationPayload,
+	SoulBootstrapMutationResult,
+	SoulBootstrapPhase,
+	SoulBootstrapPublicationEvidence,
+	SoulBootstrapResult,
+	SoulBootstrapSigningCheckpoint,
+	SoulBootstrapState,
+	SoulBootstrapSurface,
+	VerifySoulBootstrapPrincipalDeclarationInput,
+	VerifySoulBootstrapWalletInput,
+} from './bootstrap.js';
 
 export { resolveSoulAgentIdFromEnsTextRecord } from './ens.js';
 export type { ResolveSoulAgentIdFromEnsTextRecordOptions } from './ens.js';

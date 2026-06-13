@@ -4,7 +4,8 @@
   "contentType": "text/event-stream",
   "routes": [
     "/api/v1/soul/agents/register/{id}/mint-conversation",
-    "/api/v1/soul/agents/{agentId}/mint-conversation"
+    "/api/v1/soul/agents/{agentId}/mint-conversation",
+    "/api/v1/soul/instance/agents/register/{id}/mint-conversation"
   ],
   "request": {
     "contentType": "application/json",

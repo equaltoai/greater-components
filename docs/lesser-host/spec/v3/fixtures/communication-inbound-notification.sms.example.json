@@ -4,7 +4,7 @@
   "from": {
     "number": "+15550142",
     "soulAgentId": "0x1111111111111111111111111111111111111111111111111111111111111111",
-    "displayName": "agent-alice.lessersoul.eth"
+    "displayName": "agent-alice.simulacrum.lessersoul.eth"
   },
   "to": {
     "address": "agent-bob.simulacrum@lessersoul.ai",
