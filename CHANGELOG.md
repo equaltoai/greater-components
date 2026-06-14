@@ -14,19 +14,17 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.10.6](https://github.com/equaltoai/greater-components/compare/greater-v0.10.5...greater-v0.10.6) (2026-06-14)
 
-
 ### Features
 
-* **adapters:** gate hosted publish on terminal evidence ([252585c](https://github.com/equaltoai/greater-components/commit/252585ccb8fbcd735ba00c181c09a00ebce34235))
-* **adapters:** gate hosted publish on terminal evidence ([32371a0](https://github.com/equaltoai/greater-components/commit/32371a0edc8117fe808e05163bd75464e16fae4a))
-
+- **adapters:** gate hosted publish on terminal evidence ([252585c](https://github.com/equaltoai/greater-components/commit/252585ccb8fbcd735ba00c181c09a00ebce34235))
+- **adapters:** gate hosted publish on terminal evidence ([32371a0](https://github.com/equaltoai/greater-components/commit/32371a0edc8117fe808e05163bd75464e16fae4a))
 
 ### Chores
 
-* align release topology after greater-v0.10.5 ([672ec23](https://github.com/equaltoai/greater-components/commit/672ec23bc5aad0fa552e09ea429575bd40af9dfd))
-* **premain:** release greater 0.10.6-rc.0 ([107f7e4](https://github.com/equaltoai/greater-components/commit/107f7e4b2f89ac21e0dbda7f545adf97be8e25e4))
-* **premain:** release greater 0.10.6-rc.0 ([5b68160](https://github.com/equaltoai/greater-components/commit/5b681606202d5606f2dd4a878b75ad04c7b487fe))
-* **release:** prepare metadata ([57d8a4a](https://github.com/equaltoai/greater-components/commit/57d8a4a15b94d2c3c184fb8228c5c443e4214843))
+- align release topology after greater-v0.10.5 ([672ec23](https://github.com/equaltoai/greater-components/commit/672ec23bc5aad0fa552e09ea429575bd40af9dfd))
+- **premain:** release greater 0.10.6-rc.0 ([107f7e4](https://github.com/equaltoai/greater-components/commit/107f7e4b2f89ac21e0dbda7f545adf97be8e25e4))
+- **premain:** release greater 0.10.6-rc.0 ([5b68160](https://github.com/equaltoai/greater-components/commit/5b681606202d5606f2dd4a878b75ad04c7b487fe))
+- **release:** prepare metadata ([57d8a4a](https://github.com/equaltoai/greater-components/commit/57d8a4a15b94d2c3c184fb8228c5c443e4214843))
 
 ## [0.10.6-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.10.5-rc.0...greater-v0.10.6-rc.0) (2026-06-14)
 
