@@ -7,7 +7,12 @@ fragment SoulBootstrapErrorFields on SoulBootstrapErrorState {
 	message
 	source
 	statusCode
+	detailsJson
 	hostRequestId
+	recoveryCategory
+	recoveryAction
+	retryable
+	restartRequired
 	at
 }
 
@@ -18,11 +23,16 @@ fragment SoulBootstrapCorrelationFields on SoulBootstrapCorrelationState {
 	principalDeclarationIdempotencyKey
 	conversationIdempotencyKey
 	finalizeIdempotencyKey
+	restartIdempotencyKey
+	recoveryAttemptId
+	supersededHostRegistrationId
+	supersededHostConversationId
 	lastHostRequestId
 }
 
 fragment SoulBootstrapPublicationFields on SoulBootstrapPublicationEvidence {
 	agentId
+	authorityModel
 	anchorState
 	publishedAt
 	publishedVersion
@@ -65,7 +75,21 @@ fragment SoulBootstrapStateFields on SoulBootstrapState {
 	hostRegistrationId
 	hostConversationId
 	hostSoulAgentId
+	bootstrapMode
+	authorityModel
+	anchorState
+	assuranceState
 	updatedAt
+	typedNextAction
+	recoveryCategory
+	recoveryAction
+	retryable
+	restartRequired
+	restartAvailable
+	recoveryAttemptId
+	restartIdempotencyKey
+	lastHostRequestId
+	restartedAt
 	signingCheckpoints {
 		...SoulBootstrapSigningCheckpointFields
 	}
@@ -323,6 +347,11 @@ fragment SoulBootstrapSurfaceFields on SoulBootstrapSurface {
 	existingSoulAgentId
 	hostBridgeAvailable
 	nextAction
+	typedNextAction
+	recoveryCategory
+	recoveryAction
+	retryable
+	restartAvailable
 	soulBindingState
 	body {
 		...SoulBootstrapIdentityTargetFields
@@ -351,6 +380,36 @@ fragment SoulBootstrapMutationPayloadFields on SoulBootstrapMutationPayload {
 query SoulBootstrap($username: String!) {
 	soulBootstrap(username: $username) {
 		...SoulBootstrapSurfaceFields
+	}
+}
+
+mutation StartHostedSoulBootstrap($input: StartHostedSoulBootstrapInput!) {
+	startHostedSoulBootstrap(input: $input) {
+		...SoulBootstrapMutationPayloadFields
+	}
+}
+
+mutation SendHostedSoulGenesisMessage($input: SendHostedSoulGenesisMessageInput!) {
+	sendHostedSoulGenesisMessage(input: $input) {
+		...SoulBootstrapMutationPayloadFields
+	}
+}
+
+mutation CompleteHostedSoulGenesis($input: CompleteHostedSoulGenesisInput!) {
+	completeHostedSoulGenesis(input: $input) {
+		...SoulBootstrapMutationPayloadFields
+	}
+}
+
+mutation PublishHostedSoul($input: PublishHostedSoulInput!) {
+	publishHostedSoul(input: $input) {
+		...SoulBootstrapMutationPayloadFields
+	}
+}
+
+mutation RestartSoulBootstrap($input: RestartSoulBootstrapInput!) {
+	restartSoulBootstrap(input: $input) {
+		...SoulBootstrapMutationPayloadFields
 	}
 }
 

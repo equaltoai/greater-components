@@ -535,7 +535,7 @@ components:
     SoulAgentRegistration:
       type: object
       additionalProperties: false
-      required: [id, domain_normalized, local_id, agent_id, wallet_address, status, created_at, updated_at]
+      required: [id, domain_normalized, local_id, agent_id, status, created_at, updated_at]
       properties:
         id:
           type: string
@@ -555,6 +555,9 @@ components:
         wallet_address:
           type: string
           pattern: "^0x[0-9a-fA-F]{40}$"
+        authority_model:
+          type: string
+          enum: [wallet_principal, instance_trust]
         capabilities:
           type: array
           items:
@@ -627,7 +630,6 @@ components:
         - agent_id
         - domain
         - local_id
-        - wallet
         - stage
         - request_status
         - review_status
@@ -651,6 +653,9 @@ components:
         wallet:
           type: string
           pattern: "^0x[0-9a-fA-F]{40}$"
+        authority_model:
+          type: string
+          enum: [wallet_principal, instance_trust]
         stage:
           type: string
           enum: [requested, approved, minted, reviewing, ready_to_finalize, graduated]
@@ -827,7 +832,7 @@ components:
     SoulAgentRegistrationBeginRequest:
       type: object
       additionalProperties: false
-      required: [domain, local_id, wallet_address]
+      required: [domain, local_id]
       properties:
         domain:
           type: string
@@ -836,6 +841,11 @@ components:
         wallet_address:
           type: string
           pattern: "^0x[0-9a-fA-F]{40}$"
+          description: Required for wallet_principal registrations; omitted for instance_trust registrations on the instance-key route.
+        authority_model:
+          type: string
+          enum: [wallet_principal, instance_trust]
+          description: Explicit authority model. session-auth routes allow wallet_principal only; instance-key routes may use instance_trust with no wallet.
         capabilities:
           type: array
           items:
@@ -847,7 +857,7 @@ components:
     SoulAgentRegistrationBeginResponse:
       type: object
       additionalProperties: false
-      required: [registration, wallet, proofs]
+      required: [registration, proofs]
       properties:
         registration:
           $ref: "#/components/schemas/SoulAgentRegistration"
@@ -1186,12 +1196,12 @@ components:
     SoulMintConversationFinalizeBeginRequest:
       type: object
       additionalProperties: false
-      required: [boundary_signatures]
       properties:
         boundary_signatures:
           type: object
           additionalProperties:
             type: string
+          description: Required for wallet_principal registrations; omitted for authority_model=instance_trust.
 
     SoulMintConversationDeclarationPreview:
       type: object
@@ -1222,11 +1232,9 @@ components:
         - boundary_id
         - category
         - statement
-        - signer_wallet
         - signing_method
         - message_encoding
         - message
-        - digest_hex
       properties:
         boundary_id:
           type: string
@@ -1245,10 +1253,10 @@ components:
           pattern: "^0x[0-9a-fA-F]{40}$"
         signing_method:
           type: string
-          enum: [eip191_personal_sign]
+          enum: [eip191_personal_sign, instance_trust]
         message_encoding:
           type: string
-          enum: [utf8]
+          enum: [utf8, none]
         message:
           type: string
         digest_hex:
@@ -1287,7 +1295,7 @@ components:
     SoulMintConversationFinalizeRequestTemplate:
       type: object
       additionalProperties: false
-      required: [boundary_signatures, issued_at, expected_version, self_attestation]
+      required: [boundary_signatures, issued_at, expected_version]
       properties:
         boundary_signatures:
           type: object
@@ -1305,12 +1313,12 @@ components:
     SoulMintConversationFinalizeRequest:
       type: object
       additionalProperties: false
-      required: [boundary_signatures, issued_at, expected_version, self_attestation]
       properties:
         boundary_signatures:
           type: object
           additionalProperties:
             type: string
+          description: Required for wallet_principal registrations; omitted for authority_model=instance_trust.
         issued_at:
           type: string
           format: date-time
@@ -1319,24 +1327,30 @@ components:
           minimum: 0
         self_attestation:
           type: string
+          description: Required for wallet_principal registrations; omitted for authority_model=instance_trust.
 
     SoulMintConversationFinalizePreflightResponse:
       type: object
       additionalProperties: false
       required:
         - version
-        - digest_hex
+        - authority_model
+        - anchor_state
         - issued_at
         - expected_version
         - next_version
         - declarations_preview
-        - boundary_requirements
-        - self_attestation_signing
         - finalize_request_template
       properties:
         version:
           type: string
           enum: ["1"]
+        authority_model:
+          type: string
+          enum: [wallet_principal, instance_trust]
+        anchor_state:
+          type: string
+          enum: [hosted_offchain, immutable_onchain]
         digest_hex:
           type: string
           pattern: "^0x[0-9a-fA-F]{64}$"
