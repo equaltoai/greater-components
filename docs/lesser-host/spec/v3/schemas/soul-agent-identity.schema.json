@@ -4,7 +4,7 @@
   "title": "Soul agent identity",
   "type": "object",
   "additionalProperties": false,
-  "required": ["agent_id", "domain", "local_id", "wallet", "status"],
+  "required": ["agent_id", "domain", "local_id", "status"],
   "$defs": {
     "avatar_style": {
       "type": "object",
@@ -70,6 +70,7 @@
     "local_id": { "type": "string", "minLength": 1, "maxLength": 128 },
     "ens_name": { "type": "string", "minLength": 1, "maxLength": 255 },
     "wallet": { "type": "string", "pattern": "^0x[0-9a-fA-F]{40}$" },
+    "authority_model": { "type": "string", "enum": ["wallet_principal", "instance_trust"] },
     "token_id": { "type": "string", "minLength": 1, "maxLength": 256 },
     "meta_uri": { "type": "string", "format": "uri" },
     "avatar": { "$ref": "#/$defs/avatar" },

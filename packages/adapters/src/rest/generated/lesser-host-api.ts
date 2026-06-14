@@ -1270,7 +1270,9 @@ export interface components {
             local_id_raw?: string;
             local_id: string;
             agent_id: string;
-            wallet_address: string;
+            wallet_address?: string;
+            /** @enum {string} */
+            authority_model?: "wallet_principal" | "instance_trust";
             capabilities?: string[];
             wallet_nonce?: string;
             wallet_message?: string;
@@ -1307,7 +1309,9 @@ export interface components {
             requested_by?: string;
             domain: string;
             local_id: string;
-            wallet: string;
+            wallet?: string;
+            /** @enum {string} */
+            authority_model?: "wallet_principal" | "instance_trust";
             /** @enum {string} */
             stage: "requested" | "approved" | "minted" | "reviewing" | "ready_to_finalize" | "graduated";
             /** @enum {string} */
@@ -1393,14 +1397,20 @@ export interface components {
         SoulAgentRegistrationBeginRequest: {
             domain: string;
             local_id: string;
-            wallet_address: string;
+            /** @description Required for wallet_principal registrations; omitted for instance_trust registrations on the instance-key route. */
+            wallet_address?: string;
+            /**
+             * @description Explicit authority model. session-auth routes allow wallet_principal only; instance-key routes may use instance_trust with no wallet.
+             * @enum {string}
+             */
+            authority_model?: "wallet_principal" | "instance_trust";
             capabilities?: (string | {
                 [key: string]: unknown;
             })[];
         };
         SoulAgentRegistrationBeginResponse: {
             registration: components["schemas"]["SoulAgentRegistration"];
-            wallet: components["schemas"]["WalletChallengeResponse"];
+            wallet?: components["schemas"]["WalletChallengeResponse"];
             proofs: components["schemas"]["SoulRegistryProofInstructions"][];
             promotion?: components["schemas"]["SoulAgentPromotion"];
         };
@@ -1528,7 +1538,8 @@ export interface components {
         };
         SoulInstanceBootstrapErrorEnvelope: components["schemas"]["soul-instance-bootstrap.error.schema"];
         SoulMintConversationFinalizeBeginRequest: {
-            boundary_signatures: {
+            /** @description Required for wallet_principal registrations; omitted for authority_model=instance_trust. */
+            boundary_signatures?: {
                 [key: string]: string;
             };
         };
@@ -1553,13 +1564,13 @@ export interface components {
             rationale?: string;
             supersedes?: string;
             signature_hex?: string;
-            signer_wallet: string;
+            signer_wallet?: string;
             /** @enum {string} */
-            signing_method: "eip191_personal_sign";
+            signing_method: "eip191_personal_sign" | "instance_trust";
             /** @enum {string} */
-            message_encoding: "utf8";
+            message_encoding: "utf8" | "none";
             message: string;
-            digest_hex: string;
+            digest_hex?: string;
         };
         SoulMintConversationFinalizeSigningInput: {
             signer_wallet: string;
@@ -1578,28 +1589,34 @@ export interface components {
             /** Format: date-time */
             issued_at: string;
             expected_version: number;
-            self_attestation: string;
+            self_attestation?: string;
         };
         SoulMintConversationFinalizeRequest: {
-            boundary_signatures: {
+            /** @description Required for wallet_principal registrations; omitted for authority_model=instance_trust. */
+            boundary_signatures?: {
                 [key: string]: string;
             };
             /** Format: date-time */
-            issued_at: string;
-            expected_version: number;
-            self_attestation: string;
+            issued_at?: string;
+            expected_version?: number;
+            /** @description Required for wallet_principal registrations; omitted for authority_model=instance_trust. */
+            self_attestation?: string;
         };
         SoulMintConversationFinalizePreflightResponse: {
             /** @enum {string} */
             version: "1";
-            digest_hex: string;
+            /** @enum {string} */
+            authority_model: "wallet_principal" | "instance_trust";
+            /** @enum {string} */
+            anchor_state: "hosted_offchain" | "immutable_onchain";
+            digest_hex?: string;
             /** Format: date-time */
             issued_at: string;
             expected_version: number;
             next_version: number;
             declarations_preview: components["schemas"]["SoulMintConversationDeclarationPreview"];
-            boundary_requirements: components["schemas"]["SoulMintConversationFinalizeBoundaryRequirement"][];
-            self_attestation_signing: components["schemas"]["SoulMintConversationFinalizeSigningInput"];
+            boundary_requirements?: components["schemas"]["SoulMintConversationFinalizeBoundaryRequirement"][];
+            self_attestation_signing?: components["schemas"]["SoulMintConversationFinalizeSigningInput"];
             finalize_request_template: components["schemas"]["SoulMintConversationFinalizeRequestTemplate"];
             registration_preview?: {
                 [key: string]: unknown;
@@ -1744,7 +1761,9 @@ export interface components {
             domain: string;
             local_id: string;
             ens_name?: string;
-            wallet: string;
+            wallet?: string;
+            /** @enum {string} */
+            authority_model?: "wallet_principal" | "instance_trust";
             token_id?: string;
             /** Format: uri */
             meta_uri?: string;
@@ -1846,6 +1865,8 @@ export interface components {
             versioned_registration_uri?: string;
             versioned_registration_s3_key?: string;
             /** @enum {string} */
+            authority_model?: "wallet_principal" | "instance_trust";
+            /** @enum {string} */
             anchor_state?: "hosted_offchain" | "immutable_onchain";
             /** Format: date-time */
             published_at?: string;
@@ -1861,6 +1882,8 @@ export interface components {
             review_status?: "not_started" | "conversation_in_progress" | "draft_ready" | "published";
             /** @enum {string} */
             readiness_status?: "awaiting_verification" | "awaiting_mint" | "ready_for_conversation" | "ready_for_finalize" | "graduated";
+            /** @enum {string} */
+            authority_model?: "wallet_principal" | "instance_trust";
             /** @enum {string} */
             anchor_state?: "hosted_offchain" | "immutable_onchain";
             latest_conversation_id?: string;
@@ -1888,6 +1911,8 @@ export interface components {
                     versioned_registration_uri?: string;
                     versioned_registration_s3_key?: string;
                     /** @enum {string} */
+                    authority_model?: "wallet_principal" | "instance_trust";
+                    /** @enum {string} */
                     anchor_state?: "hosted_offchain" | "immutable_onchain";
                     /** Format: date-time */
                     published_at?: string;
@@ -1903,6 +1928,8 @@ export interface components {
                     review_status?: "not_started" | "conversation_in_progress" | "draft_ready" | "published";
                     /** @enum {string} */
                     readiness_status?: "awaiting_verification" | "awaiting_mint" | "ready_for_conversation" | "ready_for_finalize" | "graduated";
+                    /** @enum {string} */
+                    authority_model?: "wallet_principal" | "instance_trust";
                     /** @enum {string} */
                     anchor_state?: "hosted_offchain" | "immutable_onchain";
                     latest_conversation_id?: string;
