@@ -12,6 +12,20 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.10.6-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.10.5-rc.0...greater-v0.10.6-rc.0) (2026-06-14)
+
+### Features
+
+- **adapters:** gate hosted publish on terminal evidence ([252585c](https://github.com/equaltoai/greater-components/commit/252585ccb8fbcd735ba00c181c09a00ebce34235))
+- **adapters:** gate hosted publish on terminal evidence ([32371a0](https://github.com/equaltoai/greater-components/commit/32371a0edc8117fe808e05163bd75464e16fae4a))
+
+### Chores
+
+- align release topology after greater-v0.10.5 ([672ec23](https://github.com/equaltoai/greater-components/commit/672ec23bc5aad0fa552e09ea429575bd40af9dfd))
+- **main:** release greater 0.10.5 ([af3ecde](https://github.com/equaltoai/greater-components/commit/af3ecde492a464d9f6eebfd6329718adc5f24712))
+- **main:** release greater 0.10.5 ([85da609](https://github.com/equaltoai/greater-components/commit/85da609a62cdfb42c0cf6b78289a7a7cab1e4593))
+- **release:** prepare metadata ([cee2b57](https://github.com/equaltoai/greater-components/commit/cee2b5717624fd5ee104609f970938ad977586e9))
+
 ## [0.10.5](https://github.com/equaltoai/greater-components/compare/greater-v0.10.4...greater-v0.10.5) (2026-06-14)
 
 ### Features
