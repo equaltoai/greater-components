@@ -9,7 +9,13 @@ export {
 	createSoulBootstrapClient,
 	normalizeSoulBootstrapError,
 } from './bootstrap.js';
-export { HostedSoulBootstrapClient, createHostedSoulBootstrapClient } from './hostedBootstrap.js';
+export {
+	HostedSoulBootstrapClient,
+	createHostedSoulBootstrapClient,
+	getHostedSoulBootstrapTerminalDeclarationEvidence,
+	hasHostedSoulBootstrapTerminalDeclarationEvidence,
+	isHostedSoulBootstrapPublishReady,
+} from './hostedBootstrap.js';
 export {
 	SoulBootstrapSigningPlanError,
 	createSoulBootstrapSigningPlan,
@@ -99,6 +105,11 @@ export type {
 	HostedSoulBootstrapState,
 	HostedSoulBootstrapStateModel,
 	HostedSoulBootstrapSurface,
+	HostedSoulBootstrapTerminalDeclaration,
+	HostedSoulBootstrapTerminalDeclarationCheckpointName,
+	HostedSoulBootstrapTerminalDeclarationEvidence,
+	HostedSoulBootstrapTerminalDeclarationEvidenceOptions,
+	HostedSoulBootstrapTerminalDeclarationEvidenceSource,
 	PublishHostedSoulInput,
 	RestartSoulBootstrapInput,
 	SendHostedSoulGenesisMessageInput,

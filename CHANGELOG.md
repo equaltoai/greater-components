@@ -12,6 +12,23 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.10.5](https://github.com/equaltoai/greater-components/compare/greater-v0.10.4...greater-v0.10.5) (2026-06-14)
+
+### Features
+
+- **adapters:** add hosted soul bootstrap facade ([47f18e5](https://github.com/equaltoai/greater-components/commit/47f18e5330863bf55ca2c26a418ff57ed34b69a5))
+- **adapters:** add hosted soul bootstrap facade ([6ec66a1](https://github.com/equaltoai/greater-components/commit/6ec66a1f50190673c8f5f4f8fdad8cbb6f4714af))
+
+### Bug Fixes
+
+- **adapters:** reject hosted Host credential headers ([9ba3221](https://github.com/equaltoai/greater-components/commit/9ba3221d2226207ea95c6300ea755e0f7804c1b2))
+
+### Chores
+
+- **premain:** release greater 0.10.5-rc.0 ([8753a2e](https://github.com/equaltoai/greater-components/commit/8753a2e9a10d29450edb2e34772bd4bf1928ac2d))
+- **premain:** release greater 0.10.5-rc.0 ([3a9d7b9](https://github.com/equaltoai/greater-components/commit/3a9d7b992f14da77343dcba20d7072ef98475a47))
+- **release:** prepare metadata ([5af149d](https://github.com/equaltoai/greater-components/commit/5af149d79606fb5d800b06968682b87291f012c2))
+
 ## [0.10.5-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.10.4-rc.0...greater-v0.10.5-rc.0) (2026-06-14)
 
 ### Features

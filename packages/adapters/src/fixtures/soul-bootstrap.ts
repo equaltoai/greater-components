@@ -111,6 +111,30 @@ export const project44SoulBootstrapSigning = {
 		completedAt: null,
 		hostRequestId: project44SoulBootstrapIds.hostRequestId,
 	},
+	hostedConversation: {
+		name: 'hosted_conversation',
+		status: 'completed',
+		message: null,
+		messageEncoding: null,
+		messageHex: null,
+		canonicalJson:
+			'{"selfDescription":{"summary":"ready for hosted publish"},"capabilities":[{"name":"post"}],"boundaries":[],"transparency":{}}',
+		digestHex: null,
+		boundaryRequirementsJson: null,
+		registrationPreviewJson:
+			'{"registrationId":"registration-project-44","conversationId":"conversation-project-44","agentId":"host-soul-agent-project-44"}',
+		finalizeRequestTemplateJson: null,
+		signingMethod: null,
+		signerAddress: null,
+		principalAddress: null,
+		version: '1',
+		expectedVersion: null,
+		nextVersion: null,
+		issuedAt: null,
+		declaredAt: null,
+		completedAt: project44SoulBootstrapIds.completedAt,
+		hostRequestId: project44SoulBootstrapIds.hostRequestId,
+	},
 } satisfies Record<string, Omit<SoulBootstrapSigningCheckpoint, '__typename'>>;
 
 export function createProject44SoulBootstrapErrorState(
@@ -553,7 +577,7 @@ export const project44SoulBootstrapFixtures = {
 		principalAddress: null,
 	}),
 	hostedGenesisComplete: createProject44SoulBootstrapSurface({
-		phase: 'FINALIZE',
+		phase: 'CONVERSATION',
 		state: 'hosted_genesis_complete',
 		bootstrapMode: 'HOSTED',
 		authorityModel: 'INSTANCE_TRUST',
@@ -565,6 +589,9 @@ export const project44SoulBootstrapFixtures = {
 		hostConversationId: project44SoulBootstrapIds.conversationId,
 		walletAddress: null,
 		principalAddress: null,
+		signingCheckpoints: [
+			createProject44SigningCheckpoint(project44SoulBootstrapSigning.hostedConversation),
+		],
 	}),
 	hostedPublished: createProject44SoulBootstrapSurface({
 		phase: 'COMPLETE',
