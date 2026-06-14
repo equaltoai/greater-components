@@ -44,6 +44,13 @@ const disallowedHostedInputKeys = [
 	'hostClient',
 ] as const;
 
+const disallowedHostedConfigHeaderNames = [
+	'x-lesser-host-token',
+	'X-HoSt-InStAnCe-Key',
+	'x-lesser-host-instance-key',
+	'x-instance-key',
+] as const;
+
 function jsonResponse(body: unknown, status = 200): Response {
 	return new Response(JSON.stringify(body), {
 		status,
@@ -317,6 +324,42 @@ describe('HostedSoulBootstrapClient', () => {
 				} as never)
 			).rejects.toThrow(`does not accept ${key}`);
 		}
+	});
+
+	it('rejects Host credential headers case-insensitively before any request', () => {
+		for (const headerName of disallowedHostedConfigHeaderNames) {
+			const fetchMock = createHostedProject44Fetch();
+			expect(() =>
+				createHostedSoulBootstrapClient({
+					httpEndpoint: '/graphql',
+					fetch: fetchMock,
+					headers: {
+						[headerName]: 'host-secret',
+					},
+				})
+			).toThrow(`does not accept ${headerName} header`);
+			expect(fetchMock).not.toHaveBeenCalled();
+		}
+	});
+
+	it('allows ordinary Lesser GraphQL auth and benign custom headers', async () => {
+		const fetchMock = createHostedProject44Fetch();
+		const client = createHostedSoulBootstrapClient({
+			httpEndpoint: '/graphql',
+			fetch: fetchMock,
+			headers: {
+				authorization: 'Bearer lesser-session-token',
+				'x-sim-request-id': 'project44-hosted-bootstrap-test',
+			},
+		});
+
+		await client.current(project44SoulBootstrapIds.username);
+
+		const [call] = parseGraphQLCalls(fetchMock);
+		expect(call.headers.get('authorization')).toBe('Bearer lesser-session-token');
+		expect(call.headers.get('x-sim-request-id')).toBe('project44-hosted-bootstrap-test');
+		expect(call.headers.get('x-lesser-host-token')).toBeNull();
+		expect(call.headers.get('x-host-instance-key')).toBeNull();
 	});
 
 	it('keeps the hosted start-or-resume alias on the same Lesser mutation contract', async () => {

@@ -177,6 +177,13 @@ const DISALLOWED_BROWSER_HOST_CONFIG_KEYS = [
 	'hostClient',
 ] as const;
 
+const DISALLOWED_BROWSER_HOST_HEADER_NAMES = [
+	'x-lesser-host-token',
+	'x-host-instance-key',
+	'x-lesser-host-instance-key',
+	'x-instance-key',
+] as const;
+
 const DISALLOWED_HOSTED_INPUT_KEYS = [
 	...DISALLOWED_BROWSER_HOST_CONFIG_KEYS,
 	'walletAddress',
@@ -623,6 +630,24 @@ function assertNoBrowserHostConfig(context: string, config: object): void {
 			throw new Error(`${context} does not accept ${key}; use Lesser same-origin GraphQL only.`);
 		}
 	}
+
+	const headers = (config as { headers?: Record<string, string> }).headers;
+	if (!headers) {
+		return;
+	}
+
+	for (const headerName of Object.keys(headers)) {
+		if (isDisallowedBrowserHostHeaderName(headerName)) {
+			throw new Error(
+				`${context} does not accept ${headerName} header; use Lesser same-origin GraphQL only.`
+			);
+		}
+	}
+}
+
+function isDisallowedBrowserHostHeaderName(headerName: string): boolean {
+	const normalized = headerName.trim().toLowerCase();
+	return DISALLOWED_BROWSER_HOST_HEADER_NAMES.some((disallowed) => disallowed === normalized);
 }
 
 function assertHostedInput(context: string, input: object): void {
