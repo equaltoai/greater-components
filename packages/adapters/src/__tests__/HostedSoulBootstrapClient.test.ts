@@ -2,15 +2,21 @@ import { describe, expect, it, vi } from 'vitest';
 
 import {
 	createHostedSoulBootstrapClient,
+	getHostedSoulBootstrapTerminalDeclarationEvidence,
+	hasHostedSoulBootstrapTerminalDeclarationEvidence,
+	isHostedSoulBootstrapPublishReady,
 	type HostedSoulBootstrapResult,
 	type SoulBootstrapGraphQLClient,
 	type SoulBootstrapGraphQLResult,
+	type SoulBootstrapSigningCheckpoint,
 	type SoulBootstrapSurface,
 } from '../index';
 import {
+	createProject44SoulBootstrapSurface,
 	project44HostedSoulBootstrapOperationFixtures,
 	project44SoulBootstrapFixtures,
 	project44SoulBootstrapIds,
+	project44SoulBootstrapSigning,
 } from '../fixtures/soul-bootstrap';
 
 const rootFieldByOperation: Record<string, string> = {
@@ -108,7 +114,10 @@ function parseGraphQLCalls(fetchMock: ReturnType<typeof createHostedProject44Fet
 	});
 }
 
-function expectHostedResult(result: HostedSoulBootstrapResult) {
+function expectHostedResult(
+	result: HostedSoulBootstrapResult,
+	options: { terminalDeclarationEvidence?: boolean } = {}
+) {
 	expect(result.hosted).toMatchObject({
 		bootstrapMode: 'HOSTED',
 		authorityModel: 'INSTANCE_TRUST',
@@ -117,10 +126,39 @@ function expectHostedResult(result: HostedSoulBootstrapResult) {
 	});
 	expect(result.state?.walletAddress).toBeNull();
 	expect(result.state?.principalAddress).toBeNull();
-	expect(result.state?.signingCheckpoints).toEqual([]);
+	if (options.terminalDeclarationEvidence) {
+		expect(result.state?.signingCheckpoints).toHaveLength(1);
+		expect(result.state?.signingCheckpoints[0]).toMatchObject({
+			name: 'hosted_conversation',
+			status: 'completed',
+			hostRequestId: project44SoulBootstrapIds.hostRequestId,
+		});
+	} else {
+		expect(result.state?.signingCheckpoints).toEqual([]);
+	}
 	expect('walletAddress' in (result.hosted as object)).toBe(false);
 	expect('principalAddress' in (result.hosted as object)).toBe(false);
 	expect('signingCheckpoints' in (result.hosted as object)).toBe(false);
+}
+
+function createHostedPublishSurface(
+	signingCheckpoints: readonly SoulBootstrapSigningCheckpoint[] = []
+): SoulBootstrapSurface {
+	return createProject44SoulBootstrapSurface({
+		phase: 'CONVERSATION',
+		state: 'hosted_genesis_complete',
+		bootstrapMode: 'HOSTED',
+		authorityModel: 'INSTANCE_TRUST',
+		anchorState: 'HOSTED_OFFCHAIN',
+		assuranceState: 'HOSTED_OFFCHAIN',
+		typedNextAction: 'PUBLISH_HOSTED_SOUL',
+		nextAction: 'publish_hosted_soul',
+		hostRegistrationId: project44SoulBootstrapIds.registrationId,
+		hostConversationId: project44SoulBootstrapIds.conversationId,
+		walletAddress: null,
+		principalAddress: null,
+		signingCheckpoints,
+	});
 }
 
 describe('HostedSoulBootstrapClient', () => {
@@ -182,7 +220,7 @@ describe('HostedSoulBootstrapClient', () => {
 		expectHostedResult(currentResult);
 		expectHostedResult(startResult);
 		expectHostedResult(messageResult);
-		expectHostedResult(completeResult);
+		expectHostedResult(completeResult, { terminalDeclarationEvidence: true });
 		expectHostedResult(publishResult);
 		expect(currentResult.typedNextAction).toBe('START_HOSTED_BOOTSTRAP');
 		expect(startResult.typedNextAction).toBe('SEND_HOSTED_SOUL_GENESIS_MESSAGE');
@@ -199,6 +237,70 @@ describe('HostedSoulBootstrapClient', () => {
 				registrationS3Key: 'soul-bootstrap/project-44/registration.json',
 			},
 		});
+
+		const terminalEvidence = getHostedSoulBootstrapTerminalDeclarationEvidence(completeResult, {
+			conversationId: project44SoulBootstrapIds.conversationId,
+		});
+		expect(terminalEvidence).toMatchObject({
+			checkpointName: 'hosted_conversation',
+			status: 'completed',
+			hostRequestId: project44SoulBootstrapIds.hostRequestId,
+			hostRegistrationId: project44SoulBootstrapIds.registrationId,
+			hostConversationId: project44SoulBootstrapIds.conversationId,
+			completedAt: project44SoulBootstrapIds.completedAt,
+			declaration: {
+				selfDescription: {
+					summary: 'ready for hosted publish',
+				},
+				capabilities: [{ name: 'post' }],
+				boundaries: [],
+				transparency: {},
+			},
+		});
+		expect(isHostedSoulBootstrapPublishReady(completeResult)).toBe(true);
+	});
+
+	it('requires terminal hosted declaration evidence before publish UX proceeds', () => {
+		const completedCheckpoint = {
+			__typename: 'SoulBootstrapSigningCheckpoint',
+			...project44SoulBootstrapSigning.hostedConversation,
+		} satisfies SoulBootstrapSigningCheckpoint;
+		const publishActionWithoutEvidence = createHostedPublishSurface();
+		const invalidDeclaration = createHostedPublishSurface([
+			{
+				...completedCheckpoint,
+				canonicalJson: '{"selfDescription":{"summary":"ready"},"capabilities":[]}',
+			},
+		]);
+		const legacyConversationCheckpoint = createHostedPublishSurface([
+			{
+				...completedCheckpoint,
+				name: ' conversation ',
+				status: ' completed ',
+			},
+		]);
+
+		expect(publishActionWithoutEvidence.typedNextAction).toBe('PUBLISH_HOSTED_SOUL');
+		expect(hasHostedSoulBootstrapTerminalDeclarationEvidence(publishActionWithoutEvidence)).toBe(
+			false
+		);
+		expect(isHostedSoulBootstrapPublishReady(publishActionWithoutEvidence)).toBe(false);
+		expect(getHostedSoulBootstrapTerminalDeclarationEvidence(invalidDeclaration)).toBeNull();
+		expect(isHostedSoulBootstrapPublishReady(invalidDeclaration)).toBe(false);
+		expect(
+			getHostedSoulBootstrapTerminalDeclarationEvidence(
+				project44SoulBootstrapFixtures.hostedGenesisComplete,
+				{
+					conversationId: `${project44SoulBootstrapIds.conversationId}-stale`,
+				}
+			)
+		).toBeNull();
+		expect(hasHostedSoulBootstrapTerminalDeclarationEvidence(legacyConversationCheckpoint)).toBe(
+			true
+		);
+		expect(
+			isHostedSoulBootstrapPublishReady(project44SoulBootstrapFixtures.hostedGenesisComplete)
+		).toBe(true);
 	});
 
 	it('exposes typed restart-required recovery and restart metadata', async () => {

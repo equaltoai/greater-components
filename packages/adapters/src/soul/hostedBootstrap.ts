@@ -155,6 +155,45 @@ export interface HostedSoulBootstrapMutationResult extends HostedSoulBootstrapRe
 	payload: HostedSoulBootstrapMutationPayload;
 }
 
+export type HostedSoulBootstrapTerminalDeclarationCheckpointName =
+	| 'hosted_conversation'
+	| 'conversation';
+
+export type HostedSoulBootstrapTerminalDeclaration = Readonly<
+	{
+		selfDescription: Readonly<Record<string, unknown>>;
+		capabilities: readonly unknown[];
+		boundaries: readonly unknown[];
+		transparency: Readonly<Record<string, unknown>>;
+	} & Record<string, unknown>
+>;
+
+export interface HostedSoulBootstrapTerminalDeclarationEvidence {
+	checkpointName: HostedSoulBootstrapTerminalDeclarationCheckpointName;
+	status: 'completed';
+	canonicalDeclarationJson: string;
+	declaration: HostedSoulBootstrapTerminalDeclaration;
+	hostRequestId: string;
+	hostRegistrationId: string;
+	hostConversationId: string;
+	completedAt: string | null;
+}
+
+export type HostedSoulBootstrapTerminalDeclarationEvidenceSource =
+	| HostedSoulBootstrapResult
+	| HostedSoulBootstrapSurface
+	| HostedSoulBootstrapState
+	| null
+	| undefined;
+
+export interface HostedSoulBootstrapTerminalDeclarationEvidenceOptions {
+	/**
+	 * Optional conversation id the publish action is about to submit. When present, evidence is
+	 * rejected unless it matches Lesser's hosted conversation state exactly.
+	 */
+	conversationId?: string | null;
+}
+
 interface OperationExecutor {
 	query<TData, TVariables extends VariablesRecord>(
 		document: TypedDocumentNode<TData, TVariables>,
@@ -216,6 +255,86 @@ export function createHostedSoulBootstrapClient(
 	config: HostedSoulBootstrapClientConfig
 ): HostedSoulBootstrapClient {
 	return new HostedSoulBootstrapClient(config);
+}
+
+/**
+ * Return the terminal hosted-conversation declaration evidence required before Sim enables the
+ * hosted publish action.
+ *
+ * Lesser v1.5.3 deliberately gates `PUBLISH_HOSTED_SOUL` on a completed
+ * `hosted_conversation` checkpoint with canonical declaration JSON plus Host request and
+ * conversation evidence. This helper mirrors that fail-closed boundary so consumers do not parse
+ * raw `signingCheckpoints` arrays by hand.
+ */
+export function getHostedSoulBootstrapTerminalDeclarationEvidence(
+	source: HostedSoulBootstrapTerminalDeclarationEvidenceSource,
+	options: HostedSoulBootstrapTerminalDeclarationEvidenceOptions = {}
+): HostedSoulBootstrapTerminalDeclarationEvidence | null {
+	const state = resolveTerminalDeclarationState(source);
+	if (!state || state.bootstrapMode !== 'HOSTED') {
+		return null;
+	}
+
+	const hostRegistrationId = trimToValue(state.hostRegistrationId);
+	const hostConversationId = trimToValue(state.hostConversationId);
+	if (!hostRegistrationId || !hostConversationId) {
+		return null;
+	}
+
+	const expectedConversationId = trimToValue(options.conversationId);
+	if (expectedConversationId && expectedConversationId !== hostConversationId) {
+		return null;
+	}
+
+	for (const checkpoint of state.signingCheckpoints) {
+		const checkpointName = normalizeTerminalDeclarationCheckpointName(checkpoint.name);
+		if (!checkpointName || !isCompletedTerminalDeclarationStatus(checkpoint.status)) {
+			continue;
+		}
+
+		const canonicalDeclarationJson = trimToValue(checkpoint.canonicalJson);
+		const hostRequestId = trimToValue(checkpoint.hostRequestId);
+		const declaration = canonicalDeclarationJson
+			? parseHostedTerminalDeclaration(canonicalDeclarationJson)
+			: null;
+		if (!canonicalDeclarationJson || !hostRequestId || !declaration) {
+			continue;
+		}
+
+		return {
+			checkpointName,
+			status: 'completed',
+			canonicalDeclarationJson,
+			declaration,
+			hostRequestId,
+			hostRegistrationId,
+			hostConversationId,
+			completedAt: trimToValue(checkpoint.completedAt),
+		};
+	}
+
+	return null;
+}
+
+export function hasHostedSoulBootstrapTerminalDeclarationEvidence(
+	source: HostedSoulBootstrapTerminalDeclarationEvidenceSource,
+	options: HostedSoulBootstrapTerminalDeclarationEvidenceOptions = {}
+): boolean {
+	return getHostedSoulBootstrapTerminalDeclarationEvidence(source, options) !== null;
+}
+
+export function isHostedSoulBootstrapPublishReady(
+	source: HostedSoulBootstrapTerminalDeclarationEvidenceSource,
+	options: HostedSoulBootstrapTerminalDeclarationEvidenceOptions = {}
+): boolean {
+	const state = resolveTerminalDeclarationState(source);
+	if (!state) {
+		return false;
+	}
+	return (
+		resolveTerminalDeclarationNextAction(source, state) === 'PUBLISH_HOSTED_SOUL' &&
+		hasHostedSoulBootstrapTerminalDeclarationEvidence(source, options)
+	);
 }
 
 export class HostedSoulBootstrapClient {
@@ -417,6 +536,103 @@ function createHostRequestMetadata(
 		supersededHostRegistrationId: correlation?.supersededHostRegistrationId ?? null,
 		supersededHostConversationId: correlation?.supersededHostConversationId ?? null,
 	};
+}
+
+function resolveTerminalDeclarationState(
+	source: HostedSoulBootstrapTerminalDeclarationEvidenceSource
+): HostedSoulBootstrapState | null {
+	if (isHostedSoulBootstrapStateCandidate(source)) {
+		return source;
+	}
+	if (!isObjectRecord(source)) {
+		return null;
+	}
+	const record = source as Record<string, unknown>;
+	if (isHostedSoulBootstrapStateCandidate(record['state'])) {
+		return record['state'];
+	}
+	const surface = record['surface'];
+	if (isObjectRecord(surface) && isHostedSoulBootstrapStateCandidate(surface['state'])) {
+		return surface['state'];
+	}
+	return null;
+}
+
+function resolveTerminalDeclarationNextAction(
+	source: HostedSoulBootstrapTerminalDeclarationEvidenceSource,
+	state: HostedSoulBootstrapState
+): SoulBootstrapNextAction | null {
+	if (isObjectRecord(source)) {
+		const record = source as Record<string, unknown>;
+		if (typeof record['typedNextAction'] === 'string') {
+			return record['typedNextAction'] as SoulBootstrapNextAction;
+		}
+		const sourceState = record['state'];
+		if (isObjectRecord(sourceState) && typeof sourceState['typedNextAction'] === 'string') {
+			return sourceState['typedNextAction'] as SoulBootstrapNextAction;
+		}
+	}
+	return state.typedNextAction ?? null;
+}
+
+function isHostedSoulBootstrapStateCandidate(value: unknown): value is HostedSoulBootstrapState {
+	return (
+		isObjectRecord(value) &&
+		typeof value['bootstrapMode'] === 'string' &&
+		Array.isArray(value['signingCheckpoints'])
+	);
+}
+
+function normalizeTerminalDeclarationCheckpointName(
+	name: string
+): HostedSoulBootstrapTerminalDeclarationCheckpointName | null {
+	const normalized = name.trim().toLowerCase();
+	if (normalized === 'hosted_conversation' || normalized === 'conversation') {
+		return normalized;
+	}
+	return null;
+}
+
+function isCompletedTerminalDeclarationStatus(status: string): boolean {
+	return status.trim().toLowerCase() === 'completed';
+}
+
+function parseHostedTerminalDeclaration(
+	canonicalDeclarationJson: string
+): HostedSoulBootstrapTerminalDeclaration | null {
+	let parsed: unknown;
+	try {
+		parsed = JSON.parse(canonicalDeclarationJson);
+	} catch {
+		return null;
+	}
+	if (!isObjectRecord(parsed)) {
+		return null;
+	}
+
+	const selfDescription = parsed['selfDescription'];
+	const capabilities = parsed['capabilities'];
+	const boundaries = parsed['boundaries'];
+	const transparency = parsed['transparency'];
+	if (!isObjectRecord(selfDescription) || Object.keys(selfDescription).length === 0) {
+		return null;
+	}
+	if (!Array.isArray(capabilities) || !Array.isArray(boundaries)) {
+		return null;
+	}
+	if (!isObjectRecord(transparency)) {
+		return null;
+	}
+
+	return parsed as HostedSoulBootstrapTerminalDeclaration;
+}
+
+function trimToValue(value: unknown): string | null {
+	return typeof value === 'string' && value.trim() ? value.trim() : null;
+}
+
+function isObjectRecord(value: unknown): value is Record<string, unknown> {
+	return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 function normalizeHostedSoulBootstrapError(
