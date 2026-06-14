@@ -9,6 +9,7 @@ export {
 	createSoulBootstrapClient,
 	normalizeSoulBootstrapError,
 } from './bootstrap.js';
+export { HostedSoulBootstrapClient, createHostedSoulBootstrapClient } from './hostedBootstrap.js';
 export {
 	SoulBootstrapSigningPlanError,
 	createSoulBootstrapSigningPlan,
@@ -64,6 +65,7 @@ export type {
 	SoulBootstrapErrorCategory,
 	SoulBootstrapErrorState,
 	SoulBootstrapGraphQLClient,
+	SoulBootstrapGraphQLClientProvider,
 	SoulBootstrapGraphQLError,
 	SoulBootstrapMutationPayload,
 	SoulBootstrapMutationResult,
@@ -76,6 +78,32 @@ export type {
 	VerifySoulBootstrapPrincipalDeclarationInput,
 	VerifySoulBootstrapWalletInput,
 } from './bootstrap.js';
+export type {
+	CompleteHostedSoulGenesisInput,
+	HostedSoulBootstrapActionableError,
+	HostedSoulBootstrapAnchorState,
+	HostedSoulBootstrapAuthorityModel,
+	HostedSoulBootstrapBoundSoulEvidence,
+	HostedSoulBootstrapClientConfig,
+	HostedSoulBootstrapCurrentInput,
+	HostedSoulBootstrapHostRequestMetadata,
+	HostedSoulBootstrapMode,
+	HostedSoulBootstrapMutationPayload,
+	HostedSoulBootstrapMutationResult,
+	HostedSoulBootstrapNextAction,
+	HostedSoulBootstrapPhase,
+	HostedSoulBootstrapPublicationEvidence,
+	HostedSoulBootstrapRecoveryAction,
+	HostedSoulBootstrapRecoveryCategory,
+	HostedSoulBootstrapResult,
+	HostedSoulBootstrapState,
+	HostedSoulBootstrapStateModel,
+	HostedSoulBootstrapSurface,
+	PublishHostedSoulInput,
+	RestartSoulBootstrapInput,
+	SendHostedSoulGenesisMessageInput,
+	StartHostedSoulBootstrapInput,
+} from './hostedBootstrap.js';
 export type {
 	SoulBootstrapFinalizeRequestTemplate,
 	SoulBootstrapFinalizeSigningPlan,

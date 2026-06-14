@@ -94,7 +94,12 @@ export interface SoulBootstrapActionableError {
 	code?: string;
 	source?: string | null;
 	statusCode?: number | null;
+	detailsJson?: string | null;
 	hostRequestId?: string | null;
+	recoveryCategory?: SoulBootstrapErrorState['recoveryCategory'];
+	recoveryAction?: SoulBootstrapErrorState['recoveryAction'];
+	retryable?: boolean;
+	restartRequired?: boolean;
 	at?: string | null;
 	backendError?: SoulBootstrapErrorState;
 	graphQLErrors?: readonly SoulBootstrapGraphQLError[];
@@ -356,7 +361,12 @@ export function normalizeSoulBootstrapError(
 			code: backendError.code,
 			source: backendError.source,
 			statusCode: backendError.statusCode,
+			detailsJson: backendError.detailsJson,
 			hostRequestId: backendError.hostRequestId,
+			recoveryCategory: backendError.recoveryCategory,
+			recoveryAction: backendError.recoveryAction,
+			retryable: backendError.retryable,
+			restartRequired: backendError.restartRequired,
 			at: backendError.at,
 			backendError,
 			graphQLErrors,
