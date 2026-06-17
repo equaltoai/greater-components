@@ -31,7 +31,11 @@
           "properties": {
             "boundary": { "type": "string", "enum": ["instance_domain"] },
             "field": { "type": "string", "minLength": 1, "maxLength": 128 },
-            "reason": { "type": "string", "minLength": 1, "maxLength": 128 }
+            "reason": { "type": "string", "minLength": 1, "maxLength": 128 },
+            "conversation_status": { "type": "string", "enum": ["unknown", "pending", "in_progress", "completed", "failed"] },
+            "expected_status": { "type": "string", "minLength": 1, "maxLength": 128 },
+            "produced_declarations_present": { "type": "boolean" },
+            "produced_declarations_valid": { "type": "boolean" }
           }
         },
         "request_id": { "type": "string", "minLength": 1, "maxLength": 128 }

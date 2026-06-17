@@ -99,6 +99,30 @@ components:
               type: string
               minLength: 1
               maxLength: 2048
+            status_code:
+              type: integer
+              minimum: 400
+              maximum: 599
+            details:
+              type: object
+              additionalProperties: true
+              description: Client-safe metadata for validation or state conflicts. Secrets, raw bearer tokens, and private signing material never appear here.
+              properties:
+                reason:
+                  type: string
+                  minLength: 1
+                  maxLength: 128
+                conversation_status:
+                  type: string
+                  enum: [unknown, pending, in_progress, completed, failed]
+                expected_status:
+                  type: string
+                  minLength: 1
+                  maxLength: 128
+                produced_declarations_present:
+                  type: boolean
+                produced_declarations_valid:
+                  type: boolean
             request_id:
               type: string
               minLength: 1
@@ -1983,7 +2007,11 @@ paths:
   /api/v1/soul/agents/register/{id}/mint-conversation/{conversationId}/complete:
     post:
       operationId: soulCompleteMintConversation
-      summary: Complete a registration-scoped mint conversation and persist declarations
+      summary: Complete or replay a registration-scoped mint conversation
+      description: |
+        Completes an active mint conversation and persists produced declarations. If the stored conversation is already
+        `completed` and has valid produced declarations, the route is idempotent and returns the completed conversation
+        without re-extracting or rewriting declarations. Other terminal states fail closed with conflict metadata.
       security:
         - sessionAuth: []
       parameters:
@@ -2881,10 +2909,13 @@ paths:
   /api/v1/soul/instance/agents/register/{id}/mint-conversation/{conversationId}/complete:
     post:
       operationId: soulInstanceCompleteRegistrationMintConversation
-      summary: Complete an instance-key registration mint conversation and persist declarations
+      summary: Complete or replay an instance-key registration mint conversation
       description: |
         Server-to-server route for managed Lesser instances. Completes a conversation inside the authenticated instance
-        boundary and persists the produced declarations for finalize preflight/finalize.
+        boundary and persists the produced declarations for finalize preflight/finalize. If the stored conversation is
+        already `completed` and has valid produced declarations, the route is idempotent and returns the completed
+        conversation without re-extracting or rewriting declarations. Failed conversations and completed conversations
+        without valid produced declarations fail closed with structured state details.
       security:
         - instanceKeyAuth: []
       parameters:
@@ -3178,7 +3209,11 @@ paths:
   /api/v1/soul/agents/{agentId}/mint-conversation/{conversationId}/complete:
     post:
       operationId: soulAgentCompleteMintConversation
-      summary: Complete an agent-scoped mint conversation and persist declarations
+      summary: Complete or replay an agent-scoped mint conversation
+      description: |
+        Completes an active mint conversation for a stable agent handle. If the stored conversation is already
+        `completed` and has valid produced declarations, the route is idempotent and returns the completed conversation
+        without re-extracting or rewriting declarations. Other terminal states fail closed with conflict metadata.
       security:
         - sessionAuth: []
       parameters:
