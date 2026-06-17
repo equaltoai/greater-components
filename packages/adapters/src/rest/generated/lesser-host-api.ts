@@ -218,7 +218,12 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Complete a registration-scoped mint conversation and persist declarations */
+        /**
+         * Complete or replay a registration-scoped mint conversation
+         * @description Completes an active mint conversation and persists produced declarations. If the stored conversation is already
+         *     `completed` and has valid produced declarations, the route is idempotent and returns the completed conversation
+         *     without re-extracting or rewriting declarations. Other terminal states fail closed with conflict metadata.
+         */
         post: operations["soulCompleteMintConversation"];
         delete?: never;
         options?: never;
@@ -496,9 +501,12 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Complete an instance-key registration mint conversation and persist declarations
+         * Complete or replay an instance-key registration mint conversation
          * @description Server-to-server route for managed Lesser instances. Completes a conversation inside the authenticated instance
-         *     boundary and persists the produced declarations for finalize preflight/finalize.
+         *     boundary and persists the produced declarations for finalize preflight/finalize. If the stored conversation is
+         *     already `completed` and has valid produced declarations, the route is idempotent and returns the completed
+         *     conversation without re-extracting or rewriting declarations. Failed conversations and completed conversations
+         *     without valid produced declarations fail closed with structured state details.
          */
         post: operations["soulInstanceCompleteRegistrationMintConversation"];
         delete?: never;
@@ -580,7 +588,12 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Complete an agent-scoped mint conversation and persist declarations */
+        /**
+         * Complete or replay an agent-scoped mint conversation
+         * @description Completes an active mint conversation for a stable agent handle. If the stored conversation is already
+         *     `completed` and has valid produced declarations, the route is idempotent and returns the completed conversation
+         *     without re-extracting or rewriting declarations. Other terminal states fail closed with conflict metadata.
+         */
         post: operations["soulAgentCompleteMintConversation"];
         delete?: never;
         options?: never;
@@ -1081,6 +1094,18 @@ export interface components {
             error: {
                 code: string;
                 message: string;
+                status_code?: number;
+                /** @description Client-safe metadata for validation or state conflicts. Secrets, raw bearer tokens, and private signing material never appear here. */
+                details?: {
+                    reason?: string;
+                    /** @enum {string} */
+                    conversation_status?: "unknown" | "pending" | "in_progress" | "completed" | "failed";
+                    expected_status?: string;
+                    produced_declarations_present?: boolean;
+                    produced_declarations_valid?: boolean;
+                } & {
+                    [key: string]: unknown;
+                };
                 request_id?: string;
             };
         };
@@ -1954,6 +1979,11 @@ export interface components {
                     boundary?: "instance_domain";
                     field?: string;
                     reason?: string;
+                    /** @enum {string} */
+                    conversation_status?: "unknown" | "pending" | "in_progress" | "completed" | "failed";
+                    expected_status?: string;
+                    produced_declarations_present?: boolean;
+                    produced_declarations_valid?: boolean;
                 } & {
                     [key: string]: unknown;
                 };
