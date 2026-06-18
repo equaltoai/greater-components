@@ -12,6 +12,34 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.10.8](https://github.com/equaltoai/greater-components/compare/greater-v0.10.7...greater-v0.10.8) (2026-06-18)
+
+### Bug Fixes
+
+- fail closed on hosted checkpoint list drift ([17bced0](https://github.com/equaltoai/greater-components/commit/17bced04d826c80b9c538f88701698c6f0db8964))
+- fail closed on hosted checkpoint list drift ([33cc182](https://github.com/equaltoai/greater-components/commit/33cc182b8a9583717b0485294436fa21a1b91ac2))
+
+### Chores
+
+- **premain:** release greater 0.10.8-rc.0 ([1a80c6b](https://github.com/equaltoai/greater-components/commit/1a80c6b30f4c6db05e399d955571ef91e0a7d60d))
+- **premain:** release greater 0.10.8-rc.0 ([119c2dc](https://github.com/equaltoai/greater-components/commit/119c2dc127a3f31885a645670f769ee29ea7c735))
+- refresh hosted bootstrap registry checksum ([d9274e1](https://github.com/equaltoai/greater-components/commit/d9274e141505d0d75b62c156496afb40a7ed50ee))
+- **release:** prepare metadata ([7437e7e](https://github.com/equaltoai/greater-components/commit/7437e7e396523b642bbc667d6554a96f649f188c))
+
+## [0.10.8-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.10.7-rc.0...greater-v0.10.8-rc.0) (2026-06-18)
+
+### Bug Fixes
+
+- fail closed on hosted checkpoint list drift ([17bced0](https://github.com/equaltoai/greater-components/commit/17bced04d826c80b9c538f88701698c6f0db8964))
+- fail closed on hosted checkpoint list drift ([33cc182](https://github.com/equaltoai/greater-components/commit/33cc182b8a9583717b0485294436fa21a1b91ac2))
+
+### Chores
+
+- **main:** release greater 0.10.7 ([0d59a89](https://github.com/equaltoai/greater-components/commit/0d59a8954e13801af67720b4d5c2e1be67d1b69d))
+- **main:** release greater 0.10.7 ([d16713e](https://github.com/equaltoai/greater-components/commit/d16713e22424003a1231fcab5cbe2acb8f11e0f0))
+- refresh hosted bootstrap registry checksum ([d9274e1](https://github.com/equaltoai/greater-components/commit/d9274e141505d0d75b62c156496afb40a7ed50ee))
+- **release:** prepare metadata ([29dc5d9](https://github.com/equaltoai/greater-components/commit/29dc5d97717a9befcb89a11776d68da7c7af1c25))
+
 ## [0.10.7](https://github.com/equaltoai/greater-components/compare/greater-v0.10.6...greater-v0.10.7) (2026-06-17)
 
 ### Chores
