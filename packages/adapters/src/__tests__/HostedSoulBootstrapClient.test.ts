@@ -57,6 +57,8 @@ const disallowedHostedConfigHeaderNames = [
 	'x-instance-key',
 ] as const;
 
+const missingRuntimeSigningCheckpoints = Symbol('missingRuntimeSigningCheckpoints');
+
 function jsonResponse(body: unknown, status = 200): Response {
 	return new Response(JSON.stringify(body), {
 		status,
@@ -159,6 +161,22 @@ function createHostedPublishSurface(
 		principalAddress: null,
 		signingCheckpoints,
 	});
+}
+
+function createHostedPublishSurfaceWithRuntimeSigningCheckpoints(
+	signingCheckpoints: unknown
+): SoulBootstrapSurface {
+	const surface = createHostedPublishSurface();
+	const runtimeState = { ...surface.state } as Record<string, unknown>;
+	if (signingCheckpoints === missingRuntimeSigningCheckpoints) {
+		delete runtimeState['signingCheckpoints'];
+	} else {
+		runtimeState['signingCheckpoints'] = signingCheckpoints;
+	}
+	return {
+		...surface,
+		state: runtimeState,
+	} as SoulBootstrapSurface;
 }
 
 describe('HostedSoulBootstrapClient', () => {
@@ -272,6 +290,18 @@ describe('HostedSoulBootstrapClient', () => {
 				canonicalJson: '{"selfDescription":{"summary":"ready"},"capabilities":[]}',
 			},
 		]);
+		const malformedDeclarationJson = createHostedPublishSurface([
+			{
+				...completedCheckpoint,
+				canonicalJson: '{not-json',
+			},
+		]);
+		const missingDeclarationJson = createHostedPublishSurface([
+			{
+				...completedCheckpoint,
+				canonicalJson: null,
+			},
+		]);
 		const legacyConversationCheckpoint = createHostedPublishSurface([
 			{
 				...completedCheckpoint,
@@ -287,6 +317,10 @@ describe('HostedSoulBootstrapClient', () => {
 		expect(isHostedSoulBootstrapPublishReady(publishActionWithoutEvidence)).toBe(false);
 		expect(getHostedSoulBootstrapTerminalDeclarationEvidence(invalidDeclaration)).toBeNull();
 		expect(isHostedSoulBootstrapPublishReady(invalidDeclaration)).toBe(false);
+		expect(getHostedSoulBootstrapTerminalDeclarationEvidence(malformedDeclarationJson)).toBeNull();
+		expect(isHostedSoulBootstrapPublishReady(malformedDeclarationJson)).toBe(false);
+		expect(getHostedSoulBootstrapTerminalDeclarationEvidence(missingDeclarationJson)).toBeNull();
+		expect(isHostedSoulBootstrapPublishReady(missingDeclarationJson)).toBe(false);
 		expect(
 			getHostedSoulBootstrapTerminalDeclarationEvidence(
 				project44SoulBootstrapFixtures.hostedGenesisComplete,
@@ -301,6 +335,65 @@ describe('HostedSoulBootstrapClient', () => {
 		expect(
 			isHostedSoulBootstrapPublishReady(project44SoulBootstrapFixtures.hostedGenesisComplete)
 		).toBe(true);
+	});
+
+	it('fails closed for runtime-null, missing, or malformed signing checkpoint lists', () => {
+		const runtimeListCases: Array<[string, SoulBootstrapSurface]> = [
+			['null', createHostedPublishSurfaceWithRuntimeSigningCheckpoints(null)],
+			[
+				'missing',
+				createHostedPublishSurfaceWithRuntimeSigningCheckpoints(missingRuntimeSigningCheckpoints),
+			],
+			[
+				'object',
+				createHostedPublishSurfaceWithRuntimeSigningCheckpoints({
+					0: project44SoulBootstrapSigning.hostedConversation,
+					length: 1,
+				}),
+			],
+			['string', createHostedPublishSurfaceWithRuntimeSigningCheckpoints('not-a-list')],
+			[
+				'array with malformed entries',
+				createHostedPublishSurfaceWithRuntimeSigningCheckpoints([
+					null,
+					'not-a-checkpoint',
+					{
+						name: 'hosted_conversation',
+						status: 'completed',
+						canonicalJson: project44SoulBootstrapSigning.hostedConversation.canonicalJson,
+					},
+				]),
+			],
+		];
+
+		for (const [caseName, surface] of runtimeListCases) {
+			expect(
+				() =>
+					getHostedSoulBootstrapTerminalDeclarationEvidence(surface, {
+						conversationId: project44SoulBootstrapIds.conversationId,
+					}),
+				caseName
+			).not.toThrow();
+			expect(
+				getHostedSoulBootstrapTerminalDeclarationEvidence(surface, {
+					conversationId: project44SoulBootstrapIds.conversationId,
+				}),
+				caseName
+			).toBeNull();
+			expect(
+				() =>
+					isHostedSoulBootstrapPublishReady(surface, {
+						conversationId: project44SoulBootstrapIds.conversationId,
+					}),
+				caseName
+			).not.toThrow();
+			expect(
+				isHostedSoulBootstrapPublishReady(surface, {
+					conversationId: project44SoulBootstrapIds.conversationId,
+				}),
+				caseName
+			).toBe(false);
+		}
 	});
 
 	it('exposes typed restart-required recovery and restart metadata', async () => {
