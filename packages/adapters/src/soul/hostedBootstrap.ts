@@ -186,6 +186,8 @@ export type HostedSoulBootstrapTerminalDeclarationEvidenceSource =
 	| null
 	| undefined;
 
+type RuntimeHostedSoulBootstrapState = HostedSoulBootstrapState & Record<string, unknown>;
+
 export interface HostedSoulBootstrapTerminalDeclarationEvidenceOptions {
 	/**
 	 * Optional conversation id the publish action is about to submit. When present, evidence is
@@ -286,14 +288,14 @@ export function getHostedSoulBootstrapTerminalDeclarationEvidence(
 		return null;
 	}
 
-	for (const checkpoint of state.signingCheckpoints) {
-		const checkpointName = normalizeTerminalDeclarationCheckpointName(checkpoint.name);
-		if (!checkpointName || !isCompletedTerminalDeclarationStatus(checkpoint.status)) {
+	for (const checkpoint of normalizeTerminalDeclarationSigningCheckpoints(state)) {
+		const checkpointName = normalizeTerminalDeclarationCheckpointName(checkpoint['name']);
+		if (!checkpointName || !isCompletedTerminalDeclarationStatus(checkpoint['status'])) {
 			continue;
 		}
 
-		const canonicalDeclarationJson = trimToValue(checkpoint.canonicalJson);
-		const hostRequestId = trimToValue(checkpoint.hostRequestId);
+		const canonicalDeclarationJson = trimToValue(checkpoint['canonicalJson']);
+		const hostRequestId = trimToValue(checkpoint['hostRequestId']);
 		const declaration = canonicalDeclarationJson
 			? parseHostedTerminalDeclaration(canonicalDeclarationJson)
 			: null;
@@ -309,7 +311,7 @@ export function getHostedSoulBootstrapTerminalDeclarationEvidence(
 			hostRequestId,
 			hostRegistrationId,
 			hostConversationId,
-			completedAt: trimToValue(checkpoint.completedAt),
+			completedAt: trimToValue(checkpoint['completedAt']),
 		};
 	}
 
@@ -540,7 +542,7 @@ function createHostRequestMetadata(
 
 function resolveTerminalDeclarationState(
 	source: HostedSoulBootstrapTerminalDeclarationEvidenceSource
-): HostedSoulBootstrapState | null {
+): RuntimeHostedSoulBootstrapState | null {
 	if (isHostedSoulBootstrapStateCandidate(source)) {
 		return source;
 	}
@@ -560,7 +562,7 @@ function resolveTerminalDeclarationState(
 
 function resolveTerminalDeclarationNextAction(
 	source: HostedSoulBootstrapTerminalDeclarationEvidenceSource,
-	state: HostedSoulBootstrapState
+	state: RuntimeHostedSoulBootstrapState
 ): SoulBootstrapNextAction | null {
 	if (isObjectRecord(source)) {
 		const record = source as Record<string, unknown>;
@@ -572,20 +574,31 @@ function resolveTerminalDeclarationNextAction(
 			return sourceState['typedNextAction'] as SoulBootstrapNextAction;
 		}
 	}
-	return state.typedNextAction ?? null;
+	return typeof state.typedNextAction === 'string' ? state.typedNextAction : null;
 }
 
-function isHostedSoulBootstrapStateCandidate(value: unknown): value is HostedSoulBootstrapState {
-	return (
-		isObjectRecord(value) &&
-		typeof value['bootstrapMode'] === 'string' &&
-		Array.isArray(value['signingCheckpoints'])
-	);
+function isHostedSoulBootstrapStateCandidate(
+	value: unknown
+): value is RuntimeHostedSoulBootstrapState {
+	return isObjectRecord(value) && typeof value['bootstrapMode'] === 'string';
+}
+
+function normalizeTerminalDeclarationSigningCheckpoints(
+	state: RuntimeHostedSoulBootstrapState
+): readonly Record<string, unknown>[] {
+	const signingCheckpoints = state['signingCheckpoints'];
+	if (!Array.isArray(signingCheckpoints)) {
+		return [];
+	}
+	return signingCheckpoints.filter(isObjectRecord);
 }
 
 function normalizeTerminalDeclarationCheckpointName(
-	name: string
+	name: unknown
 ): HostedSoulBootstrapTerminalDeclarationCheckpointName | null {
+	if (typeof name !== 'string') {
+		return null;
+	}
 	const normalized = name.trim().toLowerCase();
 	if (normalized === 'hosted_conversation' || normalized === 'conversation') {
 		return normalized;
@@ -593,7 +606,10 @@ function normalizeTerminalDeclarationCheckpointName(
 	return null;
 }
 
-function isCompletedTerminalDeclarationStatus(status: string): boolean {
+function isCompletedTerminalDeclarationStatus(status: unknown): boolean {
+	if (typeof status !== 'string') {
+		return false;
+	}
 	return status.trim().toLowerCase() === 'completed';
 }
 
