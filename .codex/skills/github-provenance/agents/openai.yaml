@@ -1,4 +1,0 @@
-interface:
-  display_name: 'GitHub Provenance'
-  short_description: 'Track greater steward GitHub provenance'
-  default_prompt: 'Use $github-provenance to handle greater-components GitHub work with routed provenance-aware tools first.'
