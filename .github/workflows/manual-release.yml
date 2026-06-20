@@ -1,0 +1,150 @@
+name: Manual Release
+
+on:
+  push:
+    tags:
+      - 'greater-v*'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Existing signed release tag to publish (greater-vX.Y.Z)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    name: Publish immutable release assets
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Resolve release tag
+        id: release
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+          REF_NAME: ${{ github.ref_name }}
+          DISPATCH_TAG: ${{ inputs.tag_name }}
+        run: |
+          set -euo pipefail
+
+          if [[ "${EVENT_NAME}" == "workflow_dispatch" ]]; then
+            if [[ "${REF}" != "refs/heads/main" ]]; then
+              echo "::error::Manual release dispatch must be run from the main branch."
+              exit 1
+            fi
+            tag_name="${DISPATCH_TAG}"
+          else
+            tag_name="${REF_NAME}"
+          fi
+
+          if [[ ! "${tag_name}" =~ ^greater-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Release tag must match greater-vX.Y.Z: ${tag_name}"
+            exit 1
+          fi
+
+          echo "tag_name=${tag_name}" >> "${GITHUB_OUTPUT}"
+
+      - name: Checkout release tag
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          ref: ${{ steps.release.outputs.tag_name }}
+
+      - name: Assert tag is anchored on main
+        env:
+          TAG_NAME: ${{ steps.release.outputs.tag_name }}
+        run: |
+          set -euo pipefail
+          git fetch origin main --force --tags
+
+          tag_commit="$(git rev-list -n 1 "${TAG_NAME}")"
+          head_commit="$(git rev-parse HEAD)"
+          if [[ "${tag_commit}" != "${head_commit}" ]]; then
+            echo "::error::Checked-out HEAD (${head_commit}) does not match ${TAG_NAME} (${tag_commit})."
+            exit 1
+          fi
+
+          if ! git merge-base --is-ancestor "${tag_commit}" origin/main; then
+            echo "::error::${TAG_NAME} must point to a commit reachable from origin/main."
+            exit 1
+          fi
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 10.25.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: |
+          pnpm audit:lockfile-integrity
+          pnpm install --frozen-lockfile
+
+      - name: Verify release tag and registry metadata
+        env:
+          TAG_NAME: ${{ steps.release.outputs.tag_name }}
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./package.json').version")"
+          bash scripts/verify-release-branch.sh "${TAG_NAME}"
+          node scripts/prepare-github-release.js "${version}"
+
+      - name: Build CLI tarball and registry artifacts
+        run: pnpm release:artifacts
+
+      - name: Create draft release if needed
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ steps.release.outputs.tag_name }}
+        run: |
+          set -euo pipefail
+          if ! gh release view "${TAG_NAME}" >/dev/null 2>&1; then
+            gh release create "${TAG_NAME}" --verify-tag --title "${TAG_NAME}" --generate-notes --draft
+          fi
+
+          is_draft="$(gh release view "${TAG_NAME}" --json isDraft --jq '.isDraft')"
+          if [[ "${is_draft}" != "true" ]]; then
+            echo "::error::Release ${TAG_NAME} already exists and is published; immutable releases cannot be modified."
+            exit 1
+          fi
+
+      - name: Upload release assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ steps.release.outputs.tag_name }}
+        run: |
+          set -euo pipefail
+          mapfile -t existing_assets < <(gh release view "${TAG_NAME}" --json assets --jq '.assets[].name' 2>/dev/null || true)
+
+          shopt -s nullglob
+          assets=(
+            registry/index.json
+            registry/latest.json
+            artifacts/*
+          )
+
+          for asset_path in "${assets[@]}"; do
+            asset_name="$(basename "${asset_path}")"
+            if printf '%s\n' "${existing_assets[@]}" | grep -Fxq "${asset_name}"; then
+              echo "::error::Release ${TAG_NAME} already has asset ${asset_name}; refusing to mutate an existing release asset."
+              exit 1
+            fi
+          done
+
+          gh release upload "${TAG_NAME}" "${assets[@]}"
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ steps.release.outputs.tag_name }}
+        run: |
+          set -euo pipefail
+          gh release edit "${TAG_NAME}" --draft=false

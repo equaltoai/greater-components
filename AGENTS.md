@@ -12,7 +12,7 @@
 - Install with `pnpm install`; the `preinstall` hook enforces pnpm and Node 24 (`.nvmrc`).
 - `pnpm dev` runs docs and the playground in parallel; narrow focus with `pnpm --filter <package> <command>` when iterating on a single module.
 - `pnpm build` compiles every workspace; `pnpm check` calls each package’s `check` script when present.
-- `pnpm lint`, `pnpm format`, and `pnpm typecheck` should be clean before requesting review (changesets are optional; see release flow notes below).
+- `pnpm lint`, `pnpm format`, and `pnpm typecheck` should be clean before requesting review; declare semver/user-facing impact in the PR.
 
 ## Critical: Sync Lesser Contracts + Regenerate Adapters
 
@@ -109,18 +109,19 @@ Notes:
 
 ## Critical: Release Flow + CI Governance
 
-Every Greater release is normally promoted through:
+Greater now uses the uniform two-branch source-control model:
 
-- `staging` → `premain` (rc) → `main` (stable)
-
-When we explicitly need to bypass the RC lane, direct `staging` → `main` promotions are also allowed.
+- `feature` → `staging` → `main`
 
 CI expectations:
 
-- `staging` is where we run the full suite (lint/typecheck, unit tests, e2e, a11y).
-- `premain` and `main` are promotion/release-only; PRs into these branches are guarded (`.github/workflows/premain-guard.yml`, `.github/workflows/main-guard.yml`) and should not require re-running the full staging suite.
-- Changesets are optional (not required for PRs to `staging`); releases are automated via release-please on `premain`/`main`.
-- Any branch targeting `staging` must also be promotion-safe: before shipping, rehearse the exact merge path `candidate -> staging`, `staging -> premain`, and `staging -> main`. If the RC lane remains in play for that train, also rehearse `premain -> main`. If any conflict appears in that chain, resolve it on the staging-targeted branch before merge so promotions stay clean.
+- `staging` is where the full verify set runs. The existing required checks are `Build and Test` (`.github/workflows/test.yml`) and `ESLint and Prettier Check` (`.github/workflows/lint.yml`), plus DCO and branch rules.
+- `main` is protected, operator-owned, and accepts PRs only from `staging`. `.github/workflows/main-guard.yml` is the machine-enforced head-ref guard for this rule.
+- Do **not** add `branches: [main]` to `test.yml` or `lint.yml`; the operator explicitly chose no duplicate verify rerun on `staging → main`.
+- Release is manual and tag-driven off `main` through `.github/workflows/manual-release.yml`. There is no auto-publish-on-merge.
+- `docs.yml` still deploys the docs site on `push: main`; this is a known surviving non-release automation.
+- `premain`, release-please, changesets, release PR bots, and promotion rehearsal are retired. If any deleted workflow context is still listed as a required status check, PRs can hang forever on a phantom “Expected” check; remove those contexts from branch protection/rulesets before deleting the workflow files.
+- Version-bumping PRs must update package versions and regenerate `registry/index.json` / `registry/latest.json`; no automated alignment PR remains after release-please retirement.
 
 ### Package-enumeration parity (automated gates)
 
@@ -159,7 +160,7 @@ greater --help
 ## Commit & Pull Request Guidelines
 
 - Follow Conventional Commits and sign every commit (`git commit -s "feat: add component"`).
-- Changesets are optional; only add one when you explicitly want a changeset entry.
+- Changesets are retired; document semver/user-facing impact in the PR and keep version/registry metadata aligned when preparing a release.
 - Pull requests should link issues, call out UI impacts (screenshots or GIFs), and confirm `pnpm lint`, `pnpm typecheck`, and relevant tests.
 
 ## GitHub Provenance Guidance
