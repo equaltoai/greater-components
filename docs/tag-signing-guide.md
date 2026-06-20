@@ -53,8 +53,8 @@ Signed releases provide:
 # Sign a tag (explicit)
 git tag -s greater-v0.1.1 -m "Release 0.1.1"
 
-# Or use the release script with --sign
-pnpm release:tag --sign
+# The operator-created release tag must point at a commit reachable from main.
+# The Manual Release workflow publishes assets after the signed tag exists.
 ```
 
 ### Option 2: SSH Signing (Modern)
@@ -90,8 +90,8 @@ SSH signing is simpler if you already use SSH keys for GitHub authentication.
 # Sign a tag (explicit)
 git tag -s greater-v0.1.1 -m "Release 0.1.1"
 
-# Or use the release script with --sign
-pnpm release:tag --sign
+# The operator-created release tag must point at a commit reachable from main.
+# The Manual Release workflow publishes assets after the signed tag exists.
 ```
 
 ## Verifying Releases (Consumers)

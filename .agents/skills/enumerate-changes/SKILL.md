@@ -37,10 +37,10 @@ Walk the scoped need against every surface:
 18. **`registry/latest.json`** — latest-tag pointer (generated).
 19. **`schema.graphql`** — aggregated Lesser / Fediverse type definitions.
 20. **`scripts/`** — automation (registry generation, validation, release).
-21. **`.github/workflows/`** — CI workflows (staging/premain/main promotion gates).
-22. **`release-please-config.json`** — stable release configuration.
-23. **`release-please-config.premain.json`** — RC release configuration.
-24. **`CHANGELOG.md`** — maintained by release-please.
+21. **`.github/workflows/`** — CI workflows (staging verify and main promotion guard).
+22. **Manual release workflow/config** — tag-driven release configuration.
+23. **`main-guard.yml`** — staging-only main promotion guard.
+24. **Release notes / CHANGELOG.md** — maintained by the release-preparation PR or operator-authored release notes.
 25. **`package.json`** / **`pnpm-lock.yaml`** — workspace root dependency management.
 26. **`AGENTS.md`** / **`CONTRIBUTING.md`** / **`README.md`** — governance + contributor docs. Rarely touched; governance-level.
 27. **`LICENSE`** / **`CODEOWNERS`** — rarely touched.
@@ -53,13 +53,13 @@ A change that touches none of these isn't really a change.
 2. **Token changes land before component changes that consume them.** Token package depends inward.
 3. **Headless behaviors land before components that use them.** Dependency direction: headless → primitives → faces.
 4. **Contract snapshot updates land alongside adapter-code changes that consume them.** In the same commit where practical; at least in the same PR.
-5. **Changeset file lands in the same commit as the source change it describes.** Contributors add `.changeset/*.md` declaring semver impact.
+5. **Release-impact notes land with the source change when needed.** Breaking or consumer-visible changes must describe semver impact and migration notes in the PR.
 6. **Documentation rides with the behavior it describes.** Component additions update the component inventory; API changes update API reference; new adapters update integration guides.
 7. **`apps/playground/` demos ride with component additions.** Interactive demo for new component lands in the same PR.
 8. **`registry/index.json` regeneration is automated**; PRs regenerate via the scripts, not by hand. CI verifies.
 9. **Dependency bumps land in isolated commits** for bisect clarity.
 10. **CI workflow changes land in isolated commits** with clear rationale.
-11. **Breaking changes require major-version changeset**; additive changes require minor; bug fixes require patch.
+11. **Breaking changes require major-version coordination**; additive changes are minor; bug fixes are patch.
 
 ## The mission-scope rule
 
@@ -77,7 +77,7 @@ Every enumerated item must answer: **does this touch component public API (props
 - **No** — default.
 - **Yes — additive (new optional prop / slot / event)** — proceed; minor version.
 - **Yes — semantic refinement** — evaluate; may be minor or major.
-- **Yes — breaking (removed, renamed, changed semantics)** — requires major-version changeset + `evolve-component-surface` walk + consumer coordination.
+- **Yes — breaking (removed, renamed, changed semantics)** — requires major-version coordination + `evolve-component-surface` walk + consumer coordination.
 
 ## The contract-sync rule
 
@@ -102,7 +102,7 @@ Every enumerated item must answer: **does this touch `packages/tokens/` or token
 
 - **No** — default.
 - **Yes — additive (new token)** — proceed.
-- **Yes — rename or semantic shift** — breaking; requires major-version changeset + `evolve-component-surface` walk.
+- **Yes — rename or semantic shift** — breaking; requires major-version coordination + `evolve-component-surface` walk.
 
 ## The registry-integrity rule
 
@@ -141,17 +141,17 @@ Each enumerated item fits in one commit:
 - **Accessibility impact**: <none / tightening / loosening (refuse without authorization) — `enforce-accessibility` walk referenced>
 - **Theming impact**: <none / additive token / rename or shift (breaking)>
 - **Registry impact**: <automated regen — no hand-editing>
-- **Semver impact**: <major / minor / patch — changeset file added>
+- **Semver impact**: <major / minor / patch / none — PR release note or migration note if consumer-visible>
 - **Acceptance**: <one sentence>
-- **Validation**: <`pnpm lint / typecheck / test / build`, `pnpm test:e2e`, registry regen check, changeset validate>
+- **Validation**: <`pnpm lint / typecheck / test / build`, `pnpm test:e2e`, registry regen check>
 - **Conventional Commit subject**: `<type(scope): subject>`
-- **Changeset**: `.changeset/<slug>.md` with declared impact
+- **Release note**: PR text documents user-visible impact and migration notes when needed
 ```
 
 ## Self-check before handing off
 
 - [ ] Every item is in-mission
-- [ ] No item breaks component API silently (breaking → major changeset)
+- [ ] No item breaks component API silently (breaking → major coordination and migration notes)
 - [ ] No adapter change without synced contract snapshot
 - [ ] No accessibility regression
 - [ ] No token rename or semantic shift without major-version discipline
@@ -175,4 +175,4 @@ Append when enumeration surfaces something unusual — a component-dependency or
 
 ## Handoff
 
-Invoke `plan-roadmap` to sequence the flat list into phases and identify the three-branch release plan (staging → premain → main).
+Invoke `plan-roadmap` to sequence the flat list into phases and identify the feature → staging → main rollout.

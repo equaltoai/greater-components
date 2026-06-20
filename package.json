@@ -22,7 +22,6 @@
     "generate:openapi": "openapi-typescript docs/lesser/contracts/openapi.yaml -o packages/adapters/src/rest/generated/lesser-api.ts",
     "generate:openapi:lesser-host": "node scripts/generate-lesser-host-openapi.js",
     "generate": "pnpm generate:graphql && pnpm generate:openapi && pnpm generate:openapi:lesser-host",
-    "changeset": "changeset",
     "check": "pnpm -r check",
     "clean": "pnpm -r clean && rm -rf node_modules",
     "dev": "pnpm --parallel --filter @equaltoai/playground --filter @greater-components/docs run dev",
@@ -65,19 +64,13 @@
     "playwright:install:with-deps": "pnpm --filter @equaltoai/greater-components-testing exec playwright install --with-deps",
     "typecheck": "NODE_OPTIONS='--max-old-space-size=16384' pnpm run sveltekit:sync && NODE_OPTIONS='--max-old-space-size=16384' tsc --noEmit",
     "typecheck:consumer": "tsc --noEmit -p tsconfig.consumer.json",
-    "version": "changeset version && pnpm install --no-frozen-lockfile",
     "analyze:bundles": "node scripts/analyze-bundles.js",
     "release:prepare": "node scripts/prepare-github-release.js",
-    "release:cut": "node scripts/cut-github-release.js",
-    "release:tag": "node scripts/release-tag.js",
     "release:artifacts": "bash scripts/build-release-artifacts.sh",
-    "release:tag:dry": "node scripts/release-tag.js --dry-run",
     "audit:lockfile-integrity": "node scripts/audit-lockfile-integrity.mjs",
-    "audit:tarball-integrity": "node scripts/verify-tarball-integrity.js",
-    "release:rehearse": "node scripts/rehearse-release-promotion.js"
+    "audit:tarball-integrity": "node scripts/verify-tarball-integrity.js"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.30.0",
     "@eslint/js": "^10.0.1",
     "@graphql-codegen/cli": "^6.2.1",
     "@graphql-codegen/fragment-matcher": "^6.0.0",

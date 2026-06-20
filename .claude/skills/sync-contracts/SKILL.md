@@ -120,7 +120,7 @@ For each pinned-version update:
 <patch / minor / major>
 
 ### Changeset declaration
-`.changeset/<slug>.md`:
+Release note / migration note:
 ```
 ---
 "@equaltoai/greater-components-adapters": <impact>

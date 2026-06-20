@@ -165,34 +165,31 @@ git commit -s -m "docs: update README with installation instructions"
 1. Open the PR — `.github/PULL_REQUEST_TEMPLATE.md` populates the
    description automatically. The template includes the
    **component-milestone parity checklist**, the
-   **stewardship-guarantees checklist**, validation commands, and a
-   release-flow handoff plan. Fill out every applicable section.
+   **stewardship-guarantees checklist**, validation commands, semver
+   impact, and the feature → staging → main handoff. Fill out every
+   applicable section.
 2. Ensure all CI gates pass (lint, format, typecheck, test, build,
-   Playwright a11y matrix, registry / package validations, DCO,
-   promotion rehearsal). Coverage threshold is 75%.
+   Playwright a11y matrix where applicable, registry / package
+   validations, DCO). The staging verify set is `Build and Test` plus
+   `ESLint and Prettier Check`.
 3. Update documentation alongside any user-facing change:
    `docs/component-inventory.md`, `docs/api-reference.md`, and a
    playground demo under `apps/playground/src/routes/`.
-4. **Optionally** add a changeset when you want this PR's changes to
-   appear in the next published release notes (see the
-   [Changesets](#changesets) section below for when one is required
-   vs. optional):
-   ```bash
-   pnpm changeset
-   ```
-   — Pick **minor** for additive component / API work; **patch** for
-   bug fixes; **major** is reserved for breaking changes (which require
-   `evolve-component-surface` stewardship approval and explicit
-   consumer coordination).
-5. Regenerate the CLI registry whenever package source changes:
+4. Document semver and consumer impact in the PR. Additive component / API
+   work is **minor**, bug fixes are **patch**, and breaking changes are
+   **major** and require `evolve-component-surface` stewardship approval
+   plus explicit consumer coordination.
+5. Regenerate the CLI registry whenever package source or version metadata
+   changes:
    ```bash
    pnpm generate-registry
    pnpm validate:registry
    ```
    Commit the regenerated `registry/index.json` alongside the source
-   change. **Never hand-edit `registry/index.json` or `registry/latest.json`** —
-   they're managed by automation and the strict checksum validator
-   rejects drift.
+   change. Version-bumping PRs must also keep `registry/latest.json`
+   consistent with `package.json`. **Never hand-edit `registry/index.json`
+   or `registry/latest.json`** — they're generated artifacts and the strict
+   checksum validator rejects drift.
 6. Link any related issues and wait for code review.
 
 #### Component-milestone parity (Project 39 G4.1 / #661)
@@ -212,49 +209,6 @@ missing any item without an explicit `N/A` justification.
 - Greater-components root-barrel wiring
 - Docs workflow update (`.github/workflows/docs.yml`) for new
   workspace packages
-
-### Changesets
-
-This project uses [Changesets](https://github.com/changesets/changesets)
-for version management, but **changesets are optional** — the
-`Changeset (Optional)` workflow does not require one for docs-only,
-test-only, CI-config, or release-coordination PRs (see
-`.github/workflows/changeset-required.yml` for the exact policy that
-runs in CI, and `AGENTS.md` for the steward's posture).
-
-**Add a changeset when:**
-
-- You change a published package's runtime / build / export surface
-  (anything under `packages/*` that affects consumers' installed
-  output).
-- You bump a dependency that consumers will receive.
-- You make any change you want to appear in the release notes.
-
-**Skip the changeset when:**
-
-- The PR only edits `docs/`, `apps/playground/`, `apps/docs/`, tests,
-  CI workflows, repo tooling, ADRs, or stewardship docs (CONTRIBUTING,
-  AGENTS, CODEOWNERS).
-- The PR is a release-coordination commit that the
-  `release-components` skill will follow (RC promotion, stable
-  promotion, backmerges).
-- The PR is purely a registry regeneration with no source change.
-
-When you do add one:
-
-1. Run `pnpm changeset`.
-2. Select the packages affected.
-3. Choose the version bump type (`major` / `minor` / `patch`). Use
-   `minor` for additive component or API work; `major` only for
-   breaking changes (which need `evolve-component-surface` stewardship
-   approval).
-4. Write a summary of your changes — release-please rolls these into
-   the consolidated changelog on the next version bump.
-5. Commit the generated `.changeset/<slug>.md` file with the rest of
-   your changes.
-
-If you're unsure whether your change needs a changeset, ask in the PR
-description — the Greater steward will tell you on review.
 
 ## Package Development
 
@@ -333,42 +287,44 @@ Release tarball, then run `greater init` / `greater add <component>` /
 into their own project. Per-file SHA256 checksums in
 `registry/index.json` verify integrity on install.
 
-Releases follow the **three-branch flow**:
+Releases follow the active **feature → staging → main** model:
 
-1. **`staging`** — entry point. Feature PRs merge here. Branch
-   protection requires the full CI gate set to pass before merge.
-2. **`premain`** — RC track. The `release-components` skill promotes
-   `staging → premain` when an RC is ready. `release-please` opens a
-   release PR there using `release-please-config.premain.json`. Merging
-   it cuts an **RC tag** (`greater-vX.Y.Z-rc.N`) and publishes the RC
-   GitHub Release with the CLI tarball asset attached. Consumers
-   (lesser-host, sim) validate by pinning via
-   `greater update --ref greater-vX.Y.Z-rc.N`.
-3. **`main`** — stable. After RC validation, `release-components`
-   promotes `premain → main`. A second `release-please` PR cuts the
-   **stable tag** (`greater-vX.Y.Z`) and publishes the stable GitHub
-   Release. Once stable ships, automation **backmerges** main →
-   premain → staging to keep the branches in sync.
+1. **Feature branches** — branch from current `main` unless directed
+   otherwise and open PRs to `staging`.
+2. **`staging`** — integration gate. Feature → staging PRs run the
+   existing verify set: `Build and Test` (`.github/workflows/test.yml`)
+   and `ESLint and Prettier Check` (`.github/workflows/lint.yml`), plus
+   DCO and branch rules.
+3. **`main`** — operator-owned stable branch. `main` accepts PRs only
+   from `staging`; `.github/workflows/main-guard.yml` enforces that
+   source restriction. Do **not** add `branches: [main]` to the verify
+   workflows; staging → main intentionally uses default main checks and
+   branch rules only.
+4. **Manual tag-driven release** — the operator signs/cuts
+   `greater-vX.Y.Z` on `main`. `.github/workflows/manual-release.yml`
+   runs on that tag (or workflow_dispatch from `main` for an existing
+   tag), asserts main ancestry, builds the CLI tarball, validates the
+   registry, uploads `registry/index.json`, `registry/latest.json`, and
+   `artifacts/*`, then publishes an immutable GitHub Release.
+
+`docs.yml` still deploys the documentation site on `push: main`; that is
+known surviving documentation automation, not release publishing.
 
 **Discipline:**
 
 - **Published tags are immutable.** A bad release is fixed by a new
-  patch (`greater-vX.Y.Z+1`), never by re-pointing the tag.
-- **GitHub Release assets are never deleted.** Older releases are
-  consumer rollback targets via `greater update --ref <prior-tag>`.
-- **Merge type matters.** Branches that already carry `origin/main` /
-  `origin/premain` ancestry MUST be merged with **"Create a merge
-  commit"** (preserve-topology) — squashing loses ancestry and breaks
-  the next promotion rehearsal. Pure staging-based branches can
-  squash-merge safely. The `Rehearse staging promotion path` CI job
-  detects the right mode automatically; local engineers can verify with
-  `node scripts/rehearse-release-promotion.js --candidate HEAD` and
-  `--simulate-squash`.
-- **No skipped gates.** Compressed soak periods require explicit
-  operator authorization documented in a release-coordination issue.
+  patch, never by re-pointing the tag.
+- **GitHub Release assets are never deleted or overwritten after
+  publication.** Older releases are consumer rollback targets via
+  `greater update --ref <prior-tag>`.
+- **Version-bumping PRs regenerate the registry.** With release-please
+  retired, no automated alignment PR remains to fix package/registry
+  drift later.
+- **No skipped gates.** Staging verifies the work; main is protected by
+  the staging-only guard and operator-owned branch rules.
 
-See also: the `release-components` skill (`.claude/skills/release-components/SKILL.md`)
-for the full RC / stable promotion playbook.
+See also: `.claude/skills/release-components/SKILL.md` for the manual
+release verification playbook.
 
 ## Questions?
 

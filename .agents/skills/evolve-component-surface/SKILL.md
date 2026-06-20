@@ -56,7 +56,7 @@ Every change classifies:
 - **Minor (additive)**: new optional prop, new slot (additive), new event, new component, new token, new theme variant, semantic-refinement that bugs-are-fixed without changing documented behavior.
 - **Patch (bug fix)**: behavior fix that matches the documented contract, internal refactor, non-observable optimization, dependency bump within range.
 
-The classification drives the **changeset impact declaration**. `.changeset/<slug>.md` declares impact explicitly.
+The classification drives the **semver impact declaration**. PR release notes and migration notes declare impact explicitly.
 
 ### Dimension 2: Consumer-impact analysis
 
@@ -128,7 +128,7 @@ greater is Lesser-first but Mastodon-baseline-compatible where feature sets over
 <major / minor / patch>
 
 ### Changeset declaration
-`.changeset/<slug>.md` content draft:
+Release-note / migration-note draft:
 ```
 ---
 "@equaltoai/greater-components-*": <impact>
@@ -168,13 +168,13 @@ greater is Lesser-first but Mastodon-baseline-compatible where feature sets over
 
 ## Refusal cases
 
-- **"Ship a breaking component change without a major-version changeset."** Refuse.
+- **"Ship a breaking component change without major-version coordination."** Refuse.
 - **"Remove this prop silently; nobody uses it."** Refuse. Removal is breaking; major.
 - **"Rename this prop for consistency."** Evaluate — usually refuse in favor of additive aliasing. Direct renames break every consumer.
 - **"Change the default value of an existing prop."** Evaluate. If the new default is backward-compatible (doesn't change observable behavior for consumers who didn't pass the prop), minor. If it does change, breaking.
 - **"Rename `--gr-color-primary-600` to `--gr-color-primary-medium`."** Refuse silent. Requires major + consumer-migration advisory.
 - **"Remove the dark theme."** Refuse without explicit governance event.
-- **"Add a breaking change to this component and log it in the commit body; skip the changeset."** Refuse.
+- **"Add a breaking change to this component and hide the migration note in a commit body."** Refuse.
 - **"Loosen ARIA semantics for simpler DOM."** Refuse via `enforce-accessibility`.
 - **"Drop Mastodon baseline for this component; we only care about Lesser."** Evaluate carefully; document the drop in release notes if authorized; refuse silent drops.
 

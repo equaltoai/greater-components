@@ -55,7 +55,7 @@ greater's constraints are distinctive:
 - **Component-library authoring patterns** — Svelte 5 components with typed props, exported slot structures, event dispatchers, and token-based theming
 - **shadcn-style CLI distribution** — source-install via CLI rather than npm
 - **Registry regeneration** — per-file checksum manifest that must stay in sync
-- **Three-branch release flow** — `staging → premain → main` with release-please
+- **Release flow** — feature → staging → main with manual tag-driven release off main
 - **Strict accessibility gates** — Playwright a11y + Vitest
 - **Pinned contract snapshots** — adapters depend on frozen upstream schema versions
 - **SvelteKit-based docs + playground** — two SvelteKit apps consuming the library as source

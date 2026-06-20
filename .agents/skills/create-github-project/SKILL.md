@@ -70,7 +70,7 @@ Per Project 20 pattern:
 ### Success means
 
 - <observable conditions>
-- <changeset + semver declared correctly>
+- <semver impact and release note declared correctly>
 - <consumer CI (sim, host) builds against new version>
 - <accessibility tests pass>
 - <registry regen in sync>
@@ -144,24 +144,24 @@ Issue body template:
 <one sentence>
 
 ## Validation commands
-<pnpm lint / typecheck / test / build / test:e2e, registry regen, changeset validate>
+<pnpm lint / typecheck / test / build / test:e2e, registry regen, release-note/semver validation>
 
 ## Release flow checkpoints
 - [ ] Merged to staging
 - [ ] Staging soak complete
-- [ ] Promoted to premain
-- [ ] RC tag cut
+- [ ] Operator promoted staging → main
+- [ ] Manual tag cut from main
 - [ ] Premain soak complete (internal consumer testing)
 - [ ] Promoted to main
 - [ ] Stable tag cut + CLI tarball + registry regen
-- [ ] Backmerge main → premain → staging
+- [ ] Staging/main state re-grounded after promotion
 - [ ] Post-release monitoring
 
 ## Planned commit subject
 <type(scope): subject>
 
 ## Changeset
-<.changeset/<slug>.md content — impact + description>
+<release-note or migration-note draft — impact + description>
 
 ## Parent issue
 <link if sub-issue>
@@ -202,14 +202,14 @@ Apply consistently:
 - `greater-accessibility` — a11y work
 - `greater-cli` — CLI improvements
 - `greater-registry` — registry format / generation
-- `greater-release-automation` — release-please, changesets, tag / artifact publishing
+- `greater-release-automation` — manual tag / artifact publishing and registry validation
 - `greater-face-social` / `greater-face-artist` / `greater-face-blog` / `greater-face-community` / `greater-face-agent` — face suite scopes
 - `greater-primitive` / `greater-headless` — package scopes
 - `greater-playground` / `greater-docs-site` — app scopes
 - `greater-deps` — dependency bumps
 - `greater-agpl` — license discipline
 - `greater-framework-feedback` — FaceTheory / upstream signal
-- `breaking` — requires major-version changeset + consumer coordination
+- `breaking` — requires major-version coordination + consumer migration notes
 - `advisor-brief` — originated from advisor dispatch
 - Specialist gates: `needs-component-api-walk`, `needs-contract-sync-walk`, `needs-a11y-walk`, `needs-release-walk`
 

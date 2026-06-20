@@ -77,7 +77,7 @@ Prefer:
 Avoid:
 
 - Refactors "while we're in there"
-- Breaking changes without major-version changeset + consumer coordination
+- Breaking changes without major-version coordination + consumer migration notes
 - Adapter changes without pinned contract-sync
 - Token renames (breaking theming)
 - Accessibility regressions
@@ -146,7 +146,7 @@ Specialist findings feed into enumeration.
 - External Mastodon-compat: <baseline preserved / explicit drop documented>
 
 ## Semver impact
-- <major / minor / patch> — changeset impact
+- <major / minor / patch / none> — semver impact
 
 ## Mastodon-compat posture
 - <baseline preserved / intentional Lesser-first drop with documented fallback>

@@ -1,12 +1,12 @@
 # Project 39 — Greater Host adoption RC preview
 
-> Status: **awaiting RC promotion** (G4.3 #663).
+> Status: **historical / superseded by the feature → staging → main release model** (G4.3 #663).
 >
 > This document is the staging-state preview of what an RC tag covering
 > Project 39 G0–G3 would ship. It is generated as part of G4.1
 > (parity audit, #661) and G4.2 (changeset / release-note discipline,
 > #662) and exists so the Greater steward, host steward, and Aron can
-> see the consolidated release shape **before** the RC tag is cut.
+> see the consolidated release shape **before** the release tag is cut. This document predates the retirement of `premain` automation and is retained as historical context only.
 
 ## Scope
 
@@ -78,11 +78,11 @@ Four changesets target the consolidated release:
 | `host-platform-g3.md`   | minor  | `greater-components`, `@equaltoai/greater-components`, `@equaltoai/greater-components-host-platform` |
 
 **All minor / additive. No major / breaking. No token renames.** The
-release-please RC PR will compile these into the consolidated changelog
+Manual release notes should compile these into the consolidated changelog
 entry on the version bump.
 
 The next stable cuts from 0.9.0; the RC will be **0.10.0-rc.0** (or
-later) per release-please's accumulated-minor-changeset arithmetic.
+later) per the release-impact notes captured at the time.
 
 ## Component-parity audit (G4.1)
 
@@ -172,7 +172,7 @@ APIs are tracked separately as the deferred contract-sync lane (G4.6 /
 
 ## Pinning the RC (consumer instructions, once cut)
 
-Once Aron promotes `staging → premain` and release-please publishes the
+Under the retired flow, once Aron promoted `staging → premain` and automation published the
 RC tag, host can adopt with:
 
 ```sh
@@ -187,7 +187,7 @@ greater add shell --ref greater-vX.Y.Z-rc.N
 greater add host-platform --ref greater-vX.Y.Z-rc.N
 ```
 
-(Exact `X.Y.Z-rc.N` will be filled in by release-please at promotion
+(Exact historical `X.Y.Z-rc.N` would have been filled in by automation at promotion
 time.)
 
 ---
