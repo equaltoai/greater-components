@@ -102,7 +102,7 @@ When triggered, the work runs as a normal sync-contracts PR:
 5. **Component wiring**: host-platform components remain presentational;
    any adapter only feeds them already-shaped data. **No component is
    modified to call adapters directly.**
-6. **Tests + docs + changeset + registry regen + CLI registry update**:
+6. **Tests + docs + release-note impact + registry regen + CLI registry update**:
    same parity discipline as every G0–G3 PR.
 7. **Sync-contracts skill walk**: the PR description includes the
    `sync-contracts` walk output, naming the pinned Host tag explicitly.

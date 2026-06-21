@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       base_ref:
-        description: 'Base branch to compare against for signoffs (e.g., premain or main)'
+        description: 'Base branch to compare against for signoffs (e.g., staging or main)'
         required: true
         type: string
 

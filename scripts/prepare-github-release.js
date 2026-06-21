@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Prepare a GitHub-only Greater Components release commit.
+ * Prepare Greater Components release metadata for a manual tag-driven release.
  *
  * - Sets root package.json version
  * - Sets packages/cli/package.json version (CLI tarball version)

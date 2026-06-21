@@ -48,3 +48,13 @@ docs/lesser-host/spec/v3/
 
 # Prettier is non-idempotent on this large snapshot file
 planning/csp-violations-baseline.md
+
+# TheoryMCP materialized steward host trees (generated from EqualToAI namespace)
+.agents/**
+.claude/output-styles/**
+.claude/settings.json
+.claude/skills/**
+.claude/theorymcp/**
+.codex/**
+.mcp.json
+GEMINI.md

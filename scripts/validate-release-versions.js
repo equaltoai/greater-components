@@ -48,10 +48,6 @@ function isStableSemver(value) {
 	return typeof value === 'string' && /^\d+\.\d+\.\d+$/.test(value);
 }
 
-function isSemver(value) {
-	return typeof value === 'string' && /^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/.test(value);
-}
-
 function getWorkspaceVersionMismatches(expectedVersion) {
 	const mismatches = [];
 	const packagesDir = path.join(rootDir, 'packages');
@@ -133,57 +129,28 @@ function main() {
 		errors.push(`registry/index.json commit is not a 40-character SHA: ${String(index.commit)}`);
 	}
 
-	// `registry/latest.json` is the *latest stable* release ref.
-	if (isStableSemver(version)) {
-		if (latest?.version !== version) {
-			errors.push(
-				`registry/latest.json version (${latest?.version ?? 'missing'}) must match root (${version})`
-			);
-		}
+	if (!isStableSemver(version)) {
+		errors.push(`package.json version (${version}) must be a stable X.Y.Z release version`);
+	}
 
-		if (latest?.ref !== expectedRef) {
-			errors.push(`registry/latest.json ref (${latest?.ref ?? 'missing'}) must be ${expectedRef}`);
-		}
+	if (latest?.version !== version) {
+		errors.push(
+			`registry/latest.json version (${latest?.version ?? 'missing'}) must match root (${version})`
+		);
+	}
 
-		if (latest?.commit !== undefined && !isCommitSha(latest.commit)) {
-			errors.push(
-				`registry/latest.json commit is not a 40-character SHA: ${String(latest.commit)}`
-			);
-		}
+	if (latest?.ref !== expectedRef) {
+		errors.push(`registry/latest.json ref (${latest?.ref ?? 'missing'}) must be ${expectedRef}`);
+	}
 
-		if (latest?.updatedAt && !isIsoDate(latest.updatedAt)) {
-			errors.push(
-				`registry/latest.json updatedAt is not a valid ISO timestamp: ${String(latest.updatedAt)}`
-			);
-		}
-	} else {
-		// When building a prerelease (e.g., `X.Y.Z-rc.N`), `latest.json` must remain on a stable tag.
-		if (!isSemver(latest?.version)) {
-			errors.push(`registry/latest.json version is not a valid semver: ${String(latest?.version)}`);
-		} else if (!isStableSemver(latest.version)) {
-			errors.push(
-				`registry/latest.json must remain stable during prereleases (expected no '-' in version, got ${latest.version})`
-			);
-		}
+	if (latest?.commit !== undefined && !isCommitSha(latest.commit)) {
+		errors.push(`registry/latest.json commit is not a 40-character SHA: ${String(latest.commit)}`);
+	}
 
-		const latestExpectedRef = `greater-v${latest?.version ?? ''}`;
-		if (latest?.ref !== latestExpectedRef) {
-			errors.push(
-				`registry/latest.json ref (${latest?.ref ?? 'missing'}) must be ${latestExpectedRef || 'greater-v<stable>'}`
-			);
-		}
-
-		if (latest?.commit !== undefined && !isCommitSha(latest.commit)) {
-			errors.push(
-				`registry/latest.json commit is not a 40-character SHA: ${String(latest.commit)}`
-			);
-		}
-
-		if (latest?.updatedAt && !isIsoDate(latest.updatedAt)) {
-			errors.push(
-				`registry/latest.json updatedAt is not a valid ISO timestamp: ${String(latest.updatedAt)}`
-			);
-		}
+	if (latest?.updatedAt && !isIsoDate(latest.updatedAt)) {
+		errors.push(
+			`registry/latest.json updatedAt is not a valid ISO timestamp: ${String(latest.updatedAt)}`
+		);
 	}
 
 	if (errors.length > 0) {

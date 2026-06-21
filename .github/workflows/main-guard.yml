@@ -9,6 +9,10 @@ on:
         description: 'Base branch for policy evaluation (e.g., main)'
         required: true
         type: string
+      head_ref:
+        description: 'Head branch for policy evaluation (must be staging for main)'
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -19,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Require PR from staging, premain, or release PR branch
+      - name: Require PR from staging
         run: |
           base_ref="${{ github.base_ref }}"
           if [[ -z "${base_ref}" ]]; then
@@ -28,14 +32,22 @@ jobs:
 
           head_ref="${{ github.head_ref }}"
           if [[ -z "${head_ref}" ]]; then
+            head_ref="${{ github.event.inputs.head_ref }}"
+          fi
+          if [[ -z "${head_ref}" ]]; then
             head_ref="${{ github.ref_name }}"
           fi
 
           echo "Base: ${base_ref}"
           echo "Head: ${head_ref}"
 
-          if [ "${head_ref}" != "staging" ] && [ "${head_ref}" != "premain" ] && [ "${head_ref}" != "release-please--branches--main--components--greater" ]; then
-            echo "::error::main is promotion-only. Allowed sources: staging (direct promotion), premain (rc promotion), release-please--branches--main--components--greater (release PR)."
+          if [ "${base_ref}" != "main" ]; then
+            echo "::error::This guard only authorizes PRs into main."
+            exit 1
+          fi
+
+          if [ "${head_ref}" != "staging" ]; then
+            echo "::error::main is promotion-only. Allowed source: staging."
             exit 1
           fi
 

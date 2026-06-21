@@ -65,21 +65,20 @@ G4.1 / #661).
 - [ ] **No AGPL-incompatible dependencies** — any new dependency is
       license-vetted.
 
-## Changeset
+## Semver / release-note impact
 
-> Changesets are **optional** — see
-> [CONTRIBUTING.md § Changesets](../CONTRIBUTING.md#changesets) for the
-> exact policy enforced by the `Changeset (Optional)` workflow.
+> Changesets are retired. Declare user-visible impact here so manual
+> version-bumping PRs and release notes can stay accurate.
 
-- [ ] `.changeset/<slug>.md` added with **minor** impact for additive
-      component / API work, or **patch** for bug fixes, or **major**
-      for breaking changes (which require stewardship approval), OR
-      this PR is docs-only / test-only / CI / release-coordination and
-      explicitly does not need a changeset (note the reason below).
+- [ ] Semver impact below is accurate (**major** for breaking changes,
+      **minor** for additive component/API work, **patch** for fixes,
+      **none** for docs/test/CI-only work).
+- [ ] Breaking changes include migration notes and explicit consumer
+      coordination.
 
 ## Semver impact
 
-<!-- major / minor / patch / none — must match the changeset front-matter -->
+<!-- major / minor / patch / none -->
 
 ## Consumer impact
 
@@ -101,9 +100,6 @@ G4.1 / #661).
       `validate:dist`, `validate:deps`, `validate:tokens`, `validate:ids`,
       `validate:csp`, `validate:versions`, `check:openapi-auth`
 - [ ] `node scripts/check-dco.js --base origin/staging --head HEAD`
-- [ ] `node scripts/rehearse-release-promotion.js --candidate HEAD`
-      (preserve-topology + `--simulate-squash` both PASS, or merge type
-      noted in PR description)
 
 ## Cross-repo coordination
 
@@ -113,12 +109,9 @@ G4.1 / #661).
 ## Release-flow plan (handoff after merge to staging)
 
 - [ ] Merged to staging
-- [ ] Staging soak complete
-- [ ] Promoted to premain via `release-components` (RC tag cut)
-- [ ] RC soak (incl. internal consumer validation: sim, host)
-- [ ] Promoted to main via `release-components` (stable tag + CLI
-      tarball + registry + GitHub Release)
-- [ ] Backmerge main → premain → staging
+- [ ] Operator promotion staging → main (if this train is released)
+- [ ] Manual tag cut from main
+- [ ] Manual Release workflow publishes CLI tarball + registry + GitHub Release
 
 ## Notes
 
