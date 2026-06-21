@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-06-18T11:13:18.784Z",
+  "generatedAt": "2026-06-21T13:28:10.266Z",
   "ref": "greater-v0.10.8",
   "version": "0.10.8",
   "checksums": {
@@ -821,7 +821,7 @@
     "packages/adapters/src/fetch.ts": "sha256-rZeRGln/6oHdH9fnTpk40P/M8Puesx3kgIV3LCyNquA=",
     "packages/adapters/src/fixtures/lesser.ts": "sha256-T8RxdwFIXpkNDa8eokqyDMOoaBeZYHOvv4Ydi8O6Mtw=",
     "packages/adapters/src/fixtures/mastodon.ts": "sha256-hw9cbIlcUSVl3cFy3CvbA6+W9YZggV8OwkFlqiE58Vw=",
-    "packages/adapters/src/fixtures/soul-bootstrap.ts": "sha256-dtoqIuFPl5Mb5nc4JGxDE1XPVNvbO38ptq5+//q3PoU=",
+    "packages/adapters/src/fixtures/soul-bootstrap.ts": "sha256-uyCPY5tWzYPoRg1tXGnbeBRSvoa2pLL+5BaRWWgvIAQ=",
     "packages/adapters/src/graphql/cache.d.ts": "sha256-3YyrtfDiMSwiqju/cWC+4AprTMRm/ACRKfd46UcRr/E=",
     "packages/adapters/src/graphql/cache.ts": "sha256-l0A4zZ3Qo/gEXWbZLAvpMOK7O/qCwC0mkaF/EsRfW+4=",
     "packages/adapters/src/graphql/client.d.ts": "sha256-pJIC62N40bdFXhryg13X0HezmJFinzT2I9n/6qK1iJo=",
@@ -5617,8 +5617,8 @@
         },
         {
           "path": "src/fixtures/soul-bootstrap.ts",
-          "checksum": "sha256-dtoqIuFPl5Mb5nc4JGxDE1XPVNvbO38ptq5+//q3PoU=",
-          "size": 27911
+          "checksum": "sha256-uyCPY5tWzYPoRg1tXGnbeBRSvoa2pLL+5BaRWWgvIAQ=",
+          "size": 27965
         },
         {
           "path": "src/graphql/cache.d.ts",

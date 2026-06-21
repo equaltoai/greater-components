@@ -265,7 +265,10 @@ export function createProject44SoulBootstrapSurface(
 			options.walletAddress ??
 			(bootstrapMode === 'WALLET_PRINCIPAL' ? project44SoulBootstrapIds.walletAddress : null),
 		principalAddress: options.principalAddress ?? null,
-		hostRegistrationId: options.hostRegistrationId ?? project44SoulBootstrapIds.registrationId,
+		hostRegistrationId:
+			'hostRegistrationId' in options
+				? (options.hostRegistrationId ?? null)
+				: project44SoulBootstrapIds.registrationId,
 		hostConversationId: options.hostConversationId ?? null,
 		hostSoulAgentId: options.hostSoulAgentId ?? null,
 		bootstrapMode,
