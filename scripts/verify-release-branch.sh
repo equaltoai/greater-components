@@ -9,16 +9,8 @@ if [[ -z "${tag}" ]]; then
 	exit 1
 fi
 
-if [[ ! -f "package.json" ]]; then
-	echo "release-branch: FAIL (missing package.json)"
-	exit 1
-fi
-
-version="$(node -p "require('./package.json').version")"
-expected_tag="greater-v${version}"
-
-if [[ "${tag}" != "${expected_tag}" ]]; then
-	echo "release-branch: FAIL (tag ${tag} != ${expected_tag})"
+if [[ ! "${tag}" =~ ^greater-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+	echo "release-branch: FAIL (tag must match greater-vX.Y.Z; got ${tag})"
 	exit 1
 fi
 
@@ -31,11 +23,15 @@ if ! git show-ref --verify --quiet "${main_ref}"; then
 	exit 1
 fi
 
-commit="$(git rev-parse HEAD)"
+if git rev-parse -q --verify "refs/tags/${tag}" >/dev/null; then
+	commit="$(git rev-list -n 1 "${tag}")"
+else
+	commit="$(git rev-parse HEAD)"
+fi
 
 if ! git merge-base --is-ancestor "${commit}" "${main_ref}"; then
-	echo "release-branch: FAIL (${expected_tag} must be tagged from ${main_branch})"
+	echo "release-branch: FAIL (${tag} must point at a commit reachable from ${main_branch})"
 	exit 1
 fi
 
-echo "release-branch: PASS (${expected_tag} is on ${main_branch})"
+echo "release-branch: PASS (${tag} target is on ${main_branch})"

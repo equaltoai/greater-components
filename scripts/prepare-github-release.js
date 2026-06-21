@@ -2,13 +2,13 @@
 /**
  * Prepare Greater Components release metadata for a manual tag-driven release.
  *
- * - Sets root package.json version
- * - Sets packages/cli/package.json version (CLI tarball version)
- * - Updates registry/latest.json to point at `greater-vX.Y.Z`
+ * - Derives X.Y.Z from the release tag `greater-vX.Y.Z`
+ * - Sets root/workspace package.json and manifest versions ephemerally in the CI workspace
+ * - Updates registry/latest.json to point at the release tag
  * - Regenerates registry/index.json with ref override (so index.ref is the tag)
  *
  * Usage:
- *   node scripts/prepare-github-release.js 0.1.0
+ *   node scripts/prepare-github-release.js greater-v0.1.0
  */
 
 import { execSync } from 'node:child_process';
@@ -20,8 +20,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.join(__dirname, '..');
 
-const semverPattern = /^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$/;
-const isStableSemver = (v) => !v.includes('-');
+const releaseTagPattern = /^greater-v([0-9]+\.[0-9]+\.[0-9]+)$/;
 
 function die(message) {
 	console.error(message);
@@ -230,19 +229,21 @@ function registryIndexMatchesTag({ version, tag }) {
 	}
 }
 
+function parseReleaseTag(input) {
+	const releaseTag = input || process.env.RELEASE_VERSION || process.env.GITHUB_REF_NAME || '';
+	const match = releaseTag.match(releaseTagPattern);
+	if (!match) {
+		die(
+			`Invalid Greater release tag: ${releaseTag || '(missing)'}; expected greater-vX.Y.Z (example: greater-v1.2.3)`
+		);
+	}
+
+	return { tag: releaseTag, version: match[1] };
+}
+
 function main() {
 	const args = process.argv.slice(2);
-	const version = args[0];
-
-	if (!version) {
-		die('Usage: node scripts/prepare-github-release.js <version>');
-	}
-
-	if (!semverPattern.test(version)) {
-		die(`Invalid semver version: ${version}`);
-	}
-
-	const tag = `greater-v${version}`;
+	const { tag, version } = parseReleaseTag(args[0]);
 
 	const packageJsonPath = path.join(rootDir, 'package.json');
 	const cliPackageJsonPath = path.join(rootDir, 'packages', 'cli', 'package.json');
@@ -253,21 +254,19 @@ function main() {
 
 	updateWorkspacePackageVersions(version);
 
-	if (isStableSemver(version)) {
-		const existingLatest = fs.existsSync(latestPath) ? readJson(latestPath) : null;
-		const commit = resolveCommit(tag);
-		if (
-			existingLatest?.ref !== tag ||
-			existingLatest?.version !== version ||
-			(commit && existingLatest?.commit !== commit)
-		) {
-			writeJson(latestPath, {
-				ref: tag,
-				version,
-				...(commit ? { commit } : {}),
-				updatedAt: new Date().toISOString(),
-			});
-		}
+	const existingLatest = fs.existsSync(latestPath) ? readJson(latestPath) : null;
+	const commit = resolveCommit(tag);
+	if (
+		existingLatest?.ref !== tag ||
+		existingLatest?.version !== version ||
+		(commit && existingLatest?.commit !== commit)
+	) {
+		writeJson(latestPath, {
+			ref: tag,
+			version,
+			...(commit ? { commit } : {}),
+			updatedAt: new Date().toISOString(),
+		});
 	}
 
 	if (!registryIndexMatchesTag({ version, tag })) {

@@ -20,15 +20,14 @@ A Greater Components release is a single immutable reference that clients can pi
 - `registry/latest.json`
 - generated package tarballs under `artifacts/`
 
-The registry files must match the version in `package.json`; version-bumping PRs must regenerate the registry before merge because no automated alignment PR remains after release-please retirement.
+The workflow derives the release version from the `greater-vX.Y.Z` tag, updates package/manifest versions ephemerally in the CI workspace, and regenerates `registry/index.json` plus `registry/latest.json` from that tag before packaging. A committed package.json pre-bump is not required and does not gate the release.
 
 ## Operator release flow
 
 1. Confirm the feature→staging PRs passed the verify set.
 2. Promote `staging → main` via PR. `main-guard.yml` must pass and show `Head: staging`.
-3. Cut/sign `greater-vX.Y.Z` on `main`.
-4. Let `.github/workflows/manual-release.yml` run on the tag, or dispatch it from `main` with `tag_name=greater-vX.Y.Z` for an existing tag.
-5. Verify the workflow asserts tag ancestry, builds artifacts, validates the registry, uploads assets, and publishes the GitHub Release.
+3. Dispatch `.github/workflows/manual-release.yml` from `main` with `version=greater-vX.Y.Z`, or push an existing `greater-vX.Y.Z` tag. Dispatch creates and pushes the tag at the dispatched `main` SHA when it does not already exist, and refuses only if that tag already points at a different SHA.
+4. Verify the workflow asserts tag ancestry, derives `X.Y.Z` from the tag, regenerates package/registry metadata ephemerally, builds artifacts, uploads assets, and publishes the GitHub Release.
 
 Local release checks mirror the workflow:
 
@@ -37,8 +36,9 @@ git fetch origin main --force --tags
 bash scripts/verify-release-branch.sh greater-vX.Y.Z
 pnpm audit:lockfile-integrity
 pnpm install --frozen-lockfile
+pnpm release:prepare greater-vX.Y.Z
 pnpm validate:package
-pnpm validate:registry --strict
+pnpm validate:registry
 pnpm audit:tarball-integrity
 pnpm release:artifacts
 ```
