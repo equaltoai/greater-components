@@ -157,7 +157,7 @@ function main() {
 		log('❌ Release version validation FAILED', colors.red);
 		errors.forEach((error) => log(`   - ${error}`, colors.red));
 		log('\nFix by running:', colors.yellow);
-		log(`  pnpm release:prepare ${version}`, colors.yellow);
+		log(`  pnpm release:prepare greater-v${version}`, colors.yellow);
 		process.exit(1);
 	}
 
