@@ -2,6 +2,7 @@ import type { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import { print } from 'graphql';
 
 import { resolveFetchLike } from '../fetch.js';
+import type { components as LesserHostComponents } from '../rest/generated/lesser-host-api.js';
 import {
 	CompleteHostedSoulGenesisDocument,
 	PublishHostedSoulDocument,
@@ -59,6 +60,22 @@ export type HostedSoulBootstrapCurrentInput = { username: string };
 export type HostedSoulBootstrapSurface = SoulBootstrapSurface;
 export type HostedSoulBootstrapState = SoulBootstrapState;
 export type HostedSoulBootstrapPublicationEvidence = SoulBootstrapPublicationEvidence;
+export type LesserHostHostedGenesisConversationResponse =
+	LesserHostComponents['schemas']['SoulHostedGenesisConversationResponse'];
+export type LesserHostHostedGenesisConversation =
+	LesserHostHostedGenesisConversationResponse['conversation'];
+export type HostedSoulGenesisConversationStatus =
+	| LesserHostHostedGenesisConversation['status']
+	| 'no_registration'
+	| 'registration_active_no_conversation'
+	| 'published_bound';
+export type HostedSoulBootstrapPublishGate = HostedSoulBootstrapState['publishGate'];
+export type HostedSoulBootstrapCompactTerminalDeclarationEvidence = NonNullable<
+	HostedSoulBootstrapState['terminalDeclarationEvidence']
+>;
+export type HostedSoulBootstrapDeclarationPreview = NonNullable<
+	HostedSoulBootstrapCompactTerminalDeclarationEvidence['producedDeclarationsPreview']
+>;
 export type HostedSoulBootstrapMutationPayload =
 	| StartHostedSoulBootstrapMutation['startHostedSoulBootstrap']
 	| SendHostedSoulGenesisMessageMutation['sendHostedSoulGenesisMessage']
@@ -114,6 +131,7 @@ export interface HostedSoulBootstrapStateModel {
 	authorityModel: SoulBootstrapAuthorityModel;
 	anchorState: SoulBootstrapAnchorState | null;
 	assuranceState: SoulBootstrapAnchorState | null;
+	hostConversationStatus: string | null;
 	typedNextAction: SoulBootstrapNextAction;
 	nextAction: string | null;
 	recoveryCategory: SoulBootstrapRecoveryCategory | null;
@@ -127,6 +145,9 @@ export interface HostedSoulBootstrapStateModel {
 	existingSoulAgentId: string | null;
 	soulBindingState: SoulBindingState;
 	publication: HostedSoulBootstrapPublicationEvidence | null;
+	publicationEvidence: HostedSoulBootstrapPublicationEvidence | null;
+	terminalDeclarationEvidence: HostedSoulBootstrapCompactTerminalDeclarationEvidence | null;
+	publishGate: HostedSoulBootstrapPublishGate | null;
 	hostRequest: HostedSoulBootstrapHostRequestMetadata;
 	updatedAt: string | null;
 	restartedAt: string | null;
@@ -148,6 +169,9 @@ export interface HostedSoulBootstrapResult {
 	restartAvailable: boolean;
 	hostRequest: HostedSoulBootstrapHostRequestMetadata | null;
 	publication: HostedSoulBootstrapPublicationEvidence | null;
+	publicationEvidence: HostedSoulBootstrapPublicationEvidence | null;
+	terminalDeclarationEvidence: HostedSoulBootstrapCompactTerminalDeclarationEvidence | null;
+	publishGate: HostedSoulBootstrapPublishGate | null;
 	boundSoul: HostedSoulBootstrapBoundSoulEvidence | null;
 }
 
@@ -186,6 +210,11 @@ export type HostedSoulBootstrapTerminalDeclarationEvidenceSource =
 	| null
 	| undefined;
 
+export type HostedSoulBootstrapStatusSource =
+	| HostedSoulBootstrapTerminalDeclarationEvidenceSource
+	| LesserHostHostedGenesisConversationResponse
+	| LesserHostHostedGenesisConversation;
+
 type RuntimeHostedSoulBootstrapState = HostedSoulBootstrapState & Record<string, unknown>;
 
 export interface HostedSoulBootstrapTerminalDeclarationEvidenceOptions {
@@ -194,6 +223,19 @@ export interface HostedSoulBootstrapTerminalDeclarationEvidenceOptions {
 	 * rejected unless it matches Lesser's hosted conversation state exactly.
 	 */
 	conversationId?: string | null;
+}
+
+export interface HostedSoulBootstrapTerminalDeclarationEvidenceSummary {
+	source: 'lesser_graphql' | 'lesser_host_conversation';
+	conversationId: string;
+	hostStatus: 'declaration_ready';
+	hostRequestId: string | null;
+	declarationsHash: string;
+	producedDeclarationsPreview: HostedSoulBootstrapDeclarationPreview | null;
+	hostRegistrationId: string | null;
+	hostSoulAgentId: string | null;
+	declarationId: string | null;
+	producedAt: string | null;
 }
 
 interface OperationExecutor {
@@ -272,7 +314,9 @@ export function getHostedSoulBootstrapTerminalDeclarationEvidence(
 	source: HostedSoulBootstrapTerminalDeclarationEvidenceSource,
 	options: HostedSoulBootstrapTerminalDeclarationEvidenceOptions = {}
 ): HostedSoulBootstrapTerminalDeclarationEvidence | null {
-	const state = resolveTerminalDeclarationState(source);
+	const state = resolveTerminalDeclarationState(
+		source as HostedSoulBootstrapTerminalDeclarationEvidenceSource
+	);
 	if (!state || state.bootstrapMode !== 'HOSTED') {
 		return null;
 	}
@@ -329,13 +373,102 @@ export function isHostedSoulBootstrapPublishReady(
 	source: HostedSoulBootstrapTerminalDeclarationEvidenceSource,
 	options: HostedSoulBootstrapTerminalDeclarationEvidenceOptions = {}
 ): boolean {
-	const state = resolveTerminalDeclarationState(source);
+	return canPublishHostedSoulBootstrap(source, options);
+}
+
+/**
+ * True only for explicit durable hosted-genesis progress statuses with an active conversation id.
+ *
+ * Host `created` is treated as in-progress because Lesser v1.5.6 collapses created snapshots into
+ * the local `conversation.in_progress` projection row rather than introducing a browser-visible
+ * created state.
+ */
+export function isHostedSoulBootstrapInProgress(
+	source: HostedSoulBootstrapStatusSource,
+	options: HostedSoulBootstrapTerminalDeclarationEvidenceOptions = {}
+): boolean {
+	const snapshot = resolveHostedGenesisSnapshot(source);
+	if (!snapshot) {
+		return false;
+	}
+
+	const conversationId = trimToValue(snapshot.hostConversationId);
+	const expectedConversationId = trimToValue(options.conversationId);
+	if (!conversationId || (expectedConversationId && expectedConversationId !== conversationId)) {
+		return false;
+	}
+
+	return (
+		snapshot.hostStatus === 'created' ||
+		snapshot.hostStatus === 'in_progress' ||
+		snapshot.hostStatus === 'assistant_turn_ready' ||
+		snapshot.hostStatus === 'declaration_extraction_pending'
+	);
+}
+
+/**
+ * True only when terminal declaration evidence is present and bound to the active conversation.
+ */
+export function isHostedSoulBootstrapDeclarationReady(
+	source: HostedSoulBootstrapStatusSource,
+	options: HostedSoulBootstrapTerminalDeclarationEvidenceOptions = {}
+): boolean {
+	return getHostedSoulBootstrapTerminalDeclarationEvidenceSummary(source, options) !== null;
+}
+
+/**
+ * Extract the compact durable hosted-genesis terminal evidence that gates publish UX.
+ *
+ * This helper accepts either Lesser's GraphQL projection or the generated Lesser Host
+ * HostConversation response type. It never calls Host and it fails closed: malformed, stale,
+ * missing, or conversation-mismatched evidence returns `null`.
+ */
+export function getHostedSoulBootstrapTerminalDeclarationEvidenceSummary(
+	source: HostedSoulBootstrapStatusSource,
+	options: HostedSoulBootstrapTerminalDeclarationEvidenceOptions = {}
+): HostedSoulBootstrapTerminalDeclarationEvidenceSummary | null {
+	const snapshot = resolveHostedGenesisSnapshot(source);
+	if (!snapshot || snapshot.hostStatus !== 'declaration_ready') {
+		return null;
+	}
+
+	if (snapshot.kind === 'lesser_host_conversation') {
+		return getHostConversationTerminalDeclarationEvidenceSummary(snapshot, options);
+	}
+
+	return getGraphQLTerminalDeclarationEvidenceSummary(snapshot, options);
+}
+
+export function canPublishHostedSoulBootstrap(
+	source: HostedSoulBootstrapStatusSource,
+	options: HostedSoulBootstrapTerminalDeclarationEvidenceOptions = {}
+): boolean {
+	const snapshot = resolveHostedGenesisSnapshot(source);
+	if (!snapshot) {
+		return false;
+	}
+
+	const evidence = getHostedSoulBootstrapTerminalDeclarationEvidenceSummary(source, options);
+	if (!evidence) {
+		return false;
+	}
+
+	if (snapshot.kind === 'lesser_host_conversation') {
+		return true;
+	}
+
+	const state = resolveTerminalDeclarationState(
+		source as HostedSoulBootstrapTerminalDeclarationEvidenceSource
+	);
 	if (!state) {
 		return false;
 	}
+
 	return (
-		resolveTerminalDeclarationNextAction(source, state) === 'PUBLISH_HOSTED_SOUL' &&
-		hasHostedSoulBootstrapTerminalDeclarationEvidence(source, options)
+		resolveTerminalDeclarationNextAction(
+			source as HostedSoulBootstrapTerminalDeclarationEvidenceSource,
+			state
+		) === 'PUBLISH_HOSTED_SOUL' && isExplicitPublishGateOpen(snapshot.publishGate)
 	);
 }
 
@@ -481,6 +614,9 @@ function createHostedResultFromSurface(
 		restartAvailable: surface?.restartAvailable ?? state?.restartAvailable ?? false,
 		hostRequest: hosted?.hostRequest ?? null,
 		publication: state?.publication ?? null,
+		publicationEvidence: state?.publicationEvidence ?? state?.publication ?? null,
+		terminalDeclarationEvidence: state?.terminalDeclarationEvidence ?? null,
+		publishGate: state?.publishGate ?? null,
 		boundSoul: hosted
 			? {
 					existingSoulAgentId: hosted.existingSoulAgentId,
@@ -505,6 +641,7 @@ function createHostedStateModel(
 		authorityModel: state.authorityModel,
 		anchorState: state.anchorState ?? null,
 		assuranceState: state.assuranceState ?? null,
+		hostConversationStatus: state.hostConversationStatus ?? null,
 		typedNextAction: state.typedNextAction,
 		nextAction: surface.nextAction ?? null,
 		recoveryCategory: surface.recoveryCategory ?? state.recoveryCategory ?? null,
@@ -518,6 +655,9 @@ function createHostedStateModel(
 		existingSoulAgentId: surface.existingSoulAgentId ?? null,
 		soulBindingState: surface.soulBindingState,
 		publication: state.publication ?? null,
+		publicationEvidence: state.publicationEvidence ?? state.publication ?? null,
+		terminalDeclarationEvidence: state.terminalDeclarationEvidence ?? null,
+		publishGate: state.publishGate ?? null,
 		hostRequest: createHostRequestMetadata(state),
 		updatedAt: state.updatedAt ?? null,
 		restartedAt: state.restartedAt ?? null,
@@ -538,6 +678,335 @@ function createHostRequestMetadata(
 		supersededHostRegistrationId: correlation?.supersededHostRegistrationId ?? null,
 		supersededHostConversationId: correlation?.supersededHostConversationId ?? null,
 	};
+}
+
+interface HostedGenesisSnapshot {
+	kind: 'lesser_graphql' | 'lesser_host_conversation';
+	hostRegistrationId: string | null;
+	hostConversationId: string | null;
+	hostSoulAgentId: string | null;
+	hostStatus: HostedSoulGenesisConversationStatus | null;
+	state: string | null;
+	typedNextAction: string | null;
+	terminalDeclarationEvidence: Record<string, unknown> | null;
+	publishGate: Record<string, unknown> | null;
+	hostConversation: Record<string, unknown> | null;
+}
+
+function resolveHostedGenesisSnapshot(
+	source: HostedSoulBootstrapStatusSource
+): HostedGenesisSnapshot | null {
+	const hostConversation = resolveLesserHostHostedGenesisConversation(source);
+	if (hostConversation) {
+		const status = normalizeHostedGenesisStatus(hostConversation['status']);
+		return {
+			kind: 'lesser_host_conversation',
+			hostRegistrationId: trimToValue(hostConversation['registration_id']),
+			hostConversationId: trimToValue(hostConversation['conversation_id']),
+			hostSoulAgentId: trimToValue(hostConversation['agent_id']),
+			hostStatus: status,
+			state: status,
+			typedNextAction: null,
+			terminalDeclarationEvidence: null,
+			publishGate: null,
+			hostConversation,
+		};
+	}
+
+	const state = resolveTerminalDeclarationState(
+		source as HostedSoulBootstrapTerminalDeclarationEvidenceSource
+	);
+	if (!state || state.bootstrapMode !== 'HOSTED') {
+		return null;
+	}
+
+	return {
+		kind: 'lesser_graphql',
+		hostRegistrationId: trimToValue(state.hostRegistrationId),
+		hostConversationId: trimToValue(state.hostConversationId),
+		hostSoulAgentId: trimToValue(state.hostSoulAgentId),
+		hostStatus:
+			normalizeHostedGenesisStatus(state['hostConversationStatus']) ??
+			normalizeHostedGenesisStatusFromState(state.state),
+		state: trimToValue(state.state),
+		typedNextAction: trimToValue(state.typedNextAction),
+		terminalDeclarationEvidence: isObjectRecord(state['terminalDeclarationEvidence'])
+			? state['terminalDeclarationEvidence']
+			: null,
+		publishGate: isObjectRecord(state['publishGate']) ? state['publishGate'] : null,
+		hostConversation: null,
+	};
+}
+
+function resolveLesserHostHostedGenesisConversation(
+	source: HostedSoulBootstrapStatusSource
+): Record<string, unknown> | null {
+	if (!isObjectRecord(source)) {
+		return null;
+	}
+
+	const record = source as Record<string, unknown>;
+	if (isHostedGenesisConversationRecord(record)) {
+		return record;
+	}
+
+	const conversation = record['conversation'];
+	if (isHostedGenesisConversationRecord(conversation)) {
+		return conversation;
+	}
+
+	return null;
+}
+
+function isHostedGenesisConversationRecord(value: unknown): value is Record<string, unknown> {
+	if (!isObjectRecord(value)) {
+		return false;
+	}
+	return (
+		typeof value['status'] === 'string' &&
+		typeof value['registration_id'] === 'string' &&
+		typeof value['conversation_id'] === 'string'
+	);
+}
+
+function normalizeHostedGenesisStatus(value: unknown): HostedSoulGenesisConversationStatus | null {
+	if (typeof value !== 'string') {
+		return null;
+	}
+
+	const normalized = value.trim().toLowerCase();
+	switch (normalized) {
+		case 'created':
+		case 'in_progress':
+		case 'assistant_turn_ready':
+		case 'declaration_extraction_pending':
+		case 'declaration_ready':
+		case 'failed':
+		case 'no_registration':
+		case 'registration_active_no_conversation':
+		case 'published_bound':
+			return normalized;
+		default:
+			return null;
+	}
+}
+
+function normalizeHostedGenesisStatusFromState(
+	state: unknown
+): HostedSoulGenesisConversationStatus | null {
+	if (typeof state !== 'string') {
+		return null;
+	}
+
+	const normalized = state.trim().toLowerCase();
+	switch (normalized) {
+		case 'not_started':
+			return 'no_registration';
+		case 'conversation.registration_active':
+			return 'registration_active_no_conversation';
+		case 'conversation.created':
+			return 'created';
+		case 'conversation.in_progress':
+		case 'hosted_genesis_started':
+			return 'in_progress';
+		case 'conversation.assistant_turn_ready':
+		case 'hosted_genesis_message_recorded':
+			return 'assistant_turn_ready';
+		case 'conversation.declaration_extraction_pending':
+			return 'declaration_extraction_pending';
+		case 'conversation.declaration_ready':
+		case 'hosted_genesis_complete':
+			return 'declaration_ready';
+		case 'error.host_failed':
+			return 'failed';
+		case 'complete.bound':
+		case 'hosted_offchain_published':
+		case 'hosted_already_bound':
+			return 'published_bound';
+		default:
+			return null;
+	}
+}
+
+function getGraphQLTerminalDeclarationEvidenceSummary(
+	snapshot: HostedGenesisSnapshot,
+	options: HostedSoulBootstrapTerminalDeclarationEvidenceOptions
+): HostedSoulBootstrapTerminalDeclarationEvidenceSummary | null {
+	const evidence = snapshot.terminalDeclarationEvidence;
+	if (!evidence) {
+		return null;
+	}
+
+	const activeConversationId = trimToValue(snapshot.hostConversationId);
+	const evidenceConversationId = trimToValue(evidence['conversationId']);
+	const expectedConversationId = trimToValue(options.conversationId);
+	if (
+		!activeConversationId ||
+		!evidenceConversationId ||
+		evidenceConversationId !== activeConversationId ||
+		(expectedConversationId && expectedConversationId !== evidenceConversationId)
+	) {
+		return null;
+	}
+
+	if (normalizeHostedGenesisStatus(evidence['hostStatus']) !== 'declaration_ready') {
+		return null;
+	}
+
+	const declarationsHash = normalizeDeclarationHash(evidence['declarationsHash']);
+	if (!declarationsHash) {
+		return null;
+	}
+
+	const producedDeclarationsPreview = normalizeDeclarationPreview(
+		evidence['producedDeclarationsPreview']
+	);
+
+	return {
+		source: 'lesser_graphql',
+		conversationId: evidenceConversationId,
+		hostStatus: 'declaration_ready',
+		hostRequestId: trimToValue(evidence['hostRequestId']),
+		declarationsHash,
+		producedDeclarationsPreview,
+		hostRegistrationId: snapshot.hostRegistrationId,
+		hostSoulAgentId: snapshot.hostSoulAgentId,
+		declarationId: null,
+		producedAt: null,
+	};
+}
+
+function getHostConversationTerminalDeclarationEvidenceSummary(
+	snapshot: HostedGenesisSnapshot,
+	options: HostedSoulBootstrapTerminalDeclarationEvidenceOptions
+): HostedSoulBootstrapTerminalDeclarationEvidenceSummary | null {
+	const conversation = snapshot.hostConversation;
+	if (!conversation) {
+		return null;
+	}
+
+	const activeConversationId = trimToValue(conversation['conversation_id']);
+	const expectedConversationId = trimToValue(options.conversationId);
+	if (
+		!activeConversationId ||
+		(expectedConversationId && expectedConversationId !== activeConversationId)
+	) {
+		return null;
+	}
+
+	const producedDeclarations = conversation['produced_declarations'];
+	if (!isObjectRecord(producedDeclarations)) {
+		return null;
+	}
+
+	const declarationsHash = normalizeDeclarationHash(producedDeclarations['declaration_hash']);
+	const declarations = producedDeclarations['declarations'];
+	const evidence = producedDeclarations['evidence'];
+	if (
+		!declarationsHash ||
+		!isHostedTerminalDeclarationShape(declarations) ||
+		!isObjectRecord(evidence)
+	) {
+		return null;
+	}
+
+	if (trimToValue(evidence['source']) !== 'host_conversation') {
+		return null;
+	}
+
+	const evidenceConversationId = trimToValue(evidence['conversation_id']);
+	const evidenceRegistrationId = trimToValue(evidence['registration_id']);
+	const evidenceAgentId = trimToValue(evidence['agent_id']);
+	if (
+		evidenceConversationId !== activeConversationId ||
+		evidenceRegistrationId !== snapshot.hostRegistrationId ||
+		evidenceAgentId !== snapshot.hostSoulAgentId
+	) {
+		return null;
+	}
+
+	return {
+		source: 'lesser_host_conversation',
+		conversationId: activeConversationId,
+		hostStatus: 'declaration_ready',
+		hostRequestId: trimToValue(evidence['request_id']) ?? trimToValue(conversation['request_id']),
+		declarationsHash,
+		producedDeclarationsPreview: {
+			__typename: 'SoulBootstrapDeclarationPreview',
+			title: trimToValue(producedDeclarations['declaration_id']),
+			declarationCount: countHostedTerminalDeclarationSections(declarations),
+		},
+		hostRegistrationId: snapshot.hostRegistrationId,
+		hostSoulAgentId: snapshot.hostSoulAgentId,
+		declarationId: trimToValue(producedDeclarations['declaration_id']),
+		producedAt: trimToValue(producedDeclarations['produced_at']),
+	};
+}
+
+function normalizeDeclarationPreview(value: unknown): HostedSoulBootstrapDeclarationPreview | null {
+	if (!isObjectRecord(value)) {
+		return null;
+	}
+
+	const declarationCount = value['declarationCount'];
+	if (typeof declarationCount !== 'number' || !Number.isFinite(declarationCount)) {
+		return null;
+	}
+
+	return {
+		__typename: 'SoulBootstrapDeclarationPreview',
+		title: trimToValue(value['title']),
+		declarationCount,
+	};
+}
+
+function normalizeDeclarationHash(value: unknown): string | null {
+	const hash = trimToValue(value);
+	if (!hash) {
+		return null;
+	}
+	return /^sha256:[0-9a-f]{64}$/.test(hash) ? hash : null;
+}
+
+function isExplicitPublishGateOpen(publishGate: Record<string, unknown> | null): boolean {
+	if (!publishGate) {
+		return false;
+	}
+	return (
+		publishGate['canPublishHostedSoul'] === true &&
+		publishGate['requiresActiveConversationTerminalDeclarationEvidence'] === true &&
+		typeof publishGate['reason'] === 'string' &&
+		publishGate['reason'].trim().length > 0
+	);
+}
+
+function isHostedTerminalDeclarationShape(value: unknown): boolean {
+	if (!isObjectRecord(value)) {
+		return false;
+	}
+	const selfDescription = value['selfDescription'];
+	const capabilities = value['capabilities'];
+	const boundaries = value['boundaries'];
+	const transparency = value['transparency'];
+	return (
+		isObjectRecord(selfDescription) &&
+		Object.keys(selfDescription).length > 0 &&
+		Array.isArray(capabilities) &&
+		Array.isArray(boundaries) &&
+		isObjectRecord(transparency)
+	);
+}
+
+function countHostedTerminalDeclarationSections(value: unknown): number {
+	if (!isHostedTerminalDeclarationShape(value) || !isObjectRecord(value)) {
+		return 0;
+	}
+	return (
+		1 +
+		(value['capabilities'] as unknown[]).length +
+		(value['boundaries'] as unknown[]).length +
+		(isObjectRecord(value['transparency']) ? 1 : 0)
+	);
 }
 
 function resolveTerminalDeclarationState(

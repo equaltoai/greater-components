@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/hosted-genesis.conversation.response.schema.json",
+  "title": "Hosted genesis durable conversation response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "request_id", "conversation"],
+  "$defs": {
+    "status": {
+      "type": "string",
+      "enum": [
+        "created",
+        "in_progress",
+        "assistant_turn_ready",
+        "declaration_extraction_pending",
+        "declaration_ready",
+        "failed"
+      ]
+    },
+    "trace_ids": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "host_request_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "correlation_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "idempotency_key": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "lesser_request_id": { "type": "string", "minLength": 1, "maxLength": 128 }
+      }
+    },
+    "declarations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["selfDescription", "capabilities", "boundaries", "transparency"],
+      "properties": {
+        "selfDescription": {
+          "type": "object",
+          "additionalProperties": true,
+          "minProperties": 1
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "boundaries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "transparency": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "produced_declarations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["declaration_id", "declaration_hash", "produced_at", "declarations", "evidence"],
+      "properties": {
+        "declaration_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "declaration_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "produced_at": { "type": "string", "format": "date-time" },
+        "declarations": { "$ref": "#/$defs/declarations" },
+        "evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["source", "registration_id", "conversation_id", "agent_id", "message_count", "request_id"],
+          "properties": {
+            "source": { "type": "string", "const": "host_conversation" },
+            "registration_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+            "conversation_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+            "agent_id": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
+            "message_count": { "type": "integer", "minimum": 1 },
+            "model": { "type": "string", "minLength": 1 },
+            "request_id": { "type": "string", "minLength": 1, "maxLength": 128 }
+          }
+        }
+      }
+    },
+    "failure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message", "retryable", "recovery"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "llm_unavailable",
+            "assistant_turn_failed",
+            "declaration_extraction_failed",
+            "invalid_completion_state",
+            "missing_produced_declarations",
+            "invalid_produced_declarations",
+            "tenant_boundary_violation",
+            "operator_action_required"
+          ]
+        },
+        "message": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "retryable": { "type": "boolean" },
+        "recovery": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["action"],
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": ["refresh_state", "retry_same_step", "restart_soul_bootstrap", "operator_action"]
+            },
+            "max_attempts": { "type": "integer", "minimum": 1, "maximum": 10 },
+            "retry_after_seconds": { "type": "integer", "minimum": 1, "maximum": 3600 },
+            "reason": { "type": "string", "minLength": 1, "maxLength": 128 }
+          }
+        }
+      }
+    },
+    "conversation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["registration_id", "conversation_id", "agent_id", "status", "message_count", "request_id"],
+      "properties": {
+        "registration_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "conversation_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "agent_id": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
+        "status": { "$ref": "#/$defs/status" },
+        "latest_turn_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "message_count": { "type": "integer", "minimum": 0 },
+        "produced_declarations": { "$ref": "#/$defs/produced_declarations" },
+        "failure": { "$ref": "#/$defs/failure" },
+        "request_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "trace_ids": { "$ref": "#/$defs/trace_ids" },
+        "poll_after_seconds": { "type": "integer", "minimum": 1, "maximum": 3600 },
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" },
+        "completed_at": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "properties": {
+    "version": { "type": "string", "const": "1" },
+    "request_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "conversation": { "$ref": "#/$defs/conversation" }
+  }
+}

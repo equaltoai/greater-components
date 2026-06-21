@@ -4,9 +4,9 @@
   "contentType": "text/event-stream",
   "routes": [
     "/api/v1/soul/agents/register/{id}/mint-conversation",
-    "/api/v1/soul/agents/{agentId}/mint-conversation",
-    "/api/v1/soul/instance/agents/register/{id}/mint-conversation"
+    "/api/v1/soul/agents/{agentId}/mint-conversation"
   ],
+  "scope": "Optional portal/native Host UI streaming companion. The Lesser instance-key route /api/v1/soul/instance/agents/register/{id}/mint-conversation is JSON-authoritative durable status and is intentionally not part of this SSE companion.",
   "request": {
     "contentType": "application/json",
     "schema": {
