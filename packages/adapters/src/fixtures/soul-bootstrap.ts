@@ -204,6 +204,36 @@ function createProject44PublicationEvidence(
 	};
 }
 
+function createProject44PublishGate(
+	overrides: Partial<SoulBootstrapState['publishGate']> = {}
+): SoulBootstrapState['publishGate'] {
+	return {
+		__typename: 'SoulBootstrapPublishGate',
+		canPublishHostedSoul: false,
+		reason: 'blocked:terminal_declaration_evidence_absent',
+		requiresActiveConversationTerminalDeclarationEvidence: true,
+		...overrides,
+	};
+}
+
+function createProject44TerminalDeclarationEvidence(
+	overrides: Partial<NonNullable<SoulBootstrapState['terminalDeclarationEvidence']>> = {}
+): NonNullable<SoulBootstrapState['terminalDeclarationEvidence']> {
+	return {
+		__typename: 'SoulBootstrapTerminalDeclarationEvidence',
+		conversationId: project44SoulBootstrapIds.conversationId,
+		hostStatus: 'declaration_ready',
+		hostRequestId: project44SoulBootstrapIds.hostRequestId,
+		declarationsHash: 'sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+		producedDeclarationsPreview: {
+			__typename: 'SoulBootstrapDeclarationPreview',
+			title: 'Hosted genesis declaration',
+			declarationCount: 1,
+		},
+		...overrides,
+	};
+}
+
 export interface Project44SoulBootstrapSurfaceOptions {
 	phase?: SoulBootstrapPhase;
 	state?: string;
@@ -218,6 +248,7 @@ export interface Project44SoulBootstrapSurfaceOptions {
 	hostConversationId?: string | null;
 	hostRegistrationId?: string | null;
 	hostSoulAgentId?: string | null;
+	hostConversationStatus?: SoulBootstrapState['hostConversationStatus'];
 	walletAddress?: string | null;
 	principalAddress?: string | null;
 	bootstrapMode?: SoulBootstrapState['bootstrapMode'];
@@ -236,6 +267,9 @@ export interface Project44SoulBootstrapSurfaceOptions {
 	supersededHostConversationId?: string | null;
 	lastHostRequestId?: string | null;
 	restartedAt?: string | null;
+	terminalDeclarationEvidence?: SoulBootstrapState['terminalDeclarationEvidence'];
+	publicationEvidence?: SoulBootstrapState['publicationEvidence'];
+	publishGate?: SoulBootstrapState['publishGate'];
 }
 
 export function createProject44SoulBootstrapSurface(
@@ -265,13 +299,17 @@ export function createProject44SoulBootstrapSurface(
 			options.walletAddress ??
 			(bootstrapMode === 'WALLET_PRINCIPAL' ? project44SoulBootstrapIds.walletAddress : null),
 		principalAddress: options.principalAddress ?? null,
-		hostRegistrationId: options.hostRegistrationId ?? project44SoulBootstrapIds.registrationId,
+		hostRegistrationId:
+			'hostRegistrationId' in options
+				? (options.hostRegistrationId ?? null)
+				: project44SoulBootstrapIds.registrationId,
 		hostConversationId: options.hostConversationId ?? null,
 		hostSoulAgentId: options.hostSoulAgentId ?? null,
 		bootstrapMode,
 		authorityModel,
 		anchorState: options.anchorState ?? 'HOSTED_OFFCHAIN',
 		assuranceState: options.assuranceState ?? 'HOSTED_OFFCHAIN',
+		hostConversationStatus: options.hostConversationStatus ?? null,
 		updatedAt: '2026-06-12T12:00:00Z',
 		typedNextAction,
 		recoveryCategory,
@@ -280,7 +318,10 @@ export function createProject44SoulBootstrapSurface(
 		restartRequired,
 		restartAvailable,
 		signingCheckpoints: options.signingCheckpoints ?? [],
+		terminalDeclarationEvidence: options.terminalDeclarationEvidence ?? null,
 		publication: options.publication ?? null,
+		publicationEvidence: options.publicationEvidence ?? options.publication ?? null,
+		publishGate: options.publishGate ?? createProject44PublishGate(),
 		error,
 		recoveryAttemptId: options.recoveryAttemptId ?? null,
 		restartIdempotencyKey: options.restartIdempotencyKey ?? null,
@@ -551,6 +592,7 @@ export const project44SoulBootstrapFixtures = {
 	hostedStarted: createProject44SoulBootstrapSurface({
 		phase: 'CONVERSATION',
 		state: 'hosted_genesis_started',
+		hostConversationStatus: 'in_progress',
 		bootstrapMode: 'HOSTED',
 		authorityModel: 'INSTANCE_TRUST',
 		anchorState: 'HOSTED_OFFCHAIN',
@@ -565,6 +607,7 @@ export const project44SoulBootstrapFixtures = {
 	hostedGenesisMessage: createProject44SoulBootstrapSurface({
 		phase: 'CONVERSATION',
 		state: 'hosted_genesis_message_recorded',
+		hostConversationStatus: 'assistant_turn_ready',
 		bootstrapMode: 'HOSTED',
 		authorityModel: 'INSTANCE_TRUST',
 		anchorState: 'HOSTED_OFFCHAIN',
@@ -579,6 +622,7 @@ export const project44SoulBootstrapFixtures = {
 	hostedGenesisComplete: createProject44SoulBootstrapSurface({
 		phase: 'CONVERSATION',
 		state: 'hosted_genesis_complete',
+		hostConversationStatus: 'declaration_ready',
 		bootstrapMode: 'HOSTED',
 		authorityModel: 'INSTANCE_TRUST',
 		anchorState: 'HOSTED_OFFCHAIN',
@@ -592,10 +636,16 @@ export const project44SoulBootstrapFixtures = {
 		signingCheckpoints: [
 			createProject44SigningCheckpoint(project44SoulBootstrapSigning.hostedConversation),
 		],
+		terminalDeclarationEvidence: createProject44TerminalDeclarationEvidence(),
+		publishGate: createProject44PublishGate({
+			canPublishHostedSoul: true,
+			reason: 'allowed:active_conversation_terminal_declaration_evidence',
+		}),
 	}),
 	hostedPublished: createProject44SoulBootstrapSurface({
 		phase: 'COMPLETE',
 		state: 'hosted_offchain_published',
+		hostConversationStatus: 'declaration_ready',
 		bootstrapMode: 'HOSTED',
 		authorityModel: 'INSTANCE_TRUST',
 		anchorState: 'HOSTED_OFFCHAIN',
@@ -609,6 +659,11 @@ export const project44SoulBootstrapFixtures = {
 		hostSoulAgentId: project44SoulBootstrapIds.soulAgentId,
 		soulBindingState: 'BOUND',
 		publication: createProject44PublicationEvidence(),
+		publicationEvidence: createProject44PublicationEvidence(),
+		terminalDeclarationEvidence: createProject44TerminalDeclarationEvidence(),
+		publishGate: createProject44PublishGate({
+			reason: 'complete:already_published_bound',
+		}),
 		walletAddress: null,
 		principalAddress: null,
 	}),
@@ -665,6 +720,7 @@ export const project44SoulBootstrapFixtures = {
 	hostedAlreadyBound: createProject44SoulBootstrapSurface({
 		phase: 'COMPLETE',
 		state: 'hosted_already_bound',
+		hostConversationStatus: 'declaration_ready',
 		bootstrapMode: 'HOSTED',
 		authorityModel: 'INSTANCE_TRUST',
 		anchorState: 'HOSTED_OFFCHAIN',
@@ -682,12 +738,22 @@ export const project44SoulBootstrapFixtures = {
 			versionedRegistrationS3Key: 'soul-bootstrap/project-44/registration-v5.json',
 			versionedRegistrationUri: 's3://lesser-host-soul-bootstrap/project-44/registration-v5.json',
 		}),
+		publicationEvidence: createProject44PublicationEvidence({
+			publishedVersion: 5,
+			versionedRegistrationS3Key: 'soul-bootstrap/project-44/registration-v5.json',
+			versionedRegistrationUri: 's3://lesser-host-soul-bootstrap/project-44/registration-v5.json',
+		}),
+		terminalDeclarationEvidence: createProject44TerminalDeclarationEvidence(),
+		publishGate: createProject44PublishGate({
+			reason: 'complete:already_published_bound',
+		}),
 		walletAddress: null,
 		principalAddress: null,
 	}),
 	hostedRestarted: createProject44SoulBootstrapSurface({
 		phase: 'CONVERSATION',
 		state: 'hosted_restarted',
+		hostConversationStatus: 'in_progress',
 		bootstrapMode: 'HOSTED',
 		authorityModel: 'INSTANCE_TRUST',
 		typedNextAction: 'SEND_HOSTED_SOUL_GENESIS_MESSAGE',
@@ -703,6 +769,302 @@ export const project44SoulBootstrapFixtures = {
 		principalAddress: null,
 	}),
 } as const;
+
+export interface Project49HostedGenesisStatusFixture {
+	label: string;
+	hostStatus: string;
+	surface: SoulBootstrapSurface;
+	inProgress: boolean;
+	declarationReady: boolean;
+	canPublish: boolean;
+	publishReason: string;
+}
+
+export const project49HostedGenesisStatusFixtures = [
+	{
+		label: 'no registration',
+		hostStatus: 'no_registration',
+		surface: createProject44SoulBootstrapSurface({
+			phase: 'NOT_STARTED',
+			state: 'not_started',
+			typedNextAction: 'START_HOSTED_BOOTSTRAP',
+			nextAction: 'start_hosted_bootstrap',
+			hostRegistrationId: null,
+			hostSoulAgentId: null,
+			hostConversationId: null,
+			hostConversationStatus: null,
+			walletAddress: null,
+			principalAddress: null,
+			publishGate: createProject44PublishGate({
+				reason: 'blocked:no_host_registration',
+			}),
+		}),
+		inProgress: false,
+		declarationReady: false,
+		canPublish: false,
+		publishReason: 'blocked:no_host_registration',
+	},
+	{
+		label: 'registration active, no conversation',
+		hostStatus: 'registration_active_no_conversation',
+		surface: createProject44SoulBootstrapSurface({
+			phase: 'CONVERSATION',
+			state: 'conversation.registration_active',
+			typedNextAction: 'SEND_HOSTED_SOUL_GENESIS_MESSAGE',
+			nextAction: 'send_hosted_soul_genesis_message',
+			hostRegistrationId: project44SoulBootstrapIds.registrationId,
+			hostSoulAgentId: project44SoulBootstrapIds.soulAgentId,
+			hostConversationId: null,
+			hostConversationStatus: null,
+			walletAddress: null,
+			principalAddress: null,
+			publishGate: createProject44PublishGate({
+				reason: 'blocked:no_host_conversation',
+			}),
+		}),
+		inProgress: false,
+		declarationReady: false,
+		canPublish: false,
+		publishReason: 'blocked:no_host_conversation',
+	},
+	{
+		label: 'created collapsed to in_progress',
+		hostStatus: 'created',
+		surface: createProject44SoulBootstrapSurface({
+			phase: 'CONVERSATION',
+			state: 'conversation.in_progress',
+			hostConversationStatus: 'created',
+			typedNextAction: 'REFRESH_STATE',
+			nextAction: 'refresh_state',
+			recoveryCategory: 'REFRESH_STATE',
+			recoveryAction: 'REFRESH_STATE',
+			hostRegistrationId: project44SoulBootstrapIds.registrationId,
+			hostSoulAgentId: project44SoulBootstrapIds.soulAgentId,
+			hostConversationId: project44SoulBootstrapIds.conversationId,
+			walletAddress: null,
+			principalAddress: null,
+			publishGate: createProject44PublishGate({
+				reason: 'blocked:conversation_in_progress',
+			}),
+		}),
+		inProgress: true,
+		declarationReady: false,
+		canPublish: false,
+		publishReason: 'blocked:conversation_in_progress',
+	},
+	{
+		label: 'in_progress',
+		hostStatus: 'in_progress',
+		surface: createProject44SoulBootstrapSurface({
+			phase: 'CONVERSATION',
+			state: 'conversation.in_progress',
+			hostConversationStatus: 'in_progress',
+			typedNextAction: 'REFRESH_STATE',
+			nextAction: 'refresh_state',
+			recoveryCategory: 'REFRESH_STATE',
+			recoveryAction: 'REFRESH_STATE',
+			hostRegistrationId: project44SoulBootstrapIds.registrationId,
+			hostSoulAgentId: project44SoulBootstrapIds.soulAgentId,
+			hostConversationId: project44SoulBootstrapIds.conversationId,
+			walletAddress: null,
+			principalAddress: null,
+			publishGate: createProject44PublishGate({
+				reason: 'blocked:conversation_in_progress',
+			}),
+		}),
+		inProgress: true,
+		declarationReady: false,
+		canPublish: false,
+		publishReason: 'blocked:conversation_in_progress',
+	},
+	{
+		label: 'assistant_turn_ready',
+		hostStatus: 'assistant_turn_ready',
+		surface: createProject44SoulBootstrapSurface({
+			phase: 'CONVERSATION',
+			state: 'conversation.assistant_turn_ready',
+			hostConversationStatus: 'assistant_turn_ready',
+			typedNextAction: 'COMPLETE_HOSTED_SOUL_GENESIS',
+			nextAction: 'complete_hosted_soul_genesis',
+			hostRegistrationId: project44SoulBootstrapIds.registrationId,
+			hostSoulAgentId: project44SoulBootstrapIds.soulAgentId,
+			hostConversationId: project44SoulBootstrapIds.conversationId,
+			walletAddress: null,
+			principalAddress: null,
+			publishGate: createProject44PublishGate({
+				reason: 'blocked:terminal_declaration_evidence_absent',
+			}),
+		}),
+		inProgress: true,
+		declarationReady: false,
+		canPublish: false,
+		publishReason: 'blocked:terminal_declaration_evidence_absent',
+	},
+	{
+		label: 'declaration_extraction_pending',
+		hostStatus: 'declaration_extraction_pending',
+		surface: createProject44SoulBootstrapSurface({
+			phase: 'CONVERSATION',
+			state: 'conversation.declaration_extraction_pending',
+			hostConversationStatus: 'declaration_extraction_pending',
+			typedNextAction: 'REFRESH_STATE',
+			nextAction: 'refresh_state',
+			recoveryCategory: 'REFRESH_STATE',
+			recoveryAction: 'REFRESH_STATE',
+			hostRegistrationId: project44SoulBootstrapIds.registrationId,
+			hostSoulAgentId: project44SoulBootstrapIds.soulAgentId,
+			hostConversationId: project44SoulBootstrapIds.conversationId,
+			walletAddress: null,
+			principalAddress: null,
+			publishGate: createProject44PublishGate({
+				reason: 'blocked:declaration_extraction_pending',
+			}),
+		}),
+		inProgress: true,
+		declarationReady: false,
+		canPublish: false,
+		publishReason: 'blocked:declaration_extraction_pending',
+	},
+	{
+		label: 'declaration_ready',
+		hostStatus: 'declaration_ready',
+		surface: createProject44SoulBootstrapSurface({
+			phase: 'FINALIZE',
+			state: 'conversation.declaration_ready',
+			bootstrapMode: 'HOSTED',
+			authorityModel: 'INSTANCE_TRUST',
+			hostConversationStatus: 'declaration_ready',
+			typedNextAction: 'PUBLISH_HOSTED_SOUL',
+			nextAction: 'publish_hosted_soul',
+			hostRegistrationId: project44SoulBootstrapIds.registrationId,
+			hostSoulAgentId: project44SoulBootstrapIds.soulAgentId,
+			hostConversationId: project44SoulBootstrapIds.conversationId,
+			walletAddress: null,
+			principalAddress: null,
+			signingCheckpoints: [
+				createProject44SigningCheckpoint(project44SoulBootstrapSigning.hostedConversation),
+			],
+			terminalDeclarationEvidence: createProject44TerminalDeclarationEvidence(),
+			publishGate: createProject44PublishGate({
+				canPublishHostedSoul: true,
+				reason: 'allowed:active_conversation_terminal_declaration_evidence',
+			}),
+		}),
+		inProgress: false,
+		declarationReady: true,
+		canPublish: true,
+		publishReason: 'allowed:active_conversation_terminal_declaration_evidence',
+	},
+	{
+		label: 'failed retry same step',
+		hostStatus: 'failed',
+		surface: createProject44SoulBootstrapSurface({
+			phase: 'ERROR',
+			state: 'error.host_failed',
+			hostConversationStatus: 'failed',
+			typedNextAction: 'RETRY_SAME_STEP',
+			nextAction: 'retry_same_step',
+			recoveryCategory: 'RETRY_SAME_STEP',
+			recoveryAction: 'RETRY_SAME_STEP',
+			retryable: true,
+			restartAvailable: true,
+			hostRegistrationId: project44SoulBootstrapIds.registrationId,
+			hostSoulAgentId: project44SoulBootstrapIds.soulAgentId,
+			hostConversationId: project44SoulBootstrapIds.conversationId,
+			walletAddress: null,
+			principalAddress: null,
+			error: createProject44SoulBootstrapErrorState({
+				code: 'HOST_CONVERSATION_FAILED',
+				message: 'Host failed before producing declaration evidence.',
+				source: 'host',
+				statusCode: 200,
+				recoveryCategory: 'RETRY_SAME_STEP',
+				recoveryAction: 'RETRY_SAME_STEP',
+				retryable: true,
+				restartRequired: false,
+			}),
+			publishGate: createProject44PublishGate({
+				reason: 'blocked:host_failure',
+			}),
+		}),
+		inProgress: false,
+		declarationReady: false,
+		canPublish: false,
+		publishReason: 'blocked:host_failure',
+	},
+	{
+		label: 'failed restart bootstrap',
+		hostStatus: 'failed',
+		surface: createProject44SoulBootstrapSurface({
+			phase: 'ERROR',
+			state: 'error.host_failed',
+			hostConversationStatus: 'failed',
+			typedNextAction: 'RESTART_SOUL_BOOTSTRAP',
+			nextAction: 'restart_soul_bootstrap',
+			recoveryCategory: 'RESTART_REQUIRED',
+			recoveryAction: 'RESTART_BOOTSTRAP',
+			retryable: false,
+			restartRequired: true,
+			restartAvailable: true,
+			hostRegistrationId: project44SoulBootstrapIds.registrationId,
+			hostSoulAgentId: project44SoulBootstrapIds.soulAgentId,
+			hostConversationId: project44SoulBootstrapIds.conversationId,
+			walletAddress: null,
+			principalAddress: null,
+			error: createProject44SoulBootstrapErrorState({
+				code: 'HOST_CONVERSATION_RESTART_REQUIRED',
+				message: 'Host requires a new bootstrap attempt.',
+				source: 'host',
+				statusCode: 200,
+				recoveryCategory: 'RESTART_REQUIRED',
+				recoveryAction: 'RESTART_BOOTSTRAP',
+				retryable: false,
+				restartRequired: true,
+			}),
+			publishGate: createProject44PublishGate({
+				reason: 'blocked:host_failure_restart',
+			}),
+		}),
+		inProgress: false,
+		declarationReady: false,
+		canPublish: false,
+		publishReason: 'blocked:host_failure_restart',
+	},
+	{
+		label: 'published/bound',
+		hostStatus: 'published_bound',
+		surface: createProject44SoulBootstrapSurface({
+			phase: 'COMPLETE',
+			state: 'complete.bound',
+			bootstrapMode: 'HOSTED',
+			authorityModel: 'INSTANCE_TRUST',
+			hostConversationStatus: 'declaration_ready',
+			typedNextAction: 'COMPLETE',
+			nextAction: 'complete',
+			executable: false,
+			existingSoulAgentId: project44SoulBootstrapIds.soulAgentId,
+			hostRegistrationId: project44SoulBootstrapIds.registrationId,
+			hostSoulAgentId: project44SoulBootstrapIds.soulAgentId,
+			hostConversationId: project44SoulBootstrapIds.conversationId,
+			soulBindingState: 'BOUND',
+			walletAddress: null,
+			principalAddress: null,
+			signingCheckpoints: [
+				createProject44SigningCheckpoint(project44SoulBootstrapSigning.hostedConversation),
+			],
+			terminalDeclarationEvidence: createProject44TerminalDeclarationEvidence(),
+			publication: createProject44PublicationEvidence(),
+			publicationEvidence: createProject44PublicationEvidence(),
+			publishGate: createProject44PublishGate({
+				reason: 'complete:already_published_bound',
+			}),
+		}),
+		inProgress: false,
+		declarationReady: true,
+		canPublish: false,
+		publishReason: 'complete:already_published_bound',
+	},
+] as const satisfies readonly Project49HostedGenesisStatusFixture[];
 
 export const project44SoulBootstrapOperationFixtures = {
 	SoulBootstrap: project44SoulBootstrapFixtures.notStarted,

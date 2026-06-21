@@ -42,6 +42,27 @@ fragment SoulBootstrapPublicationFields on SoulBootstrapPublicationEvidence {
 	versionedRegistrationUri
 }
 
+fragment SoulBootstrapDeclarationPreviewFields on SoulBootstrapDeclarationPreview {
+	title
+	declarationCount
+}
+
+fragment SoulBootstrapTerminalDeclarationEvidenceFields on SoulBootstrapTerminalDeclarationEvidence {
+	conversationId
+	hostStatus
+	hostRequestId
+	declarationsHash
+	producedDeclarationsPreview {
+		...SoulBootstrapDeclarationPreviewFields
+	}
+}
+
+fragment SoulBootstrapPublishGateFields on SoulBootstrapPublishGate {
+	canPublishHostedSoul
+	reason
+	requiresActiveConversationTerminalDeclarationEvidence
+}
+
 fragment SoulBootstrapSigningCheckpointFields on SoulBootstrapSigningCheckpoint {
 	name
 	status
@@ -79,6 +100,7 @@ fragment SoulBootstrapStateFields on SoulBootstrapState {
 	authorityModel
 	anchorState
 	assuranceState
+	hostConversationStatus
 	updatedAt
 	typedNextAction
 	recoveryCategory
@@ -93,8 +115,17 @@ fragment SoulBootstrapStateFields on SoulBootstrapState {
 	signingCheckpoints {
 		...SoulBootstrapSigningCheckpointFields
 	}
+	terminalDeclarationEvidence {
+		...SoulBootstrapTerminalDeclarationEvidenceFields
+	}
 	publication {
 		...SoulBootstrapPublicationFields
+	}
+	publicationEvidence {
+		...SoulBootstrapPublicationFields
+	}
+	publishGate {
+		...SoulBootstrapPublishGateFields
 	}
 	error {
 		...SoulBootstrapErrorFields

@@ -127,6 +127,40 @@ Use the Status compound components when you need fine-grained layout control or 
 {/if}
 ```
 
+## Hosted genesis helpers (Project 49)
+
+Greater exposes display-safe helpers for Lesser's durable hosted genesis projection. They read
+Lesser GraphQL state (or generated Lesser Host status envelopes in adapter tests) and do not call
+Lesser Host, hold Host credentials, infer hidden Host state, or own orchestration.
+
+```ts
+import {
+	canPublishHostedSoulBootstrap,
+	getHostedSoulBootstrapTerminalDeclarationEvidenceSummary,
+	isHostedSoulBootstrapDeclarationReady,
+	isHostedSoulBootstrapInProgress,
+} from '$lib/greater/adapters';
+
+const inProgress = isHostedSoulBootstrapInProgress(result, { conversationId });
+const declarationReady = isHostedSoulBootstrapDeclarationReady(result, { conversationId });
+const terminalEvidence = getHostedSoulBootstrapTerminalDeclarationEvidenceSummary(result, {
+	conversationId,
+});
+const canPublish = canPublishHostedSoulBootstrap(result, { conversationId });
+```
+
+Helper behavior is intentionally fail-closed:
+
+- `created`, `in_progress`, `assistant_turn_ready`, and
+  `declaration_extraction_pending` are progress states only.
+- `declaration_ready` enables publish only when terminal declaration evidence is bound to the
+  active `hostConversationId` and Lesser's `publishGate` is explicitly open.
+- `failed`, malformed data, stale conversation ids, missing hashes, and compact `publishGate`
+  data without terminal evidence all return `false`.
+
+No shared display component landed for Project 49 M4.3; Sim can render its own UI from these
+helpers until a common display-only component is justified.
+
 ## Troubleshooting
 
 - If the timeline is unstyled, verify you imported `tokens/theme.css`, `primitives/style.css`, and `faces/social/style.css` (in that order).
