@@ -5,6 +5,11 @@ description: Use after scope-need and relevant specialist skills approve work. T
 
 # Enumerate changes
 
+## PROG-M1 branch/release profile override
+
+Active profile: **feature → staging → main**. Feature branches target `staging`; feature→staging PRs require the existing pnpm verify set, including required checks **Build and Test** and **ESLint and Prettier Check**. `main` accepts PRs only from `staging`, uses default GitHub checks and branch rules only, and does not rerun the full pnpm verify set as a promotion gate. Release is manual, operator-owned, tag-driven off `main`; the steward reports evidence and does not merge main or publish releases. Contract sync remains orthogonal and mandatory: preserve `LESSER_REF` v1.5.3, `LESSER_HOST_REF` v1.0.3, and `check-openapi-auth`.
+
+
 A scoped need describes *what* is being delivered. An enumerated change list describes *what must move in the repo*. This skill is the transformation.
 
 greater's change lists vary: a narrow bug fix might be two commits; a new component addition with docs + playground + tests is six to ten; a contract-sync with adapter updates can be larger. The single-commit rule holds regardless.
@@ -37,10 +42,10 @@ Walk the scoped need against every surface:
 18. **`registry/latest.json`** — latest-tag pointer (generated).
 19. **`schema.graphql`** — aggregated Lesser / Fediverse type definitions.
 20. **`scripts/`** — automation (registry generation, validation, release).
-21. **`.github/workflows/`** — CI workflows (staging verify and main promotion guard).
-22. **Manual release workflow/config** — tag-driven release configuration.
-23. **`main-guard.yml`** — staging-only main promotion guard.
-24. **Release notes / CHANGELOG.md** — maintained by the release-preparation PR or operator-authored release notes.
+21. **`.github/workflows/`** — CI workflows (staging/main/main promotion gates).
+22. **`manual release-config.json`** — stable release configuration.
+23. **`manual release-config.main.json`** — RC release configuration.
+24. **`CHANGELOG.md`** — maintained by manual release.
 25. **`package.json`** / **`pnpm-lock.yaml`** — workspace root dependency management.
 26. **`AGENTS.md`** / **`CONTRIBUTING.md`** / **`README.md`** — governance + contributor docs. Rarely touched; governance-level.
 27. **`LICENSE`** / **`CODEOWNERS`** — rarely touched.
@@ -53,13 +58,13 @@ A change that touches none of these isn't really a change.
 2. **Token changes land before component changes that consume them.** Token package depends inward.
 3. **Headless behaviors land before components that use them.** Dependency direction: headless → primitives → faces.
 4. **Contract snapshot updates land alongside adapter-code changes that consume them.** In the same commit where practical; at least in the same PR.
-5. **Release-impact notes land with the source change when needed.** Breaking or consumer-visible changes must describe semver impact and migration notes in the PR.
+5. **Semver impact note file lands in the same commit as the source change it describes.** Contributors add `.semver impact note/*.md` declaring semver impact.
 6. **Documentation rides with the behavior it describes.** Component additions update the component inventory; API changes update API reference; new adapters update integration guides.
 7. **`apps/playground/` demos ride with component additions.** Interactive demo for new component lands in the same PR.
 8. **`registry/index.json` regeneration is automated**; PRs regenerate via the scripts, not by hand. CI verifies.
 9. **Dependency bumps land in isolated commits** for bisect clarity.
 10. **CI workflow changes land in isolated commits** with clear rationale.
-11. **Breaking changes require major-version coordination**; additive changes are minor; bug fixes are patch.
+11. **Breaking changes require major-version semver impact note**; additive changes require minor; bug fixes require patch.
 
 ## The mission-scope rule
 
@@ -77,7 +82,7 @@ Every enumerated item must answer: **does this touch component public API (props
 - **No** — default.
 - **Yes — additive (new optional prop / slot / event)** — proceed; minor version.
 - **Yes — semantic refinement** — evaluate; may be minor or major.
-- **Yes — breaking (removed, renamed, changed semantics)** — requires major-version coordination + `evolve-component-surface` walk + consumer coordination.
+- **Yes — breaking (removed, renamed, changed semantics)** — requires major-version semver impact note + `evolve-component-surface` walk + consumer coordination.
 
 ## The contract-sync rule
 
@@ -102,7 +107,7 @@ Every enumerated item must answer: **does this touch `packages/tokens/` or token
 
 - **No** — default.
 - **Yes — additive (new token)** — proceed.
-- **Yes — rename or semantic shift** — breaking; requires major-version coordination + `evolve-component-surface` walk.
+- **Yes — rename or semantic shift** — breaking; requires major-version semver impact note + `evolve-component-surface` walk.
 
 ## The registry-integrity rule
 
@@ -125,7 +130,7 @@ Each enumerated item fits in one commit:
 - `pnpm playwright:install && pnpm test:e2e` (a11y + e2e) passes where applicable
 - Registry regeneration produces no diff
 - Contract-sync check passes
-- Changeset file present (for source-changing PRs)
+- Semver impact note file present (for source-changing PRs)
 - No commit depends on a later item to compile or pass tests
 
 ## Output format
@@ -141,17 +146,17 @@ Each enumerated item fits in one commit:
 - **Accessibility impact**: <none / tightening / loosening (refuse without authorization) — `enforce-accessibility` walk referenced>
 - **Theming impact**: <none / additive token / rename or shift (breaking)>
 - **Registry impact**: <automated regen — no hand-editing>
-- **Semver impact**: <major / minor / patch / none — PR release note or migration note if consumer-visible>
+- **Semver impact**: <major / minor / patch — semver impact note file added>
 - **Acceptance**: <one sentence>
-- **Validation**: <`pnpm lint / typecheck / test / build`, `pnpm test:e2e`, registry regen check>
+- **Validation**: <`pnpm lint / typecheck / test / build`, `pnpm test:e2e`, registry regen check, semver impact note validate>
 - **Conventional Commit subject**: `<type(scope): subject>`
-- **Release note**: PR text documents user-visible impact and migration notes when needed
+- **Semver impact note**: `.semver impact note/<slug>.md` with declared impact
 ```
 
 ## Self-check before handing off
 
 - [ ] Every item is in-mission
-- [ ] No item breaks component API silently (breaking → major coordination and migration notes)
+- [ ] No item breaks component API silently (breaking → major semver impact note)
 - [ ] No adapter change without synced contract snapshot
 - [ ] No accessibility regression
 - [ ] No token rename or semantic shift without major-version discipline
@@ -163,7 +168,7 @@ Each enumerated item fits in one commit:
 - [ ] CI workflow changes isolated
 - [ ] Playground demos ride with component additions
 - [ ] Docs ride with behavior changes
-- [ ] Changeset file present for source-changing items
+- [ ] Semver impact note file present for source-changing items
 - [ ] Every item has test / build / regen validation
 - [ ] No hardcoded secrets
 - [ ] No AGPL-incompatible dependencies introduced
@@ -175,4 +180,4 @@ Append when enumeration surfaces something unusual — a component-dependency or
 
 ## Handoff
 
-Invoke `plan-roadmap` to sequence the flat list into phases and identify the feature → staging → main rollout.
+Invoke `plan-roadmap` to sequence the flat list into phases and identify the feature-to-staging-to-main release plan (feature → staging → main).

@@ -5,6 +5,11 @@ description: Use when building or maintaining greater surfaces framework awkward
 
 # Coordinate framework feedback
 
+## PROG-M1 branch/release profile override
+
+Active profile: **feature → staging → main**. Feature branches target `staging`; feature→staging PRs require the existing pnpm verify set, including required checks **Build and Test** and **ESLint and Prettier Check**. `main` accepts PRs only from `staging`, uses default GitHub checks and branch rules only, and does not rerun the full pnpm verify set as a promotion gate. Release is manual, operator-owned, tag-driven off `main`; the steward reports evidence and does not merge main or publish releases. Contract sync remains orthogonal and mandatory: preserve `LESSER_REF` v1.5.3, `LESSER_HOST_REF` v1.0.3, and `check-openapi-auth`.
+
+
 greater consumes FaceTheory for its SvelteKit-based docs site (`apps/docs/`) and local playground (`apps/playground/`). It also depends on Svelte 5 + Vite + TypeScript / pnpm toolchain — upstream open-source, not Theory Cloud. When consumption is awkward under greater's specific conditions (component-library patterns, shadcn-style CLI distribution, registry-regen workflow, strict accessibility gates), the friction is targeted upstream signal.
 
 This skill handles the signal cleanly. It separates "greater is using the framework wrong" from "the framework has a genuine gap under greater's constraints," and produces a shaped report for the appropriate steward.
@@ -55,7 +60,7 @@ greater's constraints are distinctive:
 - **Component-library authoring patterns** — Svelte 5 components with typed props, exported slot structures, event dispatchers, and token-based theming
 - **shadcn-style CLI distribution** — source-install via CLI rather than npm
 - **Registry regeneration** — per-file checksum manifest that must stay in sync
-- **Release flow** — feature → staging → main with manual tag-driven release off main
+- **Feature-to-staging-to-main release flow** — `feature → staging → main` with manual release
 - **Strict accessibility gates** — Playwright a11y + Vitest
 - **Pinned contract snapshots** — adapters depend on frozen upstream schema versions
 - **SvelteKit-based docs + playground** — two SvelteKit apps consuming the library as source

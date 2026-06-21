@@ -5,6 +5,11 @@ description: Use when a change touches the component public API (props, slots, e
 
 # Evolve the component surface
 
+## PROG-M1 branch/release profile override
+
+Active profile: **feature → staging → main**. Feature branches target `staging`; feature→staging PRs require the existing pnpm verify set, including required checks **Build and Test** and **ESLint and Prettier Check**. `main` accepts PRs only from `staging`, uses default GitHub checks and branch rules only, and does not rerun the full pnpm verify set as a promotion gate. Release is manual, operator-owned, tag-driven off `main`; the steward reports evidence and does not merge main or publish releases. Contract sync remains orthogonal and mandatory: preserve `LESSER_REF` v1.5.3, `LESSER_HOST_REF` v1.0.3, and `check-openapi-auth`.
+
+
 greater's component exports are **versioned contracts**. Every `greater update` replays component source into consumer codebases; breaking changes land there directly. This skill walks component-surface and theming-surface changes with the discipline those contracts demand.
 
 ## The component surface (memorize)
@@ -56,7 +61,7 @@ Every change classifies:
 - **Minor (additive)**: new optional prop, new slot (additive), new event, new component, new token, new theme variant, semantic-refinement that bugs-are-fixed without changing documented behavior.
 - **Patch (bug fix)**: behavior fix that matches the documented contract, internal refactor, non-observable optimization, dependency bump within range.
 
-The classification drives the **semver impact declaration**. PR release notes and migration notes declare impact explicitly.
+The classification drives the **semver impact note impact declaration**. `.semver impact note/<slug>.md` declares impact explicitly.
 
 ### Dimension 2: Consumer-impact analysis
 
@@ -127,8 +132,8 @@ greater is Lesser-first but Mastodon-baseline-compatible where feature sets over
 ### Semver impact classification
 <major / minor / patch>
 
-### Changeset declaration
-Release-note / migration-note draft:
+### Semver impact note declaration
+`.semver impact note/<slug>.md` content draft:
 ```
 ---
 "@equaltoai/greater-components-*": <impact>
@@ -168,13 +173,13 @@ Release-note / migration-note draft:
 
 ## Refusal cases
 
-- **"Ship a breaking component change without major-version coordination."** Refuse.
+- **"Ship a breaking component change without a major-version semver impact note."** Refuse.
 - **"Remove this prop silently; nobody uses it."** Refuse. Removal is breaking; major.
 - **"Rename this prop for consistency."** Evaluate — usually refuse in favor of additive aliasing. Direct renames break every consumer.
 - **"Change the default value of an existing prop."** Evaluate. If the new default is backward-compatible (doesn't change observable behavior for consumers who didn't pass the prop), minor. If it does change, breaking.
 - **"Rename `--gr-color-primary-600` to `--gr-color-primary-medium`."** Refuse silent. Requires major + consumer-migration advisory.
 - **"Remove the dark theme."** Refuse without explicit governance event.
-- **"Add a breaking change to this component and hide the migration note in a commit body."** Refuse.
+- **"Add a breaking change to this component and log it in the commit body; skip the semver impact note."** Refuse.
 - **"Loosen ARIA semantics for simpler DOM."** Refuse via `enforce-accessibility`.
 - **"Drop Mastodon baseline for this component; we only care about Lesser."** Evaluate carefully; document the drop in release notes if authorized; refuse silent drops.
 

@@ -5,6 +5,11 @@ description: Use after plan-roadmap is approved, if the roadmap warrants a track
 
 # Create a GitHub Project
 
+## PROG-M1 branch/release profile override
+
+Active profile: **feature → staging → main**. Feature branches target `staging`; feature→staging PRs require the existing pnpm verify set, including required checks **Build and Test** and **ESLint and Prettier Check**. `main` accepts PRs only from `staging`, uses default GitHub checks and branch rules only, and does not rerun the full pnpm verify set as a promotion gate. Release is manual, operator-owned, tag-driven off `main`; the steward reports evidence and does not merge main or publish releases. Contract sync remains orthogonal and mandatory: preserve `LESSER_REF` v1.5.3, `LESSER_HOST_REF` v1.0.3, and `check-openapi-auth`.
+
+
 equaltoai tracks initiative-level work in **GitHub Projects v2** at the org level, cross-repo by default. greater's roadmaps often span multiple repos: greater for component / adapter / release work; lesser / host for contract-source changes that require sync; sim / host web for consumer-migration efforts on breaking changes.
 
 This skill turns an approved roadmap into a project board.
@@ -70,7 +75,7 @@ Per Project 20 pattern:
 ### Success means
 
 - <observable conditions>
-- <semver impact and release note declared correctly>
+- <semver impact note + semver declared correctly>
 - <consumer CI (sim, host) builds against new version>
 - <accessibility tests pass>
 - <registry regen in sync>
@@ -144,24 +149,24 @@ Issue body template:
 <one sentence>
 
 ## Validation commands
-<pnpm lint / typecheck / test / build / test:e2e, registry regen, release-note/semver validation>
+<pnpm lint / typecheck / test / build / test:e2e, registry regen, semver impact note validate>
 
 ## Release flow checkpoints
 - [ ] Merged to staging
 - [ ] Staging soak complete
-- [ ] Operator promoted staging → main
-- [ ] Manual tag cut from main
-- [ ] Premain soak complete (internal consumer testing)
+- [ ] Promoted to main
+- [ ] RC tag cut
+- [ ] Main soak complete (internal consumer testing)
 - [ ] Promoted to main
 - [ ] Stable tag cut + CLI tarball + registry regen
-- [ ] Staging/main state re-grounded after promotion
+- [ ] Backmerge main → staging
 - [ ] Post-release monitoring
 
 ## Planned commit subject
 <type(scope): subject>
 
-## Changeset
-<release-note or migration-note draft — impact + description>
+## Semver impact note
+<.semver impact note/<slug>.md content — impact + description>
 
 ## Parent issue
 <link if sub-issue>
@@ -202,14 +207,14 @@ Apply consistently:
 - `greater-accessibility` — a11y work
 - `greater-cli` — CLI improvements
 - `greater-registry` — registry format / generation
-- `greater-release-automation` — manual tag / artifact publishing and registry validation
+- `greater-release-automation` — manual release, semver impact notes, tag / artifact publishing
 - `greater-face-social` / `greater-face-artist` / `greater-face-blog` / `greater-face-community` / `greater-face-agent` — face suite scopes
 - `greater-primitive` / `greater-headless` — package scopes
 - `greater-playground` / `greater-docs-site` — app scopes
 - `greater-deps` — dependency bumps
 - `greater-agpl` — license discipline
 - `greater-framework-feedback` — FaceTheory / upstream signal
-- `breaking` — requires major-version coordination + consumer migration notes
+- `breaking` — requires major-version semver impact note + consumer coordination
 - `advisor-brief` — originated from advisor dispatch
 - Specialist gates: `needs-component-api-walk`, `needs-contract-sync-walk`, `needs-a11y-walk`, `needs-release-walk`
 
