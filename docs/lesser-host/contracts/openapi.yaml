@@ -114,7 +114,7 @@ components:
                   maxLength: 128
                 conversation_status:
                   type: string
-                  enum: [unknown, pending, in_progress, completed, failed]
+                  enum: [unknown, pending, created, in_progress, assistant_turn_ready, declaration_extraction_pending, declaration_ready, completed, failed]
                 expected_status:
                   type: string
                   minLength: 1
@@ -717,7 +717,7 @@ components:
           type: string
         latest_conversation_status:
           type: string
-          enum: [in_progress, completed, failed]
+          enum: [created, in_progress, assistant_turn_ready, declaration_extraction_pending, declaration_ready, completed, failed]
         latest_review_sha256:
           type: string
           pattern: "^[0-9a-f]{64}$"
@@ -1031,6 +1031,44 @@ components:
           type: string
           minLength: 1
 
+    SoulHostedGenesisMintConversationRequest:
+      type: object
+      additionalProperties: false
+      required: [message]
+      description: |
+        JSON-authoritative Host ↔ Lesser request for creating or appending a hosted-genesis mint-conversation turn.
+        `conversation_id` is supplied when Lesser is resuming or appending to a persisted Host conversation. The optional
+        `idempotency_key` and `correlation_id` are client-safe cross-boundary identifiers; they must not contain raw Host
+        credentials, browser bearer tokens, raw LLM transcripts, or tenant user content.
+      properties:
+        model:
+          type: string
+          minLength: 1
+        conversation_id:
+          type: string
+          minLength: 1
+          maxLength: 128
+          pattern: "^[A-Za-z0-9._:-]{1,128}$"
+        message:
+          type: string
+          minLength: 1
+        idempotency_key:
+          type: string
+          minLength: 1
+          maxLength: 128
+          pattern: "^[A-Za-z0-9._:-]{1,128}$"
+        correlation_id:
+          type: string
+          minLength: 1
+          maxLength: 128
+        lesser_request_id:
+          type: string
+          minLength: 1
+          maxLength: 128
+
+    SoulHostedGenesisConversationResponse:
+      $ref: "../spec/v3/schemas/hosted-genesis.conversation.response.schema.json"
+
     SoulMintConversation:
       type: object
       additionalProperties: false
@@ -1054,7 +1092,10 @@ components:
           type: string
         status:
           type: string
-          enum: [in_progress, completed, failed]
+          description: >
+            Legacy raw Host record status. `completed` is retained for backward compatibility and maps to the
+            durable hosted-genesis contract status `declaration_ready` only when valid produced declarations exist.
+          enum: [created, in_progress, assistant_turn_ready, declaration_extraction_pending, declaration_ready, completed, failed]
         usage:
           $ref: "#/components/schemas/AIUsage"
         charged_credits:
@@ -1112,7 +1153,7 @@ components:
           type: string
         status:
           type: string
-          enum: [in_progress, completed, failed]
+          enum: [created, in_progress, assistant_turn_ready, declaration_extraction_pending, declaration_ready, completed, failed]
         usage:
           $ref: "#/components/schemas/AIUsage"
         charged_credits:
@@ -2769,13 +2810,21 @@ paths:
 
   /api/v1/soul/instance/agents/register/{id}/mint-conversation:
     post:
-      operationId: soulInstanceStartRegistrationMintConversationSSE
-      summary: Start or continue an instance-key registration mint conversation over SSE
+      operationId: soulInstanceStartRegistrationMintConversation
+      summary: Start or continue an instance-key registration mint conversation with durable JSON status
       description: |
-        Streams the assistant response using `text/event-stream` for a registration owned by the authenticated managed
-        instance. The bearer token is the managed InstanceKey and Host enforces the registration's domain boundary before
-        streaming. Canonical SSE event names and payload schemas are published in
-        `docs/contracts/soul-mint-conversation-sse.json`.
+        JSON-authoritative server-to-server route for Lesser. It creates or appends a hosted-genesis turn for a
+        registration owned by the authenticated managed instance and returns a durable HostConversation status envelope.
+        The bearer token is the managed InstanceKey (`sha256(raw_key)` stored by Host) and Host enforces the
+        registration's domain boundary before returning any conversation id or status.
+
+        HTTP `200` or `202` means transport/request acceptance only; it is not terminal completion. Lesser must persist
+        `conversation_id` immediately, then poll `GET
+        /api/v1/soul/instance/agents/register/{id}/mint-conversation/{conversationId}` until the durable status is
+        `declaration_ready` (terminal declaration evidence present) or `failed` (typed bounded recovery). SSE remains an
+        optional portal/native Host UI delivery mechanism on the non-instance routes, but it is not the authoritative
+        completion mechanism for this Lesser path.
+      x-authoritative-completion: durable-json
       security:
         - instanceKeyAuth: []
       parameters:
@@ -2790,17 +2839,24 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SoulMintConversationSSEInput"
+              $ref: "#/components/schemas/SoulHostedGenesisMintConversationRequest"
       responses:
         "200":
-          description: SSE stream of mint-conversation events
+          description: |
+            Request accepted or replayed and the current durable HostConversation status is available. This is transport
+            success only; inspect `conversation.status` before advancing workflow state.
           content:
-            text/event-stream:
+            application/json:
               schema:
-                type: string
-          x-sse-contract:
-            file: "./soul-mint-conversation-sse.json"
-            version: "1"
+                $ref: "#/components/schemas/SoulHostedGenesisConversationResponse"
+        "202":
+          description: |
+            Request accepted and asynchronous hosted-genesis work is in progress. This is transport success only; Lesser
+            must poll the durable status read using the returned `conversation.conversation_id`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulHostedGenesisConversationResponse"
         "400":
           description: Invalid request
           content:
@@ -2841,10 +2897,12 @@ paths:
   /api/v1/soul/instance/agents/register/{id}/mint-conversation/{conversationId}:
     get:
       operationId: soulInstanceGetRegistrationMintConversation
-      summary: Get an instance-key registration mint-conversation record
+      summary: Read durable hosted-genesis mint-conversation status
       description: |
-        Server-to-server route for managed Lesser instances. Returns the bounded private conversation record for a
-        registration inside the authenticated instance boundary.
+        JSON-authoritative durable status read for managed Lesser instances. Returns the current HostConversation status
+        envelope for a registration inside the authenticated instance boundary. This route is the polling/resume source
+        of truth for hosted genesis; it returns terminal declaration evidence only when `conversation.status` is
+        `declaration_ready`, and returns typed failure/recovery when `conversation.status` is `failed`.
       security:
         - instanceKeyAuth: []
       parameters:
@@ -2864,11 +2922,11 @@ paths:
             pattern: "^[A-Za-z0-9._:-]{1,128}$"
       responses:
         "200":
-          description: OK
+          description: Current durable HostConversation status. HTTP 200 is transport success only.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SoulInstanceMintConversationResponse"
+                $ref: "#/components/schemas/SoulHostedGenesisConversationResponse"
         "400":
           description: Invalid request
           content:
@@ -2912,10 +2970,12 @@ paths:
       summary: Complete or replay an instance-key registration mint conversation
       description: |
         Server-to-server route for managed Lesser instances. Completes a conversation inside the authenticated instance
-        boundary and persists the produced declarations for finalize preflight/finalize. If the stored conversation is
-        already `completed` and has valid produced declarations, the route is idempotent and returns the completed
-        conversation without re-extracting or rewriting declarations. Failed conversations and completed conversations
-        without valid produced declarations fail closed with structured state details.
+        boundary and persists the produced declarations for finalize preflight/finalize. If Host has accepted the turn
+        but the assistant turn or declaration extraction is not ready yet, this route returns `202` plus the durable
+        HostConversation progress envelope; HTTP success is not terminal. If the stored conversation is already
+        `completed`/`declaration_ready` and has valid produced declarations, the route is idempotent and returns the
+        compact HostConversation declaration-ready envelope without re-extracting or rewriting declarations. Failed conversations and completed
+        conversations without valid produced declarations fail closed with structured state details.
       security:
         - instanceKeyAuth: []
       parameters:
@@ -2941,11 +3001,17 @@ paths:
               $ref: "#/components/schemas/SoulMintConversationCompleteRequest"
       responses:
         "200":
-          description: OK
+          description: Terminal replay or synchronous completion with valid produced declarations; returns the compact HostConversation envelope and never raw transcript fields.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SoulMintConversation"
+                $ref: "#/components/schemas/SoulHostedGenesisConversationResponse"
+        "202":
+          description: Assistant turn or declaration extraction is still in progress; inspect `conversation.status`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulHostedGenesisConversationResponse"
         "400":
           description: Invalid request
           content:

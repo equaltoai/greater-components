@@ -3,242 +3,225 @@ import { describe, expect, it } from 'vitest';
 import {
 	createProject44SoulBootstrapErrorState,
 	createProject44SoulBootstrapSurface,
-	project44SoulBootstrapFixtures,
 	project44SoulBootstrapIds,
-	project44SoulBootstrapSigning,
+	project49HostedGenesisStatusFixtures,
 } from '../fixtures/soul-bootstrap';
-import type {
-	SoulBootstrapGraphQLClient,
-	SoulBootstrapPublicationEvidence,
-	SoulBootstrapSigningCheckpoint,
-	SoulBootstrapSurface,
-} from '../soul/bootstrap';
+import type { SoulBootstrapGraphQLClient, SoulBootstrapSurface } from '../soul/bootstrap';
 import {
+	canPublishHostedSoulBootstrap,
 	createHostedSoulBootstrapClient,
-	getHostedSoulBootstrapTerminalDeclarationEvidence,
+	getHostedSoulBootstrapTerminalDeclarationEvidenceSummary,
+	isHostedSoulBootstrapDeclarationReady,
+	isHostedSoulBootstrapInProgress,
 	isHostedSoulBootstrapPublishReady,
 	type HostedSoulBootstrapNextAction,
-	type HostedSoulBootstrapPhase,
 	type HostedSoulBootstrapRecoveryAction,
 	type HostedSoulBootstrapRecoveryCategory,
+	type LesserHostHostedGenesisConversation,
 } from '../soul/hostedBootstrap';
 
-const activeHostIds = {
-	hostRegistrationId: project44SoulBootstrapIds.registrationId,
-	hostSoulAgentId: project44SoulBootstrapIds.soulAgentId,
-	hostConversationId: project44SoulBootstrapIds.conversationId,
-} as const;
+const activeConversationId = project44SoulBootstrapIds.conversationId;
+const hostAgentId = '0x2222222222222222222222222222222222222222222222222222222222222222';
 
-const completedHostedConversationCheckpoint = {
-	__typename: 'SoulBootstrapSigningCheckpoint',
-	...project44SoulBootstrapSigning.hostedConversation,
-	status: 'completed',
-	hostRequestId: 'host-req-complete-002',
-} satisfies SoulBootstrapSigningCheckpoint;
-
-type Project49RepresentabilityRow = Readonly<{
-	label: string;
-	hostStatus: string;
-	phase: HostedSoulBootstrapPhase;
-	state: string;
-	typedNextAction: HostedSoulBootstrapNextAction;
-	recoveryCategory?: HostedSoulBootstrapRecoveryCategory | null;
-	recoveryAction?: HostedSoulBootstrapRecoveryAction | null;
-	hostRegistrationId?: string | null;
-	hostSoulAgentId?: string | null;
-	hostConversationId?: string | null;
-	signingCheckpoints?: readonly SoulBootstrapSigningCheckpoint[];
-	publication?: SoulBootstrapPublicationEvidence | null;
-	error?: ReturnType<typeof createProject44SoulBootstrapErrorState> | null;
-	retryable?: boolean;
-	restartRequired?: boolean;
-	restartAvailable?: boolean;
-	canPublishHostedSoul: boolean;
-	publishReason: string;
-}>;
-
-const project49Rows = [
-	{
-		label: 'no registration',
-		hostStatus: 'no_registration',
-		phase: 'NOT_STARTED',
-		state: 'not_started',
-		typedNextAction: 'START_HOSTED_BOOTSTRAP',
-		hostRegistrationId: null,
-		hostSoulAgentId: null,
-		hostConversationId: null,
-		canPublishHostedSoul: false,
-		publishReason: 'blocked:no_host_registration',
+const liveInProgressHostConversation = {
+	registration_id: project44SoulBootstrapIds.registrationId,
+	conversation_id: activeConversationId,
+	agent_id: hostAgentId,
+	status: 'in_progress',
+	latest_turn_id: 'turn-project-49-user',
+	message_count: 1,
+	request_id: 'req-project-49-in-progress',
+	trace_ids: {
+		host_request_id: 'req-project-49-in-progress',
+		correlation_id: 'lesser-bootstrap-01',
+		idempotency_key: 'idem-hosted-genesis-01',
 	},
-	{
-		label: 'registration active, no conversation',
-		hostStatus: 'registration_active_no_conversation',
-		phase: 'CONVERSATION',
-		state: 'conversation.registration_active',
-		typedNextAction: 'SEND_HOSTED_SOUL_GENESIS_MESSAGE',
-		hostRegistrationId: activeHostIds.hostRegistrationId,
-		hostSoulAgentId: activeHostIds.hostSoulAgentId,
-		hostConversationId: null,
-		canPublishHostedSoul: false,
-		publishReason: 'blocked:no_host_conversation',
-	},
+	poll_after_seconds: 2,
+	created_at: '2026-06-18T13:10:00Z',
+	updated_at: '2026-06-18T13:10:01Z',
+} satisfies LesserHostHostedGenesisConversation;
+
+const hostStatusConversations = [
 	{
 		label: 'created',
-		hostStatus: 'created',
-		phase: 'CONVERSATION',
-		state: 'conversation.created',
-		typedNextAction: 'REFRESH_STATE',
-		recoveryCategory: 'REFRESH_STATE',
-		recoveryAction: 'REFRESH_STATE',
-		...activeHostIds,
-		canPublishHostedSoul: false,
-		publishReason: 'blocked:created_requires_lesser_projection_row',
+		conversation: {
+			...liveInProgressHostConversation,
+			status: 'created',
+			message_count: 0,
+			request_id: 'req-project-49-created',
+		} satisfies LesserHostHostedGenesisConversation,
+		inProgress: true,
+		declarationReady: false,
+		canPublish: false,
 	},
 	{
 		label: 'in_progress',
-		hostStatus: 'in_progress',
-		phase: 'CONVERSATION',
-		state: 'conversation.in_progress',
-		typedNextAction: 'REFRESH_STATE',
-		recoveryCategory: 'REFRESH_STATE',
-		recoveryAction: 'REFRESH_STATE',
-		...activeHostIds,
-		canPublishHostedSoul: false,
-		publishReason: 'blocked:conversation_in_progress',
+		conversation: liveInProgressHostConversation,
+		inProgress: true,
+		declarationReady: false,
+		canPublish: false,
 	},
 	{
 		label: 'assistant_turn_ready',
-		hostStatus: 'assistant_turn_ready',
-		phase: 'CONVERSATION',
-		state: 'conversation.assistant_turn_ready',
-		typedNextAction: 'COMPLETE_HOSTED_SOUL_GENESIS',
-		...activeHostIds,
-		canPublishHostedSoul: false,
-		publishReason: 'blocked:terminal_declaration_evidence_absent',
+		conversation: {
+			...liveInProgressHostConversation,
+			status: 'assistant_turn_ready',
+			request_id: 'req-project-49-assistant-ready',
+		} satisfies LesserHostHostedGenesisConversation,
+		inProgress: true,
+		declarationReady: false,
+		canPublish: false,
 	},
 	{
 		label: 'declaration_extraction_pending',
-		hostStatus: 'declaration_extraction_pending',
-		phase: 'CONVERSATION',
-		state: 'conversation.declaration_extraction_pending',
-		typedNextAction: 'REFRESH_STATE',
-		recoveryCategory: 'REFRESH_STATE',
-		recoveryAction: 'REFRESH_STATE',
-		...activeHostIds,
-		canPublishHostedSoul: false,
-		publishReason: 'blocked:declaration_extraction_pending',
+		conversation: {
+			...liveInProgressHostConversation,
+			status: 'declaration_extraction_pending',
+			request_id: 'req-project-49-extraction-pending',
+		} satisfies LesserHostHostedGenesisConversation,
+		inProgress: true,
+		declarationReady: false,
+		canPublish: false,
 	},
 	{
 		label: 'declaration_ready',
-		hostStatus: 'declaration_ready',
-		phase: 'FINALIZE',
-		state: 'conversation.declaration_ready',
-		typedNextAction: 'PUBLISH_HOSTED_SOUL',
-		...activeHostIds,
-		signingCheckpoints: [completedHostedConversationCheckpoint],
-		canPublishHostedSoul: true,
-		publishReason: 'allowed:active_conversation_terminal_declaration_evidence',
+		conversation: {
+			...liveInProgressHostConversation,
+			status: 'declaration_ready',
+			message_count: 2,
+			request_id: 'req-project-49-declaration-ready',
+			produced_declarations: {
+				declaration_id: 'decl-project-49',
+				declaration_hash: 'sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+				produced_at: '2026-06-18T13:12:30Z',
+				declarations: {
+					selfDescription: {
+						summary: 'Demo hosted soul for a managed Lesser drone.',
+					},
+					capabilities: [{ id: 'chat' }],
+					boundaries: [{ id: 'no-credential-disclosure' }],
+					transparency: { authority_model: 'instance_trust' },
+				},
+				evidence: {
+					source: 'host_conversation',
+					registration_id: project44SoulBootstrapIds.registrationId,
+					conversation_id: activeConversationId,
+					agent_id: hostAgentId,
+					message_count: 2,
+					request_id: 'req-project-49-declaration-ready',
+				},
+			},
+			completed_at: '2026-06-18T13:12:30Z',
+		} satisfies LesserHostHostedGenesisConversation,
+		inProgress: false,
+		declarationReady: true,
+		canPublish: true,
 	},
 	{
-		label: 'failed retry same step',
-		hostStatus: 'failed',
-		phase: 'ERROR',
-		state: 'error.host_failed',
-		typedNextAction: 'RETRY_SAME_STEP',
-		recoveryCategory: 'RETRY_SAME_STEP',
-		recoveryAction: 'RETRY_SAME_STEP',
-		...activeHostIds,
-		error: createProject44SoulBootstrapErrorState({
-			code: 'HOST_CONVERSATION_FAILED',
-			message: 'Host failed before producing declaration evidence.',
-			source: 'host',
-			statusCode: 200,
-			recoveryCategory: 'RETRY_SAME_STEP',
-			recoveryAction: 'RETRY_SAME_STEP',
-			retryable: true,
-			restartRequired: false,
-		}),
-		retryable: true,
-		restartAvailable: true,
-		canPublishHostedSoul: false,
-		publishReason: 'blocked:host_failure',
+		label: 'failed',
+		conversation: {
+			...liveInProgressHostConversation,
+			status: 'failed',
+			request_id: 'req-project-49-failed',
+			failure: {
+				code: 'llm_unavailable',
+				message: 'Assistant turn failed before declaration extraction.',
+				retryable: true,
+				recovery: {
+					action: 'retry_same_step',
+					max_attempts: 3,
+					retry_after_seconds: 30,
+					reason: 'provider_unavailable',
+				},
+			},
+			completed_at: '2026-06-18T13:11:00Z',
+		} satisfies LesserHostHostedGenesisConversation,
+		inProgress: false,
+		declarationReady: false,
+		canPublish: false,
 	},
-	{
-		label: 'failed restart bootstrap',
-		hostStatus: 'failed',
-		phase: 'ERROR',
-		state: 'error.host_failed',
-		typedNextAction: 'RESTART_SOUL_BOOTSTRAP',
-		recoveryCategory: 'RESTART_REQUIRED',
-		recoveryAction: 'RESTART_BOOTSTRAP',
-		...activeHostIds,
-		error: createProject44SoulBootstrapErrorState({
-			code: 'HOST_CONVERSATION_RESTART_REQUIRED',
-			message: 'Host requires a new bootstrap attempt.',
-			source: 'host',
-			statusCode: 200,
-			recoveryCategory: 'RESTART_REQUIRED',
-			recoveryAction: 'RESTART_BOOTSTRAP',
-			retryable: false,
-			restartRequired: true,
-		}),
-		restartRequired: true,
-		restartAvailable: true,
-		canPublishHostedSoul: false,
-		publishReason: 'blocked:host_failure_restart',
-	},
-	{
-		label: 'published/bound',
-		hostStatus: 'published_bound',
-		phase: 'COMPLETE',
-		state: 'complete.bound',
-		typedNextAction: 'COMPLETE',
-		...activeHostIds,
-		signingCheckpoints: [completedHostedConversationCheckpoint],
-		publication: project44SoulBootstrapFixtures.hostedPublished.state.publication,
-		canPublishHostedSoul: false,
-		publishReason: 'complete:already_published_bound',
-	},
-] as const satisfies readonly Project49RepresentabilityRow[];
+] as const;
 
 describe('Project 49 hosted genesis representability', () => {
-	it.each(project49Rows)(
+	it.each(project49HostedGenesisStatusFixtures)(
 		'models $label as a Lesser-hosted soul bootstrap projection row',
 		async (row) => {
-			const surface = createProject49Surface(row);
 			const client = createHostedSoulBootstrapClient({
-				graphqlClient: createSurfaceGraphQLClient(surface),
+				graphqlClient: createSurfaceGraphQLClient(row.surface),
 			});
 
 			const result = await client.current(project44SoulBootstrapIds.username);
 
 			expect(result.hosted).toMatchObject({
-				phase: row.phase,
-				state: row.state,
 				bootstrapMode: 'HOSTED',
 				authorityModel: 'INSTANCE_TRUST',
-				typedNextAction: row.typedNextAction,
-				recoveryCategory: row.recoveryCategory ?? null,
-				recoveryAction: row.recoveryAction ?? null,
-				hostRegistrationId: row.hostRegistrationId ?? null,
-				hostSoulAgentId: row.hostSoulAgentId ?? null,
-				hostConversationId: row.hostConversationId ?? null,
+				state: row.surface.state.state,
+				phase: row.surface.state.phase,
+				hostConversationStatus: row.surface.state.hostConversationStatus ?? null,
+				typedNextAction: row.surface.state.typedNextAction,
+				recoveryCategory: row.surface.state.recoveryCategory ?? null,
+				recoveryAction: row.surface.state.recoveryAction ?? null,
+				hostRegistrationId: row.surface.state.hostRegistrationId ?? null,
+				hostSoulAgentId: row.surface.state.hostSoulAgentId ?? null,
+				hostConversationId: row.surface.state.hostConversationId ?? null,
 			});
-			expect(result.typedNextAction).toBe(row.typedNextAction);
-			expect(result.recoveryCategory).toBe(row.recoveryCategory ?? null);
-			expect(result.recoveryAction).toBe(row.recoveryAction ?? null);
+			expect(result.typedNextAction).toBe(row.surface.typedNextAction);
 			expect(result.hostRequest).toMatchObject({
 				lastHostRequestId: project44SoulBootstrapIds.hostRequestId,
 			});
-			expect(result.publication ?? null).toBe(row.publication ?? null);
 			expect(
-				isHostedSoulBootstrapPublishReady(result, {
-					conversationId: activeHostIds.hostConversationId,
-				})
-			).toBe(row.canPublishHostedSoul);
-			expect(row.publishReason).toBeTruthy();
+				isHostedSoulBootstrapInProgress(result, { conversationId: activeConversationId })
+			).toBe(row.inProgress);
+			expect(
+				isHostedSoulBootstrapDeclarationReady(result, { conversationId: activeConversationId })
+			).toBe(row.declarationReady);
+			expect(canPublishHostedSoulBootstrap(result, { conversationId: activeConversationId })).toBe(
+				row.canPublish
+			);
+			expect(
+				isHostedSoulBootstrapPublishReady(result, { conversationId: activeConversationId })
+			).toBe(row.canPublish);
+			expect(result.publishGate?.reason).toBe(row.publishReason);
+
+			if (row.declarationReady) {
+				expect(
+					getHostedSoulBootstrapTerminalDeclarationEvidenceSummary(result, {
+						conversationId: activeConversationId,
+					})
+				).toMatchObject({
+					conversationId: activeConversationId,
+					hostStatus: 'declaration_ready',
+					declarationsHash:
+						'sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+				});
+			} else {
+				expect(getHostedSoulBootstrapTerminalDeclarationEvidenceSummary(result)).toBeNull();
+			}
 		}
 	);
+
+	it.each(hostStatusConversations)(
+		'maps generated Lesser Host $label conversation status through fail-closed helpers',
+		(row) => {
+			expect(
+				isHostedSoulBootstrapInProgress(row.conversation, { conversationId: activeConversationId })
+			).toBe(row.inProgress);
+			expect(
+				isHostedSoulBootstrapDeclarationReady(row.conversation, {
+					conversationId: activeConversationId,
+				})
+			).toBe(row.declarationReady);
+			expect(
+				canPublishHostedSoulBootstrap(row.conversation, { conversationId: activeConversationId })
+			).toBe(row.canPublish);
+		}
+	);
+
+	it('preserves the observed live in_progress Host shape as progress, not publish readiness', () => {
+		expect(isHostedSoulBootstrapInProgress(liveInProgressHostConversation)).toBe(true);
+		expect(isHostedSoulBootstrapDeclarationReady(liveInProgressHostConversation)).toBe(false);
+		expect(canPublishHostedSoulBootstrap(liveInProgressHostConversation)).toBe(false);
+	});
 
 	it('maps every locked Host recovery action into existing Lesser recovery/next-action enums', () => {
 		const recoveryMappings = [
@@ -274,85 +257,141 @@ describe('Project 49 hosted genesis representability', () => {
 		}>[];
 
 		for (const mapping of recoveryMappings) {
-			const surface = createProject49Surface({
-				label: mapping.hostRecoveryAction,
-				hostStatus: 'failed',
-				phase: mapping.typedNextAction === 'REFRESH_STATE' ? 'CONVERSATION' : 'ERROR',
-				state:
-					mapping.typedNextAction === 'REFRESH_STATE'
-						? 'conversation.in_progress'
-						: 'error.host_failed',
-				typedNextAction: mapping.typedNextAction,
-				recoveryCategory: mapping.recoveryCategory,
-				recoveryAction: mapping.recoveryAction,
-				...activeHostIds,
-				canPublishHostedSoul: false,
-				publishReason: `blocked:${mapping.hostRecoveryAction}`,
-			});
+			const surface = createProject49RecoverySurface(mapping);
 
 			expect(surface.typedNextAction, mapping.hostRecoveryAction).toBe(mapping.typedNextAction);
 			expect(surface.recoveryCategory, mapping.hostRecoveryAction).toBe(mapping.recoveryCategory);
 			expect(surface.recoveryAction, mapping.hostRecoveryAction).toBe(mapping.recoveryAction);
-			expect(isHostedSoulBootstrapPublishReady(surface)).toBe(false);
+			expect(canPublishHostedSoulBootstrap(surface)).toBe(false);
 		}
 	});
 
-	it('fails closed for future compact publishGate/terminalDeclarationEvidence fields without current evidence', () => {
-		const compactOnlySurface = withRuntimeStateExtras(
-			createProject49Surface({
-				label: 'future compact declaration_ready',
-				hostStatus: 'declaration_ready',
-				phase: 'FINALIZE',
-				state: 'conversation.declaration_ready',
-				typedNextAction: 'PUBLISH_HOSTED_SOUL',
-				...activeHostIds,
-				canPublishHostedSoul: true,
-				publishReason: 'allowed:active_conversation_terminal_declaration_evidence',
-			}),
-			{
-				terminalDeclarationEvidence: {
-					conversationId: activeHostIds.hostConversationId,
-					hostStatus: 'declaration_ready',
-					hostRequestId: 'host-req-complete-002',
-					declarationsHash:
-						'sha256:7af7a1c0f7c74c872a3a8a0a3e0af49a4a7c7f1f9b59f6827b1849d5f3f3a001',
-				},
-				publishGate: {
-					canPublishHostedSoul: true,
-					reason: 'allowed:active_conversation_terminal_declaration_evidence',
-					requiresActiveConversationTerminalDeclarationEvidence: true,
-				},
-			}
-		);
+	it('fails closed for malformed, stale, missing, or compact-only publish data', () => {
+		const declarationReady = project49HostedGenesisStatusFixtures.find(
+			(row) => row.hostStatus === 'declaration_ready'
+		)?.surface;
+		if (!declarationReady) {
+			throw new Error('missing declaration_ready fixture');
+		}
 
-		expect(getHostedSoulBootstrapTerminalDeclarationEvidence(compactOnlySurface)).toBeNull();
-		expect(isHostedSoulBootstrapPublishReady(compactOnlySurface)).toBe(false);
+		const malformedCases = [
+			{
+				surface: withRuntimeStateExtras(declarationReady, { terminalDeclarationEvidence: null }),
+				terminalEvidencePresent: false,
+			},
+			{
+				surface: withRuntimeStateExtras(declarationReady, {
+					terminalDeclarationEvidence: {
+						conversationId: `${activeConversationId}-stale`,
+						hostStatus: 'declaration_ready',
+						declarationsHash:
+							'sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+					},
+				}),
+				terminalEvidencePresent: false,
+			},
+			{
+				surface: withRuntimeStateExtras(declarationReady, {
+					terminalDeclarationEvidence: {
+						conversationId: activeConversationId,
+						hostStatus: 'declaration_ready',
+						declarationsHash: 'not-a-sha256',
+					},
+				}),
+				terminalEvidencePresent: false,
+			},
+			{
+				surface: withRuntimeStateExtras(declarationReady, {
+					publishGate: {
+						canPublishHostedSoul: true,
+						reason: 'allowed:active_conversation_terminal_declaration_evidence',
+						requiresActiveConversationTerminalDeclarationEvidence: true,
+					},
+					terminalDeclarationEvidence: null,
+				}),
+				terminalEvidencePresent: false,
+			},
+			{
+				surface: withRuntimeStateExtras(declarationReady, {
+					publishGate: {
+						canPublishHostedSoul: true,
+						reason: 'allowed:active_conversation_terminal_declaration_evidence',
+						requiresActiveConversationTerminalDeclarationEvidence: false,
+					},
+				}),
+				terminalEvidencePresent: true,
+			},
+		] as const;
+
+		for (const { surface, terminalEvidencePresent } of malformedCases) {
+			const terminalEvidence = getHostedSoulBootstrapTerminalDeclarationEvidenceSummary(surface);
+			if (terminalEvidencePresent) {
+				expect(terminalEvidence).not.toBeNull();
+			} else {
+				expect(terminalEvidence).toBeNull();
+			}
+			expect(canPublishHostedSoulBootstrap(surface)).toBe(false);
+		}
+	});
+
+	it('fails closed for malformed generated Host declaration evidence', () => {
+		const declarationReadyHost = hostStatusConversations.find(
+			(row) => row.label === 'declaration_ready'
+		)?.conversation;
+		const producedDeclarations = declarationReadyHost?.produced_declarations;
+		if (!declarationReadyHost || !producedDeclarations) {
+			throw new Error('missing declaration_ready Host fixture');
+		}
+
+		const staleHostEvidence = {
+			...declarationReadyHost,
+			produced_declarations: {
+				...producedDeclarations,
+				evidence: {
+					...producedDeclarations.evidence,
+					conversation_id: `${activeConversationId}-stale`,
+				},
+			},
+		} satisfies LesserHostHostedGenesisConversation;
+
+		expect(getHostedSoulBootstrapTerminalDeclarationEvidenceSummary(staleHostEvidence)).toBeNull();
+		expect(canPublishHostedSoulBootstrap(staleHostEvidence)).toBe(false);
 	});
 });
 
-function createProject49Surface(row: Project49RepresentabilityRow): SoulBootstrapSurface {
+function createProject49RecoverySurface(mapping: {
+	recoveryCategory: HostedSoulBootstrapRecoveryCategory;
+	recoveryAction: HostedSoulBootstrapRecoveryAction;
+	typedNextAction: HostedSoulBootstrapNextAction;
+}): SoulBootstrapSurface {
 	return createProject44SoulBootstrapSurface({
-		phase: row.phase,
-		state: row.state,
-		bootstrapMode: 'HOSTED',
-		authorityModel: 'INSTANCE_TRUST',
-		anchorState: 'HOSTED_OFFCHAIN',
-		assuranceState: 'HOSTED_OFFCHAIN',
-		typedNextAction: row.typedNextAction,
-		nextAction: row.typedNextAction.toLowerCase(),
-		recoveryCategory: row.recoveryCategory ?? null,
-		recoveryAction: row.recoveryAction ?? null,
-		retryable: row.retryable ?? row.error?.retryable ?? false,
-		restartRequired: row.restartRequired ?? row.error?.restartRequired ?? false,
-		restartAvailable: row.restartAvailable ?? false,
-		hostRegistrationId: row.hostRegistrationId ?? null,
-		hostSoulAgentId: row.hostSoulAgentId ?? null,
-		hostConversationId: row.hostConversationId ?? null,
+		phase: mapping.typedNextAction === 'REFRESH_STATE' ? 'CONVERSATION' : 'ERROR',
+		state:
+			mapping.typedNextAction === 'REFRESH_STATE'
+				? 'conversation.in_progress'
+				: 'error.host_failed',
+		hostConversationStatus: mapping.typedNextAction === 'REFRESH_STATE' ? 'in_progress' : 'failed',
+		typedNextAction: mapping.typedNextAction,
+		recoveryCategory: mapping.recoveryCategory,
+		recoveryAction: mapping.recoveryAction,
+		hostRegistrationId: project44SoulBootstrapIds.registrationId,
+		hostSoulAgentId: project44SoulBootstrapIds.soulAgentId,
+		hostConversationId: activeConversationId,
 		walletAddress: null,
 		principalAddress: null,
-		signingCheckpoints: row.signingCheckpoints ?? [],
-		publication: row.publication ?? null,
-		error: row.error ?? null,
+		error:
+			mapping.typedNextAction === 'REFRESH_STATE'
+				? null
+				: createProject44SoulBootstrapErrorState({
+						code: 'HOST_CONVERSATION_FAILED',
+						message: 'Host failed before producing declaration evidence.',
+						source: 'host',
+						statusCode: 200,
+						recoveryCategory: mapping.recoveryCategory,
+						recoveryAction: mapping.recoveryAction,
+						retryable: mapping.recoveryAction === 'RETRY_SAME_STEP',
+						restartRequired: mapping.recoveryAction === 'RESTART_BOOTSTRAP',
+					}),
 	});
 }
 
