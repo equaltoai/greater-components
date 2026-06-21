@@ -5,6 +5,11 @@ description: Use when a change touches `packages/adapters/` or when upstream Les
 
 # Sync contracts
 
+## PROG-M1 branch/release profile override
+
+Active profile: **feature → staging → main**. Feature branches target `staging`; feature→staging PRs require the existing pnpm verify set, including required checks **Build and Test** and **ESLint and Prettier Check**. `main` accepts PRs only from `staging`, uses default GitHub checks and branch rules only, and does not rerun the full pnpm verify set as a promotion gate. Release is manual, operator-owned, tag-driven off `main`; the steward reports evidence and does not merge main or publish releases. Contract sync remains orthogonal and mandatory: preserve `LESSER_REF` v1.5.3, `LESSER_HOST_REF` v1.0.3, and `check-openapi-auth`.
+
+
 greater's `packages/adapters/` wire UI components to specific versions of Lesser's GraphQL schema, Lesser's OpenAPI, and Lesser Host's soul-conversation schemas. Those versions are **pinned** in:
 
 - `docs/lesser/contracts/` — Lesser GraphQL + OpenAPI snapshots
@@ -119,8 +124,8 @@ For each pinned-version update:
 ### Semver impact
 <patch / minor / major>
 
-### Changeset declaration
-Release note / migration note:
+### Semver impact note declaration
+`.semver impact note/<slug>.md`:
 ```
 ---
 "@equaltoai/greater-components-adapters": <impact>

@@ -5,6 +5,11 @@ description: Use when a user brings a new capability, feature request, or enhanc
 
 # Scope a need
 
+## PROG-M1 branch/release profile override
+
+Active profile: **feature → staging → main**. Feature branches target `staging`; feature→staging PRs require the existing pnpm verify set, including required checks **Build and Test** and **ESLint and Prettier Check**. `main` accepts PRs only from `staging`, uses default GitHub checks and branch rules only, and does not rerun the full pnpm verify set as a promotion gate. Release is manual, operator-owned, tag-driven off `main`; the steward reports evidence and does not merge main or publish releases. Contract sync remains orthogonal and mandatory: preserve `LESSER_REF` v1.5.3, `LESSER_HOST_REF` v1.0.3, and `check-openapi-auth`.
+
+
 A need arrives fuzzy. A feature arrives sharp. This skill is the conversation that turns fuzzy into sharp, with three specific filters: greater-mission alignment, narrowest-scope discipline with API stability, and specialist-skill routing.
 
 ## Your posture
@@ -77,7 +82,7 @@ Prefer:
 Avoid:
 
 - Refactors "while we're in there"
-- Breaking changes without major-version coordination + consumer migration notes
+- Breaking changes without major-version semver impact note + consumer coordination
 - Adapter changes without pinned contract-sync
 - Token renames (breaking theming)
 - Accessibility regressions
@@ -146,7 +151,7 @@ Specialist findings feed into enumeration.
 - External Mastodon-compat: <baseline preserved / explicit drop documented>
 
 ## Semver impact
-- <major / minor / patch / none> — semver impact
+- <major / minor / patch> — semver impact note impact
 
 ## Mastodon-compat posture
 - <baseline preserved / intentional Lesser-first drop with documented fallback>
