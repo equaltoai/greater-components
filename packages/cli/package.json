@@ -54,7 +54,7 @@
     "@sveltejs/kit": "^2.61.1",
     "@sveltejs/vite-plugin-svelte": "^7.0.0",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^25.6.0",
+    "@types/node": "^26.0.0",
     "@types/prompts": "^2.4.9",
     "@vitest/coverage-v8": "^4.1.4",
     "hast-util-to-mdast": "^10.1.2",
