@@ -104,7 +104,7 @@
     "@tanstack/svelte-virtual": "^3.13.23"
   },
   "devDependencies": {
-    "@babel/parser": "^7.29.2",
+    "@babel/parser": "^8.0.0",
     "@babel/traverse": "^7.29.0",
     "@playwright/test": "^1.59.1",
     "@sveltejs/vite-plugin-svelte": "^7.0.0",
