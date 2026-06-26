@@ -1,3 +1,7 @@
+import { readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -18,10 +22,82 @@ import {
 	type HostedSoulBootstrapRecoveryAction,
 	type HostedSoulBootstrapRecoveryCategory,
 	type LesserHostHostedGenesisConversation,
+	type LesserHostHostedGenesisConversationResponse,
 } from '../soul/hostedBootstrap';
 
 const activeConversationId = project44SoulBootstrapIds.conversationId;
 const hostAgentId = '0x2222222222222222222222222222222222222222222222222222222222222222';
+const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../../../..');
+
+type ProjectionTableFixture = {
+	rows: Array<{
+		label: string;
+		host_status: string;
+		phase: string;
+		status: string;
+		example_typed_next_action: string;
+		publish_gate: string;
+		example: {
+			lesserGraphql: {
+				state: Record<string, unknown>;
+				publishGate?: {
+					canPublishHostedSoul: boolean;
+					reason: string;
+					requiresActiveConversationTerminalDeclarationEvidence: boolean;
+				};
+			};
+		};
+	}>;
+};
+
+type ProducerFixtureCase = {
+	label: string;
+	status: LesserHostHostedGenesisConversation['status'];
+	lesserPath: string;
+	hostPath: string;
+	inProgress: boolean;
+	declarationReady: boolean;
+	canPublish: boolean;
+};
+
+const releasedHostedGenesisFixtureCases = [
+	{
+		label: 'in_progress',
+		status: 'in_progress',
+		lesserPath:
+			'docs/lesser/contracts/testdata/hosted-genesis/v1.0.6/hosted-genesis.conversation.in-progress.example.json',
+		hostPath:
+			'docs/lesser-host/spec/v3/fixtures/hosted-genesis.conversation.in-progress.example.json',
+		inProgress: true,
+		declarationReady: false,
+		canPublish: false,
+	},
+	{
+		label: 'declaration_ready',
+		status: 'declaration_ready',
+		lesserPath:
+			'docs/lesser/contracts/testdata/hosted-genesis/v1.0.6/hosted-genesis.conversation.completed-declaration-ready.example.json',
+		hostPath:
+			'docs/lesser-host/spec/v3/fixtures/hosted-genesis.conversation.completed-declaration-ready.example.json',
+		inProgress: false,
+		declarationReady: true,
+		canPublish: true,
+	},
+	{
+		label: 'failed',
+		status: 'failed',
+		lesserPath:
+			'docs/lesser/contracts/testdata/hosted-genesis/v1.0.6/hosted-genesis.conversation.failed.example.json',
+		hostPath: 'docs/lesser-host/spec/v3/fixtures/hosted-genesis.conversation.failed.example.json',
+		inProgress: false,
+		declarationReady: false,
+		canPublish: false,
+	},
+] as const satisfies readonly ProducerFixtureCase[];
+
+const lesserProjectionTable = readJsonFixture<ProjectionTableFixture>(
+	'docs/lesser/contracts/examples/hosted-soul-genesis-projection-table.example.json'
+);
 
 const liveInProgressHostConversation = {
 	registration_id: project44SoulBootstrapIds.registrationId,
@@ -143,6 +219,105 @@ const hostStatusConversations = [
 ] as const;
 
 describe('Project 49 hosted genesis representability', () => {
+	it.each(releasedHostedGenesisFixtureCases)(
+		'consumes released Lesser v1.5.8 and Host v1.0.6 $label fixtures through fail-closed helpers',
+		(row) => {
+			const lesserFixtureText = readTextFixture(row.lesserPath);
+			const hostFixtureText = readTextFixture(row.hostPath);
+			expect(lesserFixtureText).toBe(hostFixtureText);
+
+			const hostFixture = JSON.parse(
+				hostFixtureText
+			) as LesserHostHostedGenesisConversationResponse;
+			const hostConversation = hostFixture.conversation;
+
+			expect(hostConversation.status).toBe(row.status);
+			expect(
+				isHostedSoulBootstrapInProgress(hostFixture, {
+					conversationId: hostConversation.conversation_id,
+				})
+			).toBe(row.inProgress);
+			expect(
+				isHostedSoulBootstrapDeclarationReady(hostFixture, {
+					conversationId: hostConversation.conversation_id,
+				})
+			).toBe(row.declarationReady);
+			expect(
+				canPublishHostedSoulBootstrap(hostFixture, {
+					conversationId: hostConversation.conversation_id,
+				})
+			).toBe(row.canPublish);
+
+			const summary = getHostedSoulBootstrapTerminalDeclarationEvidenceSummary(hostFixture, {
+				conversationId: hostConversation.conversation_id,
+			});
+			if (row.declarationReady) {
+				expect(summary).toMatchObject({
+					source: 'lesser_host_conversation',
+					conversationId: hostConversation.conversation_id,
+					hostStatus: 'declaration_ready',
+					hostRequestId: 'req_hosted_genesis_02',
+					declarationsHash:
+						'sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+					hostRegistrationId: 'reg_01jzhostedgenesis',
+					hostSoulAgentId: '0x2222222222222222222222222222222222222222222222222222222222222222',
+					declarationId: 'decl_01jzhostedgenesis',
+					producedAt: '2026-06-18T13:12:30Z',
+				});
+			} else {
+				expect(summary).toBeNull();
+			}
+		}
+	);
+
+	it('consumes the released Lesser v1.5.8 projection table without normalizing its sibling publishGate example', () => {
+		const projectedRows = new Map(lesserProjectionTable.rows.map((row) => [row.label, row]));
+		const expectedFixtureLabelByProjectionLabel = new Map([
+			['no registration', 'no registration'],
+			['registration active, no conversation', 'registration active, no conversation'],
+			['in_progress', 'in_progress'],
+			['assistant_turn_ready', 'assistant_turn_ready'],
+			['declaration_extraction_pending', 'declaration_extraction_pending'],
+			['declaration_ready', 'declaration_ready'],
+			['failed', 'failed retry same step'],
+			['published/bound', 'published/bound'],
+		]);
+
+		for (const [projectionLabel, fixtureLabel] of expectedFixtureLabelByProjectionLabel) {
+			const projectionRow = projectedRows.get(projectionLabel);
+			const representabilityFixture = project49HostedGenesisStatusFixtures.find(
+				(row) => row.label === fixtureLabel
+			);
+			expect(projectionRow, projectionLabel).toBeDefined();
+			expect(representabilityFixture, fixtureLabel).toBeDefined();
+			if (!projectionRow || !representabilityFixture) {
+				continue;
+			}
+
+			expect(representabilityFixture.hostStatus, projectionLabel).toBe(projectionRow.host_status);
+			expect(representabilityFixture.surface.state.phase, projectionLabel).toBe(
+				projectionRow.phase
+			);
+			expect(representabilityFixture.surface.state.state, projectionLabel).toBe(
+				projectionRow.status
+			);
+			expect(representabilityFixture.surface.state.typedNextAction, projectionLabel).toBe(
+				projectionRow.example_typed_next_action
+			);
+			expect(representabilityFixture.publishReason, projectionLabel).toBe(
+				projectionRow.publish_gate
+			);
+		}
+
+		const declarationReadyRow = projectedRows.get('declaration_ready');
+		expect(declarationReadyRow?.example.lesserGraphql.publishGate).toMatchObject({
+			canPublishHostedSoul: true,
+			reason: 'allowed:active_conversation_terminal_declaration_evidence',
+			requiresActiveConversationTerminalDeclarationEvidence: true,
+		});
+		expect(declarationReadyRow?.example.lesserGraphql.state['publishGate']).toBeUndefined();
+	});
+
 	it.each(project49HostedGenesisStatusFixtures)(
 		'models $label as a Lesser-hosted soul bootstrap projection row',
 		async (row) => {
@@ -415,4 +590,12 @@ function withRuntimeStateExtras(
 			...extras,
 		} as SoulBootstrapSurface['state'],
 	};
+}
+
+function readTextFixture(relativePath: string): string {
+	return readFileSync(resolve(repoRoot, relativePath), 'utf8');
+}
+
+function readJsonFixture<T>(relativePath: string): T {
+	return JSON.parse(readTextFixture(relativePath)) as T;
 }
