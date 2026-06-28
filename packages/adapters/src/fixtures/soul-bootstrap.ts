@@ -234,6 +234,44 @@ function createProject44TerminalDeclarationEvidence(
 	};
 }
 
+function createProject51HostedGenesisConversation(
+	overrides: Partial<NonNullable<SoulBootstrapState['hostedGenesisConversation']>> = {}
+): NonNullable<SoulBootstrapState['hostedGenesisConversation']> {
+	return {
+		__typename: 'SoulBootstrapHostedGenesisConversation',
+		registrationId: project44SoulBootstrapIds.registrationId,
+		conversationId: project44SoulBootstrapIds.conversationId,
+		status: 'assistant_turn_ready',
+		latestTurnId: 'turn-project-51-assistant-001',
+		messageCount: 2,
+		messages: [
+			{
+				__typename: 'SoulBootstrapHostedGenesisMessage',
+				id: 'msg_000001',
+				role: 'USER',
+				content: 'Describe the managed Lesser agent you are becoming.',
+				order: 1,
+				createdAt: '2026-06-28T13:00:00Z',
+				truncated: false,
+			},
+			{
+				__typename: 'SoulBootstrapHostedGenesisMessage',
+				id: 'msg_000002',
+				role: 'ASSISTANT',
+				content:
+					'I am a hosted Greater-compatible soul bootstrap relayed through Lesser same-origin GraphQL.',
+				order: 2,
+				createdAt: '2026-06-28T13:01:00Z',
+				truncated: false,
+			},
+		],
+		messagesTruncated: false,
+		requestId: project44SoulBootstrapIds.hostRequestId,
+		updatedAt: '2026-06-28T13:01:00Z',
+		...overrides,
+	};
+}
+
 export interface Project44SoulBootstrapSurfaceOptions {
 	phase?: SoulBootstrapPhase;
 	state?: string;
@@ -256,6 +294,7 @@ export interface Project44SoulBootstrapSurfaceOptions {
 	anchorState?: SoulBootstrapState['anchorState'];
 	assuranceState?: SoulBootstrapState['assuranceState'];
 	typedNextAction?: SoulBootstrapState['typedNextAction'];
+	availableActions?: readonly SoulBootstrapState['availableActions'][number][];
 	recoveryCategory?: SoulBootstrapState['recoveryCategory'];
 	recoveryAction?: SoulBootstrapState['recoveryAction'];
 	retryable?: boolean;
@@ -270,6 +309,7 @@ export interface Project44SoulBootstrapSurfaceOptions {
 	terminalDeclarationEvidence?: SoulBootstrapState['terminalDeclarationEvidence'];
 	publicationEvidence?: SoulBootstrapState['publicationEvidence'];
 	publishGate?: SoulBootstrapState['publishGate'];
+	hostedGenesisConversation?: SoulBootstrapState['hostedGenesisConversation'];
 }
 
 export function createProject44SoulBootstrapSurface(
@@ -284,6 +324,7 @@ export function createProject44SoulBootstrapSurface(
 		(bootstrapMode === 'WALLET_PRINCIPAL' ? 'WALLET_PRINCIPAL' : 'INSTANCE_TRUST');
 	const typedNextAction =
 		options.typedNextAction ?? inferTypedNextAction(options.nextAction, phase);
+	const availableActions = options.availableActions ?? [typedNextAction];
 	const recoveryCategory = options.recoveryCategory ?? error?.recoveryCategory ?? null;
 	const recoveryAction = options.recoveryAction ?? error?.recoveryAction ?? null;
 	const retryable = options.retryable ?? error?.retryable ?? false;
@@ -312,11 +353,13 @@ export function createProject44SoulBootstrapSurface(
 		hostConversationStatus: options.hostConversationStatus ?? null,
 		updatedAt: '2026-06-12T12:00:00Z',
 		typedNextAction,
+		availableActions,
 		recoveryCategory,
 		recoveryAction,
 		retryable,
 		restartRequired,
 		restartAvailable,
+		hostedGenesisConversation: options.hostedGenesisConversation ?? null,
 		signingCheckpoints: options.signingCheckpoints ?? [],
 		terminalDeclarationEvidence: options.terminalDeclarationEvidence ?? null,
 		publication: options.publication ?? null,
@@ -352,6 +395,7 @@ export function createProject44SoulBootstrapSurface(
 		hostBridgeAvailable: options.hostBridgeAvailable ?? !error,
 		nextAction: options.nextAction ?? null,
 		typedNextAction,
+		availableActions,
 		recoveryCategory,
 		recoveryAction,
 		retryable,
@@ -598,6 +642,7 @@ export const project44SoulBootstrapFixtures = {
 		anchorState: 'HOSTED_OFFCHAIN',
 		assuranceState: 'HOSTED_OFFCHAIN',
 		typedNextAction: 'SEND_HOSTED_SOUL_GENESIS_MESSAGE',
+		availableActions: ['SEND_HOSTED_SOUL_GENESIS_MESSAGE'],
 		nextAction: 'send_hosted_soul_genesis_message',
 		hostRegistrationId: project44SoulBootstrapIds.registrationId,
 		hostConversationId: project44SoulBootstrapIds.conversationId,
@@ -613,9 +658,11 @@ export const project44SoulBootstrapFixtures = {
 		anchorState: 'HOSTED_OFFCHAIN',
 		assuranceState: 'HOSTED_OFFCHAIN',
 		typedNextAction: 'COMPLETE_HOSTED_SOUL_GENESIS',
+		availableActions: ['SEND_HOSTED_SOUL_GENESIS_MESSAGE', 'COMPLETE_HOSTED_SOUL_GENESIS'],
 		nextAction: 'complete_hosted_soul_genesis',
 		hostRegistrationId: project44SoulBootstrapIds.registrationId,
 		hostConversationId: project44SoulBootstrapIds.conversationId,
+		hostedGenesisConversation: createProject51HostedGenesisConversation(),
 		walletAddress: null,
 		principalAddress: null,
 	}),
@@ -628,9 +675,36 @@ export const project44SoulBootstrapFixtures = {
 		anchorState: 'HOSTED_OFFCHAIN',
 		assuranceState: 'HOSTED_OFFCHAIN',
 		typedNextAction: 'PUBLISH_HOSTED_SOUL',
+		availableActions: ['PUBLISH_HOSTED_SOUL'],
 		nextAction: 'publish_hosted_soul',
 		hostRegistrationId: project44SoulBootstrapIds.registrationId,
 		hostConversationId: project44SoulBootstrapIds.conversationId,
+		hostedGenesisConversation: createProject51HostedGenesisConversation({
+			status: 'declaration_ready',
+			latestTurnId: 'turn-project-51-assistant-002',
+			messageCount: 4,
+			messages: [
+				...createProject51HostedGenesisConversation().messages,
+				{
+					__typename: 'SoulBootstrapHostedGenesisMessage',
+					id: 'msg_000003',
+					role: 'USER',
+					content: 'Add one more boundary.',
+					order: 3,
+					createdAt: '2026-06-28T13:02:00Z',
+					truncated: false,
+				},
+				{
+					__typename: 'SoulBootstrapHostedGenesisMessage',
+					id: 'msg_000004',
+					role: 'ASSISTANT',
+					content: 'Boundary added; hosted genesis declaration is ready.',
+					order: 4,
+					createdAt: '2026-06-28T13:03:00Z',
+					truncated: false,
+				},
+			],
+		}),
 		walletAddress: null,
 		principalAddress: null,
 		signingCheckpoints: [
