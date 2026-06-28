@@ -25,6 +25,7 @@ import {
 	type SoulBindingState,
 	type SoulBootstrapAnchorState,
 	type SoulBootstrapAuthorityModel,
+	type SoulBootstrapHostedGenesisMessageRole,
 	type SoulBootstrapMode,
 	type SoulBootstrapNextAction,
 	type SoulBootstrapPhase,
@@ -60,6 +61,12 @@ export type HostedSoulBootstrapCurrentInput = { username: string };
 export type HostedSoulBootstrapSurface = SoulBootstrapSurface;
 export type HostedSoulBootstrapState = SoulBootstrapState;
 export type HostedSoulBootstrapPublicationEvidence = SoulBootstrapPublicationEvidence;
+export type HostedSoulBootstrapAvailableAction = SoulBootstrapNextAction;
+export type HostedSoulBootstrapGraphQLHostedGenesisConversation = NonNullable<
+	HostedSoulBootstrapState['hostedGenesisConversation']
+>;
+export type HostedSoulBootstrapGraphQLHostedGenesisMessage =
+	HostedSoulBootstrapGraphQLHostedGenesisConversation['messages'][number];
 export type LesserHostHostedGenesisConversationResponse =
 	LesserHostComponents['schemas']['SoulHostedGenesisConversationResponse'];
 export type LesserHostHostedGenesisConversation =
@@ -122,6 +129,48 @@ export interface HostedSoulBootstrapBoundSoulEvidence {
 	publication: HostedSoulBootstrapPublicationEvidence | null;
 }
 
+export interface HostedSoulGenesisConversationMessage {
+	id: string;
+	role: SoulBootstrapHostedGenesisMessageRole;
+	content: string;
+	order: number;
+	createdAt: string | null;
+	truncated: boolean;
+}
+
+export interface HostedSoulGenesisConversationTranscript {
+	registrationId: string | null;
+	conversationId: string;
+	status: string;
+	latestTurnId: string | null;
+	messageCount: number;
+	messages: readonly HostedSoulGenesisConversationMessage[];
+	messagesTruncated: boolean;
+	requestId: string | null;
+	updatedAt: string | null;
+}
+
+export interface HostedSoulGenesisComposerState {
+	availableActions: readonly HostedSoulBootstrapAvailableAction[];
+	typedNextAction: SoulBootstrapNextAction | null;
+	conversationId: string | null;
+	registrationId: string | null;
+	status: string | null;
+	latestTurnId: string | null;
+	messageCount: number;
+	messagesTruncated: boolean;
+	canSendMessage: boolean;
+	canComplete: boolean;
+	canPublish: boolean;
+	canRefresh: boolean;
+	canRestart: boolean;
+	disabledReason:
+		| 'no_hosted_state'
+		| 'no_host_registration'
+		| 'no_available_composer_action'
+		| null;
+}
+
 export interface HostedSoulBootstrapStateModel {
 	username: string;
 	bodyId: string;
@@ -133,6 +182,7 @@ export interface HostedSoulBootstrapStateModel {
 	assuranceState: SoulBootstrapAnchorState | null;
 	hostConversationStatus: string | null;
 	typedNextAction: SoulBootstrapNextAction;
+	availableActions: readonly HostedSoulBootstrapAvailableAction[];
 	nextAction: string | null;
 	recoveryCategory: SoulBootstrapRecoveryCategory | null;
 	recoveryAction: SoulBootstrapRecoveryAction | null;
@@ -148,6 +198,8 @@ export interface HostedSoulBootstrapStateModel {
 	publicationEvidence: HostedSoulBootstrapPublicationEvidence | null;
 	terminalDeclarationEvidence: HostedSoulBootstrapCompactTerminalDeclarationEvidence | null;
 	publishGate: HostedSoulBootstrapPublishGate | null;
+	hostedGenesisConversation: HostedSoulGenesisConversationTranscript | null;
+	composer: HostedSoulGenesisComposerState;
 	hostRequest: HostedSoulBootstrapHostRequestMetadata;
 	updatedAt: string | null;
 	restartedAt: string | null;
@@ -162,6 +214,7 @@ export interface HostedSoulBootstrapResult {
 	hostBridgeAvailable: boolean | null;
 	nextAction: string | null;
 	typedNextAction: SoulBootstrapNextAction | null;
+	availableActions: readonly HostedSoulBootstrapAvailableAction[];
 	recoveryCategory: SoulBootstrapRecoveryCategory | null;
 	recoveryAction: SoulBootstrapRecoveryAction | null;
 	retryable: boolean;
@@ -172,6 +225,8 @@ export interface HostedSoulBootstrapResult {
 	publicationEvidence: HostedSoulBootstrapPublicationEvidence | null;
 	terminalDeclarationEvidence: HostedSoulBootstrapCompactTerminalDeclarationEvidence | null;
 	publishGate: HostedSoulBootstrapPublishGate | null;
+	hostedGenesisConversation: HostedSoulGenesisConversationTranscript | null;
+	composer: HostedSoulGenesisComposerState;
 	boundSoul: HostedSoulBootstrapBoundSoulEvidence | null;
 }
 
@@ -305,8 +360,8 @@ export function createHostedSoulBootstrapClient(
  * Return the terminal hosted-conversation declaration evidence required before Sim enables the
  * hosted publish action.
  *
- * Lesser v1.5.3 deliberately gates `PUBLISH_HOSTED_SOUL` on a completed
- * `hosted_conversation` checkpoint with canonical declaration JSON plus Host request and
+ * Lesser deliberately gates `PUBLISH_HOSTED_SOUL` on a completed `hosted_conversation`
+ * checkpoint with canonical declaration JSON plus Host request and
  * conversation evidence. This helper mirrors that fail-closed boundary so consumers do not parse
  * raw `signingCheckpoints` arrays by hand.
  */
@@ -472,6 +527,42 @@ export function canPublishHostedSoulBootstrap(
 	);
 }
 
+/**
+ * Return Lesser's browser-safe hosted-genesis transcript projection.
+ *
+ * This intentionally reads only `SoulBootstrapState.hostedGenesisConversation` from the Lesser
+ * same-origin GraphQL surface. It does not call Host and does not reconstruct raw Host records.
+ */
+export function getHostedSoulGenesisConversation(
+	source: HostedSoulBootstrapTerminalDeclarationEvidenceSource
+): HostedSoulGenesisConversationTranscript | null {
+	const state = resolveTerminalDeclarationState(source);
+	if (!state || state.bootstrapMode !== 'HOSTED') {
+		return null;
+	}
+	return normalizeHostedGenesisConversation(state['hostedGenesisConversation']);
+}
+
+/**
+ * Derive composer affordances from Lesser's `availableActions` contract.
+ *
+ * Consumers should use this state instead of inventing local Host status switches. `canSendMessage`
+ * and `canComplete` are true only when Lesser explicitly advertises the corresponding hosted action.
+ */
+export function getHostedSoulGenesisComposerState(
+	source: HostedSoulBootstrapTerminalDeclarationEvidenceSource
+): HostedSoulGenesisComposerState {
+	const state = resolveTerminalDeclarationState(source);
+	const surface = resolveHostedSoulBootstrapSurface(source);
+	if (!state || state.bootstrapMode !== 'HOSTED') {
+		return createHostedSoulGenesisComposerState(null, [], null);
+	}
+
+	const availableActions = resolveHostedSoulBootstrapAvailableActions(source, state, surface);
+	const conversation = normalizeHostedGenesisConversation(state['hostedGenesisConversation']);
+	return createHostedSoulGenesisComposerState(state, availableActions, conversation);
+}
+
 export class HostedSoulBootstrapClient {
 	private readonly executor: OperationExecutor;
 
@@ -598,6 +689,9 @@ function createHostedResultFromSurface(
 	const state = surface?.state ?? null;
 	const backendError = overrideError ?? surface?.error ?? state?.error ?? null;
 	const hosted = surface ? createHostedStateModel(surface) : null;
+	const availableActions = hosted?.availableActions ?? [];
+	const hostedGenesisConversation = hosted?.hostedGenesisConversation ?? null;
+	const composer = hosted?.composer ?? createHostedSoulGenesisComposerState(null, [], null);
 	return {
 		surface,
 		state,
@@ -607,6 +701,7 @@ function createHostedResultFromSurface(
 		hostBridgeAvailable: surface?.hostBridgeAvailable ?? null,
 		nextAction: surface?.nextAction ?? null,
 		typedNextAction: surface?.typedNextAction ?? state?.typedNextAction ?? null,
+		availableActions,
 		recoveryCategory: surface?.recoveryCategory ?? state?.recoveryCategory ?? null,
 		recoveryAction: surface?.recoveryAction ?? state?.recoveryAction ?? null,
 		retryable: surface?.retryable ?? state?.retryable ?? backendError?.retryable ?? false,
@@ -617,6 +712,8 @@ function createHostedResultFromSurface(
 		publicationEvidence: state?.publicationEvidence ?? state?.publication ?? null,
 		terminalDeclarationEvidence: state?.terminalDeclarationEvidence ?? null,
 		publishGate: state?.publishGate ?? null,
+		hostedGenesisConversation,
+		composer,
 		boundSoul: hosted
 			? {
 					existingSoulAgentId: hosted.existingSoulAgentId,
@@ -632,6 +729,15 @@ function createHostedStateModel(
 	surface: HostedSoulBootstrapSurface
 ): HostedSoulBootstrapStateModel {
 	const state = surface.state;
+	const availableActions = resolveHostedSoulBootstrapAvailableActions(surface, state, surface);
+	const hostedGenesisConversation = normalizeHostedGenesisConversation(
+		state.hostedGenesisConversation
+	);
+	const composer = createHostedSoulGenesisComposerState(
+		state,
+		availableActions,
+		hostedGenesisConversation
+	);
 	return {
 		username: state.username,
 		bodyId: state.bodyId,
@@ -643,6 +749,7 @@ function createHostedStateModel(
 		assuranceState: state.assuranceState ?? null,
 		hostConversationStatus: state.hostConversationStatus ?? null,
 		typedNextAction: state.typedNextAction,
+		availableActions,
 		nextAction: surface.nextAction ?? null,
 		recoveryCategory: surface.recoveryCategory ?? state.recoveryCategory ?? null,
 		recoveryAction: surface.recoveryAction ?? state.recoveryAction ?? null,
@@ -658,6 +765,8 @@ function createHostedStateModel(
 		publicationEvidence: state.publicationEvidence ?? state.publication ?? null,
 		terminalDeclarationEvidence: state.terminalDeclarationEvidence ?? null,
 		publishGate: state.publishGate ?? null,
+		hostedGenesisConversation,
+		composer,
 		hostRequest: createHostRequestMetadata(state),
 		updatedAt: state.updatedAt ?? null,
 		restartedAt: state.restartedAt ?? null,
@@ -678,6 +787,228 @@ function createHostRequestMetadata(
 		supersededHostRegistrationId: correlation?.supersededHostRegistrationId ?? null,
 		supersededHostConversationId: correlation?.supersededHostConversationId ?? null,
 	};
+}
+
+function resolveHostedSoulBootstrapSurface(
+	source: HostedSoulBootstrapTerminalDeclarationEvidenceSource
+): HostedSoulBootstrapSurface | null {
+	if (!isObjectRecord(source)) {
+		return null;
+	}
+
+	const record = source as Record<string, unknown>;
+	if (record['__typename'] === 'SoulBootstrapSurface' && isObjectRecord(record['state'])) {
+		return source as HostedSoulBootstrapSurface;
+	}
+
+	const surface = record['surface'];
+	if (
+		isObjectRecord(surface) &&
+		surface['__typename'] === 'SoulBootstrapSurface' &&
+		isObjectRecord(surface['state'])
+	) {
+		return surface as HostedSoulBootstrapSurface;
+	}
+
+	return null;
+}
+
+function resolveHostedSoulBootstrapAvailableActions(
+	source: HostedSoulBootstrapTerminalDeclarationEvidenceSource,
+	state: RuntimeHostedSoulBootstrapState,
+	surface: HostedSoulBootstrapSurface | null = resolveHostedSoulBootstrapSurface(source)
+): readonly HostedSoulBootstrapAvailableAction[] {
+	const surfaceActions = normalizeHostedSoulBootstrapAvailableActions(
+		surface ? (surface as unknown as Record<string, unknown>)['availableActions'] : undefined
+	);
+	if (surfaceActions.length > 0) {
+		return surfaceActions;
+	}
+
+	const stateActions = normalizeHostedSoulBootstrapAvailableActions(state['availableActions']);
+	if (stateActions.length > 0) {
+		return stateActions;
+	}
+
+	const nextAction = normalizeHostedSoulBootstrapAvailableAction(state['typedNextAction']);
+	return nextAction ? [nextAction] : [];
+}
+
+function normalizeHostedSoulBootstrapAvailableActions(
+	value: unknown
+): readonly HostedSoulBootstrapAvailableAction[] {
+	if (!Array.isArray(value)) {
+		return [];
+	}
+
+	const actions: HostedSoulBootstrapAvailableAction[] = [];
+	for (const item of value) {
+		const action = normalizeHostedSoulBootstrapAvailableAction(item);
+		if (action && !actions.includes(action)) {
+			actions.push(action);
+		}
+	}
+	return actions;
+}
+
+function normalizeHostedSoulBootstrapAvailableAction(
+	value: unknown
+): HostedSoulBootstrapAvailableAction | null {
+	if (typeof value !== 'string') {
+		return null;
+	}
+	const normalized = value.trim().toUpperCase();
+	switch (normalized) {
+		case 'START_HOSTED_BOOTSTRAP':
+		case 'SEND_HOSTED_SOUL_GENESIS_MESSAGE':
+		case 'COMPLETE_HOSTED_SOUL_GENESIS':
+		case 'PUBLISH_HOSTED_SOUL':
+		case 'RESTART_SOUL_BOOTSTRAP':
+		case 'RETRY_SAME_STEP':
+		case 'REFRESH_STATE':
+		case 'OPERATOR_ACTION_REQUIRED':
+		case 'VERIFY_WALLET':
+		case 'PREPARE_PRINCIPAL_DECLARATION':
+		case 'VERIFY_PRINCIPAL_DECLARATION':
+		case 'CONTINUE_CONVERSATION':
+		case 'FINALIZE':
+		case 'COMPLETE':
+			return normalized as HostedSoulBootstrapAvailableAction;
+		default:
+			return null;
+	}
+}
+
+function createHostedSoulGenesisComposerState(
+	state: RuntimeHostedSoulBootstrapState | null,
+	availableActions: readonly HostedSoulBootstrapAvailableAction[],
+	conversation: HostedSoulGenesisConversationTranscript | null
+): HostedSoulGenesisComposerState {
+	const hostRegistrationId = trimToValue(state?.hostRegistrationId);
+	const conversationId = conversation?.conversationId ?? trimToValue(state?.hostConversationId);
+	const canSendMessage = availableActions.includes('SEND_HOSTED_SOUL_GENESIS_MESSAGE');
+	const canComplete =
+		availableActions.includes('COMPLETE_HOSTED_SOUL_GENESIS') && Boolean(conversationId);
+	const canPublish =
+		availableActions.includes('PUBLISH_HOSTED_SOUL') &&
+		isExplicitPublishGateOpen(isObjectRecord(state?.publishGate) ? state.publishGate : null);
+	const canRefresh = availableActions.includes('REFRESH_STATE');
+	const canRestart = availableActions.includes('RESTART_SOUL_BOOTSTRAP');
+
+	return {
+		availableActions,
+		typedNextAction: normalizeHostedSoulBootstrapAvailableAction(state?.typedNextAction),
+		conversationId,
+		registrationId: conversation?.registrationId ?? hostRegistrationId,
+		status:
+			conversation?.status ??
+			normalizeHostedGenesisStatus(state?.hostConversationStatus) ??
+			normalizeHostedGenesisStatusFromState(state?.state),
+		latestTurnId: conversation?.latestTurnId ?? null,
+		messageCount: conversation?.messageCount ?? 0,
+		messagesTruncated: conversation?.messagesTruncated ?? false,
+		canSendMessage,
+		canComplete,
+		canPublish,
+		canRefresh,
+		canRestart,
+		disabledReason:
+			canSendMessage || canComplete || canPublish || canRefresh || canRestart
+				? null
+				: !state || state.bootstrapMode !== 'HOSTED'
+					? 'no_hosted_state'
+					: !hostRegistrationId
+						? 'no_host_registration'
+						: 'no_available_composer_action',
+	};
+}
+
+function normalizeHostedGenesisConversation(
+	value: unknown
+): HostedSoulGenesisConversationTranscript | null {
+	if (!isObjectRecord(value)) {
+		return null;
+	}
+
+	const conversationId = trimToValue(value['conversationId']);
+	const status = trimToValue(value['status']);
+	if (!conversationId || !status) {
+		return null;
+	}
+
+	const messageCount = toFiniteNonNegativeInteger(value['messageCount']);
+	if (messageCount === null) {
+		return null;
+	}
+
+	return {
+		registrationId: trimToValue(value['registrationId']),
+		conversationId,
+		status,
+		latestTurnId: trimToValue(value['latestTurnId']),
+		messageCount,
+		messages: normalizeHostedGenesisMessages(value['messages']),
+		messagesTruncated: value['messagesTruncated'] === true,
+		requestId: trimToValue(value['requestId']),
+		updatedAt: trimToValue(value['updatedAt']),
+	};
+}
+
+function normalizeHostedGenesisMessages(
+	value: unknown
+): readonly HostedSoulGenesisConversationMessage[] {
+	if (!Array.isArray(value)) {
+		return [];
+	}
+
+	return value.map(normalizeHostedGenesisMessage).filter(isHostedGenesisConversationMessage);
+}
+
+function normalizeHostedGenesisMessage(
+	value: unknown
+): HostedSoulGenesisConversationMessage | null {
+	if (!isObjectRecord(value)) {
+		return null;
+	}
+
+	const id = trimToValue(value['id']);
+	const role = normalizeHostedGenesisMessageRole(value['role']);
+	const content = nonEmptyString(value['content']);
+	const order = toFiniteNonNegativeInteger(value['order']);
+	if (!id || !role || !content || order === null) {
+		return null;
+	}
+
+	return {
+		id,
+		role,
+		content,
+		order,
+		createdAt: trimToValue(value['createdAt']),
+		truncated: value['truncated'] === true,
+	};
+}
+
+function isHostedGenesisConversationMessage(
+	value: HostedSoulGenesisConversationMessage | null
+): value is HostedSoulGenesisConversationMessage {
+	return value !== null;
+}
+
+function normalizeHostedGenesisMessageRole(
+	value: unknown
+): SoulBootstrapHostedGenesisMessageRole | null {
+	if (typeof value !== 'string') {
+		return null;
+	}
+	const normalized = value.trim().toUpperCase();
+	return normalized === 'USER' || normalized === 'ASSISTANT'
+		? (normalized as SoulBootstrapHostedGenesisMessageRole)
+		: null;
+}
+
+function toFiniteNonNegativeInteger(value: unknown): number | null {
+	return typeof value === 'number' && Number.isInteger(value) && value >= 0 ? value : null;
 }
 
 interface HostedGenesisSnapshot {
@@ -1114,6 +1445,10 @@ function parseHostedTerminalDeclaration(
 
 function trimToValue(value: unknown): string | null {
 	return typeof value === 'string' && value.trim() ? value.trim() : null;
+}
+
+function nonEmptyString(value: unknown): string | null {
+	return typeof value === 'string' && value.trim() ? value : null;
 }
 
 function isObjectRecord(value: unknown): value is Record<string, unknown> {

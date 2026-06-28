@@ -136,6 +136,8 @@ Lesser Host, hold Host credentials, infer hidden Host state, or own orchestratio
 ```ts
 import {
 	canPublishHostedSoulBootstrap,
+	getHostedSoulGenesisComposerState,
+	getHostedSoulGenesisConversation,
 	getHostedSoulBootstrapTerminalDeclarationEvidenceSummary,
 	isHostedSoulBootstrapDeclarationReady,
 	isHostedSoulBootstrapInProgress,
@@ -147,12 +149,18 @@ const terminalEvidence = getHostedSoulBootstrapTerminalDeclarationEvidenceSummar
 	conversationId,
 });
 const canPublish = canPublishHostedSoulBootstrap(result, { conversationId });
+const transcript = getHostedSoulGenesisConversation(result);
+const composer = getHostedSoulGenesisComposerState(result);
 ```
 
 Helper behavior is intentionally fail-closed:
 
 - `created`, `in_progress`, `assistant_turn_ready`, and
   `declaration_extraction_pending` are progress states only.
+- Hosted transcript/composer helpers read Lesser's `hostedGenesisConversation` and
+  `availableActions` fields. `composer.canSendMessage` and `composer.canComplete` are enabled only
+  when Lesser advertises `SEND_HOSTED_SOUL_GENESIS_MESSAGE` or
+  `COMPLETE_HOSTED_SOUL_GENESIS`.
 - `declaration_ready` enables publish only when terminal declaration evidence is bound to the
   active `hostConversationId` and Lesser's `publishGate` is explicitly open.
 - `failed`, malformed data, stale conversation ids, missing hashes, and compact `publishGate`

@@ -65,7 +65,7 @@ const releasedHostedGenesisFixtureCases = [
 		label: 'in_progress',
 		status: 'in_progress',
 		lesserPath:
-			'docs/lesser/contracts/testdata/hosted-genesis/v1.0.6/hosted-genesis.conversation.in-progress.example.json',
+			'docs/lesser/contracts/testdata/hosted-genesis/v1.0.7/hosted-genesis.conversation.in-progress.example.json',
 		hostPath:
 			'docs/lesser-host/spec/v3/fixtures/hosted-genesis.conversation.in-progress.example.json',
 		inProgress: true,
@@ -76,7 +76,7 @@ const releasedHostedGenesisFixtureCases = [
 		label: 'declaration_ready',
 		status: 'declaration_ready',
 		lesserPath:
-			'docs/lesser/contracts/testdata/hosted-genesis/v1.0.6/hosted-genesis.conversation.completed-declaration-ready.example.json',
+			'docs/lesser/contracts/testdata/hosted-genesis/v1.0.7/hosted-genesis.conversation.completed-declaration-ready.example.json',
 		hostPath:
 			'docs/lesser-host/spec/v3/fixtures/hosted-genesis.conversation.completed-declaration-ready.example.json',
 		inProgress: false,
@@ -87,7 +87,7 @@ const releasedHostedGenesisFixtureCases = [
 		label: 'failed',
 		status: 'failed',
 		lesserPath:
-			'docs/lesser/contracts/testdata/hosted-genesis/v1.0.6/hosted-genesis.conversation.failed.example.json',
+			'docs/lesser/contracts/testdata/hosted-genesis/v1.0.7/hosted-genesis.conversation.failed.example.json',
 		hostPath: 'docs/lesser-host/spec/v3/fixtures/hosted-genesis.conversation.failed.example.json',
 		inProgress: false,
 		declarationReady: false,
@@ -220,7 +220,7 @@ const hostStatusConversations = [
 
 describe('Project 49 hosted genesis representability', () => {
 	it.each(releasedHostedGenesisFixtureCases)(
-		'consumes released Lesser v1.5.8 and Host v1.0.6 $label fixtures through fail-closed helpers',
+		'consumes released Lesser v1.5.10 and Host v1.0.7 $label fixtures through fail-closed helpers',
 		(row) => {
 			const lesserFixtureText = readTextFixture(row.lesserPath);
 			const hostFixtureText = readTextFixture(row.hostPath);
@@ -270,7 +270,7 @@ describe('Project 49 hosted genesis representability', () => {
 		}
 	);
 
-	it('consumes the released Lesser v1.5.8 projection table without normalizing its sibling publishGate example', () => {
+	it('consumes the released Lesser v1.5.10 projection table without normalizing its sibling publishGate example', () => {
 		const projectedRows = new Map(lesserProjectionTable.rows.map((row) => [row.label, row]));
 		const expectedFixtureLabelByProjectionLabel = new Map([
 			['no registration', 'no registration'],

@@ -3,6 +3,8 @@ import { describe, expect, it, vi } from 'vitest';
 import {
 	createHostedSoulBootstrapClient,
 	getHostedSoulBootstrapTerminalDeclarationEvidence,
+	getHostedSoulGenesisComposerState,
+	getHostedSoulGenesisConversation,
 	hasHostedSoulBootstrapTerminalDeclarationEvidence,
 	isHostedSoulBootstrapPublishReady,
 	type HostedSoulBootstrapResult,
@@ -228,6 +230,8 @@ describe('HostedSoulBootstrapClient', () => {
 			expect(call.headers.get('x-lesser-host-token')).toBeNull();
 			expect(call.headers.get('x-host-instance-key')).toBeNull();
 			expect(call.body.query).toContain(call.body.operationName);
+			expect(call.body.query).toContain('availableActions');
+			expect(call.body.query).toContain('hostedGenesisConversation');
 
 			const variablesText = JSON.stringify(call.body.variables);
 			for (const disallowedKey of disallowedHostedInputKeys) {
@@ -245,6 +249,62 @@ describe('HostedSoulBootstrapClient', () => {
 		expect(messageResult.typedNextAction).toBe('COMPLETE_HOSTED_SOUL_GENESIS');
 		expect(completeResult.typedNextAction).toBe('PUBLISH_HOSTED_SOUL');
 		expect(publishResult.typedNextAction).toBe('COMPLETE');
+		expect(messageResult.availableActions).toEqual([
+			'SEND_HOSTED_SOUL_GENESIS_MESSAGE',
+			'COMPLETE_HOSTED_SOUL_GENESIS',
+		]);
+
+		const transcript = getHostedSoulGenesisConversation(messageResult);
+		expect(transcript).toMatchObject({
+			registrationId: project44SoulBootstrapIds.registrationId,
+			conversationId: project44SoulBootstrapIds.conversationId,
+			status: 'assistant_turn_ready',
+			latestTurnId: 'turn-project-51-assistant-001',
+			messageCount: 2,
+			messagesTruncated: false,
+			requestId: project44SoulBootstrapIds.hostRequestId,
+		});
+		expect(transcript?.messages).toEqual([
+			expect.objectContaining({
+				id: 'msg_000001',
+				role: 'USER',
+				content: 'Describe the managed Lesser agent you are becoming.',
+				order: 1,
+				truncated: false,
+			}),
+			expect.objectContaining({
+				id: 'msg_000002',
+				role: 'ASSISTANT',
+				content:
+					'I am a hosted Greater-compatible soul bootstrap relayed through Lesser same-origin GraphQL.',
+				order: 2,
+				truncated: false,
+			}),
+		]);
+
+		expect(messageResult.hostedGenesisConversation).toEqual(transcript);
+		expect(messageResult.composer).toMatchObject({
+			availableActions: ['SEND_HOSTED_SOUL_GENESIS_MESSAGE', 'COMPLETE_HOSTED_SOUL_GENESIS'],
+			typedNextAction: 'COMPLETE_HOSTED_SOUL_GENESIS',
+			conversationId: project44SoulBootstrapIds.conversationId,
+			registrationId: project44SoulBootstrapIds.registrationId,
+			status: 'assistant_turn_ready',
+			latestTurnId: 'turn-project-51-assistant-001',
+			messageCount: 2,
+			messagesTruncated: false,
+			canSendMessage: true,
+			canComplete: true,
+			canPublish: false,
+			disabledReason: null,
+		});
+		expect(getHostedSoulGenesisComposerState(messageResult)).toEqual(messageResult.composer);
+		expect(completeResult.composer).toMatchObject({
+			availableActions: ['PUBLISH_HOSTED_SOUL'],
+			canSendMessage: false,
+			canComplete: false,
+			canPublish: true,
+			messageCount: 4,
+		});
 		expect(publishResult.boundSoul).toMatchObject({
 			existingSoulAgentId: project44SoulBootstrapIds.soulAgentId,
 			hostSoulAgentId: project44SoulBootstrapIds.soulAgentId,
@@ -335,6 +395,56 @@ describe('HostedSoulBootstrapClient', () => {
 		expect(
 			isHostedSoulBootstrapPublishReady(project44SoulBootstrapFixtures.hostedGenesisComplete)
 		).toBe(true);
+	});
+
+	it('surfaces Lesser transcript truncation metadata without a browser Host fallback', async () => {
+		const truncatedSurface = createProject44SoulBootstrapSurface({
+			phase: 'CONVERSATION',
+			state: 'conversation.assistant_turn_ready',
+			bootstrapMode: 'HOSTED',
+			typedNextAction: 'COMPLETE_HOSTED_SOUL_GENESIS',
+			availableActions: ['COMPLETE_HOSTED_SOUL_GENESIS'],
+			hostConversationStatus: 'assistant_turn_ready',
+			hostRegistrationId: project44SoulBootstrapIds.registrationId,
+			hostConversationId: project44SoulBootstrapIds.conversationId,
+			walletAddress: null,
+			principalAddress: null,
+			hostedGenesisConversation: {
+				__typename: 'SoulBootstrapHostedGenesisConversation',
+				registrationId: project44SoulBootstrapIds.registrationId,
+				conversationId: project44SoulBootstrapIds.conversationId,
+				status: 'assistant_turn_ready',
+				latestTurnId: 'turn-project-51-unsafe',
+				messageCount: 3,
+				messages: [],
+				messagesTruncated: true,
+				requestId: project44SoulBootstrapIds.hostRequestId,
+				updatedAt: '2026-06-28T13:05:00Z',
+			},
+		});
+		const client = createHostedSoulBootstrapClient({
+			graphqlClient: createSurfaceGraphQLClient(truncatedSurface),
+		});
+
+		const result = await client.current(project44SoulBootstrapIds.username);
+		const transcript = getHostedSoulGenesisConversation(result);
+
+		expect(transcript).toMatchObject({
+			conversationId: project44SoulBootstrapIds.conversationId,
+			status: 'assistant_turn_ready',
+			latestTurnId: 'turn-project-51-unsafe',
+			messageCount: 3,
+			messages: [],
+			messagesTruncated: true,
+		});
+		expect(result.composer).toMatchObject({
+			availableActions: ['COMPLETE_HOSTED_SOUL_GENESIS'],
+			canComplete: true,
+			canSendMessage: false,
+			messageCount: 3,
+			messagesTruncated: true,
+			disabledReason: null,
+		});
 	});
 
 	it('fails closed for runtime-null, missing, or malformed signing checkpoint lists', () => {

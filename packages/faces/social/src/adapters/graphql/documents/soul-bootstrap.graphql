@@ -47,6 +47,29 @@ fragment SoulBootstrapDeclarationPreviewFields on SoulBootstrapDeclarationPrevie
 	declarationCount
 }
 
+fragment SoulBootstrapHostedGenesisMessageFields on SoulBootstrapHostedGenesisMessage {
+	id
+	role
+	content
+	order
+	createdAt
+	truncated
+}
+
+fragment SoulBootstrapHostedGenesisConversationFields on SoulBootstrapHostedGenesisConversation {
+	registrationId
+	conversationId
+	status
+	latestTurnId
+	messageCount
+	messages {
+		...SoulBootstrapHostedGenesisMessageFields
+	}
+	messagesTruncated
+	requestId
+	updatedAt
+}
+
 fragment SoulBootstrapTerminalDeclarationEvidenceFields on SoulBootstrapTerminalDeclarationEvidence {
 	conversationId
 	hostStatus
@@ -103,11 +126,15 @@ fragment SoulBootstrapStateFields on SoulBootstrapState {
 	hostConversationStatus
 	updatedAt
 	typedNextAction
+	availableActions
 	recoveryCategory
 	recoveryAction
 	retryable
 	restartRequired
 	restartAvailable
+	hostedGenesisConversation {
+		...SoulBootstrapHostedGenesisConversationFields
+	}
 	recoveryAttemptId
 	restartIdempotencyKey
 	lastHostRequestId
@@ -379,6 +406,7 @@ fragment SoulBootstrapSurfaceFields on SoulBootstrapSurface {
 	hostBridgeAvailable
 	nextAction
 	typedNextAction
+	availableActions
 	recoveryCategory
 	recoveryAction
 	retryable
