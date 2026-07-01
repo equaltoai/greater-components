@@ -96,7 +96,8 @@ typecheck.out
 PACKAGING_PLAN.md
 .theory/
 
-# Agent / editor local config artifacts (installed by theorymcp agent-config updates, not tracked)
+# Agent materials — untracked per TheoryMCP migration (installed/managed locally, not in git)
+.agents/
+.codex/
+.claude/
 opencode.json
-.agents/skills/apply-and-verify-governance/
-.claude/skills/apply-and-verify-governance/
