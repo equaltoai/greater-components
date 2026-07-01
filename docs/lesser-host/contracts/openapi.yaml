@@ -2962,6 +2962,85 @@ paths:
               schema:
                 $ref: "#/components/schemas/SoulInstanceBootstrapErrorEnvelope"
 
+  /api/v1/soul/instance/agents/register/{id}/mint-conversation/{conversationId}/recover:
+    post:
+      operationId: soulInstanceRecoverRegistrationMintConversation
+      summary: Recover a stuck instance-key registration mint conversation
+      description: |
+        Server-to-server route for managed Lesser instances. Retriggers the assistant turn for an in-progress
+        conversation whose assistant checkpoint is missing — for example, after a worker crash or timeout left
+        the conversation in `in_progress` without a recorded assistant response. If the conversation does not
+        need recovery (already has an assistant checkpoint, or is not `in_progress`), the route is idempotent
+        and returns `200` with the current durable HostConversation envelope without re-running the turn.
+        When recovery is needed, Host re-progresses the accepted turn; `200`/`202` is transport success only —
+        downstream consumers must inspect `conversation.status`.
+      security:
+        - instanceKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            minLength: 1
+        - name: conversationId
+          in: path
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 128
+            pattern: "^[A-Za-z0-9._:-]{1,128}$"
+      responses:
+        "200":
+          description: Recovery was not needed (idempotent noop) or the assistant turn completed synchronously; returns the durable HostConversation envelope.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulHostedGenesisConversationResponse"
+        "202":
+          description: Recovery turn is still in progress; inspect `conversation.status`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulHostedGenesisConversationResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceBootstrapErrorEnvelope"
+        "401":
+          description: Missing, invalid, or revoked instance key
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceBootstrapErrorEnvelope"
+        "403":
+          description: Tenant/domain boundary mismatch
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceBootstrapErrorEnvelope"
+        "404":
+          description: Conversation not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceBootstrapErrorEnvelope"
+        "409":
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceBootstrapErrorEnvelope"
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceBootstrapErrorEnvelope"
+
   /api/v1/soul/instance/agents/register/{id}/mint-conversation/{conversationId}/complete:
     post:
       operationId: soulInstanceCompleteRegistrationMintConversation

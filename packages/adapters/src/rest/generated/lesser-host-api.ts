@@ -506,6 +506,32 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/soul/instance/agents/register/{id}/mint-conversation/{conversationId}/recover": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Recover a stuck instance-key registration mint conversation
+         * @description Server-to-server route for managed Lesser instances. Retriggers the assistant turn for an in-progress
+         *     conversation whose assistant checkpoint is missing — for example, after a worker crash or timeout left
+         *     the conversation in `in_progress` without a recorded assistant response. If the conversation does not
+         *     need recovery (already has an assistant checkpoint, or is not `in_progress`), the route is idempotent
+         *     and returns `200` with the current durable HostConversation envelope without re-running the turn.
+         *     When recovery is needed, Host re-progresses the accepted turn; `200`/`202` is transport success only —
+         *     downstream consumers must inspect `conversation.status`.
+         */
+        post: operations["soulInstanceRecoverRegistrationMintConversation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/soul/instance/agents/register/{id}/mint-conversation/{conversationId}/complete": {
         parameters: {
             query?: never;
@@ -4447,6 +4473,92 @@ export interface operations {
         responses: {
             /** @description Current durable HostConversation status. HTTP 200 is transport success only. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["hosted-genesis.conversation.response.schema"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Missing, invalid, or revoked instance key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Tenant/domain boundary mismatch */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Conversation not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+        };
+    };
+    soulInstanceRecoverRegistrationMintConversation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                conversationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Recovery was not needed (idempotent noop) or the assistant turn completed synchronously; returns the durable HostConversation envelope. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["hosted-genesis.conversation.response.schema"];
+                };
+            };
+            /** @description Recovery turn is still in progress; inspect `conversation.status`. */
+            202: {
                 headers: {
                     [name: string]: unknown;
                 };
