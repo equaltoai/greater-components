@@ -95,3 +95,8 @@ trial/
 typecheck.out
 PACKAGING_PLAN.md
 .theory/
+
+# Agent / editor local config artifacts (installed by theorymcp agent-config updates, not tracked)
+opencode.json
+.agents/skills/apply-and-verify-governance/
+.claude/skills/apply-and-verify-governance/
