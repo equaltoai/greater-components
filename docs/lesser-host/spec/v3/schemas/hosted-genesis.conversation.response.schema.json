@@ -27,6 +27,19 @@
         "lesser_request_id": { "type": "string", "minLength": 1, "maxLength": 128 }
       }
     },
+    "conversation_message": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "role", "content", "order"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^msg_[0-9]{6}$" },
+        "role": { "type": "string", "enum": ["user", "assistant"] },
+        "content": { "type": "string", "minLength": 1, "maxLength": 8192 },
+        "order": { "type": "integer", "minimum": 1 },
+        "created_at": { "type": "string", "format": "date-time" },
+        "truncated": { "type": "boolean" }
+      }
+    },
     "declarations": {
       "type": "object",
       "additionalProperties": false,
@@ -129,6 +142,12 @@
         "status": { "$ref": "#/$defs/status" },
         "latest_turn_id": { "type": "string", "minLength": 1, "maxLength": 128 },
         "message_count": { "type": "integer", "minimum": 0 },
+        "messages": {
+          "type": "array",
+          "maxItems": 64,
+          "items": { "$ref": "#/$defs/conversation_message" }
+        },
+        "messages_truncated": { "type": "boolean" },
         "produced_declarations": { "$ref": "#/$defs/produced_declarations" },
         "failure": { "$ref": "#/$defs/failure" },
         "request_id": { "type": "string", "minLength": 1, "maxLength": 128 },

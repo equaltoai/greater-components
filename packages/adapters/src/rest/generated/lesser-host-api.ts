@@ -368,9 +368,12 @@ export interface paths {
         };
         /**
          * Get a bounded private mint-conversation record for an instance-owned agent
-         * @description Instance-key authenticated read used by Lesser's self-scope proxy. This explicit single-conversation route may
-         *     include private `messages` and `produced_declarations`, subject to a 2 MiB response cap and tenant-boundary
-         *     enforcement.
+         * @description Instance-key authenticated read used by Lesser's self-scope proxy. This explicit single-conversation route returns
+         *     the hosted-genesis durable conversation envelope and may include bounded `conversation.messages` at
+         *     `assistant_turn_ready` for Lesser same-origin relay. Terminal declaration evidence appears only as
+         *     `conversation.produced_declarations` when the durable status is `declaration_ready`; raw legacy
+         *     message/declaration strings, credentials, target-account
+         *     details, and infrastructure state are never returned.
          */
         get: operations["soulInstanceGetMintConversation"];
         put?: never;
@@ -460,8 +463,10 @@ export interface paths {
          * Start or continue an instance-key registration mint conversation with durable JSON status
          * @description JSON-authoritative server-to-server route for Lesser. It creates or appends a hosted-genesis turn for a
          *     registration owned by the authenticated managed instance and returns a durable HostConversation status envelope.
-         *     The bearer token is the managed InstanceKey (`sha256(raw_key)` stored by Host) and Host enforces the
-         *     registration's domain boundary before returning any conversation id or status.
+         *     Responses may include bounded `conversation.messages` so Lesser can render the same-origin hosted genesis
+         *     transcript when the durable status is `assistant_turn_ready`. The bearer token is the managed InstanceKey
+         *     (`sha256(raw_key)` stored by Host), and Host enforces the registration's domain boundary before returning any
+         *     conversation id or status.
          *
          *     HTTP `200` or `202` means transport/request acceptance only; it is not terminal completion. Lesser must persist
          *     `conversation_id` immediately, then poll `GET
@@ -488,7 +493,8 @@ export interface paths {
          * Read durable hosted-genesis mint-conversation status
          * @description JSON-authoritative durable status read for managed Lesser instances. Returns the current HostConversation status
          *     envelope for a registration inside the authenticated instance boundary. This route is the polling/resume source
-         *     of truth for hosted genesis; it returns terminal declaration evidence only when `conversation.status` is
+         *     of truth for hosted genesis; it may include bounded `conversation.messages` at `assistant_turn_ready` for Lesser
+         *     same-origin transcript relay, returns terminal declaration evidence only when `conversation.status` is
          *     `declaration_ready`, and returns typed failure/recovery when `conversation.status` is `failed`.
          */
         get: operations["soulInstanceGetRegistrationMintConversation"];
@@ -1564,11 +1570,7 @@ export interface components {
             count: number;
             limit: number;
         };
-        SoulInstanceMintConversationResponse: {
-            /** @enum {string} */
-            version: "1";
-            conversation: components["schemas"]["SoulMintConversation"];
-        };
+        SoulInstanceMintConversationResponse: components["schemas"]["hosted-genesis.conversation.response.schema"];
         SoulMintConversationInstanceReadErrorEnvelope: {
             error: {
                 /** @enum {string} */
@@ -1995,30 +1997,6 @@ export interface components {
                 };
             };
         };
-        /** Instance-key soul bootstrap error envelope */
-        "soul-instance-bootstrap.error.schema": {
-            error: {
-                /** @enum {string} */
-                code: "soul_instance.unauthorized" | "soul_instance.invalid_request" | "soul_instance.boundary_violation" | "soul_instance.conflict" | "soul_instance.not_found" | "soul_instance.internal";
-                message: string;
-                status_code?: number;
-                /** @description Client-safe metadata for validation or tenant-boundary failures. Raw instance keys and host session tokens never appear here. */
-                details?: {
-                    /** @enum {string} */
-                    boundary?: "instance_domain";
-                    field?: string;
-                    reason?: string;
-                    /** @enum {string} */
-                    conversation_status?: "unknown" | "pending" | "in_progress" | "completed" | "failed";
-                    expected_status?: string;
-                    produced_declarations_present?: boolean;
-                    produced_declarations_valid?: boolean;
-                } & {
-                    [key: string]: unknown;
-                };
-                request_id?: string;
-            };
-        };
         declarations: {
             selfDescription: {
                 [key: string]: unknown;
@@ -2035,6 +2013,16 @@ export interface components {
         };
         /** @enum {string} */
         status: "created" | "in_progress" | "assistant_turn_ready" | "declaration_extraction_pending" | "declaration_ready" | "failed";
+        conversation_message: {
+            id: string;
+            /** @enum {string} */
+            role: "user" | "assistant";
+            content: string;
+            order: number;
+            /** Format: date-time */
+            created_at?: string;
+            truncated?: boolean;
+        };
         produced_declarations: {
             declaration_id: string;
             declaration_hash: string;
@@ -2078,6 +2066,8 @@ export interface components {
             status: components["schemas"]["status"];
             latest_turn_id?: string;
             message_count: number;
+            messages?: components["schemas"]["conversation_message"][];
+            messages_truncated?: boolean;
             produced_declarations?: components["schemas"]["produced_declarations"];
             failure?: components["schemas"]["failure"];
             request_id: string;
@@ -2104,6 +2094,16 @@ export interface components {
                     correlation_id?: string;
                     idempotency_key?: string;
                     lesser_request_id?: string;
+                };
+                conversation_message: {
+                    id: string;
+                    /** @enum {string} */
+                    role: "user" | "assistant";
+                    content: string;
+                    order: number;
+                    /** Format: date-time */
+                    created_at?: string;
+                    truncated?: boolean;
                 };
                 declarations: {
                     selfDescription: {
@@ -2156,6 +2156,8 @@ export interface components {
                     status: components["schemas"]["status"];
                     latest_turn_id?: string;
                     message_count: number;
+                    messages?: components["schemas"]["conversation_message"][];
+                    messages_truncated?: boolean;
                     produced_declarations?: components["schemas"]["produced_declarations"];
                     failure?: components["schemas"]["failure"];
                     request_id: string;
@@ -2168,6 +2170,30 @@ export interface components {
                     /** Format: date-time */
                     completed_at?: string;
                 };
+            };
+        };
+        /** Instance-key soul bootstrap error envelope */
+        "soul-instance-bootstrap.error.schema": {
+            error: {
+                /** @enum {string} */
+                code: "soul_instance.unauthorized" | "soul_instance.invalid_request" | "soul_instance.boundary_violation" | "soul_instance.conflict" | "soul_instance.not_found" | "soul_instance.internal";
+                message: string;
+                status_code?: number;
+                /** @description Client-safe metadata for validation or tenant-boundary failures. Raw instance keys and host session tokens never appear here. */
+                details?: {
+                    /** @enum {string} */
+                    boundary?: "instance_domain";
+                    field?: string;
+                    reason?: string;
+                    /** @enum {string} */
+                    conversation_status?: "unknown" | "pending" | "in_progress" | "completed" | "failed";
+                    expected_status?: string;
+                    produced_declarations_present?: boolean;
+                    produced_declarations_valid?: boolean;
+                } & {
+                    [key: string]: unknown;
+                };
+                request_id?: string;
             };
         };
         /**
@@ -4013,7 +4039,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SoulInstanceMintConversationResponse"];
+                    "application/json": components["schemas"]["hosted-genesis.conversation.response.schema"];
                 };
             };
             /** @description Invalid request */

@@ -1,2 +1,2 @@
-tag: v1.0.7
-commit: 096af303a67faa11d1f2e85616d753f0741b1a78
+tag: v1.0.8
+commit: 70ae7fc85b510be68f376a29d81d7c0fdfe9a692

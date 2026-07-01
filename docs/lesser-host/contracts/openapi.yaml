@@ -1187,15 +1187,7 @@ components:
           maximum: 50
 
     SoulInstanceMintConversationResponse:
-      type: object
-      additionalProperties: false
-      required: [version, conversation]
-      properties:
-        version:
-          type: string
-          enum: ["1"]
-        conversation:
-          $ref: "#/components/schemas/SoulMintConversation"
+      $ref: "../spec/v3/schemas/hosted-genesis.conversation.response.schema.json"
 
     SoulMintConversationInstanceReadErrorEnvelope:
       type: object
@@ -2544,9 +2536,12 @@ paths:
       operationId: soulInstanceGetMintConversation
       summary: Get a bounded private mint-conversation record for an instance-owned agent
       description: |
-        Instance-key authenticated read used by Lesser's self-scope proxy. This explicit single-conversation route may
-        include private `messages` and `produced_declarations`, subject to a 2 MiB response cap and tenant-boundary
-        enforcement.
+        Instance-key authenticated read used by Lesser's self-scope proxy. This explicit single-conversation route returns
+        the hosted-genesis durable conversation envelope and may include bounded `conversation.messages` at
+        `assistant_turn_ready` for Lesser same-origin relay. Terminal declaration evidence appears only as
+        `conversation.produced_declarations` when the durable status is `declaration_ready`; raw legacy
+        message/declaration strings, credentials, target-account
+        details, and infrastructure state are never returned.
       security:
         - instanceKeyAuth: []
       parameters:
@@ -2815,8 +2810,10 @@ paths:
       description: |
         JSON-authoritative server-to-server route for Lesser. It creates or appends a hosted-genesis turn for a
         registration owned by the authenticated managed instance and returns a durable HostConversation status envelope.
-        The bearer token is the managed InstanceKey (`sha256(raw_key)` stored by Host) and Host enforces the
-        registration's domain boundary before returning any conversation id or status.
+        Responses may include bounded `conversation.messages` so Lesser can render the same-origin hosted genesis
+        transcript when the durable status is `assistant_turn_ready`. The bearer token is the managed InstanceKey
+        (`sha256(raw_key)` stored by Host), and Host enforces the registration's domain boundary before returning any
+        conversation id or status.
 
         HTTP `200` or `202` means transport/request acceptance only; it is not terminal completion. Lesser must persist
         `conversation_id` immediately, then poll `GET
@@ -2901,7 +2898,8 @@ paths:
       description: |
         JSON-authoritative durable status read for managed Lesser instances. Returns the current HostConversation status
         envelope for a registration inside the authenticated instance boundary. This route is the polling/resume source
-        of truth for hosted genesis; it returns terminal declaration evidence only when `conversation.status` is
+        of truth for hosted genesis; it may include bounded `conversation.messages` at `assistant_turn_ready` for Lesser
+        same-origin transcript relay, returns terminal declaration evidence only when `conversation.status` is
         `declaration_ready`, and returns typed failure/recovery when `conversation.status` is `failed`.
       security:
         - instanceKeyAuth: []
