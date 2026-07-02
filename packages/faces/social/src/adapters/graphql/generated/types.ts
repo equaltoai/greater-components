@@ -2199,6 +2199,17 @@ export type HealthStatus =
   | 'HEALTHY'
   | 'UNKNOWN';
 
+export type HostedGenesisConversationSummary = {
+  readonly __typename: 'HostedGenesisConversationSummary';
+  readonly conversationId: Scalars['String']['output'];
+  readonly createdAt?: Maybe<Scalars['Time']['output']>;
+  readonly latestTurnId?: Maybe<Scalars['String']['output']>;
+  readonly messageCount: Scalars['Int']['output'];
+  readonly registrationId?: Maybe<Scalars['String']['output']>;
+  readonly status: Scalars['String']['output'];
+  readonly updatedAt?: Maybe<Scalars['Time']['output']>;
+};
+
 export type HourlyBandwidth = {
   readonly __typename: 'HourlyBandwidth';
   readonly hour: Scalars['Time']['output'];
@@ -2978,6 +2989,7 @@ export type Mutation = {
   readonly prepareSoulBootstrapPrincipalDeclaration: SoulBootstrapMutationPayload;
   readonly publishDraft: Article;
   readonly publishHostedSoul: SoulBootstrapMutationPayload;
+  readonly recoverHostedSoulGenesisTurn: SoulBootstrapMutationPayload;
   readonly registerAccount: RegisterAccountPayload;
   readonly registerAgent: RegisterAgentPayload;
   readonly registerPushSubscription: PushSubscription;
@@ -3617,6 +3629,11 @@ export type MutationPublishDraftArgs = {
 
 export type MutationPublishHostedSoulArgs = {
   input: PublishHostedSoulInput;
+};
+
+
+export type MutationRecoverHostedSoulGenesisTurnArgs = {
+  input: RecoverHostedSoulGenesisTurnInput;
 };
 
 
@@ -4576,6 +4593,7 @@ export type Query = {
   readonly linkTimeline: ObjectConnection;
   readonly list?: Maybe<List>;
   readonly listAccounts: ReadonlyArray<Actor>;
+  readonly listHostedGenesisConversations: ReadonlyArray<HostedGenesisConversationSummary>;
   readonly lists: ReadonlyArray<List>;
   readonly markers: MarkerSet;
   readonly media?: Maybe<Media>;
@@ -5077,6 +5095,11 @@ export type QueryListAccountsArgs = {
 };
 
 
+export type QueryListHostedGenesisConversationsArgs = {
+  username: Scalars['String']['input'];
+};
+
+
 export type QueryMarkersArgs = {
   timelines?: InputMaybe<ReadonlyArray<MarkerTimeline>>;
 };
@@ -5483,6 +5506,15 @@ export type ReconnectionPayload = {
   readonly reconnected: Scalars['Int']['output'];
   readonly severedRelationship: SeveredRelationship;
   readonly success: Scalars['Boolean']['output'];
+};
+
+export type RecoverHostedSoulGenesisTurnInput = {
+  readonly conversationId: Scalars['String']['input'];
+  readonly correlationKey?: InputMaybe<Scalars['String']['input']>;
+  readonly idempotencyKey?: InputMaybe<Scalars['String']['input']>;
+  readonly recoveryAttemptId?: InputMaybe<Scalars['String']['input']>;
+  readonly registrationId?: InputMaybe<Scalars['String']['input']>;
+  readonly username: Scalars['String']['input'];
 };
 
 export type RegisterAccountInput = {
