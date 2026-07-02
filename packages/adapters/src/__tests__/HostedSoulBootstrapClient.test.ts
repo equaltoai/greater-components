@@ -28,6 +28,7 @@ const rootFieldByOperation: Record<string, string> = {
 	CompleteHostedSoulGenesis: 'completeHostedSoulGenesis',
 	PublishHostedSoul: 'publishHostedSoul',
 	RestartSoulBootstrap: 'restartSoulBootstrap',
+	RecoverHostedSoulGenesisTurn: 'recoverHostedSoulGenesisTurn',
 };
 
 const expectedHostedOperationNames = Object.keys(rootFieldByOperation);
@@ -682,6 +683,158 @@ describe('HostedSoulBootstrapClient', () => {
 			'StartHostedSoulBootstrap',
 			'StartHostedSoulBootstrap',
 		]);
+	});
+
+	it('lists hosted genesis conversations through Lesser same-origin GraphQL', async () => {
+		const summaries = [
+			{
+				__typename: 'HostedGenesisConversationSummary',
+				conversationId: 'conv-list-001',
+				registrationId: 'reg-list-001',
+				status: 'in_progress',
+				messageCount: 2,
+				latestTurnId: 'turn-001',
+				createdAt: '2026-07-01T10:00:00Z',
+				updatedAt: '2026-07-01T10:05:00Z',
+			},
+			{
+				__typename: 'HostedGenesisConversationSummary',
+				conversationId: 'conv-list-002',
+				registrationId: null,
+				status: 'declaration_ready',
+				messageCount: 4,
+				latestTurnId: null,
+				createdAt: '2026-07-01T11:00:00Z',
+				updatedAt: '2026-07-01T11:30:00Z',
+			},
+		];
+
+		const fetchMock = vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+			const body = JSON.parse(String(init?.body ?? '{}')) as { operationName?: string };
+			if (body.operationName === 'ListHostedGenesisConversations') {
+				return jsonResponse({ data: { listHostedGenesisConversations: summaries } });
+			}
+			return jsonResponse({ data: graphQLDataForOperation(body.operationName ?? 'SoulBootstrap') });
+		});
+
+		const client = createHostedSoulBootstrapClient({
+			httpEndpoint: '/graphql',
+			fetch: fetchMock,
+		});
+
+		const result = await client.listHostedGenesisConversations(project44SoulBootstrapIds.username);
+
+		expect(result.conversations).toHaveLength(2);
+		expect(result.conversations[0]).toMatchObject({
+			conversationId: 'conv-list-001',
+			registrationId: 'reg-list-001',
+			status: 'in_progress',
+			messageCount: 2,
+		});
+		expect(result.conversations[1]).toMatchObject({
+			conversationId: 'conv-list-002',
+			status: 'declaration_ready',
+			messageCount: 4,
+		});
+
+		const calls = parseGraphQLCalls(fetchMock);
+		const listCall = calls.find((c) => c.body.operationName === 'ListHostedGenesisConversations');
+		expect(listCall).toBeDefined();
+		expect(listCall?.body.variables).toEqual({ username: project44SoulBootstrapIds.username });
+		expect(listCall?.body.query).toContain('listHostedGenesisConversations');
+		expect(listCall?.body.query).toContain('HostedGenesisConversationSummaryFields');
+		expect(listCall?.headers.get('x-lesser-host-token')).toBeNull();
+	});
+
+	it('returns an empty list when no hosted genesis conversations exist', async () => {
+		const fetchMock = vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+			return jsonResponse({ data: { listHostedGenesisConversations: [] } });
+		});
+
+		const client = createHostedSoulBootstrapClient({
+			httpEndpoint: '/graphql',
+			fetch: fetchMock,
+		});
+
+		const result = await client.listHostedGenesisConversations({
+			username: project44SoulBootstrapIds.username,
+		});
+
+		expect(result.conversations).toEqual([]);
+	});
+
+	it('recovers a stuck hosted genesis turn through Lesser same-origin GraphQL mutation', async () => {
+		const fetchMock = vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+			const body = JSON.parse(String(init?.body ?? '{}')) as { operationName?: string };
+			if (body.operationName === 'RecoverHostedSoulGenesisTurn') {
+				return jsonResponse({
+					data: {
+						recoverHostedSoulGenesisTurn: mutationPayload(
+							project44SoulBootstrapFixtures.hostedGenesisMessage
+						),
+					},
+				});
+			}
+			return jsonResponse({ data: graphQLDataForOperation(body.operationName ?? 'SoulBootstrap') });
+		});
+
+		const client = createHostedSoulBootstrapClient({
+			httpEndpoint: '/graphql',
+			fetch: fetchMock,
+		});
+
+		const result = await client.recoverHostedSoulGenesisTurn({
+			username: project44SoulBootstrapIds.username,
+			conversationId: project44SoulBootstrapIds.conversationId,
+			registrationId: project44SoulBootstrapIds.registrationId,
+			correlationKey: project44SoulBootstrapIds.correlationKey,
+			idempotencyKey: project44SoulBootstrapIds.conversationIdempotencyKey,
+			recoveryAttemptId: project44SoulBootstrapIds.recoveryAttemptId,
+		});
+
+		expect(result.hosted).toMatchObject({
+			bootstrapMode: 'HOSTED',
+		});
+		expect(result.payload).toBeDefined();
+		expect(result.typedNextAction).toBe(
+			project44SoulBootstrapFixtures.hostedGenesisMessage.typedNextAction
+		);
+
+		const calls = parseGraphQLCalls(fetchMock);
+		const recoverCall = calls.find((c) => c.body.operationName === 'RecoverHostedSoulGenesisTurn');
+		expect(recoverCall).toBeDefined();
+		expect(recoverCall?.body.query).toContain('recoverHostedSoulGenesisTurn');
+		expect(recoverCall?.body.query).toContain('SoulBootstrapMutationPayloadFields');
+		expect(recoverCall?.body.variables).toMatchObject({
+			input: {
+				username: project44SoulBootstrapIds.username,
+				conversationId: project44SoulBootstrapIds.conversationId,
+				registrationId: project44SoulBootstrapIds.registrationId,
+				recoveryAttemptId: project44SoulBootstrapIds.recoveryAttemptId,
+			},
+		});
+		expect(recoverCall?.headers.get('x-lesser-host-token')).toBeNull();
+
+		const variablesText = JSON.stringify(recoverCall?.body.variables);
+		for (const disallowedKey of disallowedHostedInputKeys) {
+			expect(variablesText).not.toContain(disallowedKey);
+		}
+	});
+
+	it('rejects disallowed inputs on recoverHostedSoulGenesisTurn', async () => {
+		const client = createHostedSoulBootstrapClient({
+			graphqlClient: createSurfaceGraphQLClient(project44SoulBootstrapFixtures.hostedNotStarted),
+		});
+
+		for (const key of disallowedHostedInputKeys) {
+			await expect(
+				client.recoverHostedSoulGenesisTurn({
+					username: project44SoulBootstrapIds.username,
+					conversationId: project44SoulBootstrapIds.conversationId,
+					[key]: key.endsWith('Client') ? ({} as never) : 'wallet-or-host-secret',
+				} as never)
+			).rejects.toThrow(`does not accept ${key}`);
+		}
 	});
 });
 
