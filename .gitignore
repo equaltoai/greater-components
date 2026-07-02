@@ -95,3 +95,9 @@ trial/
 typecheck.out
 PACKAGING_PLAN.md
 .theory/
+
+# Agent materials — untracked per TheoryMCP migration (installed/managed locally, not in git)
+.agents/
+.codex/
+.claude/
+opencode.json
