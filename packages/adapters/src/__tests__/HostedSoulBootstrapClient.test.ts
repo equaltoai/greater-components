@@ -831,9 +831,7 @@ describe('HostedSoulBootstrapClient', () => {
 				client.recoverHostedSoulGenesisTurn({
 					username: project44SoulBootstrapIds.username,
 					conversationId: project44SoulBootstrapIds.conversationId,
-					[key]: key.endsWith('Client')
-						? ({} as never)
-						: 'wallet-or-host-secret',
+					[key]: key.endsWith('Client') ? ({} as never) : 'wallet-or-host-secret',
 				} as never)
 			).rejects.toThrow(`does not accept ${key}`);
 		}
