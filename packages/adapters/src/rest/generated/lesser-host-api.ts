@@ -368,9 +368,12 @@ export interface paths {
         };
         /**
          * Get a bounded private mint-conversation record for an instance-owned agent
-         * @description Instance-key authenticated read used by Lesser's self-scope proxy. This explicit single-conversation route may
-         *     include private `messages` and `produced_declarations`, subject to a 2 MiB response cap and tenant-boundary
-         *     enforcement.
+         * @description Instance-key authenticated read used by Lesser's self-scope proxy. This explicit single-conversation route returns
+         *     the hosted-genesis durable conversation envelope and may include bounded `conversation.messages` at
+         *     `assistant_turn_ready` for Lesser same-origin relay. Terminal declaration evidence appears only as
+         *     `conversation.produced_declarations` when the durable status is `declaration_ready`; raw legacy
+         *     message/declaration strings, credentials, target-account
+         *     details, and infrastructure state are never returned.
          */
         get: operations["soulInstanceGetMintConversation"];
         put?: never;
@@ -460,8 +463,10 @@ export interface paths {
          * Start or continue an instance-key registration mint conversation with durable JSON status
          * @description JSON-authoritative server-to-server route for Lesser. It creates or appends a hosted-genesis turn for a
          *     registration owned by the authenticated managed instance and returns a durable HostConversation status envelope.
-         *     The bearer token is the managed InstanceKey (`sha256(raw_key)` stored by Host) and Host enforces the
-         *     registration's domain boundary before returning any conversation id or status.
+         *     Responses may include bounded `conversation.messages` so Lesser can render the same-origin hosted genesis
+         *     transcript when the durable status is `assistant_turn_ready`. The bearer token is the managed InstanceKey
+         *     (`sha256(raw_key)` stored by Host), and Host enforces the registration's domain boundary before returning any
+         *     conversation id or status.
          *
          *     HTTP `200` or `202` means transport/request acceptance only; it is not terminal completion. Lesser must persist
          *     `conversation_id` immediately, then poll `GET
@@ -488,12 +493,39 @@ export interface paths {
          * Read durable hosted-genesis mint-conversation status
          * @description JSON-authoritative durable status read for managed Lesser instances. Returns the current HostConversation status
          *     envelope for a registration inside the authenticated instance boundary. This route is the polling/resume source
-         *     of truth for hosted genesis; it returns terminal declaration evidence only when `conversation.status` is
+         *     of truth for hosted genesis; it may include bounded `conversation.messages` at `assistant_turn_ready` for Lesser
+         *     same-origin transcript relay, returns terminal declaration evidence only when `conversation.status` is
          *     `declaration_ready`, and returns typed failure/recovery when `conversation.status` is `failed`.
          */
         get: operations["soulInstanceGetRegistrationMintConversation"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/instance/agents/register/{id}/mint-conversation/{conversationId}/recover": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Recover a stuck instance-key registration mint conversation
+         * @description Server-to-server route for managed Lesser instances. Retriggers the assistant turn for an in-progress
+         *     conversation whose assistant checkpoint is missing — for example, after a worker crash or timeout left
+         *     the conversation in `in_progress` without a recorded assistant response. If the conversation does not
+         *     need recovery (already has an assistant checkpoint, or is not `in_progress`), the route is idempotent
+         *     and returns `200` with the current durable HostConversation envelope without re-running the turn.
+         *     When recovery is needed, Host re-progresses the accepted turn; `200`/`202` is transport success only —
+         *     downstream consumers must inspect `conversation.status`.
+         */
+        post: operations["soulInstanceRecoverRegistrationMintConversation"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1564,11 +1596,7 @@ export interface components {
             count: number;
             limit: number;
         };
-        SoulInstanceMintConversationResponse: {
-            /** @enum {string} */
-            version: "1";
-            conversation: components["schemas"]["SoulMintConversation"];
-        };
+        SoulInstanceMintConversationResponse: components["schemas"]["hosted-genesis.conversation.response.schema"];
         SoulMintConversationInstanceReadErrorEnvelope: {
             error: {
                 /** @enum {string} */
@@ -1995,30 +2023,6 @@ export interface components {
                 };
             };
         };
-        /** Instance-key soul bootstrap error envelope */
-        "soul-instance-bootstrap.error.schema": {
-            error: {
-                /** @enum {string} */
-                code: "soul_instance.unauthorized" | "soul_instance.invalid_request" | "soul_instance.boundary_violation" | "soul_instance.conflict" | "soul_instance.not_found" | "soul_instance.internal";
-                message: string;
-                status_code?: number;
-                /** @description Client-safe metadata for validation or tenant-boundary failures. Raw instance keys and host session tokens never appear here. */
-                details?: {
-                    /** @enum {string} */
-                    boundary?: "instance_domain";
-                    field?: string;
-                    reason?: string;
-                    /** @enum {string} */
-                    conversation_status?: "unknown" | "pending" | "in_progress" | "completed" | "failed";
-                    expected_status?: string;
-                    produced_declarations_present?: boolean;
-                    produced_declarations_valid?: boolean;
-                } & {
-                    [key: string]: unknown;
-                };
-                request_id?: string;
-            };
-        };
         declarations: {
             selfDescription: {
                 [key: string]: unknown;
@@ -2035,6 +2039,16 @@ export interface components {
         };
         /** @enum {string} */
         status: "created" | "in_progress" | "assistant_turn_ready" | "declaration_extraction_pending" | "declaration_ready" | "failed";
+        conversation_message: {
+            id: string;
+            /** @enum {string} */
+            role: "user" | "assistant";
+            content: string;
+            order: number;
+            /** Format: date-time */
+            created_at?: string;
+            truncated?: boolean;
+        };
         produced_declarations: {
             declaration_id: string;
             declaration_hash: string;
@@ -2078,6 +2092,8 @@ export interface components {
             status: components["schemas"]["status"];
             latest_turn_id?: string;
             message_count: number;
+            messages?: components["schemas"]["conversation_message"][];
+            messages_truncated?: boolean;
             produced_declarations?: components["schemas"]["produced_declarations"];
             failure?: components["schemas"]["failure"];
             request_id: string;
@@ -2104,6 +2120,16 @@ export interface components {
                     correlation_id?: string;
                     idempotency_key?: string;
                     lesser_request_id?: string;
+                };
+                conversation_message: {
+                    id: string;
+                    /** @enum {string} */
+                    role: "user" | "assistant";
+                    content: string;
+                    order: number;
+                    /** Format: date-time */
+                    created_at?: string;
+                    truncated?: boolean;
                 };
                 declarations: {
                     selfDescription: {
@@ -2156,6 +2182,8 @@ export interface components {
                     status: components["schemas"]["status"];
                     latest_turn_id?: string;
                     message_count: number;
+                    messages?: components["schemas"]["conversation_message"][];
+                    messages_truncated?: boolean;
                     produced_declarations?: components["schemas"]["produced_declarations"];
                     failure?: components["schemas"]["failure"];
                     request_id: string;
@@ -2168,6 +2196,30 @@ export interface components {
                     /** Format: date-time */
                     completed_at?: string;
                 };
+            };
+        };
+        /** Instance-key soul bootstrap error envelope */
+        "soul-instance-bootstrap.error.schema": {
+            error: {
+                /** @enum {string} */
+                code: "soul_instance.unauthorized" | "soul_instance.invalid_request" | "soul_instance.boundary_violation" | "soul_instance.conflict" | "soul_instance.not_found" | "soul_instance.internal";
+                message: string;
+                status_code?: number;
+                /** @description Client-safe metadata for validation or tenant-boundary failures. Raw instance keys and host session tokens never appear here. */
+                details?: {
+                    /** @enum {string} */
+                    boundary?: "instance_domain";
+                    field?: string;
+                    reason?: string;
+                    /** @enum {string} */
+                    conversation_status?: "unknown" | "pending" | "in_progress" | "completed" | "failed";
+                    expected_status?: string;
+                    produced_declarations_present?: boolean;
+                    produced_declarations_valid?: boolean;
+                } & {
+                    [key: string]: unknown;
+                };
+                request_id?: string;
             };
         };
         /**
@@ -4013,7 +4065,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SoulInstanceMintConversationResponse"];
+                    "application/json": components["schemas"]["hosted-genesis.conversation.response.schema"];
                 };
             };
             /** @description Invalid request */
@@ -4421,6 +4473,92 @@ export interface operations {
         responses: {
             /** @description Current durable HostConversation status. HTTP 200 is transport success only. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["hosted-genesis.conversation.response.schema"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Missing, invalid, or revoked instance key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Tenant/domain boundary mismatch */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Conversation not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+            /** @description Internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-bootstrap.error.schema"];
+                };
+            };
+        };
+    };
+    soulInstanceRecoverRegistrationMintConversation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                conversationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Recovery was not needed (idempotent noop) or the assistant turn completed synchronously; returns the durable HostConversation envelope. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["hosted-genesis.conversation.response.schema"];
+                };
+            };
+            /** @description Recovery turn is still in progress; inspect `conversation.status`. */
+            202: {
                 headers: {
                     [name: string]: unknown;
                 };
