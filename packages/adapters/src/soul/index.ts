@@ -92,6 +92,8 @@ export type {
 } from './bootstrap.js';
 export type {
 	CompleteHostedSoulGenesisInput,
+	HostedGenesisConversationSummary,
+	HostedGenesisConversationSummaryResult,
 	HostedSoulBootstrapActionableError,
 	HostedSoulBootstrapAnchorState,
 	HostedSoulBootstrapAuthorityModel,
@@ -130,6 +132,7 @@ export type {
 	LesserHostHostedGenesisConversation,
 	LesserHostHostedGenesisConversationResponse,
 	PublishHostedSoulInput,
+	RecoverHostedSoulGenesisTurnInput,
 	RestartSoulBootstrapInput,
 	SendHostedSoulGenesisMessageInput,
 	StartHostedSoulBootstrapInput,

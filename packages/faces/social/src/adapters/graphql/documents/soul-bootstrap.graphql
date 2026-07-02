@@ -523,3 +523,25 @@ mutation FinalizeSoulBootstrap($input: FinalizeSoulBootstrapInput!) {
 		...SoulBootstrapMutationPayloadFields
 	}
 }
+
+fragment HostedGenesisConversationSummaryFields on HostedGenesisConversationSummary {
+	conversationId
+	registrationId
+	status
+	messageCount
+	latestTurnId
+	createdAt
+	updatedAt
+}
+
+query ListHostedGenesisConversations($username: String!) {
+	listHostedGenesisConversations(username: $username) {
+		...HostedGenesisConversationSummaryFields
+	}
+}
+
+mutation RecoverHostedSoulGenesisTurn($input: RecoverHostedSoulGenesisTurnInput!) {
+	recoverHostedSoulGenesisTurn(input: $input) {
+		...SoulBootstrapMutationPayloadFields
+	}
+}
