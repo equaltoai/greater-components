@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-07-02T22:07:55.275Z",
+  "generatedAt": "2026-07-03T02:05:58.905Z",
   "ref": "greater-v0.11.0",
   "version": "0.11.0",
   "checksums": {
@@ -1397,7 +1397,7 @@
     "packages/shared/admin/src/TrustGraph/Root.svelte": "sha256-RnKfjO2Vn2aZFXkeMITY9bBE7jPF/5KHVBvBo2XHaq8=",
     "packages/shared/admin/src/TrustGraph/Visualization.svelte": "sha256-rxTSgA4+sYykDxVNBr1yAcOLFt1nFs8oR26R0ukrNAU=",
     "packages/shared/admin/src/Users.svelte": "sha256-eJnq6ySKkUKIFYdke6qok7zSM/e0BasyO9rUiN7gmGg=",
-    "packages/shared/chat/src/ChatContainer.svelte": "sha256-RffmulXXyC6NRUZYjDAUF+BX4JzLZXAhv5neTCEdb58=",
+    "packages/shared/chat/src/ChatContainer.svelte": "sha256-2jiPhT9sABOQ4CN2ZxuL+q94xL81kZvXXctp/QS4LRI=",
     "packages/shared/chat/src/ChatHeader.svelte": "sha256-KlBPVy0gdgTJ0mgn4/InoGnwSxyuJvwsP0DS2q0kxYg=",
     "packages/shared/chat/src/ChatInput.svelte": "sha256-lU6LPsynBURd6Mb4hNJ4SiRIQ5EtrFVChV4KbrvWGOo=",
     "packages/shared/chat/src/ChatMessage.svelte": "sha256-PpUf+DIw5R0FvGV4g9b4qHU8hrZQceQ9al/ha3R1y20=",
@@ -9431,8 +9431,8 @@
       "files": [
         {
           "path": "src/ChatContainer.svelte",
-          "checksum": "sha256-RffmulXXyC6NRUZYjDAUF+BX4JzLZXAhv5neTCEdb58=",
-          "size": 8738
+          "checksum": "sha256-2jiPhT9sABOQ4CN2ZxuL+q94xL81kZvXXctp/QS4LRI=",
+          "size": 8882
         },
         {
           "path": "src/ChatHeader.svelte",

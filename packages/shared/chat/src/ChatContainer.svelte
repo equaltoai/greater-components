@@ -188,14 +188,15 @@
 	}
 
 	// Set up global keyboard listener
+	// onDestroy runs during Svelte 5 SSR close-render, so guard browser globals
 	onMount(() => {
-		if (enableKeyboardShortcuts) {
+		if (enableKeyboardShortcuts && typeof window !== 'undefined') {
 			window.addEventListener('keydown', handleKeydown);
 		}
 	});
 
 	onDestroy(() => {
-		if (enableKeyboardShortcuts) {
+		if (enableKeyboardShortcuts && typeof window !== 'undefined') {
 			window.removeEventListener('keydown', handleKeydown);
 		}
 	});
