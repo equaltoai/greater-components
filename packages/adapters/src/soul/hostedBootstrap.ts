@@ -5,7 +5,9 @@ import { resolveFetchLike } from '../fetch.js';
 import type { components as LesserHostComponents } from '../rest/generated/lesser-host-api.js';
 import {
 	CompleteHostedSoulGenesisDocument,
+	ListHostedGenesisConversationsDocument,
 	PublishHostedSoulDocument,
+	RecoverHostedSoulGenesisTurnDocument,
 	RestartSoulBootstrapDocument,
 	SendHostedSoulGenesisMessageDocument,
 	SoulBootstrapDocument,
@@ -13,9 +15,15 @@ import {
 	type CompleteHostedSoulGenesisInput,
 	type CompleteHostedSoulGenesisMutation,
 	type CompleteHostedSoulGenesisMutationVariables,
+	type HostedGenesisConversationSummary,
+	type ListHostedGenesisConversationsQuery,
+	type ListHostedGenesisConversationsQueryVariables,
 	type PublishHostedSoulInput,
 	type PublishHostedSoulMutation,
 	type PublishHostedSoulMutationVariables,
+	type RecoverHostedSoulGenesisTurnInput,
+	type RecoverHostedSoulGenesisTurnMutation,
+	type RecoverHostedSoulGenesisTurnMutationVariables,
 	type RestartSoulBootstrapInput,
 	type RestartSoulBootstrapMutation,
 	type RestartSoulBootstrapMutationVariables,
@@ -88,11 +96,14 @@ export type HostedSoulBootstrapMutationPayload =
 	| SendHostedSoulGenesisMessageMutation['sendHostedSoulGenesisMessage']
 	| CompleteHostedSoulGenesisMutation['completeHostedSoulGenesis']
 	| PublishHostedSoulMutation['publishHostedSoul']
-	| RestartSoulBootstrapMutation['restartSoulBootstrap'];
+	| RestartSoulBootstrapMutation['restartSoulBootstrap']
+	| RecoverHostedSoulGenesisTurnMutation['recoverHostedSoulGenesisTurn'];
 
 export type {
 	CompleteHostedSoulGenesisInput,
+	HostedGenesisConversationSummary,
 	PublishHostedSoulInput,
+	RecoverHostedSoulGenesisTurnInput,
 	RestartSoulBootstrapInput,
 	SendHostedSoulGenesisMessageInput,
 	SoulBootstrapAnchorState as HostedSoulBootstrapAnchorState,
@@ -232,6 +243,10 @@ export interface HostedSoulBootstrapResult {
 
 export interface HostedSoulBootstrapMutationResult extends HostedSoulBootstrapResult {
 	payload: HostedSoulBootstrapMutationPayload;
+}
+
+export interface HostedGenesisConversationSummaryResult {
+	conversations: readonly HostedGenesisConversationSummary[];
 }
 
 export type HostedSoulBootstrapTerminalDeclarationCheckpointName =
@@ -655,6 +670,33 @@ export class HostedSoulBootstrapClient {
 			RestartSoulBootstrapMutationVariables
 		>(RestartSoulBootstrapDocument, { input });
 		return createHostedResultFromPayload(data.restartSoulBootstrap);
+	}
+
+	async listHostedGenesisConversations(
+		input: HostedSoulBootstrapCurrentInput | string
+	): Promise<HostedGenesisConversationSummaryResult> {
+		if (typeof input !== 'string') {
+			assertHostedInput('listHostedGenesisConversations', input);
+		}
+		const username = typeof input === 'string' ? input : input.username;
+		const data = await this.executeQuery<
+			ListHostedGenesisConversationsQuery,
+			ListHostedGenesisConversationsQueryVariables
+		>(ListHostedGenesisConversationsDocument, { username });
+		return {
+			conversations: data.listHostedGenesisConversations ?? [],
+		};
+	}
+
+	async recoverHostedSoulGenesisTurn(
+		input: RecoverHostedSoulGenesisTurnInput
+	): Promise<HostedSoulBootstrapMutationResult> {
+		assertHostedInput('recoverHostedSoulGenesisTurn', input);
+		const data = await this.executeMutation<
+			RecoverHostedSoulGenesisTurnMutation,
+			RecoverHostedSoulGenesisTurnMutationVariables
+		>(RecoverHostedSoulGenesisTurnDocument, { input });
+		return createHostedResultFromPayload(data.recoverHostedSoulGenesisTurn);
 	}
 
 	private async executeQuery<TData, TVariables extends VariablesRecord>(
