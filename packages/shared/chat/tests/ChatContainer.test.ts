@@ -165,6 +165,30 @@ describe('ChatContainer.svelte', () => {
 
 			expect(onStopStreaming).not.toHaveBeenCalled();
 		});
+
+		it('guards window access with typeof check for SSR safety', () => {
+			// The onDestroy callback runs during Svelte 5 SSR close-render.
+			// If window is referenced without a typeof guard, Node SSR throws
+			// ReferenceError: window is not defined. This test verifies the
+			// guard exists by simulating a no-window environment.
+			//
+			// See: Simulacrum steward report — SSR crash in ChatContainer
+			// (delivery-b7d608ee1eeb2f31, 2026-07-03)
+
+			const originalWindow = globalThis.window;
+			// @ts-expect-error — intentionally removing window to simulate Node SSR
+			delete globalThis.window;
+
+			try {
+				// Rendering should not throw even when window is undefined.
+				// The component's onDestroy must check typeof window before calling
+				// window.removeEventListener.
+				expect(() => render(ChatContainerHarness)).not.toThrow();
+			} finally {
+				// Restore window for subsequent tests
+				globalThis.window = originalWindow;
+			}
+		});
 	});
 
 	describe('Auto-scroll', () => {
