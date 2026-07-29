@@ -1165,7 +1165,9 @@ function isHostedGenesisConversationRecord(value: unknown): value is Record<stri
 	);
 }
 
-function normalizeHostedGenesisStatus(value: unknown): HostedSoulGenesisConversationStatus | null {
+export function normalizeHostedGenesisStatus(
+	value: unknown
+): HostedSoulGenesisConversationStatus | null {
 	if (typeof value !== 'string') {
 		return null;
 	}
@@ -1182,8 +1184,8 @@ function normalizeHostedGenesisStatus(value: unknown): HostedSoulGenesisConversa
 		case 'registration_active_no_conversation':
 		case 'published_bound':
 			return normalized;
-		// Lesser Host REST's terminal `published` record is equivalent to the
-		// GraphQL `complete.bound` / `hosted_offchain_published` projection.
+		// Lesser Host REST's terminal `published` status maps into the existing
+		// `published_bound` taxonomy bucket. Predicate behavior differs across transports.
 		case 'published':
 			return 'published_bound';
 		default:

@@ -18,6 +18,7 @@ import {
 	isHostedSoulBootstrapDeclarationReady,
 	isHostedSoulBootstrapInProgress,
 	isHostedSoulBootstrapPublishReady,
+	normalizeHostedGenesisStatus,
 	type HostedSoulBootstrapNextAction,
 	type HostedSoulBootstrapRecoveryAction,
 	type HostedSoulBootstrapRecoveryCategory,
@@ -271,6 +272,10 @@ describe('Project 49 hosted genesis representability', () => {
 			}
 		}
 	);
+
+	it('maps the Lesser Host REST published status into the published_bound taxonomy bucket', () => {
+		expect(normalizeHostedGenesisStatus('published')).toBe('published_bound');
+	});
 
 	it('recognizes the vendored Lesser Host published fixture as the terminal published/bound state', () => {
 		const hostFixture = readJsonFixture<LesserHostHostedGenesisConversationResponse>(
