@@ -2,15 +2,44 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://lesser.host/spec/v3/schemas/soul-x402-invocation-grant.schema.json",
   "title": "Soul x402 invocation grant",
-  "description": "A minimized host-issued off-chain grant for one bounded public paid invocation. It is scoped invocation authority only and does not confer principal, operator, wallet, or tenant-data authority.",
+  "description": "A minimized host-issued off-chain grant for one bounded public paid invocation. It is scoped invocation authority only and does not confer principal, operator, wallet, or tenant-data authority. The required access scope is explicit downstream tool vocabulary (`read`, `write`, `admin`) and is intentionally separate from authority. Capability vocabulary is versioned: `scoped-invocation/v1` remains actor/scoped invocation vocabulary, while `instance-capability/v1` is restricted to instance tool capabilities `instance:agent_create` and `instance:install_plan`.",
   "type": "object",
   "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": { "capabilityVersion": { "const": "instance-capability/v1" } },
+        "required": ["capabilityVersion"]
+      },
+      "then": {
+        "properties": {
+          "capability": { "enum": ["instance:agent_create", "instance:install_plan"] }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "capabilityVersion": { "const": "scoped-invocation/v1" } },
+        "required": ["capabilityVersion"]
+      },
+      "then": {
+        "not": {
+          "properties": {
+            "capability": { "enum": ["instance:agent_create", "instance:install_plan"] }
+          },
+          "required": ["capability"]
+        }
+      }
+    }
+  ],
   "required": [
     "grantId",
     "agentId",
+    "capabilityVersion",
     "capability",
     "tool",
     "resource",
+    "scope",
     "requestHash",
     "callerSubjectHash",
     "payment",
@@ -33,9 +62,29 @@
       "description": "Raw opaque grant token returned once on first issue. Host stores only sha256(grantToken); idempotent replays intentionally omit it."
     },
     "agentId": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
-    "capability": { "type": "string", "minLength": 1, "maxLength": 128 },
-    "tool": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "capabilityVersion": {
+      "type": "string",
+      "enum": ["scoped-invocation/v1", "instance-capability/v1"],
+      "description": "Versioned capability vocabulary. Instance tools must use `instance-capability/v1`; actor/scoped invocation capabilities remain separate under `scoped-invocation/v1`."
+    },
+    "capability": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "Capability within `capabilityVersion`. For `instance-capability/v1`, allowed values are `instance:agent_create` and `instance:install_plan`."
+    },
+    "tool": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "Concrete downstream tool name. For `instance:agent_create`, use `agent_create`; for `instance:install_plan`, use `agent_local_install_plan` (Host also accepts `install_plan`)."
+    },
     "resource": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "scope": {
+      "type": "string",
+      "enum": ["read", "write", "admin"],
+      "description": "Access scope enforced by the consuming runtime before side effects. This is not principal/operator/session authority."
+    },
     "requestHash": {
       "type": "string",
       "pattern": "^[0-9a-fA-F]{64}$",

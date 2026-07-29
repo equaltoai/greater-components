@@ -79,8 +79,16 @@ export type LesserHostHostedGenesisConversationResponse =
 	LesserHostComponents['schemas']['SoulHostedGenesisConversationResponse'];
 export type LesserHostHostedGenesisConversation =
 	LesserHostHostedGenesisConversationResponse['conversation'];
+/**
+ * A transitional status that can still arrive from legacy Lesser GraphQL/runtime
+ * projections. It is deliberately not part of the pinned Lesser Host v1.0.15 REST
+ * contract.
+ */
+export type LegacyHostedSoulGenesisConversationStatus = 'declaration_extraction_pending';
+
 export type HostedSoulGenesisConversationStatus =
 	| LesserHostHostedGenesisConversation['status']
+	| LegacyHostedSoulGenesisConversationStatus
 	| 'no_registration'
 	| 'registration_active_no_conversation'
 	| 'published_bound';
@@ -280,10 +288,25 @@ export type HostedSoulBootstrapTerminalDeclarationEvidenceSource =
 	| null
 	| undefined;
 
+export type LegacyLesserHostHostedGenesisConversation = Omit<
+	LesserHostHostedGenesisConversation,
+	'status'
+> & {
+	status: LegacyHostedSoulGenesisConversationStatus;
+};
+export type LegacyLesserHostHostedGenesisConversationResponse = Omit<
+	LesserHostHostedGenesisConversationResponse,
+	'conversation'
+> & {
+	conversation: LegacyLesserHostHostedGenesisConversation;
+};
+
 export type HostedSoulBootstrapStatusSource =
 	| HostedSoulBootstrapTerminalDeclarationEvidenceSource
 	| LesserHostHostedGenesisConversationResponse
-	| LesserHostHostedGenesisConversation;
+	| LesserHostHostedGenesisConversation
+	| LegacyLesserHostHostedGenesisConversationResponse
+	| LegacyLesserHostHostedGenesisConversation;
 
 type RuntimeHostedSoulBootstrapState = HostedSoulBootstrapState & Record<string, unknown>;
 

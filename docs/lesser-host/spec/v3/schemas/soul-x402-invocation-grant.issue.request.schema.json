@@ -2,15 +2,62 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://lesser.host/spec/v3/schemas/soul-x402-invocation-grant.issue.request.schema.json",
   "title": "POST /api/v1/soul/x402/grants request",
-  "description": "Issues a host-side scoped x402 invocation grant for configured public paid callers. Raw caller and payment evidence may be supplied for hashing but is never returned by the instance-key authenticated route.",
+  "description": "Issues a host-side scoped x402 invocation grant for configured public paid callers. Raw caller and payment evidence may be supplied for hashing but is never returned by the instance-key authenticated route. The required access scope is an explicit vocabulary (`read`, `write`, `admin`) that downstream runtimes enforce separately from scoped invocation authority. Capability vocabulary is versioned: `scoped-invocation/v1` remains the actor/scoped invocation vocabulary, while `instance-capability/v1` is restricted to instance tool capabilities `instance:agent_create` and `instance:install_plan`.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["agentId", "capability", "tool", "resource", "requestHash", "caller", "payment", "nonce", "idempotencyKey", "expiresAt"],
+  "required": ["agentId", "capabilityVersion", "capability", "tool", "resource", "scope", "requestHash", "caller", "payment", "nonce", "idempotencyKey", "expiresAt"],
+  "allOf": [
+    {
+      "if": {
+        "properties": { "capabilityVersion": { "const": "instance-capability/v1" } },
+        "required": ["capabilityVersion"]
+      },
+      "then": {
+        "properties": {
+          "capability": { "enum": ["instance:agent_create", "instance:install_plan"] }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "capabilityVersion": { "const": "scoped-invocation/v1" } },
+        "required": ["capabilityVersion"]
+      },
+      "then": {
+        "not": {
+          "properties": {
+            "capability": { "enum": ["instance:agent_create", "instance:install_plan"] }
+          },
+          "required": ["capability"]
+        }
+      }
+    }
+  ],
   "properties": {
     "agentId": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
-    "capability": { "type": "string", "minLength": 1, "maxLength": 128 },
-    "tool": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "capabilityVersion": {
+      "type": "string",
+      "enum": ["scoped-invocation/v1", "instance-capability/v1"],
+      "description": "Versioned capability vocabulary. Use `instance-capability/v1` only for instance minting tools; actor/scoped invocation capabilities stay under `scoped-invocation/v1`."
+    },
+    "capability": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "Capability within `capabilityVersion`. For `instance-capability/v1`, allowed values are `instance:agent_create` and `instance:install_plan`."
+    },
+    "tool": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "Concrete downstream tool name. For `instance:agent_create`, use `agent_create`; for `instance:install_plan`, use `agent_local_install_plan` (Host also accepts `install_plan`)."
+    },
     "resource": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "scope": {
+      "type": "string",
+      "enum": ["read", "write", "admin"],
+      "description": "Access scope for the invocation grant. This is downstream tool access vocabulary and does not change authority, which remains scoped_invocation."
+    },
     "requestHash": { "type": "string", "pattern": "^(sha256:)?[0-9a-fA-F]{64}$" },
     "caller": {
       "type": "object",

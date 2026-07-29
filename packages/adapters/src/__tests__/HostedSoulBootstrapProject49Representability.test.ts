@@ -21,6 +21,7 @@ import {
 	type HostedSoulBootstrapNextAction,
 	type HostedSoulBootstrapRecoveryAction,
 	type HostedSoulBootstrapRecoveryCategory,
+	type LegacyLesserHostHostedGenesisConversation,
 	type LesserHostHostedGenesisConversation,
 	type LesserHostHostedGenesisConversationResponse,
 } from '../soul/hostedBootstrap';
@@ -67,7 +68,7 @@ const releasedHostedGenesisFixtureCases = [
 		lesserPath:
 			'docs/lesser/contracts/testdata/hosted-genesis/v1.0.7/hosted-genesis.conversation.in-progress.example.json',
 		hostPath:
-			'docs/lesser-host/spec/v3/fixtures/hosted-genesis.conversation.in-progress.example.json',
+			'docs/lesser-host/spec/v3/fixtures/historical/host-v1.0.7/hosted-genesis.conversation.in-progress.example.json',
 		inProgress: true,
 		declarationReady: false,
 		canPublish: false,
@@ -78,7 +79,7 @@ const releasedHostedGenesisFixtureCases = [
 		lesserPath:
 			'docs/lesser/contracts/testdata/hosted-genesis/v1.0.7/hosted-genesis.conversation.completed-declaration-ready.example.json',
 		hostPath:
-			'docs/lesser-host/spec/v3/fixtures/hosted-genesis.conversation.completed-declaration-ready.example.json',
+			'docs/lesser-host/spec/v3/fixtures/historical/host-v1.0.7/hosted-genesis.conversation.completed-declaration-ready.example.json',
 		inProgress: false,
 		declarationReady: true,
 		canPublish: true,
@@ -88,7 +89,8 @@ const releasedHostedGenesisFixtureCases = [
 		status: 'failed',
 		lesserPath:
 			'docs/lesser/contracts/testdata/hosted-genesis/v1.0.7/hosted-genesis.conversation.failed.example.json',
-		hostPath: 'docs/lesser-host/spec/v3/fixtures/hosted-genesis.conversation.failed.example.json',
+		hostPath:
+			'docs/lesser-host/spec/v3/fixtures/historical/host-v1.0.7/hosted-genesis.conversation.failed.example.json',
 		inProgress: false,
 		declarationReady: false,
 		canPublish: false,
@@ -154,7 +156,7 @@ const hostStatusConversations = [
 			...liveInProgressHostConversation,
 			status: 'declaration_extraction_pending',
 			request_id: 'req-project-49-extraction-pending',
-		} satisfies LesserHostHostedGenesisConversation,
+		} satisfies LegacyLesserHostHostedGenesisConversation,
 		inProgress: true,
 		declarationReady: false,
 		canPublish: false,
@@ -220,7 +222,7 @@ const hostStatusConversations = [
 
 describe('Project 49 hosted genesis representability', () => {
 	it.each(releasedHostedGenesisFixtureCases)(
-		'consumes released Lesser v1.5.10 and Host v1.0.7 $label fixtures through fail-closed helpers',
+		'consumes released Lesser v1.5.10 and vendored historical Host v1.0.7 $label fixtures through fail-closed helpers',
 		(row) => {
 			const lesserFixtureText = readTextFixture(row.lesserPath);
 			const hostFixtureText = readTextFixture(row.hostPath);
