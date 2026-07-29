@@ -18,14 +18,29 @@ check_supply_chain() {
   local allow="$PLAN/greater-components-supply-chain-allowlist.txt"
   grep -R --include='*.yml' --include='*.yaml' -nE '^[[:space:]]*uses:[[:space:]].*@v[0-9]+' .github/workflows && return 1 || true
   [[ -f pnpm-lock.yaml ]] || { echo 'missing pnpm-lock.yaml'; return 1; }
+  set +e
   corepack pnpm install --frozen-lockfile --ignore-scripts
-  node <<'NODE'
+  local install_rc=$?
+  set -e
+  if [[ $install_rc -ne 0 ]]; then
+    echo "pnpm install --frozen-lockfile --ignore-scripts failed with exit code $install_rc" >&2
+    return 1
+  fi
+  local pkg_json_list
+  pkg_json_list="$(mktemp)"
+  find node_modules -type f -name package.json 2>/dev/null > "$pkg_json_list"
+  set +e
+  PKG_JSON_LIST="$pkg_json_list" node <<'NODE'
 const fs=require('fs'),path=require('path');
-const root='node_modules', hooks=['preinstall','install','postinstall','prepare','prepublishOnly'];
+const hooks=['preinstall','install','postinstall','prepare','prepublishOnly'];
 const allowed=new Set(fs.readFileSync('gov-infra/planning/greater-components-supply-chain-allowlist.txt','utf8').split(/\r?\n/).filter(x=>x&&!x.startsWith('#')));
-const findings=[]; function walk(d){for(const e of fs.readdirSync(d,{withFileTypes:true})){if(e.name==='.pnpm') continue;const p=path.join(d,e.name);if(e.isDirectory()) walk(p);else if(e.name==='package.json'){try{const x=JSON.parse(fs.readFileSync(p));for(const h of hooks){const s=x.scripts?.[h]; if(typeof s==='string'&&/(curl\s+[^|]*\|\s*(sh|bash)|wget\s+[^|]*\|\s*(sh|bash)|webhook\.site|NPM_TOKEN|GITHUB_TOKEN)/i.test(s)){const id=`GOV-SUPPLY:NODE:SCRIPT:pkg=${x.name||p}:ver=${x.version||''}:hook=${h}`;if(!allowed.has(id)) findings.push(id)}}}catch{}}}}
-walk(root); if(findings.length){console.error(findings.join('\n'));process.exit(1)}
+const findings=[]; for(const p of fs.readFileSync(process.env.PKG_JSON_LIST,'utf8').split(/\r?\n/).filter(Boolean)){try{const x=JSON.parse(fs.readFileSync(p));for(const h of hooks){const s=x.scripts?.[h]; if(typeof s==='string'&&/(curl\s+[^|]*\|\s*(sh|bash)|wget\s+[^|]*\|\s*(sh|bash)|webhook\.site|NPM_TOKEN|GITHUB_TOKEN)/i.test(s)){const id=`GOV-SUPPLY:NODE:SCRIPT:pkg=${x.name||p}:ver=${x.version||''}:hook=${h}`;if(!allowed.has(id)) findings.push(id)}}}catch{}}
+if(findings.length){console.error(findings.join('\n'));process.exit(1)}
 NODE
+  local scan_rc=$?
+  set -e
+  rm -f "$pkg_json_list"
+  [[ $scan_rc -eq 0 ]] || return 1
 }
 check_parity() { local out="$EVIDENCE/DOC-5-parity.log"; local missing=0; for t in $(grep -oE 'THR-[0-9]+' "$PLAN/greater-components-threat-model.md"|sort -u); do grep -q "$t" "$PLAN/greater-components-controls-matrix.md" || { echo "unmapped $t" >> "$out"; missing=1; }; done; [[ $missing -eq 0 ]]; }
 check_ci_hook() { grep -R -q 'gov-verify-rubric.sh' .github/workflows; }
