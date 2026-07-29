@@ -7,6 +7,8 @@ from `lesser-host` APIs (for example, `greater-components`).
 - `soul-mint-conversation-sse.json` — machine-readable SSE companion contract for the soul mint-conversation stream.
 - `hosted-genesis-conversation.md` — Host-owned durable async hosted-genesis status contract for the Lesser
   instance-key path.
+- `soul-five-body-schema.md` plus `soul-five-body.schema.v2.json` / `soul-five-body.example.v2.json` — Host-owned
+  five-body hosted genesis schema/guidance source for Body G5B-4/G5B-5 consumers.
 - `../spec/v3/` — JSON Schema + fixtures for lesser-soul v3 protocol surfaces implemented by `lesser-host`.
 
 ## Canonical generation process

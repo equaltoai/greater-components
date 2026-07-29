@@ -114,7 +114,7 @@ components:
                   maxLength: 128
                 conversation_status:
                   type: string
-                  enum: [unknown, pending, created, in_progress, assistant_turn_ready, declaration_extraction_pending, declaration_ready, completed, failed]
+                  enum: [unknown, pending, created, in_progress, assistant_turn_ready, declaration_ready, completed, failed]
                 expected_status:
                   type: string
                   minLength: 1
@@ -717,7 +717,7 @@ components:
           type: string
         latest_conversation_status:
           type: string
-          enum: [created, in_progress, assistant_turn_ready, declaration_extraction_pending, declaration_ready, completed, failed]
+          enum: [created, in_progress, assistant_turn_ready, declaration_ready, published, completed, failed]
         latest_review_sha256:
           type: string
           pattern: "^[0-9a-f]{64}$"
@@ -1065,6 +1065,41 @@ components:
           type: string
           minLength: 1
           maxLength: 128
+        candidate_action:
+          type: object
+          additionalProperties: false
+          required: [action, candidate_revision, candidate_hash, review_hash]
+          description: Structural owner action bound to the exact deterministic review. Free-form affirmation text is not authoritative.
+          properties:
+            action:
+              type: string
+              enum: [affirm, edit]
+            section:
+              type: string
+              enum: [identity, philosophy, discipline, boundaries, soul]
+            candidate_revision:
+              type: integer
+              minimum: 0
+            candidate_hash:
+              type: string
+              pattern: "^sha256:[0-9a-f]{64}$"
+            review_hash:
+              type: string
+              pattern: "^sha256:[0-9a-f]{64}$"
+          allOf:
+            - if:
+                properties:
+                  action:
+                    const: edit
+              then:
+                required: [section]
+            - if:
+                properties:
+                  action:
+                    const: affirm
+              then:
+                not:
+                  required: [section]
 
     SoulHostedGenesisConversationResponse:
       $ref: "../spec/v3/schemas/hosted-genesis.conversation.response.schema.json"
@@ -1095,7 +1130,7 @@ components:
           description: >
             Legacy raw Host record status. `completed` is retained for backward compatibility and maps to the
             durable hosted-genesis contract status `declaration_ready` only when valid produced declarations exist.
-          enum: [created, in_progress, assistant_turn_ready, declaration_extraction_pending, declaration_ready, completed, failed]
+          enum: [created, in_progress, assistant_turn_ready, declaration_ready, completed, failed]
         usage:
           $ref: "#/components/schemas/AIUsage"
         charged_credits:
@@ -1111,11 +1146,7 @@ components:
     SoulMintConversationCompleteRequest:
       type: object
       additionalProperties: false
-      properties:
-        declarations:
-          oneOf:
-            - type: string
-            - $ref: "#/components/schemas/SoulMintConversationDeclarationPreview"
+      description: Read/convergence request. Hosted Genesis declaration bytes are finalized only by the MicroVM from the structurally affirmed typed candidate.
 
     SoulAgentMintConversationsResponse:
       type: object
@@ -1138,6 +1169,7 @@ components:
       additionalProperties: false
       required:
         - agent_id
+        - registration_id
         - conversation_id
         - status
         - created_at
@@ -1145,24 +1177,34 @@ components:
         agent_id:
           type: string
           pattern: "^0x[0-9a-fA-F]{64}$"
+        registration_id:
+          type: string
+          minLength: 1
+          maxLength: 256
         conversation_id:
           type: string
           minLength: 1
           maxLength: 128
-        model:
-          type: string
         status:
           type: string
-          enum: [created, in_progress, assistant_turn_ready, declaration_extraction_pending, declaration_ready, completed, failed]
-        usage:
-          $ref: "#/components/schemas/AIUsage"
-        charged_credits:
+          enum: [created, in_progress, assistant_turn_ready, declaration_ready, published, failed]
+        message_count:
           type: integer
           minimum: 0
+        latest_turn_id:
+          type: string
+          minLength: 1
+          maxLength: 128
         created_at:
           type: string
           format: date-time
-        completed_at:
+        updated_at:
+          type: string
+          format: date-time
+        published_version:
+          type: integer
+          minimum: 1
+        published_at:
           type: string
           format: date-time
 
@@ -1438,6 +1480,42 @@ components:
       $ref: "../spec/v3/schemas/soul-instance-bootstrap.finalize.response.schema.json"
 
 paths:
+  /api/v1/soul/agents/{agentId}:
+    get:
+      operationId: soulGetAgent
+      summary: Get public soul agent identity (v3)
+      description: |
+        Returns Host's read-only Soul registry projection for a soul agent ID.
+        Lesser's server-side soul-binding ceremony uses this projection as Host
+        source truth before writing Lesser-local `SOUL_BODY_BINDING` rows. For
+        Ptah-created hosted souls, consumers validate `agent_id`, `domain`,
+        `local_id`, `authority_model=instance_trust`,
+        `anchor_state=hosted_offchain`,
+        `operational_binding=hosted_bound_soul`, active lifecycle/status,
+        publication evidence through `self_description_version > 0` (or future
+        `published_version > 0`), and principal evidence through
+        `principal_address` with `wallet` as compatibility fallback.
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^0x[0-9a-fA-F]{64}$"
+      responses:
+        "200":
+          description: Public Soul registry identity projection.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulResolveResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
   /api/v1/soul/agents/{agentId}/channels:
     get:
       operationId: soulGetAgentChannels
@@ -2040,11 +2118,11 @@ paths:
   /api/v1/soul/agents/register/{id}/mint-conversation/{conversationId}/complete:
     post:
       operationId: soulCompleteMintConversation
-      summary: Complete or replay a registration-scoped mint conversation
+      summary: Read or replay a registration-scoped mint conversation completion
       description: |
-        Completes an active mint conversation and persists produced declarations. If the stored conversation is already
-        `completed` and has valid produced declarations, the route is idempotent and returns the completed conversation
-        without re-extracting or rewriting declarations. Other terminal states fail closed with conflict metadata.
+        Replays an already terminal conversation. Active declaration construction and finalization belong exclusively
+        to the Hosted Genesis MicroVM typed-candidate lane; this route accepts no caller-authored declaration document,
+        invokes no provider, and returns a conflict for active legacy rows.
       security:
         - sessionAuth: []
       parameters:
@@ -2457,7 +2535,8 @@ paths:
       description: |
         Instance-key authenticated read used by Lesser's self-scope proxy. The list response is compact and never
         includes private `messages` or `produced_declarations`; use the explicit single-conversation route for a
-        bounded full private record.
+        bounded full private record. Published sessions are terminal and include `published_version` and
+        `published_at`; callers proceed to agent read/list rather than retrying completion or finalize preflight.
       security:
         - instanceKeyAuth: []
       parameters:
@@ -2539,7 +2618,8 @@ paths:
         Instance-key authenticated read used by Lesser's self-scope proxy. This explicit single-conversation route returns
         the hosted-genesis durable conversation envelope and may include bounded `conversation.messages` at
         `assistant_turn_ready` for Lesser same-origin relay. Terminal declaration evidence appears only as
-        `conversation.produced_declarations` when the durable status is `declaration_ready`; raw legacy
+        `conversation.produced_declarations` when the durable status is `declaration_ready`. Successful publication is
+        the distinct terminal `published` status with its exact version and timestamp; raw legacy
         message/declaration strings, credentials, target-account
         details, and infrastructure state are never returned.
       security:
@@ -3044,15 +3124,13 @@ paths:
   /api/v1/soul/instance/agents/register/{id}/mint-conversation/{conversationId}/complete:
     post:
       operationId: soulInstanceCompleteRegistrationMintConversation
-      summary: Complete or replay an instance-key registration mint conversation
+      summary: Read or replay an instance-key registration mint conversation completion
       description: |
-        Server-to-server route for managed Lesser instances. Completes a conversation inside the authenticated instance
-        boundary and persists the produced declarations for finalize preflight/finalize. If Host has accepted the turn
-        but the assistant turn or declaration extraction is not ready yet, this route returns `202` plus the durable
-        HostConversation progress envelope; HTTP success is not terminal. If the stored conversation is already
-        `completed`/`declaration_ready` and has valid produced declarations, the route is idempotent and returns the
-        compact HostConversation declaration-ready envelope without re-extracting or rewriting declarations. Failed conversations and completed
-        conversations without valid produced declarations fail closed with structured state details.
+        Progress-safe read/convergence route for managed Lesser instances. If the conversation is still `in_progress`
+        or `assistant_turn_ready`, the route returns `HTTP 202` with the compact HostConversation progress envelope.
+        If the MicroVM has deterministically finalized the exact structurally affirmed candidate, the route
+        idempotently returns the `declaration_ready` envelope. The request accepts no caller-authored declaration
+        document and invokes no provider. Failed or invalid states fail closed.
       security:
         - instanceKeyAuth: []
       parameters:
@@ -3078,13 +3156,13 @@ paths:
               $ref: "#/components/schemas/SoulMintConversationCompleteRequest"
       responses:
         "200":
-          description: Terminal replay or synchronous completion with valid produced declarations; returns the compact HostConversation envelope and never raw transcript fields.
+          description: Terminal replay with valid produced declarations; returns the compact HostConversation envelope and never raw transcript fields.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/SoulHostedGenesisConversationResponse"
         "202":
-          description: Assistant turn or declaration extraction is still in progress; inspect `conversation.status`.
+          description: Typed section construction or provider-free candidate finalization is still in progress; inspect `conversation.status` and `conversation.declaration_candidate`.
           content:
             application/json:
               schema:
@@ -3352,11 +3430,11 @@ paths:
   /api/v1/soul/agents/{agentId}/mint-conversation/{conversationId}/complete:
     post:
       operationId: soulAgentCompleteMintConversation
-      summary: Complete or replay an agent-scoped mint conversation
+      summary: Read or replay an agent-scoped mint conversation completion
       description: |
-        Completes an active mint conversation for a stable agent handle. If the stored conversation is already
-        `completed` and has valid produced declarations, the route is idempotent and returns the completed conversation
-        without re-extracting or rewriting declarations. Other terminal states fail closed with conflict metadata.
+        Replays an already terminal conversation for a stable agent handle. Active declaration construction and
+        finalization belong exclusively to the Hosted Genesis MicroVM typed-candidate lane; this route accepts no
+        caller-authored declaration document, invokes no provider, and returns a conflict for active legacy rows.
       security:
         - sessionAuth: []
       parameters:
@@ -3858,9 +3936,12 @@ paths:
         - instanceKeyAuth: []
       description: |
         Issues a host-side off-chain invocation grant for a configured public paid caller. The grant binds the
-        `agentId`, `capability`, `tool`, `resource`, invocation `requestHash`, caller subject hash, payment evidence
-        hash, amount/network metadata, nonce, idempotency key hash, expiry, max usage, and caller-access payment policy
-        version.
+        `agentId`, `capabilityVersion`, `capability`, `tool`, `resource`, access `scope`, invocation `requestHash`, caller subject
+        hash, payment evidence hash, amount/network metadata, nonce, idempotency key hash, expiry, max usage, and caller-access
+        payment policy version. The access `scope` vocabulary is `read`, `write`, or `admin` and stays separate from grant
+        `authority`, which remains `scoped_invocation`. Capability vocabulary is versioned: `scoped-invocation/v1`
+        remains the actor/scoped invocation vocabulary, while `instance-capability/v1` is restricted to
+        `instance:agent_create` and `instance:install_plan`.
 
         This instance-key authenticated route returns a raw `grantToken` only on the first successful issue. Idempotent replays return the
         same grant metadata with `tokenReturned=false`; callers must retain the original token. Host stores only hashes
@@ -3893,7 +3974,13 @@ paths:
         Consumes a host-issued x402 invocation grant from an authenticated managed instance. The bearer token is the
         instance API key; public paid callers never receive principal/operator/session authority. The authenticated
         instance must own the agent domain, present the one-time raw grant token, and repeat the original
-        agent/capability/tool/resource/request hash binding.
+        agent/capabilityVersion/capability/tool/resource/request hash binding. Consume responses return the persisted
+        grant `scope` and `capabilityVersion` so downstream runtimes can reject right-tool/wrong-scope or
+        actor-capability-on-instance-tool invocations before side effects. Instance tools must use
+        `capabilityVersion="instance-capability/v1"` with `capability="instance:agent_create"` for `tool="agent_create"`
+        or `capability="instance:install_plan"` for `tool="agent_local_install_plan"` (the shorter
+        `tool="install_plan"` is also accepted by Host). Actor/scoped invocation capabilities remain under
+        `scoped-invocation/v1` and are rejected for these instance tools.
 
         Consumption writes a bounded usage slot keyed by the consume idempotency key hash. Repeating the same consume
         idempotency key with the same consume request hash is a replay and does not increment usage. Distinct consume

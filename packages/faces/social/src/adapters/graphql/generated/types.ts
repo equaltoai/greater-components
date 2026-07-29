@@ -1070,6 +1070,7 @@ export type AnnouncementReaction = {
 export type Article = {
   readonly __typename: 'Article';
   readonly author: Actor;
+  readonly authorId: Scalars['ID']['output'];
   readonly canonicalUrl?: Maybe<Scalars['String']['output']>;
   readonly categories: ReadonlyArray<Category>;
   readonly content: Scalars['String']['output'];
@@ -1684,6 +1685,7 @@ export type DomainBlockPage = {
 export type Draft = {
   readonly __typename: 'Draft';
   readonly author: Actor;
+  readonly authorId: Scalars['ID']['output'];
   readonly autosaveVersion: Scalars['Int']['output'];
   readonly content: Scalars['String']['output'];
   readonly contentFormat: ContentFormat;

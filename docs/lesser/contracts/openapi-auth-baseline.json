@@ -21,22 +21,17 @@
       "method": "POST",
       "path": "/api/v1/agents/{username}/access-leases/{leaseID}/token",
       "tags": ["agents"]
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/notifications/deliver",
-      "tags": ["notifications"]
     }
   ],
   "meta": {
-    "spec_path": "/home/aron/ai-workspace/codebases/equaltoai/greater-components/docs/lesser/contracts/openapi.yaml",
-    "generated_at": "2026-05-31T17:38:52.882Z",
+    "spec_path": "/home/aron/ai-workspace/codebases/equaltoai/factory/products/greater-components/docs/lesser/contracts/openapi.yaml",
+    "generated_at": "2026-07-29T11:46:10.792Z",
     "has_global_security": false,
     "has_security_schemes": true,
-    "security_scheme_names": ["bearerAuth", "oauth2", "setupBearer"],
-    "total_paths": 294,
-    "sensitive_checked": 172,
-    "with_security": 146,
-    "without_security": 5
+    "security_scheme_names": ["bearerAuth", "oauth2", "setupBearer", "soulBindingBearer"],
+    "total_paths": 298,
+    "sensitive_checked": 173,
+    "with_security": 148,
+    "without_security": 4
   }
 }
