@@ -24,6 +24,8 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: Build packages
+        run: pnpm build
       - name: Resolve Playwright version
         id: playwright-version
         run: |
