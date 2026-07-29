@@ -12,6 +12,8 @@ jobs:
   rubric:
     name: Governance Rubric
     runs-on: ubuntu-latest
+    env:
+      PLAYWRIGHT_A11Y_USE_SYSTEM_CHROME: 'true'
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
       - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271
@@ -43,17 +45,6 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}-chromium
           restore-keys: |
             ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}-
-      - name: Prepare Playwright Chromium
-        timeout-minutes: 10
-        run: |
-          if command -v google-chrome >/dev/null 2>&1; then
-            google-chrome --version
-            echo "PLAYWRIGHT_A11Y_USE_SYSTEM_CHROME=true" >> "$GITHUB_ENV"
-            pnpm exec playwright install-deps chromium
-          else
-            pnpm exec playwright install chromium --with-deps
-          fi
-        working-directory: packages/testing
       # Authenticate GitHub API calls made by CLI ref-pinning code under test;
       # unauthenticated calls rate-limit on shared runner egress IPs (#897 tracks
       # the steward-level fix: mock the network in the update-command unit tests).
