@@ -26,6 +26,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Build packages
         run: pnpm build
+      - name: Build FaceTheory example
+        run: pnpm build:facetheory-example
       - name: Resolve Playwright version
         id: playwright-version
         run: |
