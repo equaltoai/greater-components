@@ -13,6 +13,7 @@ const LESSER_CMS_FIELD_DIRECTIONS = {
 	Article: {
 		id: 'matches-greater-field',
 		slug: 'matches-greater-field',
+		authorId: 'needs-adapter-mapping',
 		author: 'needs-adapter-mapping',
 		title: 'needs-adapter-mapping',
 		subtitle: 'needs-adapter-mapping',
@@ -41,6 +42,7 @@ const LESSER_CMS_FIELD_DIRECTIONS = {
 	},
 	Draft: {
 		id: 'matches-greater-field',
+		authorId: 'should-not-leak-into-ui',
 		author: 'should-not-leak-into-ui',
 		contentType: 'out-of-scope-for-mvp',
 		title: 'needs-adapter-mapping',
