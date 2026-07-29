@@ -81,11 +81,12 @@ describe('CSR-035: x402 grant contracts', () => {
 			expect(prop.description).toMatch(/payment evidence/i);
 		});
 
-		it('retains all original required fields plus paymentEvidenceHash', () => {
+		it('requires the v1.0.15 capability version plus paymentEvidenceHash', () => {
 			const schema = loadLesserHostSchema('soul-x402-invocation-grant.consume.request.schema.json');
 			const originalRequired = [
 				'grantToken',
 				'agentId',
+				'capabilityVersion',
 				'capability',
 				'tool',
 				'resource',

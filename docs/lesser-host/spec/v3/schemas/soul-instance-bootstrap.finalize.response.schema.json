@@ -4,7 +4,7 @@
   "title": "Instance-key soul bootstrap finalize response",
   "type": "object",
   "additionalProperties": false,
-  "required": ["version", "agent_id", "agent", "published_version", "publication"],
+  "required": ["version", "status", "registration_id", "conversation_id", "agent_id", "agent", "published_version", "published_at", "publication"],
   "$defs": {
     "publication": {
       "type": "object",
@@ -45,7 +45,7 @@
         "authority_model": { "type": "string", "enum": ["wallet_principal", "instance_trust"] },
         "anchor_state": { "type": "string", "enum": ["hosted_offchain", "immutable_onchain"] },
         "latest_conversation_id": { "type": "string", "minLength": 1, "maxLength": 128 },
-        "latest_conversation_status": { "type": "string", "enum": ["in_progress", "completed", "failed"] },
+        "latest_conversation_status": { "type": "string", "enum": ["in_progress", "declaration_ready", "published", "failed"] },
         "published_version": { "type": "integer", "minimum": 1 },
         "graduated_at": { "type": "string", "format": "date-time" }
       }
@@ -53,9 +53,13 @@
   },
   "properties": {
     "version": { "type": "string", "const": "1" },
+    "status": { "type": "string", "const": "published" },
+    "registration_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "conversation_id": { "type": "string", "minLength": 1, "maxLength": 128 },
     "agent_id": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
     "agent": { "$ref": "soul-agent-identity.schema.json" },
     "published_version": { "type": "integer", "minimum": 1 },
+    "published_at": { "type": "string", "format": "date-time" },
     "publication": { "$ref": "#/$defs/publication" },
     "promotion": { "$ref": "#/$defs/promotion" }
   }

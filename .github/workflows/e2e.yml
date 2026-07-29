@@ -1,8 +1,6 @@
 name: E2E Tests
 
 on:
-  push:
-    branches: [staging]
   pull_request:
     branches: [staging]
   workflow_dispatch: {}
@@ -18,6 +16,8 @@ jobs:
   playwright:
     name: Playwright Tests
     runs-on: ubuntu-latest
+    env:
+      PLAYWRIGHT_E2E_USE_SYSTEM_CHROME: 'true'
     strategy:
       matrix:
         browser: [chromium, firefox]
@@ -27,15 +27,15 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271
         with:
           version: 10.25.0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
@@ -54,7 +54,7 @@ jobs:
           echo "Playwright version: ${version}"
 
       - name: Cache Playwright browsers
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}-${{ matrix.browser }}
@@ -71,13 +71,7 @@ jobs:
         working-directory: packages/testing
         run: |
           if [ "${{ matrix.browser }}" = "chromium" ]; then
-            if command -v google-chrome >/dev/null 2>&1; then
-              google-chrome --version
-              echo "PLAYWRIGHT_E2E_USE_SYSTEM_CHROME=true" >> "$GITHUB_ENV"
-              pnpm exec playwright install-deps chromium
-            else
-              pnpm exec playwright install chromium --with-deps
-            fi
+            google-chrome --version
           else
             pnpm exec playwright install firefox --with-deps
           fi
@@ -106,7 +100,7 @@ jobs:
         run: pnpm exec playwright test --config=playwright.demo.csr.config.ts --project=csr-${{ matrix.browser }}
 
       - name: Upload Playwright report
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: failure()
         with:
           name: playwright-report-${{ matrix.browser }}
@@ -114,7 +108,7 @@ jobs:
           retention-days: 7
 
       - name: Upload test results
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: failure()
         with:
           name: test-results-${{ matrix.browser }}

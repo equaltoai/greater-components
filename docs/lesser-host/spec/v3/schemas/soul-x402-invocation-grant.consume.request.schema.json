@@ -4,12 +4,54 @@
   "title": "POST /api/v1/soul/x402/grants/{grantId}/consume request",
   "type": "object",
   "additionalProperties": false,
-  "required": ["grantToken", "agentId", "capability", "tool", "resource", "requestHash", "paymentEvidenceHash", "idempotencyKey"],
+  "required": ["grantToken", "agentId", "capabilityVersion", "capability", "tool", "resource", "requestHash", "paymentEvidenceHash", "idempotencyKey"],
+  "allOf": [
+    {
+      "if": {
+        "properties": { "capabilityVersion": { "const": "instance-capability/v1" } },
+        "required": ["capabilityVersion"]
+      },
+      "then": {
+        "properties": {
+          "capability": { "enum": ["instance:agent_create", "instance:install_plan"] }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "capabilityVersion": { "const": "scoped-invocation/v1" } },
+        "required": ["capabilityVersion"]
+      },
+      "then": {
+        "not": {
+          "properties": {
+            "capability": { "enum": ["instance:agent_create", "instance:install_plan"] }
+          },
+          "required": ["capability"]
+        }
+      }
+    }
+  ],
   "properties": {
     "grantToken": { "type": "string", "minLength": 1, "maxLength": 512 },
     "agentId": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
-    "capability": { "type": "string", "minLength": 1, "maxLength": 128 },
-    "tool": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "capabilityVersion": {
+      "type": "string",
+      "enum": ["scoped-invocation/v1", "instance-capability/v1"],
+      "description": "Versioned capability vocabulary. Use `instance-capability/v1` with `instance:agent_create` or `instance:install_plan` for instance tools; actor/scoped invocation capabilities remain under `scoped-invocation/v1` and are rejected for instance tools."
+    },
+    "capability": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "Capability within `capabilityVersion`. For `instance-capability/v1`, allowed values are `instance:agent_create` and `instance:install_plan`."
+    },
+    "tool": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "Concrete downstream tool name. For `instance:agent_create`, use `agent_create`; for `instance:install_plan`, use `agent_local_install_plan` (Host also accepts `install_plan`)."
+    },
     "resource": { "type": "string", "minLength": 1, "maxLength": 512 },
     "requestHash": { "type": "string", "pattern": "^(sha256:)?[0-9a-fA-F]{64}$" },
     "paymentEvidenceHash": { "type": "string", "pattern": "^(sha256:)?[0-9a-fA-F]{64}$", "description": "Hash of the x402 payment evidence presented by the caller. Host compares against the stored grant payment evidence hash before any usage is recorded." },

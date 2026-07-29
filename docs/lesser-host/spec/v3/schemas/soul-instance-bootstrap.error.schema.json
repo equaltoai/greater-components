@@ -18,6 +18,7 @@
             "soul_instance.invalid_request",
             "soul_instance.boundary_violation",
             "soul_instance.conflict",
+            "soul_instance.budget_exhausted",
             "soul_instance.not_found",
             "soul_instance.internal"
           ]

@@ -46,6 +46,11 @@ components:
             scheme: bearer
             bearerFormat: opaque
             description: 'Temporary setup session token: `Authorization: Bearer <setup_token>` (issued by `/setup/bootstrap/verify`).'
+        soulBindingBearer:
+            type: http
+            scheme: bearer
+            bearerFormat: opaque
+            description: Dedicated body/Ptah to Lesser soul-binding integration credential. User OAuth tokens are not accepted.
     schemas:
         Account:
             additionalProperties: false
@@ -1191,7 +1196,6 @@ components:
                     type: array
             required:
                 - agent_username
-                - display_name
                 - scopes
             type: object
         AgentDelegationResponse:
@@ -4112,6 +4116,9 @@ components:
         OAuthDynamicClientRegistrationRequest:
             additionalProperties: false
             properties:
+                application_type:
+                    description: Optional OIDC/SEP-837 client application type accepted for dynamic-registration compatibility. Lesser accepts `native` or `web` and does not persist this as the Lesser client_class.
+                    type: string
                 client_class:
                     description: Optional Lesser client classification. Public registration accepts `cli` and `web`; `agent` is not accepted on public registration surfaces.
                     type: string
@@ -6110,6 +6117,10 @@ components:
             properties:
                 agent_id:
                     type: string
+                anchor_state:
+                    type: string
+                authority_model:
+                    type: string
                 avatar:
                     anyOf:
                         - $ref: '#/components/schemas/SoulAgentAvatar'
@@ -6138,6 +6149,8 @@ components:
                     anyOf:
                         - $ref: '#/components/schemas/RFC3339DateTime'
                         - type: "null"
+                operational_binding:
+                    type: string
                 predecessor_agent_id:
                     type: string
                 principal_address:
@@ -6148,6 +6161,8 @@ components:
                     type: string
                 principal_signature:
                     type: string
+                published_version:
+                    type: integer
                 self_description_version:
                     anyOf:
                         - type: integer
@@ -6170,6 +6185,123 @@ components:
                 - local_id
                 - status
                 - wallet
+            type: object
+        SoulBindingAgent:
+            additionalProperties: false
+            properties:
+                agent_id:
+                    type: string
+                anchor_state:
+                    type: string
+                authority_model:
+                    type: string
+                domain:
+                    type: string
+                lifecycle_status:
+                    type: string
+                local_id:
+                    type: string
+                operational_binding:
+                    type: string
+                published_version:
+                    type: integer
+            required:
+                - agent_id
+                - anchor_state
+                - authority_model
+                - domain
+                - lifecycle_status
+                - local_id
+                - operational_binding
+            type: object
+        SoulBindingEvidence:
+            additionalProperties: false
+            properties:
+                declaration_hash:
+                    type: string
+                host_request_id:
+                    type: string
+                issued_at:
+                    type: string
+                source:
+                    type: string
+            type: object
+        SoulBindingIdempotency:
+            additionalProperties: false
+            properties:
+                key:
+                    type: string
+                payload_hash:
+                    type: string
+                replayed:
+                    type: boolean
+            required:
+                - key
+                - payload_hash
+                - replayed
+            type: object
+        SoulBindingLinks:
+            additionalProperties: false
+            properties:
+                status:
+                    type: string
+            required:
+                - status
+            type: object
+        SoulBindingRequest:
+            additionalProperties: false
+            properties:
+                actor_username:
+                    type: string
+                anchor_state:
+                    type: string
+                authority_model:
+                    type: string
+                body_actor_id:
+                    type: string
+                evidence:
+                    $ref: '#/components/schemas/SoulBindingEvidence'
+                host_conversation_id:
+                    type: string
+                host_registration_id:
+                    type: string
+                operational_binding:
+                    type: string
+                principal_address:
+                    type: string
+                soul_agent_id:
+                    type: string
+            required:
+                - actor_username
+                - soul_agent_id
+            type: object
+        SoulBindingResponse:
+            additionalProperties: false
+            properties:
+                agent:
+                    $ref: '#/components/schemas/SoulBindingAgent'
+                binding:
+                    $ref: '#/components/schemas/SoulAgentBinding'
+                binding_state:
+                    type: string
+                idempotency:
+                    anyOf:
+                        - $ref: '#/components/schemas/SoulBindingIdempotency'
+                        - type: "null"
+                links:
+                    anyOf:
+                        - $ref: '#/components/schemas/SoulBindingLinks'
+                        - type: "null"
+                status:
+                    type: string
+                version:
+                    type: string
+            required:
+                - agent
+                - binding
+                - binding_state
+                - status
+                - version
             type: object
         SoulBodyBinding:
             additionalProperties: false
@@ -8340,14 +8472,6 @@ components:
                     type: boolean
                 note:
                     type: string
-            required:
-                - avatar
-                - bot
-                - discoverable
-                - display_name
-                - header
-                - locked
-                - note
             type: object
         UpdateCustomEmojiRequest:
             additionalProperties: false
@@ -9284,6 +9408,34 @@ paths:
             x-lesser-lambda: api
             x-lesser-routeSources:
                 - cmd/api/routes.go
+    /api/v1/accounts/{id}:
+        get:
+            operationId: get_api_v1_accounts_by_id
+            tags:
+                - accounts
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Account'
+                "400":
+                    $ref: '#/components/responses/BadRequest'
+                "404":
+                    $ref: '#/components/responses/NotFound'
+                "500":
+                    $ref: '#/components/responses/InternalServerError'
+            x-lesser-handler: HandleGetAccountLift
+            x-lesser-lambda: api
+            x-lesser-routeSources:
+                - cmd/api/routes.go
     /api/v1/accounts/{id}/block:
         post:
             operationId: post_api_v1_accounts_by_id_block
@@ -9842,6 +9994,26 @@ paths:
                 - cmd/api/routes.go
             x-oauth-scopes:
                 - write
+    /api/v1/accounts/lookup:
+        get:
+            operationId: get_api_v1_accounts_lookup
+            tags:
+                - accounts
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Account'
+                "400":
+                    $ref: '#/components/responses/BadRequest'
+                "500":
+                    $ref: '#/components/responses/InternalServerError'
+            x-lesser-handler: HandleAccountLookupLift
+            x-lesser-lambda: api
+            x-lesser-routeSources:
+                - cmd/api/routes.go
     /api/v1/accounts/quote_permissions:
         put:
             operationId: put_api_v1_accounts_quote_permissions
@@ -10002,7 +10174,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/StorageAccount'
+                                $ref: '#/components/schemas/Account'
                     headers:
                         X-RateLimit-Limit:
                             description: Request limit per window.
@@ -12358,8 +12530,6 @@ paths:
             operationId: get_api_v1_agents
             tags:
                 - agents
-            security:
-                - bearerAuth: []
             responses:
                 "200":
                     description: OK
@@ -12379,17 +12549,11 @@ paths:
             x-lesser-lambda: api
             x-lesser-routeSources:
                 - cmd/api/routes.go
-            x-oauth-scopes:
-                - admin
-                - admin:all
-                - admin:write
     /api/v1/agents/{username}:
         get:
             operationId: get_api_v1_agents_by_username
             tags:
                 - agents
-            security:
-                - bearerAuth: []
             parameters:
                 - name: username
                   in: path
@@ -12417,10 +12581,6 @@ paths:
             x-lesser-lambda: api
             x-lesser-routeSources:
                 - cmd/api/routes.go
-            x-oauth-scopes:
-                - admin
-                - admin:all
-                - admin:write
         patch:
             operationId: patch_api_v1_agents_by_username
             tags:
@@ -12594,8 +12754,6 @@ paths:
             operationId: post_api_v1_agents_by_username_access_leases_by_leaseID_renew_challenge
             tags:
                 - agents
-            security:
-                - bearerAuth: []
             parameters:
                 - name: leaseID
                   in: path
@@ -12630,8 +12788,6 @@ paths:
             x-lesser-lambda: api
             x-lesser-routeSources:
                 - cmd/api/routes.go
-            x-oauth-scopes:
-                - write
     /api/v1/agents/{username}/access-leases/{leaseID}/revoke:
         post:
             operationId: post_api_v1_agents_by_username_access_leases_by_leaseID_revoke
@@ -12689,8 +12845,6 @@ paths:
             operationId: post_api_v1_agents_by_username_access_leases_by_leaseID_session_key
             tags:
                 - agents
-            security:
-                - bearerAuth: []
             parameters:
                 - name: leaseID
                   in: path
@@ -12730,15 +12884,11 @@ paths:
             x-lesser-lambda: api
             x-lesser-routeSources:
                 - cmd/api/routes.go
-            x-oauth-scopes:
-                - write
     /api/v1/agents/{username}/access-leases/{leaseID}/session-key/challenge:
         post:
             operationId: post_api_v1_agents_by_username_access_leases_by_leaseID_session_key_challenge
             tags:
                 - agents
-            security:
-                - bearerAuth: []
             parameters:
                 - name: leaseID
                   in: path
@@ -12778,15 +12928,11 @@ paths:
             x-lesser-lambda: api
             x-lesser-routeSources:
                 - cmd/api/routes.go
-            x-oauth-scopes:
-                - write
     /api/v1/agents/{username}/access-leases/{leaseID}/token:
         post:
             operationId: post_api_v1_agents_by_username_access_leases_by_leaseID_token
             tags:
                 - agents
-            security:
-                - bearerAuth: []
             parameters:
                 - name: leaseID
                   in: path
@@ -12826,8 +12972,6 @@ paths:
             x-lesser-lambda: api
             x-lesser-routeSources:
                 - cmd/api/routes.go
-            x-oauth-scopes:
-                - write
     /api/v1/agents/{username}/access-leases/challenge/agent:
         post:
             operationId: post_api_v1_agents_by_username_access_leases_challenge_agent
@@ -13171,8 +13315,6 @@ paths:
             operationId: post_api_v1_agents_auth_challenge
             tags:
                 - agents
-            security:
-                - bearerAuth: []
             requestBody:
                 content:
                     application/json:
@@ -13199,15 +13341,11 @@ paths:
             x-lesser-lambda: api
             x-lesser-routeSources:
                 - cmd/api/routes.go
-            x-oauth-scopes:
-                - write
     /api/v1/agents/auth/token:
         post:
             operationId: post_api_v1_agents_auth_token
             tags:
                 - agents
-            security:
-                - bearerAuth: []
             requestBody:
                 content:
                     application/json:
@@ -13234,8 +13372,6 @@ paths:
             x-lesser-lambda: api
             x-lesser-routeSources:
                 - cmd/api/routes.go
-            x-oauth-scopes:
-                - write
     /api/v1/agents/delegate:
         post:
             operationId: post_api_v1_agents_delegate
@@ -13262,10 +13398,14 @@ paths:
                     $ref: '#/components/responses/Unauthorized'
                 "403":
                     $ref: '#/components/responses/Forbidden'
+                "404":
+                    $ref: '#/components/responses/NotFound'
                 "422":
                     $ref: '#/components/responses/UnprocessableEntity'
                 "500":
                     $ref: '#/components/responses/InternalServerError'
+                "503":
+                    $ref: '#/components/responses/ServiceUnavailable'
             x-lesser-handler: HandleDelegateAgentLift
             x-lesser-lambda: api
             x-lesser-routeSources:
@@ -13344,8 +13484,6 @@ paths:
             description: Self-sovereign agent registration. Disabled by default until the operator explicitly enables agents and agent registration.
             tags:
                 - agents
-            security:
-                - bearerAuth: []
             requestBody:
                 content:
                     application/json:
@@ -13373,16 +13511,12 @@ paths:
             x-lesser-lambda: api
             x-lesser-routeSources:
                 - cmd/api/routes.go
-            x-oauth-scopes:
-                - write
     /api/v1/agents/register/challenge:
         post:
             operationId: post_api_v1_agents_register_challenge
             description: Issues a self-sovereign agent registration challenge. Disabled by default until the operator explicitly enables agents and agent registration.
             tags:
                 - agents
-            security:
-                - bearerAuth: []
             requestBody:
                 content:
                     application/json:
@@ -13410,8 +13544,6 @@ paths:
             x-lesser-lambda: api
             x-lesser-routeSources:
                 - cmd/api/routes.go
-            x-oauth-scopes:
-                - write
     /api/v1/announcements:
         get:
             operationId: get_api_v1_announcements
@@ -17247,6 +17379,98 @@ paths:
                 - cmd/api/routes.go
             x-oauth-scopes:
                 - write
+    /api/v1/souls/bindings:
+        post:
+            operationId: post_api_v1_souls_bindings
+            description: 'Create or confirm a Lesser-local hosted soul/body binding for body/Ptah. The endpoint is server-to-server only: it requires the dedicated soul-binding integration bearer, rejects user OAuth tokens, refetches Host source truth, and writes only through Lesser''s SOUL_BODY_BINDING repository path.'
+            tags:
+                - souls
+            security:
+                - soulBindingBearer: []
+            parameters:
+                - name: Idempotency-Key
+                  in: header
+                  required: true
+                  description: Caller-scoped idempotency key for this binding attempt. Reusing the same key with a different canonical payload returns SOUL_BINDING_IDEMPOTENCY_MISMATCH.
+                  schema:
+                    type: string
+                    minLength: 1
+                    maxLength: 200
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SoulBindingResponse'
+                "400":
+                    $ref: '#/components/responses/BadRequest'
+                "401":
+                    $ref: '#/components/responses/Unauthorized'
+                "403":
+                    $ref: '#/components/responses/Forbidden'
+                "404":
+                    $ref: '#/components/responses/NotFound'
+                "409":
+                    $ref: '#/components/responses/Conflict'
+                "422":
+                    $ref: '#/components/responses/UnprocessableEntity'
+                "500":
+                    $ref: '#/components/responses/InternalServerError'
+                "503":
+                    $ref: '#/components/responses/ServiceUnavailable'
+            x-lesser-handler: HandleCreateSoulBindingLift
+            x-lesser-lambda: api
+            x-lesser-routeSources:
+                - cmd/api/routes.go
+    /api/v1/souls/bindings/{agentId}:
+        get:
+            operationId: get_api_v1_souls_bindings_by_agentId
+            description: Return the authenticated body/Ptah status projection for a Lesser-local hosted soul/body binding. Lesser fails closed if the local binding exists but Host source truth cannot currently prove the hosted active identity.
+            tags:
+                - souls
+            security:
+                - soulBindingBearer: []
+            parameters:
+                - name: agentId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: actor_username
+                  in: query
+                  description: Optional local actor username assertion. A mismatch with the stored binding returns SOUL_BINDING_ACTOR_MISMATCH.
+                  schema:
+                    type: string
+                    minLength: 1
+                    maxLength: 64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SoulBindingResponse'
+                "400":
+                    $ref: '#/components/responses/BadRequest'
+                "401":
+                    $ref: '#/components/responses/Unauthorized'
+                "403":
+                    $ref: '#/components/responses/Forbidden'
+                "404":
+                    $ref: '#/components/responses/NotFound'
+                "409":
+                    $ref: '#/components/responses/Conflict'
+                "422":
+                    $ref: '#/components/responses/UnprocessableEntity'
+                "500":
+                    $ref: '#/components/responses/InternalServerError'
+                "503":
+                    $ref: '#/components/responses/ServiceUnavailable'
+            x-lesser-handler: HandleGetSoulBindingLift
+            x-lesser-lambda: api
+            x-lesser-routeSources:
+                - cmd/api/routes.go
     /api/v1/souls/bound/me:
         get:
             operationId: get_api_v1_souls_bound_me

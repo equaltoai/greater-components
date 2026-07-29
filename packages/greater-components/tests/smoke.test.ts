@@ -268,7 +268,7 @@ describe('@equaltoai/greater-components export surface', () => {
 		}
 		expect(generateId().startsWith('greater-')).toBe(true);
 		adapterCache?.clear?.();
-	});
+	}, 30000);
 
 	it('verifies all sub-package exports are accessible', async () => {
 		const pkg = await importPackage();

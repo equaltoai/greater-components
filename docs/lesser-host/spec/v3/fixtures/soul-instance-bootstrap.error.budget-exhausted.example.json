@@ -1,0 +1,8 @@
+{
+  "error": {
+    "code": "soul_instance.budget_exhausted",
+    "message": "monthly credit budget exhausted",
+    "status_code": 409,
+    "request_id": "req_instance_bootstrap_budget_exhausted_example"
+  }
+}

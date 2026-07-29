@@ -4,6 +4,35 @@
  */
 
 export interface paths {
+    "/api/v1/soul/agents/{agentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get public soul agent identity (v3)
+         * @description Returns Host's read-only Soul registry projection for a soul agent ID.
+         *     Lesser's server-side soul-binding ceremony uses this projection as Host
+         *     source truth before writing Lesser-local `SOUL_BODY_BINDING` rows. For
+         *     Ptah-created hosted souls, consumers validate `agent_id`, `domain`,
+         *     `local_id`, `authority_model=instance_trust`,
+         *     `anchor_state=hosted_offchain`,
+         *     `operational_binding=hosted_bound_soul`, active lifecycle/status,
+         *     publication evidence through `self_description_version > 0` (or future
+         *     `published_version > 0`), and principal evidence through
+         *     `principal_address` with `wallet` as compatibility fallback.
+         */
+        get: operations["soulGetAgent"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/soul/agents/{agentId}/channels": {
         parameters: {
             query?: never;
@@ -219,10 +248,10 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Complete or replay a registration-scoped mint conversation
-         * @description Completes an active mint conversation and persists produced declarations. If the stored conversation is already
-         *     `completed` and has valid produced declarations, the route is idempotent and returns the completed conversation
-         *     without re-extracting or rewriting declarations. Other terminal states fail closed with conflict metadata.
+         * Read or replay a registration-scoped mint conversation completion
+         * @description Replays an already terminal conversation. Active declaration construction and finalization belong exclusively
+         *     to the Hosted Genesis MicroVM typed-candidate lane; this route accepts no caller-authored declaration document,
+         *     invokes no provider, and returns a conflict for active legacy rows.
          */
         post: operations["soulCompleteMintConversation"];
         delete?: never;
@@ -348,7 +377,8 @@ export interface paths {
          * List compact mint-conversation metadata for an instance-owned agent
          * @description Instance-key authenticated read used by Lesser's self-scope proxy. The list response is compact and never
          *     includes private `messages` or `produced_declarations`; use the explicit single-conversation route for a
-         *     bounded full private record.
+         *     bounded full private record. Published sessions are terminal and include `published_version` and
+         *     `published_at`; callers proceed to agent read/list rather than retrying completion or finalize preflight.
          */
         get: operations["soulInstanceListMintConversations"];
         put?: never;
@@ -371,7 +401,8 @@ export interface paths {
          * @description Instance-key authenticated read used by Lesser's self-scope proxy. This explicit single-conversation route returns
          *     the hosted-genesis durable conversation envelope and may include bounded `conversation.messages` at
          *     `assistant_turn_ready` for Lesser same-origin relay. Terminal declaration evidence appears only as
-         *     `conversation.produced_declarations` when the durable status is `declaration_ready`; raw legacy
+         *     `conversation.produced_declarations` when the durable status is `declaration_ready`. Successful publication is
+         *     the distinct terminal `published` status with its exact version and timestamp; raw legacy
          *     message/declaration strings, credentials, target-account
          *     details, and infrastructure state are never returned.
          */
@@ -542,14 +573,12 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Complete or replay an instance-key registration mint conversation
-         * @description Server-to-server route for managed Lesser instances. Completes a conversation inside the authenticated instance
-         *     boundary and persists the produced declarations for finalize preflight/finalize. If Host has accepted the turn
-         *     but the assistant turn or declaration extraction is not ready yet, this route returns `202` plus the durable
-         *     HostConversation progress envelope; HTTP success is not terminal. If the stored conversation is already
-         *     `completed`/`declaration_ready` and has valid produced declarations, the route is idempotent and returns the
-         *     compact HostConversation declaration-ready envelope without re-extracting or rewriting declarations. Failed conversations and completed
-         *     conversations without valid produced declarations fail closed with structured state details.
+         * Read or replay an instance-key registration mint conversation completion
+         * @description Progress-safe read/convergence route for managed Lesser instances. If the conversation is still `in_progress`
+         *     or `assistant_turn_ready`, the route returns `HTTP 202` with the compact HostConversation progress envelope.
+         *     If the MicroVM has deterministically finalized the exact structurally affirmed candidate, the route
+         *     idempotently returns the `declaration_ready` envelope. The request accepts no caller-authored declaration
+         *     document and invokes no provider. Failed or invalid states fail closed.
          */
         post: operations["soulInstanceCompleteRegistrationMintConversation"];
         delete?: never;
@@ -632,10 +661,10 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Complete or replay an agent-scoped mint conversation
-         * @description Completes an active mint conversation for a stable agent handle. If the stored conversation is already
-         *     `completed` and has valid produced declarations, the route is idempotent and returns the completed conversation
-         *     without re-extracting or rewriting declarations. Other terminal states fail closed with conflict metadata.
+         * Read or replay an agent-scoped mint conversation completion
+         * @description Replays an already terminal conversation for a stable agent handle. Active declaration construction and
+         *     finalization belong exclusively to the Hosted Genesis MicroVM typed-candidate lane; this route accepts no
+         *     caller-authored declaration document, invokes no provider, and returns a conflict for active legacy rows.
          */
         post: operations["soulAgentCompleteMintConversation"];
         delete?: never;
@@ -792,9 +821,12 @@ export interface paths {
         /**
          * Issue a scoped x402 invocation grant
          * @description Issues a host-side off-chain invocation grant for a configured public paid caller. The grant binds the
-         *     `agentId`, `capability`, `tool`, `resource`, invocation `requestHash`, caller subject hash, payment evidence
-         *     hash, amount/network metadata, nonce, idempotency key hash, expiry, max usage, and caller-access payment policy
-         *     version.
+         *     `agentId`, `capabilityVersion`, `capability`, `tool`, `resource`, access `scope`, invocation `requestHash`, caller subject
+         *     hash, payment evidence hash, amount/network metadata, nonce, idempotency key hash, expiry, max usage, and caller-access
+         *     payment policy version. The access `scope` vocabulary is `read`, `write`, or `admin` and stays separate from grant
+         *     `authority`, which remains `scoped_invocation`. Capability vocabulary is versioned: `scoped-invocation/v1`
+         *     remains the actor/scoped invocation vocabulary, while `instance-capability/v1` is restricted to
+         *     `instance:agent_create` and `instance:install_plan`.
          *
          *     This instance-key authenticated route returns a raw `grantToken` only on the first successful issue. Idempotent replays return the
          *     same grant metadata with `tokenReturned=false`; callers must retain the original token. Host stores only hashes
@@ -823,7 +855,13 @@ export interface paths {
          * @description Consumes a host-issued x402 invocation grant from an authenticated managed instance. The bearer token is the
          *     instance API key; public paid callers never receive principal/operator/session authority. The authenticated
          *     instance must own the agent domain, present the one-time raw grant token, and repeat the original
-         *     agent/capability/tool/resource/request hash binding.
+         *     agent/capabilityVersion/capability/tool/resource/request hash binding. Consume responses return the persisted
+         *     grant `scope` and `capabilityVersion` so downstream runtimes can reject right-tool/wrong-scope or
+         *     actor-capability-on-instance-tool invocations before side effects. Instance tools must use
+         *     `capabilityVersion="instance-capability/v1"` with `capability="instance:agent_create"` for `tool="agent_create"`
+         *     or `capability="instance:install_plan"` for `tool="agent_local_install_plan"` (the shorter
+         *     `tool="install_plan"` is also accepted by Host). Actor/scoped invocation capabilities remain under
+         *     `scoped-invocation/v1` and are rejected for these instance tools.
          *
          *     Consumption writes a bounded usage slot keyed by the consume idempotency key hash. Repeating the same consume
          *     idempotency key with the same consume request hash is a replay and does not increment usage. Distinct consume
@@ -1142,7 +1180,7 @@ export interface components {
                 details?: {
                     reason?: string;
                     /** @enum {string} */
-                    conversation_status?: "unknown" | "pending" | "created" | "in_progress" | "assistant_turn_ready" | "declaration_extraction_pending" | "declaration_ready" | "completed" | "failed";
+                    conversation_status?: "unknown" | "pending" | "created" | "in_progress" | "assistant_turn_ready" | "declaration_ready" | "completed" | "failed";
                     expected_status?: string;
                     produced_declarations_present?: boolean;
                     produced_declarations_valid?: boolean;
@@ -1402,7 +1440,7 @@ export interface components {
             principal_address?: string;
             latest_conversation_id?: string;
             /** @enum {string} */
-            latest_conversation_status?: "created" | "in_progress" | "assistant_turn_ready" | "declaration_extraction_pending" | "declaration_ready" | "completed" | "failed";
+            latest_conversation_status?: "created" | "in_progress" | "assistant_turn_ready" | "declaration_ready" | "published" | "completed" | "failed";
             latest_review_sha256?: string;
             latest_boundary_count?: number;
             latest_capability_count?: number;
@@ -1547,6 +1585,16 @@ export interface components {
             idempotency_key?: string;
             correlation_id?: string;
             lesser_request_id?: string;
+            /** @description Structural owner action bound to the exact deterministic review. Free-form affirmation text is not authoritative. */
+            candidate_action?: {
+                /** @enum {string} */
+                action: "affirm" | "edit";
+                /** @enum {string} */
+                section?: "identity" | "philosophy" | "discipline" | "boundaries" | "soul";
+                candidate_revision: number;
+                candidate_hash: string;
+                review_hash: string;
+            } & (unknown & unknown);
         };
         SoulHostedGenesisConversationResponse: components["schemas"]["hosted-genesis.conversation.response.schema"];
         SoulMintConversation: {
@@ -1559,7 +1607,7 @@ export interface components {
              * @description Legacy raw Host record status. `completed` is retained for backward compatibility and maps to the durable hosted-genesis contract status `declaration_ready` only when valid produced declarations exist.
              * @enum {string}
              */
-            status: "created" | "in_progress" | "assistant_turn_ready" | "declaration_extraction_pending" | "declaration_ready" | "completed" | "failed";
+            status: "created" | "in_progress" | "assistant_turn_ready" | "declaration_ready" | "completed" | "failed";
             usage?: components["schemas"]["AIUsage"];
             charged_credits?: number;
             /** Format: date-time */
@@ -1567,9 +1615,8 @@ export interface components {
             /** Format: date-time */
             completed_at?: string;
         };
-        SoulMintConversationCompleteRequest: {
-            declarations?: string | components["schemas"]["SoulMintConversationDeclarationPreview"];
-        };
+        /** @description Read/convergence request. Hosted Genesis declaration bytes are finalized only by the MicroVM from the structurally affirmed typed candidate. */
+        SoulMintConversationCompleteRequest: Record<string, never>;
         SoulAgentMintConversationsResponse: {
             /** @enum {string} */
             version: "1";
@@ -1578,16 +1625,19 @@ export interface components {
         };
         SoulInstanceMintConversationSummary: {
             agent_id: string;
+            registration_id: string;
             conversation_id: string;
-            model?: string;
             /** @enum {string} */
-            status: "created" | "in_progress" | "assistant_turn_ready" | "declaration_extraction_pending" | "declaration_ready" | "completed" | "failed";
-            usage?: components["schemas"]["AIUsage"];
-            charged_credits?: number;
+            status: "created" | "in_progress" | "assistant_turn_ready" | "declaration_ready" | "published" | "failed";
+            message_count?: number;
+            latest_turn_id?: string;
             /** Format: date-time */
             created_at: string;
             /** Format: date-time */
-            completed_at?: string;
+            updated_at?: string;
+            published_version?: number;
+            /** Format: date-time */
+            published_at?: string;
         };
         SoulInstanceMintConversationsResponse: {
             /** @enum {string} */
@@ -1705,103 +1755,6 @@ export interface components {
             };
         };
         SoulMintConversationFinalizeResponse: components["schemas"]["soul-instance-bootstrap.finalize.response.schema"];
-        /** GET /api/v1/soul/agents/{agentId}/channels/preferences response */
-        "soul-agent-channel-preferences.response.schema": {
-            agentId: string;
-            contactPreferences: {
-                /** @enum {string} */
-                preferred: "email" | "sms" | "voice" | "activitypub" | "mcp";
-                /** @enum {string} */
-                fallback?: "email" | "sms" | "voice" | "activitypub" | "mcp";
-                availability: {
-                    /** @enum {string} */
-                    schedule: "always" | "business-hours" | "custom";
-                    timezone?: string;
-                    windows?: {
-                        days: ("mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun")[];
-                        startTime: string;
-                        endTime: string;
-                    }[] | null;
-                };
-                responseExpectation: {
-                    target: string;
-                    /** @enum {string} */
-                    guarantee: "guaranteed" | "best-effort";
-                };
-                rateLimits?: {
-                    email?: {
-                        maxInboundPerHour?: number;
-                        maxInboundPerDay?: number;
-                    };
-                    sms?: {
-                        maxInboundPerHour?: number;
-                        maxInboundPerDay?: number;
-                    };
-                    voice?: {
-                        maxConcurrentCalls?: number;
-                        maxCallsPerDay?: number;
-                    };
-                };
-                languages: string[];
-                contentTypes?: string[];
-                firstContact?: {
-                    /** @default false */
-                    requireSoul: boolean;
-                    requireReputation?: number | null;
-                    /** @default false */
-                    introductionExpected: boolean;
-                };
-            } | null;
-            /** Format: date-time */
-            updatedAt: string;
-        };
-        /** PUT /api/v1/soul/agents/{agentId}/channels/preferences request */
-        "soul-agent-channel-preferences.request.schema": {
-            contactPreferences: {
-                /** @enum {string} */
-                preferred: "email" | "sms" | "voice" | "activitypub" | "mcp";
-                /** @enum {string} */
-                fallback?: "email" | "sms" | "voice" | "activitypub" | "mcp";
-                availability: {
-                    /** @enum {string} */
-                    schedule: "always" | "business-hours" | "custom";
-                    timezone?: string;
-                    windows?: {
-                        days: ("mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun")[];
-                        startTime: string;
-                        endTime: string;
-                    }[] | null;
-                };
-                responseExpectation: {
-                    target: string;
-                    /** @enum {string} */
-                    guarantee: "guaranteed" | "best-effort";
-                };
-                rateLimits?: {
-                    email?: {
-                        maxInboundPerHour?: number;
-                        maxInboundPerDay?: number;
-                    };
-                    sms?: {
-                        maxInboundPerHour?: number;
-                        maxInboundPerDay?: number;
-                    };
-                    voice?: {
-                        maxConcurrentCalls?: number;
-                        maxCallsPerDay?: number;
-                    };
-                };
-                languages: string[];
-                contentTypes?: string[];
-                firstContact?: {
-                    /** @default false */
-                    requireSoul: boolean;
-                    requireReputation?: number | null;
-                    /** @default false */
-                    introductionExpected: boolean;
-                };
-            };
-        };
         avatar_style: {
             style_id: number;
             style_name?: string;
@@ -1924,6 +1877,103 @@ export interface components {
                 };
             };
         };
+        /** GET /api/v1/soul/agents/{agentId}/channels/preferences response */
+        "soul-agent-channel-preferences.response.schema": {
+            agentId: string;
+            contactPreferences: {
+                /** @enum {string} */
+                preferred: "email" | "sms" | "voice" | "activitypub" | "mcp";
+                /** @enum {string} */
+                fallback?: "email" | "sms" | "voice" | "activitypub" | "mcp";
+                availability: {
+                    /** @enum {string} */
+                    schedule: "always" | "business-hours" | "custom";
+                    timezone?: string;
+                    windows?: {
+                        days: ("mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun")[];
+                        startTime: string;
+                        endTime: string;
+                    }[] | null;
+                };
+                responseExpectation: {
+                    target: string;
+                    /** @enum {string} */
+                    guarantee: "guaranteed" | "best-effort";
+                };
+                rateLimits?: {
+                    email?: {
+                        maxInboundPerHour?: number;
+                        maxInboundPerDay?: number;
+                    };
+                    sms?: {
+                        maxInboundPerHour?: number;
+                        maxInboundPerDay?: number;
+                    };
+                    voice?: {
+                        maxConcurrentCalls?: number;
+                        maxCallsPerDay?: number;
+                    };
+                };
+                languages: string[];
+                contentTypes?: string[];
+                firstContact?: {
+                    /** @default false */
+                    requireSoul: boolean;
+                    requireReputation?: number | null;
+                    /** @default false */
+                    introductionExpected: boolean;
+                };
+            } | null;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        /** PUT /api/v1/soul/agents/{agentId}/channels/preferences request */
+        "soul-agent-channel-preferences.request.schema": {
+            contactPreferences: {
+                /** @enum {string} */
+                preferred: "email" | "sms" | "voice" | "activitypub" | "mcp";
+                /** @enum {string} */
+                fallback?: "email" | "sms" | "voice" | "activitypub" | "mcp";
+                availability: {
+                    /** @enum {string} */
+                    schedule: "always" | "business-hours" | "custom";
+                    timezone?: string;
+                    windows?: {
+                        days: ("mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun")[];
+                        startTime: string;
+                        endTime: string;
+                    }[] | null;
+                };
+                responseExpectation: {
+                    target: string;
+                    /** @enum {string} */
+                    guarantee: "guaranteed" | "best-effort";
+                };
+                rateLimits?: {
+                    email?: {
+                        maxInboundPerHour?: number;
+                        maxInboundPerDay?: number;
+                    };
+                    sms?: {
+                        maxInboundPerHour?: number;
+                        maxInboundPerDay?: number;
+                    };
+                    voice?: {
+                        maxConcurrentCalls?: number;
+                        maxCallsPerDay?: number;
+                    };
+                };
+                languages: string[];
+                contentTypes?: string[];
+                firstContact?: {
+                    /** @default false */
+                    requireSoul: boolean;
+                    requireReputation?: number | null;
+                    /** @default false */
+                    introductionExpected: boolean;
+                };
+            };
+        };
         /** GET /api/v1/soul/search result entry */
         "soul-search.result.schema": {
             agent_id: string;
@@ -1970,7 +2020,7 @@ export interface components {
             anchor_state?: "hosted_offchain" | "immutable_onchain";
             latest_conversation_id?: string;
             /** @enum {string} */
-            latest_conversation_status?: "in_progress" | "completed" | "failed";
+            latest_conversation_status?: "in_progress" | "declaration_ready" | "published" | "failed";
             published_version?: number;
             /** Format: date-time */
             graduated_at?: string;
@@ -1979,9 +2029,15 @@ export interface components {
         "soul-instance-bootstrap.finalize.response.schema": {
             /** @constant */
             version: "1";
+            /** @constant */
+            status: "published";
+            registration_id: string;
+            conversation_id: string;
             agent_id: string;
             agent: components["schemas"]["soul-agent-identity.schema"];
             published_version: number;
+            /** Format: date-time */
+            published_at: string;
             publication: components["schemas"]["publication"];
             promotion?: components["schemas"]["promotion"];
             $defs: {
@@ -2016,7 +2072,7 @@ export interface components {
                     anchor_state?: "hosted_offchain" | "immutable_onchain";
                     latest_conversation_id?: string;
                     /** @enum {string} */
-                    latest_conversation_status?: "in_progress" | "completed" | "failed";
+                    latest_conversation_status?: "in_progress" | "declaration_ready" | "published" | "failed";
                     published_version?: number;
                     /** Format: date-time */
                     graduated_at?: string;
@@ -2038,7 +2094,7 @@ export interface components {
             };
         };
         /** @enum {string} */
-        status: "created" | "in_progress" | "assistant_turn_ready" | "declaration_extraction_pending" | "declaration_ready" | "failed";
+        status: "created" | "in_progress" | "assistant_turn_ready" | "declaration_ready" | "published" | "failed";
         conversation_message: {
             id: string;
             /** @enum {string} */
@@ -2048,6 +2104,7 @@ export interface components {
             /** Format: date-time */
             created_at?: string;
             truncated?: boolean;
+            redacted?: boolean;
         };
         produced_declarations: {
             declaration_id: string;
@@ -2068,7 +2125,9 @@ export interface components {
         };
         failure: {
             /** @enum {string} */
-            code: "llm_unavailable" | "assistant_turn_failed" | "declaration_extraction_failed" | "invalid_completion_state" | "missing_produced_declarations" | "invalid_produced_declarations" | "tenant_boundary_violation" | "operator_action_required";
+            code: "llm_unavailable" | "assistant_turn_failed" | "invalid_completion_state" | "missing_produced_declarations" | "invalid_produced_declarations" | "tenant_boundary_violation" | "operator_action_required" | "microvm_unavailable";
+            /** @enum {string} */
+            class?: "provider_timeout" | "provider_canceled" | "provider_api_failure" | "invalid_provider_output" | "parse_validation_failure";
             message: string;
             retryable: boolean;
             recovery: {
@@ -2085,6 +2144,27 @@ export interface components {
             idempotency_key?: string;
             lesser_request_id?: string;
         };
+        candidate_review: {
+            /** @constant */
+            renderer_version: "hosted-genesis-owner-review.v1";
+            candidate_revision: number;
+            candidate_hash: string;
+            review_hash: string;
+            /** @description Deterministic owner review containing a stable human header and a byte-counted, delimited copy of the exact canonical JSON authenticated by candidate_hash. review_hash authenticates this complete rendered string. */
+            review_text: string;
+        };
+        declaration_candidate: {
+            /** @constant */
+            version: "hosted-genesis-declaration-candidate.v1";
+            /** @enum {string} */
+            phase: "section" | "review" | "affirmed" | "finalized";
+            /** @enum {string} */
+            current_section?: "identity" | "philosophy" | "discipline" | "boundaries" | "soul";
+            completed_sections?: ("identity" | "philosophy" | "discipline" | "boundaries" | "soul")[];
+            revision: number;
+            candidate_hash: string;
+            review?: components["schemas"]["candidate_review"];
+        };
         conversation: {
             registration_id: string;
             conversation_id: string;
@@ -2094,8 +2174,12 @@ export interface components {
             message_count: number;
             messages?: components["schemas"]["conversation_message"][];
             messages_truncated?: boolean;
+            messages_redacted?: boolean;
             produced_declarations?: components["schemas"]["produced_declarations"];
             failure?: components["schemas"]["failure"];
+            published_version?: number;
+            /** Format: date-time */
+            published_at?: string;
             request_id: string;
             trace_ids?: components["schemas"]["trace_ids"];
             poll_after_seconds?: number;
@@ -2105,7 +2189,8 @@ export interface components {
             updated_at?: string;
             /** Format: date-time */
             completed_at?: string;
-        };
+            declaration_candidate?: components["schemas"]["declaration_candidate"];
+        } & (unknown & unknown);
         /** Hosted genesis durable conversation response */
         "hosted-genesis.conversation.response.schema": {
             /** @constant */
@@ -2114,7 +2199,7 @@ export interface components {
             conversation: components["schemas"]["conversation"];
             $defs: {
                 /** @enum {string} */
-                status: "created" | "in_progress" | "assistant_turn_ready" | "declaration_extraction_pending" | "declaration_ready" | "failed";
+                status: "created" | "in_progress" | "assistant_turn_ready" | "declaration_ready" | "published" | "failed";
                 trace_ids: {
                     host_request_id?: string;
                     correlation_id?: string;
@@ -2130,6 +2215,7 @@ export interface components {
                     /** Format: date-time */
                     created_at?: string;
                     truncated?: boolean;
+                    redacted?: boolean;
                 };
                 declarations: {
                     selfDescription: {
@@ -2164,7 +2250,9 @@ export interface components {
                 };
                 failure: {
                     /** @enum {string} */
-                    code: "llm_unavailable" | "assistant_turn_failed" | "declaration_extraction_failed" | "invalid_completion_state" | "missing_produced_declarations" | "invalid_produced_declarations" | "tenant_boundary_violation" | "operator_action_required";
+                    code: "llm_unavailable" | "assistant_turn_failed" | "invalid_completion_state" | "missing_produced_declarations" | "invalid_produced_declarations" | "tenant_boundary_violation" | "operator_action_required" | "microvm_unavailable";
+                    /** @enum {string} */
+                    class?: "provider_timeout" | "provider_canceled" | "provider_api_failure" | "invalid_provider_output" | "parse_validation_failure";
                     message: string;
                     retryable: boolean;
                     recovery: {
@@ -2184,8 +2272,12 @@ export interface components {
                     message_count: number;
                     messages?: components["schemas"]["conversation_message"][];
                     messages_truncated?: boolean;
+                    messages_redacted?: boolean;
                     produced_declarations?: components["schemas"]["produced_declarations"];
                     failure?: components["schemas"]["failure"];
+                    published_version?: number;
+                    /** Format: date-time */
+                    published_at?: string;
                     request_id: string;
                     trace_ids?: components["schemas"]["trace_ids"];
                     poll_after_seconds?: number;
@@ -2195,6 +2287,28 @@ export interface components {
                     updated_at?: string;
                     /** Format: date-time */
                     completed_at?: string;
+                    declaration_candidate?: components["schemas"]["declaration_candidate"];
+                } & (unknown & unknown);
+                candidate_review: {
+                    /** @constant */
+                    renderer_version: "hosted-genesis-owner-review.v1";
+                    candidate_revision: number;
+                    candidate_hash: string;
+                    review_hash: string;
+                    /** @description Deterministic owner review containing a stable human header and a byte-counted, delimited copy of the exact canonical JSON authenticated by candidate_hash. review_hash authenticates this complete rendered string. */
+                    review_text: string;
+                };
+                declaration_candidate: {
+                    /** @constant */
+                    version: "hosted-genesis-declaration-candidate.v1";
+                    /** @enum {string} */
+                    phase: "section" | "review" | "affirmed" | "finalized";
+                    /** @enum {string} */
+                    current_section?: "identity" | "philosophy" | "discipline" | "boundaries" | "soul";
+                    completed_sections?: ("identity" | "philosophy" | "discipline" | "boundaries" | "soul")[];
+                    revision: number;
+                    candidate_hash: string;
+                    review?: components["schemas"]["candidate_review"];
                 };
             };
         };
@@ -2202,7 +2316,7 @@ export interface components {
         "soul-instance-bootstrap.error.schema": {
             error: {
                 /** @enum {string} */
-                code: "soul_instance.unauthorized" | "soul_instance.invalid_request" | "soul_instance.boundary_violation" | "soul_instance.conflict" | "soul_instance.not_found" | "soul_instance.internal";
+                code: "soul_instance.unauthorized" | "soul_instance.invalid_request" | "soul_instance.boundary_violation" | "soul_instance.conflict" | "soul_instance.budget_exhausted" | "soul_instance.not_found" | "soul_instance.internal";
                 message: string;
                 status_code?: number;
                 /** @description Client-safe metadata for validation or tenant-boundary failures. Raw instance keys and host session tokens never appear here. */
@@ -2224,13 +2338,25 @@ export interface components {
         };
         /**
          * POST /api/v1/soul/x402/grants request
-         * @description Issues a host-side scoped x402 invocation grant for configured public paid callers. Raw caller and payment evidence may be supplied for hashing but is never returned by the instance-key authenticated route.
+         * @description Issues a host-side scoped x402 invocation grant for configured public paid callers. Raw caller and payment evidence may be supplied for hashing but is never returned by the instance-key authenticated route. The required access scope is an explicit vocabulary (`read`, `write`, `admin`) that downstream runtimes enforce separately from scoped invocation authority. Capability vocabulary is versioned: `scoped-invocation/v1` remains the actor/scoped invocation vocabulary, while `instance-capability/v1` is restricted to instance tool capabilities `instance:agent_create` and `instance:install_plan`.
          */
         "soul-x402-invocation-grant.issue.request.schema": {
             agentId: string;
+            /**
+             * @description Versioned capability vocabulary. Use `instance-capability/v1` only for instance minting tools; actor/scoped invocation capabilities stay under `scoped-invocation/v1`.
+             * @enum {string}
+             */
+            capabilityVersion: "scoped-invocation/v1" | "instance-capability/v1";
+            /** @description Capability within `capabilityVersion`. For `instance-capability/v1`, allowed values are `instance:agent_create` and `instance:install_plan`. */
             capability: string;
+            /** @description Concrete downstream tool name. For `instance:agent_create`, use `agent_create`; for `instance:install_plan`, use `agent_local_install_plan` (Host also accepts `install_plan`). */
             tool: string;
             resource: string;
+            /**
+             * @description Access scope for the invocation grant. This is downstream tool access vocabulary and does not change authority, which remains scoped_invocation.
+             * @enum {string}
+             */
+            scope: "read" | "write" | "admin";
             requestHash: string;
             /** @description Provide either subject or subjectHash. If subject is supplied, host hashes it and returns only subjectHash. */
             caller: {
@@ -2265,19 +2391,31 @@ export interface components {
             expiresAt: string;
             /** @description Optional; host defaults omitted maxUsage to 1. */
             maxUsage?: number;
-        };
+        } & (unknown & unknown);
         /**
          * Soul x402 invocation grant
-         * @description A minimized host-issued off-chain grant for one bounded public paid invocation. It is scoped invocation authority only and does not confer principal, operator, wallet, or tenant-data authority.
+         * @description A minimized host-issued off-chain grant for one bounded public paid invocation. It is scoped invocation authority only and does not confer principal, operator, wallet, or tenant-data authority. The required access scope is explicit downstream tool vocabulary (`read`, `write`, `admin`) and is intentionally separate from authority. Capability vocabulary is versioned: `scoped-invocation/v1` remains actor/scoped invocation vocabulary, while `instance-capability/v1` is restricted to instance tool capabilities `instance:agent_create` and `instance:install_plan`.
          */
         "soul-x402-invocation-grant.schema": {
             grantId: string;
             /** @description Raw opaque grant token returned once on first issue. Host stores only sha256(grantToken); idempotent replays intentionally omit it. */
             grantToken?: string;
             agentId: string;
+            /**
+             * @description Versioned capability vocabulary. Instance tools must use `instance-capability/v1`; actor/scoped invocation capabilities remain separate under `scoped-invocation/v1`.
+             * @enum {string}
+             */
+            capabilityVersion: "scoped-invocation/v1" | "instance-capability/v1";
+            /** @description Capability within `capabilityVersion`. For `instance-capability/v1`, allowed values are `instance:agent_create` and `instance:install_plan`. */
             capability: string;
+            /** @description Concrete downstream tool name. For `instance:agent_create`, use `agent_create`; for `instance:install_plan`, use `agent_local_install_plan` (Host also accepts `install_plan`). */
             tool: string;
             resource: string;
+            /**
+             * @description Access scope enforced by the consuming runtime before side effects. This is not principal/operator/session authority.
+             * @enum {string}
+             */
+            scope: "read" | "write" | "admin";
             /** @description sha256 hash of the concrete invocation request Body must present later; raw request body is not stored. */
             requestHash: string;
             /** @description sha256 hash of the public caller subject. The raw subject is not returned. */
@@ -2312,7 +2450,7 @@ export interface components {
             issuedAt: string;
             /** Format: date-time */
             expiresAt: string;
-        };
+        } & (unknown & unknown);
         /** POST /api/v1/soul/x402/grants response */
         "soul-x402-invocation-grant.issue.response.schema": {
             grant: components["schemas"]["soul-x402-invocation-grant.schema"];
@@ -2324,14 +2462,21 @@ export interface components {
         "soul-x402-invocation-grant.consume.request.schema": {
             grantToken: string;
             agentId: string;
+            /**
+             * @description Versioned capability vocabulary. Use `instance-capability/v1` with `instance:agent_create` or `instance:install_plan` for instance tools; actor/scoped invocation capabilities remain under `scoped-invocation/v1` and are rejected for instance tools.
+             * @enum {string}
+             */
+            capabilityVersion: "scoped-invocation/v1" | "instance-capability/v1";
+            /** @description Capability within `capabilityVersion`. For `instance-capability/v1`, allowed values are `instance:agent_create` and `instance:install_plan`. */
             capability: string;
+            /** @description Concrete downstream tool name. For `instance:agent_create`, use `agent_create`; for `instance:install_plan`, use `agent_local_install_plan` (Host also accepts `install_plan`). */
             tool: string;
             resource: string;
             requestHash: string;
             /** @description Hash of the x402 payment evidence presented by the caller. Host compares against the stored grant payment evidence hash before any usage is recorded. */
             paymentEvidenceHash: string;
             idempotencyKey: string;
-        };
+        } & (unknown & unknown);
         /** POST /api/v1/soul/x402/grants/{grantId}/consume response */
         "soul-x402-invocation-grant.consume.response.schema": {
             /** @constant */
@@ -2799,6 +2944,31 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    soulGetAgent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Public Soul registry identity projection. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulResolveResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalError"];
+        };
+    };
     soulGetAgentChannels: {
         parameters: {
             query?: never;
@@ -4638,7 +4808,7 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Terminal replay or synchronous completion with valid produced declarations; returns the compact HostConversation envelope and never raw transcript fields. */
+            /** @description Terminal replay with valid produced declarations; returns the compact HostConversation envelope and never raw transcript fields. */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -4647,7 +4817,7 @@ export interface operations {
                     "application/json": components["schemas"]["hosted-genesis.conversation.response.schema"];
                 };
             };
-            /** @description Assistant turn or declaration extraction is still in progress; inspect `conversation.status`. */
+            /** @description Typed section construction or provider-free candidate finalization is still in progress; inspect `conversation.status` and `conversation.declaration_candidate`. */
             202: {
                 headers: {
                     [name: string]: unknown;

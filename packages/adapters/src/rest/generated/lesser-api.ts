@@ -148,6 +148,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/accounts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_accounts_by_id"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/accounts/{id}/block": {
         parameters: {
             query?: never;
@@ -318,6 +334,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["post_api_v1_accounts_by_id_unmute"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/accounts/lookup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_accounts_lookup"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2806,6 +2838,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/souls/bindings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Create or confirm a Lesser-local hosted soul/body binding for body/Ptah. The endpoint is server-to-server only: it requires the dedicated soul-binding integration bearer, rejects user OAuth tokens, refetches Host source truth, and writes only through Lesser's SOUL_BODY_BINDING repository path. */
+        post: operations["post_api_v1_souls_bindings"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/souls/bindings/{agentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Return the authenticated body/Ptah status projection for a Lesser-local hosted soul/body binding. Lesser fails closed if the local binding exists but Host source truth cannot currently prove the hosted active identity. */
+        get: operations["get_api_v1_souls_bindings_by_agentId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/souls/bound/me": {
         parameters: {
             query?: never;
@@ -5108,7 +5174,7 @@ export interface components {
             agent_username: string;
             bio?: string;
             device_label?: string;
-            display_name: string;
+            display_name?: string;
             expires_in?: number;
             scopes: string[];
         };
@@ -6168,6 +6234,8 @@ export interface components {
             user_code: string;
         };
         OAuthDynamicClientRegistrationRequest: {
+            /** @description Optional OIDC/SEP-837 client application type accepted for dynamic-registration compatibility. Lesser accepts `native` or `web` and does not persist this as the Lesser client_class. */
+            application_type?: string;
             /** @description Optional Lesser client classification. Public registration accepts `cli` and `web`; `agent` is not accepted on public registration surfaces. */
             client_class?: string;
             client_name?: string;
@@ -6897,6 +6965,8 @@ export interface components {
         };
         SoulAgentIdentity: {
             agent_id: string;
+            anchor_state?: string;
+            authority_model?: string;
             avatar?: components["schemas"]["SoulAgentAvatar"] | null;
             capabilities?: string[];
             domain: string;
@@ -6907,17 +6977,64 @@ export interface components {
             meta_uri?: string;
             mint_tx_hash?: string;
             minted_at?: components["schemas"]["RFC3339DateTime"] | null;
+            operational_binding?: string;
             predecessor_agent_id?: string;
             principal_address?: string;
             principal_declaration?: string;
             principal_declared_at?: string;
             principal_signature?: string;
+            published_version?: number;
             self_description_version?: number | null;
             status: string;
             successor_agent_id?: string;
             token_id?: string;
             updated_at?: components["schemas"]["RFC3339DateTime"] | null;
             wallet: string;
+        };
+        SoulBindingAgent: {
+            agent_id: string;
+            anchor_state: string;
+            authority_model: string;
+            domain: string;
+            lifecycle_status: string;
+            local_id: string;
+            operational_binding: string;
+            published_version?: number;
+        };
+        SoulBindingEvidence: {
+            declaration_hash?: string;
+            host_request_id?: string;
+            issued_at?: string;
+            source?: string;
+        };
+        SoulBindingIdempotency: {
+            key: string;
+            payload_hash: string;
+            replayed: boolean;
+        };
+        SoulBindingLinks: {
+            status: string;
+        };
+        SoulBindingRequest: {
+            actor_username: string;
+            anchor_state?: string;
+            authority_model?: string;
+            body_actor_id?: string;
+            evidence?: components["schemas"]["SoulBindingEvidence"];
+            host_conversation_id?: string;
+            host_registration_id?: string;
+            operational_binding?: string;
+            principal_address?: string;
+            soul_agent_id: string;
+        };
+        SoulBindingResponse: {
+            agent: components["schemas"]["SoulBindingAgent"];
+            binding: components["schemas"]["SoulAgentBinding"];
+            binding_state: string;
+            idempotency?: components["schemas"]["SoulBindingIdempotency"] | null;
+            links?: components["schemas"]["SoulBindingLinks"] | null;
+            status: string;
+            version: string;
         };
         SoulBodyBinding: {
             bound_at: components["schemas"]["RFC3339DateTime"];
@@ -7675,13 +7792,13 @@ export interface components {
             exit_quarantine?: boolean;
         };
         UpdateCredentialsRequest: {
-            avatar: string;
-            bot: boolean;
-            discoverable: boolean;
-            display_name: string;
-            header: string;
-            locked: boolean;
-            note: string;
+            avatar?: string;
+            bot?: boolean;
+            discoverable?: boolean;
+            display_name?: string;
+            header?: string;
+            locked?: boolean;
+            note?: string;
         };
         UpdateCustomEmojiRequest: {
             category?: string | null;
@@ -8248,6 +8365,31 @@ export interface operations {
             500: components["responses"]["InternalServerError"];
         };
     };
+    get_api_v1_accounts_by_id: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Account"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
     post_api_v1_accounts_by_id_block: {
         parameters: {
             query?: never;
@@ -8625,6 +8767,28 @@ export interface operations {
             500: components["responses"]["InternalServerError"];
         };
     };
+    get_api_v1_accounts_lookup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Account"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
     put_api_v1_accounts_quote_permissions: {
         parameters: {
             query?: never;
@@ -8764,7 +8928,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["StorageAccount"];
+                    "application/json": components["schemas"]["Account"];
                 };
             };
             400: components["responses"]["BadRequest"];
@@ -11204,8 +11368,10 @@ export interface operations {
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
             422: components["responses"]["UnprocessableEntity"];
             500: components["responses"]["InternalServerError"];
+            503: components["responses"]["ServiceUnavailable"];
         };
     };
     get_api_v1_agents_memory_search: {
@@ -14240,6 +14406,70 @@ export interface operations {
             404: components["responses"]["NotFound"];
             422: components["responses"]["UnprocessableEntity"];
             500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_souls_bindings: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Caller-scoped idempotency key for this binding attempt. Reusing the same key with a different canonical payload returns SOUL_BINDING_IDEMPOTENCY_MISMATCH. */
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulBindingResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+            503: components["responses"]["ServiceUnavailable"];
+        };
+    };
+    get_api_v1_souls_bindings_by_agentId: {
+        parameters: {
+            query?: {
+                /** @description Optional local actor username assertion. A mismatch with the stored binding returns SOUL_BINDING_ACTOR_MISMATCH. */
+                actor_username?: string;
+            };
+            header?: never;
+            path: {
+                agentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulBindingResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+            503: components["responses"]["ServiceUnavailable"];
         };
     };
     get_api_v1_souls_bound_me: {

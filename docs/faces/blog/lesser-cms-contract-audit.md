@@ -5,7 +5,7 @@ Lesser's pinned CMS GraphQL contract.
 
 ## Evidence
 
-- Lesser pin: `docs/lesser/contracts/LESSER_REF.txt` (`v1.4.9`, commit `8a9325a76a09c47f8c42b80b378ea25e366a01cf`)
+- Lesser pin: `docs/lesser/contracts/LESSER_REF.txt` (`v1.5.31`, commit `5c0ad0dcff9364bd09aeab11599a04a5a6ed315d`)
 - Contract source: `docs/lesser/contracts/graphql-schema.graphql`
 - Greater Blog public types: `packages/faces/blog/src/types.ts`
 - Article display implementation: `packages/faces/blog/src/components/Article/Content.svelte`
@@ -29,6 +29,7 @@ Field direction legend:
 | -------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | `id`                 | Matches Greater      | `ArticleData.id`                                                                                                                 |
 | `slug`               | Matches Greater      | `ArticleData.slug`                                                                                                               |
+| `authorId`           | Adapter mapping      | Map the Lesser author identifier alongside `author` when an integration needs stable attribution linkage.                        |
 | `author`             | Adapter mapping      | Map `Actor` to `AuthorData` (`id`, display name, username/handle, avatar, bio, links as available).                              |
 | `title`              | Adapter mapping      | `ArticleData.metadata.title`                                                                                                     |
 | `subtitle`           | Adapter mapping      | `ArticleData.metadata.subtitle`                                                                                                  |
@@ -65,6 +66,7 @@ proves them.
 | Lesser field      | Direction            | Greater boundary                                                                                                        |
 | ----------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | `id`              | Matches Greater      | `DraftData.id`                                                                                                          |
+| `authorId`        | Do not leak          | Draft author identifier is backend/workflow state and should not become reusable editor data by default.                |
 | `author`          | Do not leak          | Existing editor UI does not display draft author state.                                                                 |
 | `contentType`     | Out of scope for MVP | Greater Blog editor is article-shaped for this milestone.                                                               |
 | `title`           | Adapter mapping      | `DraftData.title`; normalize nullable Lesser values to an empty/untitled string at the adapter boundary.                |
@@ -131,7 +133,7 @@ Concrete adapter work needed by Emdash before handing Lesser CMS objects to the 
 - Map `Actor`, `Media`, `Category`, and SEO fields into Greater view-model fields.
 - Normalize nullable `Draft.title` to a string for `DraftData.title`.
 - Keep workflow/admin/provenance fields (`editorNotes`, `reviewStatus`, `generatedBy`, `reviewedBy`,
-  `publishedBy`, `Draft.author`, `Publication.actor`) out
+  `publishedBy`, `Draft.authorId`, `Draft.author`, `Publication.actor`) out
   of reusable Blog UI types.
 - Leave `tableOfContents`, `series`, `seriesOrder`, draft scheduling, publication members, newsletter
   stats, reactions, comments, and view counts out of reusable Blog UI until Emdash proves a concrete

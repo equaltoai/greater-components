@@ -1,9 +1,8 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-07-03T02:25:09.635Z",
+  "generatedAt": "2026-07-29T12:27:13.417Z",
   "ref": "greater-v0.11.9",
-  "commit": "8cd07b81bd3e7206ede9b9e969b01d4db96d565e",
   "version": "0.11.9",
   "checksums": {
     "packages/primitives/src/assets/greater-default-profile.png": "sha256-fiYnr2MUUA1ZEBJHvY1Ppn00rF9WSgA8IAxwb0umSeU=",
@@ -828,7 +827,7 @@
     "packages/adapters/src/graphql/client.d.ts": "sha256-pJIC62N40bdFXhryg13X0HezmJFinzT2I9n/6qK1iJo=",
     "packages/adapters/src/graphql/client.ts": "sha256-ueB6/jmcKQu54uT72TkqdTRz+yAsTGl9mrGV+jeTRHA=",
     "packages/adapters/src/graphql/generated/types.d.ts": "sha256-06CrbILnoClJ2Egs3gR2tZE271RgSroJXY7QxF46uLI=",
-    "packages/adapters/src/graphql/generated/types.ts": "sha256-XU/PHShtn8RHNqCeLhdJ1ti/5sZX97Y/1Gwq2ukDLeU=",
+    "packages/adapters/src/graphql/generated/types.ts": "sha256-d9OsugexgMzfC/ExtAMSaF6iqWxh8QOVRFYRjEbqVWM=",
     "packages/adapters/src/graphql/index.d.ts": "sha256-orLx9yyDGxzzxd5wHeLg/XKql86ntzhZSG6iUj6Tjx8=",
     "packages/adapters/src/graphql/index.ts": "sha256-13y12ovgBLm5aZQ7K90w+XVxhUWIKB/eaPVEJ4kPeBI=",
     "packages/adapters/src/graphql/LesserGraphQLAdapter.d.ts": "sha256-tS4MSxFQSiPlKqIotIdGyDRMyfu7BjJ3dpPBXfjVqtU=",
@@ -859,13 +858,13 @@
     "packages/adapters/src/messaging/index.ts": "sha256-2P3bCyR2sBhuV0GrrVnAaqGSq8dMVhA95dIJZ2s+eKw=",
     "packages/adapters/src/models/unified.d.ts": "sha256-8Z2SFddm7Cszpe6EoB85lJVH0xW16xjo68PhJGuvmeQ=",
     "packages/adapters/src/models/unified.ts": "sha256-KRILzc/F51pCxnEX9cvc2IG7lns7IO48k/UK489J/Vs=",
-    "packages/adapters/src/rest/generated/lesser-api.ts": "sha256-R4+G4pYedVrS/cEauHzryu+mjwduJMaU8/ME1wz2ago=",
-    "packages/adapters/src/rest/generated/lesser-host-api.ts": "sha256-agtzcgNJ8dTP9LcqtbfiCohPGbY08PYn8HsW2KJL9lk=",
+    "packages/adapters/src/rest/generated/lesser-api.ts": "sha256-8YKhh1BeBVfU+NwuP1QvpQGcuTxXlvQkbTUkYj0I5xQ=",
+    "packages/adapters/src/rest/generated/lesser-host-api.ts": "sha256-kfcOFwcF5O4WBKibOasSLWTSYqrQvh/U6kCqOxbJ/Eo=",
     "packages/adapters/src/soul/bootstrap.ts": "sha256-d463JIAlIQs5JE6eaewiGChBCqfQmIwXxhnGjWbWVIU=",
     "packages/adapters/src/soul/bootstrapSigningPlan.ts": "sha256-6fzPYUdPR9k/hQDuz9jmsPg8angSevxWctnopcx3+zE=",
     "packages/adapters/src/soul/client.ts": "sha256-AmLlG5YoBhg6PK0PXZe65Gl6GkFpJjBmFNbEt1A9Gnc=",
     "packages/adapters/src/soul/ens.ts": "sha256-CI8WkwLMw8ZXNPrN+LpQdK81vud8ecgQc3xOXFMvK2o=",
-    "packages/adapters/src/soul/hostedBootstrap.ts": "sha256-aeYahO4bQEqdDxFvHNmJGxV9rU7e/3zEcQHKXSMABJQ=",
+    "packages/adapters/src/soul/hostedBootstrap.ts": "sha256-0g14qWreI+oFFNTZ4E3H6++b0A4TVVr91BC+JinzvvM=",
     "packages/adapters/src/soul/index.ts": "sha256-rh/AJNo+HIaTnY0BIaQ/JPworClYlGbU6+uEoGHPtY4=",
     "packages/adapters/src/SseClient.d.ts": "sha256-fxMEJHoDY/ae3mkTtv9yw5N1jfD5wLSrJ4ixrJ+TYoU=",
     "packages/adapters/src/SseClient.ts": "sha256-XJ1v33MnEkm1CRobboaQ0hOpTvFjDOkd1GX6UocQ2Q4=",
@@ -951,7 +950,7 @@
     "packages/faces/social/src/adapters/cache.ts": "sha256-32jUHLAsYoK4U0JZ6hswGUlQOmwhJ5yquqhMqyfrc4I=",
     "packages/faces/social/src/adapters/graphql/client.ts": "sha256-yor+sP4J7hzK+igh2s4mujPOUZTRDN/e3nU1eccrSyo=",
     "packages/faces/social/src/adapters/graphql/generated/possible-types.ts": "sha256-jICUa0Jvj62nX0BdiBLTWoH2TII2SjAkM3ivA4dyuyA=",
-    "packages/faces/social/src/adapters/graphql/generated/types.ts": "sha256-XU/PHShtn8RHNqCeLhdJ1ti/5sZX97Y/1Gwq2ukDLeU=",
+    "packages/faces/social/src/adapters/graphql/generated/types.ts": "sha256-d9OsugexgMzfC/ExtAMSaF6iqWxh8QOVRFYRjEbqVWM=",
     "packages/faces/social/src/adapters/graphql/index.ts": "sha256-SMi4iyLZqIOJKJyIpt2msJuQELlVAFJlnxBOdaL0ftY=",
     "packages/faces/social/src/adapters/graphql/queries.ts": "sha256-uiYJnwcQO+eaZUiTgyKJMxpeoluOuagazSLjQUdMR8M=",
     "packages/faces/social/src/adapters/graphql/types.ts": "sha256-0GgEc9AYxNSfWTVE9POQu0haMmO+PydpLzVw90hoDls=",
@@ -5648,8 +5647,8 @@
         },
         {
           "path": "src/graphql/generated/types.ts",
-          "checksum": "sha256-XU/PHShtn8RHNqCeLhdJ1ti/5sZX97Y/1Gwq2ukDLeU=",
-          "size": 2588168
+          "checksum": "sha256-d9OsugexgMzfC/ExtAMSaF6iqWxh8QOVRFYRjEbqVWM=",
+          "size": 2588260
         },
         {
           "path": "src/graphql/index.d.ts",
@@ -5803,13 +5802,13 @@
         },
         {
           "path": "src/rest/generated/lesser-api.ts",
-          "checksum": "sha256-R4+G4pYedVrS/cEauHzryu+mjwduJMaU8/ME1wz2ago=",
-          "size": 577932
+          "checksum": "sha256-8YKhh1BeBVfU+NwuP1QvpQGcuTxXlvQkbTUkYj0I5xQ=",
+          "size": 586090
         },
         {
           "path": "src/rest/generated/lesser-host-api.ts",
-          "checksum": "sha256-agtzcgNJ8dTP9LcqtbfiCohPGbY08PYn8HsW2KJL9lk=",
-          "size": 231347
+          "checksum": "sha256-kfcOFwcF5O4WBKibOasSLWTSYqrQvh/U6kCqOxbJ/Eo=",
+          "size": 242344
         },
         {
           "path": "src/soul/bootstrap.ts",
@@ -5833,8 +5832,8 @@
         },
         {
           "path": "src/soul/hostedBootstrap.ts",
-          "checksum": "sha256-aeYahO4bQEqdDxFvHNmJGxV9rU7e/3zEcQHKXSMABJQ=",
-          "size": 57291
+          "checksum": "sha256-0g14qWreI+oFFNTZ4E3H6++b0A4TVVr91BC+JinzvvM=",
+          "size": 58302
         },
         {
           "path": "src/soul/index.ts",
@@ -6414,8 +6413,8 @@
         },
         {
           "path": "src/adapters/graphql/generated/types.ts",
-          "checksum": "sha256-XU/PHShtn8RHNqCeLhdJ1ti/5sZX97Y/1Gwq2ukDLeU=",
-          "size": 2588168
+          "checksum": "sha256-d9OsugexgMzfC/ExtAMSaF6iqWxh8QOVRFYRjEbqVWM=",
+          "size": 2588260
         },
         {
           "path": "src/adapters/graphql/index.ts",
