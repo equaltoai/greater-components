@@ -1,0 +1,2 @@
+# greater-components Supply-Chain Allowlist (SEC-3)
+# One exact finding ID per line. This starter pack intentionally has no allowlisted findings.

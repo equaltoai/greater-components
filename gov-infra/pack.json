@@ -1,0 +1,11 @@
+{
+  "packVersion": "bc41187efb6f5b3c3bfb4d9295836d4e071941d7",
+  "packDigest": "a613e19a4367d98a8f4b45f7c19c11881d21491eb55b8409446ca4a10d4e5cd7",
+  "project": { "slug": "greater-components", "name": "greater-components" },
+  "domain": "custom",
+  "profile": "software_repo_gov_infra",
+  "reportSchema": "gov_rubric_report.v1",
+  "verifier": "gov-infra/verifiers/gov-verify-rubric.sh",
+  "managedBy": "namespace_mcp",
+  "signing": "retired"
+}
