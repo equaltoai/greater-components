@@ -16,6 +16,8 @@ jobs:
   playwright:
     name: Playwright Tests
     runs-on: ubuntu-latest
+    env:
+      PLAYWRIGHT_E2E_USE_SYSTEM_CHROME: 'true'
     strategy:
       matrix:
         browser: [chromium, firefox]
@@ -69,13 +71,7 @@ jobs:
         working-directory: packages/testing
         run: |
           if [ "${{ matrix.browser }}" = "chromium" ]; then
-            if command -v google-chrome >/dev/null 2>&1; then
-              google-chrome --version
-              echo "PLAYWRIGHT_E2E_USE_SYSTEM_CHROME=true" >> "$GITHUB_ENV"
-              pnpm exec playwright install-deps chromium
-            else
-              pnpm exec playwright install chromium --with-deps
-            fi
+            google-chrome --version
           else
             pnpm exec playwright install firefox --with-deps
           fi
