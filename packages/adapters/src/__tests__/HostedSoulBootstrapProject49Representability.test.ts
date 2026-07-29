@@ -272,6 +272,32 @@ describe('Project 49 hosted genesis representability', () => {
 		}
 	);
 
+	it('recognizes the vendored Lesser Host published fixture as the terminal published/bound state', () => {
+		const hostFixture = readJsonFixture<LesserHostHostedGenesisConversationResponse>(
+			'docs/lesser-host/spec/v3/fixtures/hosted-genesis.conversation.published.example.json'
+		);
+		const hostConversation = hostFixture.conversation;
+
+		expect(hostConversation.status).toBe('published');
+		// REST `published` is normalized to the existing terminal `published_bound` taxonomy:
+		// it is not active progress, declaration-ready, or eligible for another publication.
+		expect(
+			isHostedSoulBootstrapInProgress(hostFixture, {
+				conversationId: hostConversation.conversation_id,
+			})
+		).toBe(false);
+		expect(
+			isHostedSoulBootstrapDeclarationReady(hostFixture, {
+				conversationId: hostConversation.conversation_id,
+			})
+		).toBe(false);
+		expect(
+			canPublishHostedSoulBootstrap(hostFixture, {
+				conversationId: hostConversation.conversation_id,
+			})
+		).toBe(false);
+	});
+
 	it('consumes the released Lesser v1.5.10 projection table without normalizing its sibling publishGate example', () => {
 		const projectedRows = new Map(lesserProjectionTable.rows.map((row) => [row.label, row]));
 		const expectedFixtureLabelByProjectionLabel = new Map([

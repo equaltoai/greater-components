@@ -1182,6 +1182,10 @@ function normalizeHostedGenesisStatus(value: unknown): HostedSoulGenesisConversa
 		case 'registration_active_no_conversation':
 		case 'published_bound':
 			return normalized;
+		// Lesser Host REST's terminal `published` record is equivalent to the
+		// GraphQL `complete.bound` / `hosted_offchain_published` projection.
+		case 'published':
+			return 'published_bound';
 		default:
 			return null;
 	}
