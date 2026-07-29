@@ -5,43 +5,30 @@
     {
       "method": "POST",
       "path": "/api/v1/agents/{username}/access-leases/{leaseID}/renew/challenge",
-      "tags": [
-        "agents"
-      ]
+      "tags": ["agents"]
     },
     {
       "method": "POST",
       "path": "/api/v1/agents/{username}/access-leases/{leaseID}/session-key",
-      "tags": [
-        "agents"
-      ]
+      "tags": ["agents"]
     },
     {
       "method": "POST",
       "path": "/api/v1/agents/{username}/access-leases/{leaseID}/session-key/challenge",
-      "tags": [
-        "agents"
-      ]
+      "tags": ["agents"]
     },
     {
       "method": "POST",
       "path": "/api/v1/agents/{username}/access-leases/{leaseID}/token",
-      "tags": [
-        "agents"
-      ]
+      "tags": ["agents"]
     }
   ],
   "meta": {
     "spec_path": "/home/aron/ai-workspace/codebases/equaltoai/factory/products/greater-components/docs/lesser/contracts/openapi.yaml",
-    "generated_at": "2026-07-29T03:25:20.131Z",
+    "generated_at": "2026-07-29T11:46:10.792Z",
     "has_global_security": false,
     "has_security_schemes": true,
-    "security_scheme_names": [
-      "bearerAuth",
-      "oauth2",
-      "setupBearer",
-      "soulBindingBearer"
-    ],
+    "security_scheme_names": ["bearerAuth", "oauth2", "setupBearer", "soulBindingBearer"],
     "total_paths": 298,
     "sensitive_checked": 173,
     "with_security": 148,

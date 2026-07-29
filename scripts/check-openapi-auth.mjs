@@ -358,6 +358,16 @@ function writeBaseline(baselinePath, gaps, meta) {
 		meta,
 	};
 	writeFileSync(baselinePath, JSON.stringify(baseline, null, 2) + '\n', 'utf-8');
+	const prettier = spawnSync('pnpm', ['exec', 'prettier', '--write', baselinePath], {
+		cwd: ROOT,
+		encoding: 'utf-8',
+	});
+	if (prettier.error) {
+		throw prettier.error;
+	}
+	if (prettier.status !== 0) {
+		throw new Error(`Prettier failed while formatting baseline: ${prettier.stderr}`);
+	}
 }
 
 // ── CLI ────────────────────────────────────────────────────────────────────
