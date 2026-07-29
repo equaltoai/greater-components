@@ -55,7 +55,12 @@ jobs:
             pnpm exec playwright install chromium --with-deps
           fi
         working-directory: packages/testing
+      # Authenticate GitHub API calls made by CLI ref-pinning code under test;
+      # unauthenticated calls rate-limit on shared runner egress IPs (#897 tracks
+      # the steward-level fix: mock the network in the update-command unit tests).
       - run: bash gov-infra/verifiers/gov-verify-rubric.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
