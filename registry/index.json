@@ -1,9 +1,8 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-07-29T11:45:52.429Z",
+  "generatedAt": "2026-07-29T12:26:19.532Z",
   "ref": "greater-v0.11.9",
-  "commit": "8cd07b81bd3e7206ede9b9e969b01d4db96d565e",
   "version": "0.11.9",
   "checksums": {
     "packages/primitives/src/assets/greater-default-profile.png": "sha256-fiYnr2MUUA1ZEBJHvY1Ppn00rF9WSgA8IAxwb0umSeU=",

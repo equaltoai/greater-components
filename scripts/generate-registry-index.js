@@ -406,9 +406,13 @@ function resolveGitCommit(ref) {
 function resolveRegistryCommit(ref) {
 	if (!/^greater-v/.test(ref) && !/^[0-9a-f]{7,40}$/i.test(ref)) return null;
 
-	// The registry commit identifies its immutable distribution ref, which may be
-	// older than the feature branch regenerating its checksums.
-	return resolveGitCommit(ref);
+	const commit = resolveGitCommit(ref);
+	if (!commit) return null;
+
+	const head = resolveGitCommit('HEAD');
+	if (!head || commit.toLowerCase() !== head.toLowerCase()) return null;
+
+	return commit;
 }
 
 /**
