@@ -33,6 +33,7 @@ LICENSE
 .changeset/*.md
 
 # Generated files
+gov-infra/evidence/
 *.generated.*
 **/generated/**
 packages/tokens/src/index.ts

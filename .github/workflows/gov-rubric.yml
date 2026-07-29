@@ -1,0 +1,59 @@
+name: Governance Rubric
+
+on:
+  push:
+    branches: [staging]
+  pull_request:
+    branches: [staging]
+
+permissions:
+  contents: read
+
+jobs:
+  rubric:
+    name: Governance Rubric
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271
+        with:
+          version: 10.25.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Resolve Playwright version
+        id: playwright-version
+        run: |
+          version="$(
+            node -e "const { createRequire } = require('node:module'); const fromTesting = createRequire(process.cwd() + '/package.json'); process.stdout.write(fromTesting('@playwright/test/package.json').version);"
+          )"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "Playwright version: ${version}"
+        working-directory: packages/testing
+      - name: Cache Playwright browsers
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}-chromium
+          restore-keys: |
+            ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}-
+      - name: Prepare Playwright Chromium
+        timeout-minutes: 10
+        run: |
+          if command -v google-chrome >/dev/null 2>&1; then
+            google-chrome --version
+            echo "PLAYWRIGHT_A11Y_USE_SYSTEM_CHROME=true" >> "$GITHUB_ENV"
+            pnpm exec playwright install-deps chromium
+          else
+            pnpm exec playwright install chromium --with-deps
+          fi
+        working-directory: packages/testing
+      - run: bash gov-infra/verifiers/gov-verify-rubric.sh
+      - if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: gov-rubric-evidence
+          path: gov-infra/evidence/
