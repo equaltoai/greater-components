@@ -1791,6 +1791,25 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		domain: 'blog',
 	},
 
+	review: {
+		name: 'review',
+		type: 'compound',
+		description: 'Shared-draft review chrome: queue cards, attribution strip, and verdict actions',
+		files: [
+			{ path: 'lib/components/Review/QueueCard.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Review/AttributionStrip.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Review/VerdictActions.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Review/state.ts', content: '', type: 'utils' },
+			{ path: 'lib/components/Review/index.ts', content: '', type: 'component' },
+		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: ['primitives', 'utils', 'blog-types'],
+		tags: ['compound', 'blog', 'review', 'workflow', 'lesser'],
+		version: '1.0.0',
+		domain: 'blog',
+	},
+
 	// ====================
 	// COMMUNITY FACE COMPONENTS
 	// ====================

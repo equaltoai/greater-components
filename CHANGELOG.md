@@ -9,8 +9,75 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## Unreleased
 
+### Review workflow chrome (M2c)
+
+**Semver impact: minor.** Everything below is additive — no existing component
+prop, slot, event, export, CSS custom property, or CLI command changed. The
+recommended version for the next signed tag is **0.12.0**.
+
+- Contracts: pinned Lesser snapshot bumped `v1.5.31` → `v1.5.32`, which adds the
+  shareable-draft review surface (`DraftReview`, `DraftReviewGrant`,
+  `DraftReviewVerdictRecord`, the `DraftReviewVerdict` enum, and the
+  `sharedDraftReviews` / `draftReview` / `shareDraftForReview` /
+  `revokeDraftReview` / `submitDraftReview` operations). `openapi.yaml` is
+  byte-identical between the two releases, so the REST codegen output is
+  unchanged.
+- Feature: new `Review` compound component in the blog face —
+  `Review.QueueCard`, `Review.AttributionStrip`, and `Review.VerdictActions`,
+  plus the `describeApprovalRequirement` / `resolveReviewState` /
+  `formatReviewDateTime` / `reviewActorHandle` / `reviewActorName` helpers, the
+  `REVIEW_STATE_QUALIFIER` constant, and ten new exported types.
+- Feature: `LesserGraphQLAdapter` gains `getSharedDraftReviews`,
+  `getDraftReview`, `shareDraftForReview`, `revokeDraftReview`, and
+  `submitDraftReview`, plus the `createSubmitDraftReviewHandler` binding that
+  wires `Review.VerdictActions` to the mutation. The adapters package also now
+  exports the `SharedDraftReviewsQuery` / `SharedDraftReviewsQueryVariables` /
+  `DraftReviewVerdict` codegen types, so a consumer can keep its
+  `edges[].node` mapping type-checked against the pinned contract.
+- Feature: `greater add review` installs the chrome; the blog face now lists
+  `review` among its components.
+- Theming: adds `--gr-blog-review-*` custom properties (queue-card padding and
+  radius, plus approved / changes-requested / pending / agent tone triples) with
+  light and dark values. No existing token was renamed or redefined.
+- Accessibility: review state is always carried by text, never colour alone;
+  queue cards are labelled by their heading; the notes field uses the `TextArea`
+  primitive's label and ARIA wiring; a `forced-colors` block keeps state badges
+  and the agent marker distinguishable.
+
+**Read the review state carefully.** `reviewStatus` is _latest activity, not
+publication state_ — Lesser overwrites it on every verdict submission, so it
+names the most recent submission rather than whether the draft may publish. The
+chrome renders it verbatim and always pairs it with that qualifier; it never
+derives an Approved / Changes-requested state of its own.
+
+Likewise `describeApprovalRequirement()` reports Lesser's two rules as
+**cumulative**: unanimous approval from every reviewer with an active
+invitation, _plus_ — for any draft that records a generator — the instance
+principal's approval. It deliberately reports no progress count, because the
+pinned projection exposes only the viewer's own `grant` and counting the
+immutable `verdicts` history would be meaningless. A caller that can genuinely
+enumerate active grants may pass `activeReviewerCount`.
+
+Vendor note for consumers: after installing, run `greater doctor --csp`. The
+chrome renders under a strict CSP with no inline styles or scripts.
+
+### Other
+
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
+- Fix: `greater add bookmark-manager` no longer leaves a broken install. The
+  entry declared only `menu`, but `BookmarkManager.svelte` imports `../types.js`,
+  so the social face's `lib/types.ts` was never installed alongside it. It now
+  declares `social-types`.
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
+- Tooling: `scripts/audit-cli-registry.mjs` now also audits the hand-maintained
+  CLI catalog (`packages/cli/src/registry/*.ts`) against the generated registry,
+  failing on a file path that resolves to no checksummed source, a
+  registry-dependency name that is not a real entry, a face component importing
+  its face's `types` / `share` module without that entry in its dependency
+  closure, and a shipped face component directory missing from the transform's
+  install-layout rewrite set. The virtual-path → source mapping moved to
+  `packages/cli/src/utils/source-paths.ts` so the audit and the fetcher share
+  one implementation.
 
 ## [0.10.8](https://github.com/equaltoai/greater-components/compare/greater-v0.10.7...greater-v0.10.8) (2026-06-18)
 

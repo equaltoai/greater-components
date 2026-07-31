@@ -157,6 +157,23 @@ if (typeof navigator !== 'undefined') {
 	});
 }
 
+// jsdom does not implement the native <dialog> methods that the Modal primitive
+// relies on (used by Review.VerdictActions' confirmation guard). Same shim as
+// packages/primitives/tests/setup.ts.
+if (typeof HTMLDialogElement !== 'undefined') {
+	if (!HTMLDialogElement.prototype.showModal) {
+		HTMLDialogElement.prototype.showModal = function showModal() {
+			this.open = true;
+		};
+	}
+
+	if (!HTMLDialogElement.prototype.close) {
+		HTMLDialogElement.prototype.close = function close() {
+			this.open = false;
+		};
+	}
+}
+
 // Set up environment variables for testing
 beforeAll(() => {
 	process.env['NODE_ENV'] = 'test';

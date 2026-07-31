@@ -740,3 +740,350 @@
 		text-align: center;
 	}
 }
+
+/* ============================================================================
+ * Review Workflow Chrome
+ * ----------------------------------------------------------------------------
+ * Queue cards, attribution strip, and verdict actions for the shared-draft
+ * review workflow.
+ *
+ * All colour comes from `--gr-*` custom properties so a consumer can rebrand by
+ * bridging tokens alone. Neutral steps carry a `--gr-color-gray-*` fallback
+ * because `--gr-color-neutral-*` is a bridge-level alias rather than a token
+ * the tokens package emits directly.
+ *
+ * State is never communicated by colour alone: every state badge renders its
+ * label as text.
+ * ============================================================================ */
+
+:root {
+	--gr-blog-review-gap: var(--gr-spacing-scale-3);
+	--gr-blog-review-card-padding: var(--gr-spacing-scale-5);
+	--gr-blog-review-radius: var(--gr-radii-lg);
+
+	--gr-blog-review-approved-bg: var(--gr-color-success-100);
+	--gr-blog-review-approved-fg: var(--gr-color-success-900);
+	--gr-blog-review-approved-border: var(--gr-color-success-300);
+
+	--gr-blog-review-changes-bg: var(--gr-color-warning-100);
+	--gr-blog-review-changes-fg: var(--gr-color-warning-900);
+	--gr-blog-review-changes-border: var(--gr-color-warning-300);
+
+	--gr-blog-review-pending-bg: var(--gr-color-neutral-100, var(--gr-color-gray-100));
+	--gr-blog-review-pending-fg: var(--gr-color-neutral-800, var(--gr-color-gray-800));
+	--gr-blog-review-pending-border: var(--gr-color-neutral-300, var(--gr-color-gray-300));
+
+	--gr-blog-review-agent-bg: var(--gr-color-primary-100);
+	--gr-blog-review-agent-fg: var(--gr-color-primary-900, var(--gr-color-primary-700));
+	--gr-blog-review-agent-border: var(--gr-color-primary-300);
+}
+
+[data-theme='dark'] {
+	--gr-blog-review-approved-bg: var(--gr-color-success-900);
+	--gr-blog-review-approved-fg: var(--gr-color-success-100);
+	--gr-blog-review-approved-border: var(--gr-color-success-700);
+
+	--gr-blog-review-changes-bg: var(--gr-color-warning-900);
+	--gr-blog-review-changes-fg: var(--gr-color-warning-100);
+	--gr-blog-review-changes-border: var(--gr-color-warning-700);
+
+	--gr-blog-review-pending-bg: var(--gr-color-neutral-800, var(--gr-color-gray-800));
+	--gr-blog-review-pending-fg: var(--gr-color-neutral-100, var(--gr-color-gray-100));
+	--gr-blog-review-pending-border: var(--gr-color-neutral-600, var(--gr-color-gray-600));
+
+	--gr-blog-review-agent-bg: var(--gr-color-primary-900);
+	--gr-blog-review-agent-fg: var(--gr-color-primary-100);
+	--gr-blog-review-agent-border: var(--gr-color-primary-700);
+}
+
+/* --------------------------------------------------------------------------
+ * Queue card
+ * -------------------------------------------------------------------------- */
+
+.gr-blog-review-card {
+	display: flex;
+	flex-direction: column;
+	gap: var(--gr-blog-review-gap);
+	padding: var(--gr-blog-review-card-padding);
+	background: var(--gr-color-surface, var(--gr-color-neutral-0, #ffffff));
+	border: 1px solid var(--gr-color-border, var(--gr-color-neutral-200, var(--gr-color-gray-200)));
+	border-radius: var(--gr-blog-review-radius);
+	font-family: var(--gr-blog-font-family-heading);
+}
+
+[data-theme='dark'] .gr-blog-review-card {
+	background: var(--gr-color-neutral-900, var(--gr-color-gray-900));
+	border-color: var(--gr-color-neutral-700, var(--gr-color-gray-700));
+}
+
+.gr-blog-review-card__header {
+	display: flex;
+	flex-direction: column;
+	gap: var(--gr-spacing-scale-2);
+}
+
+@media (min-width: 40rem) {
+	.gr-blog-review-card__header {
+		flex-direction: row;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: var(--gr-spacing-scale-4);
+	}
+}
+
+.gr-blog-review-card__title {
+	margin: 0;
+	font-size: 1.125rem;
+	line-height: var(--gr-blog-line-height-heading);
+	color: var(--gr-color-neutral-900, var(--gr-color-gray-900));
+}
+
+[data-theme='dark'] .gr-blog-review-card__title {
+	color: var(--gr-color-neutral-100, var(--gr-color-gray-100));
+}
+
+.gr-blog-review-card__link {
+	color: inherit;
+	text-decoration: none;
+}
+
+.gr-blog-review-card__link:hover,
+.gr-blog-review-card__link:focus-visible {
+	text-decoration: underline;
+}
+
+.gr-blog-review-card__subtitle,
+.gr-blog-review-card__excerpt {
+	margin: 0;
+	font-size: 0.9375rem;
+	line-height: 1.5;
+	color: var(--gr-color-neutral-600, var(--gr-color-gray-600));
+}
+
+[data-theme='dark'] .gr-blog-review-card__subtitle,
+[data-theme='dark'] .gr-blog-review-card__excerpt {
+	color: var(--gr-color-neutral-300, var(--gr-color-gray-300));
+}
+
+.gr-blog-review-card__meta {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--gr-spacing-scale-2);
+	margin: 0;
+	font-size: 0.8125rem;
+	color: var(--gr-color-neutral-600, var(--gr-color-gray-600));
+}
+
+[data-theme='dark'] .gr-blog-review-card__meta {
+	color: var(--gr-color-neutral-400, var(--gr-color-gray-400));
+}
+
+.gr-blog-review-card__author {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--gr-spacing-scale-2);
+}
+
+.gr-blog-review-card__author-name {
+	font-weight: 600;
+}
+
+.gr-blog-review-card__separator {
+	color: var(--gr-color-neutral-400, var(--gr-color-gray-400));
+}
+
+.gr-blog-review-card__state-group {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	align-self: flex-start;
+	gap: var(--gr-spacing-scale-1);
+}
+
+.gr-blog-review-card__state {
+	display: inline-flex;
+	align-items: center;
+	align-self: flex-end;
+	margin: 0;
+	padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-3);
+	border: 1px solid transparent;
+	border-radius: var(--gr-radii-full);
+	font-size: 0.75rem;
+	font-weight: 600;
+}
+
+/* The badge never states publication readiness — this note says so in text,
+   so the meaning does not depend on the badge colour. */
+.gr-blog-review-card__state-note {
+	font-size: 0.6875rem;
+	text-align: right;
+	color: var(--gr-color-neutral-600, var(--gr-color-gray-600));
+}
+
+[data-theme='dark'] .gr-blog-review-card__state-note {
+	color: var(--gr-color-neutral-400, var(--gr-color-gray-400));
+}
+
+.gr-blog-review-card__state--approved {
+	background: var(--gr-blog-review-approved-bg);
+	color: var(--gr-blog-review-approved-fg);
+	border-color: var(--gr-blog-review-approved-border);
+}
+
+.gr-blog-review-card__state--changes-requested {
+	background: var(--gr-blog-review-changes-bg);
+	color: var(--gr-blog-review-changes-fg);
+	border-color: var(--gr-blog-review-changes-border);
+}
+
+.gr-blog-review-card__state--pending {
+	background: var(--gr-blog-review-pending-bg);
+	color: var(--gr-blog-review-pending-fg);
+	border-color: var(--gr-blog-review-pending-border);
+}
+
+.gr-blog-review-card__agent-badge,
+.gr-blog-review-attribution__agent-badge {
+	display: inline-flex;
+	align-items: center;
+	padding: 0 var(--gr-spacing-scale-2);
+	background: var(--gr-blog-review-agent-bg);
+	color: var(--gr-blog-review-agent-fg);
+	border: 1px solid var(--gr-blog-review-agent-border);
+	border-radius: var(--gr-radii-sm);
+	font-size: 0.6875rem;
+	font-weight: 700;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+}
+
+.gr-blog-review-card__attribution,
+.gr-blog-review-card__actions {
+	padding-top: var(--gr-spacing-scale-3);
+	border-top: 1px solid
+		var(--gr-color-border, var(--gr-color-neutral-200, var(--gr-color-gray-200)));
+}
+
+[data-theme='dark'] .gr-blog-review-card__attribution,
+[data-theme='dark'] .gr-blog-review-card__actions {
+	border-top-color: var(--gr-color-neutral-700, var(--gr-color-gray-700));
+}
+
+/* --------------------------------------------------------------------------
+ * Attribution strip
+ * -------------------------------------------------------------------------- */
+
+.gr-blog-review-attribution {
+	font-size: 0.8125rem;
+	color: var(--gr-color-neutral-700, var(--gr-color-gray-700));
+}
+
+[data-theme='dark'] .gr-blog-review-attribution {
+	color: var(--gr-color-neutral-300, var(--gr-color-gray-300));
+}
+
+.gr-blog-review-attribution__actor-name {
+	font-weight: 600;
+}
+
+.gr-blog-review-attribution__actor-handle,
+.gr-blog-review-attribution__granted-at,
+.gr-blog-review-attribution__state-source {
+	color: var(--gr-color-neutral-600, var(--gr-color-gray-600));
+}
+
+[data-theme='dark'] .gr-blog-review-attribution__actor-handle,
+[data-theme='dark'] .gr-blog-review-attribution__granted-at,
+[data-theme='dark'] .gr-blog-review-attribution__state-source {
+	color: var(--gr-color-neutral-400, var(--gr-color-gray-400));
+}
+
+.gr-blog-review-attribution__empty {
+	color: var(--gr-color-neutral-500, var(--gr-color-gray-500));
+	font-style: italic;
+}
+
+.gr-blog-review-attribution__state {
+	display: inline-flex;
+	align-items: center;
+	padding: 0 var(--gr-spacing-scale-2);
+	border: 1px solid transparent;
+	border-radius: var(--gr-radii-sm);
+	font-weight: 600;
+}
+
+.gr-blog-review-attribution__state--approved {
+	background: var(--gr-blog-review-approved-bg);
+	color: var(--gr-blog-review-approved-fg);
+	border-color: var(--gr-blog-review-approved-border);
+}
+
+.gr-blog-review-attribution__state--changes-requested {
+	background: var(--gr-blog-review-changes-bg);
+	color: var(--gr-blog-review-changes-fg);
+	border-color: var(--gr-blog-review-changes-border);
+}
+
+.gr-blog-review-attribution__state--pending {
+	background: var(--gr-blog-review-pending-bg);
+	color: var(--gr-blog-review-pending-fg);
+	border-color: var(--gr-blog-review-pending-border);
+}
+
+.gr-blog-review-attribution__notes,
+.gr-blog-review-attribution__approval {
+	white-space: pre-wrap;
+}
+
+.gr-blog-review-attribution__revocable {
+	color: var(--gr-color-neutral-600, var(--gr-color-gray-600));
+}
+
+/* --------------------------------------------------------------------------
+ * Verdict actions
+ * -------------------------------------------------------------------------- */
+
+.gr-blog-review-verdict {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--gr-spacing-scale-3);
+}
+
+.gr-blog-review-verdict__prompt {
+	margin: 0 0 var(--gr-spacing-scale-4);
+	font-size: 0.9375rem;
+	line-height: 1.5;
+	color: var(--gr-color-neutral-700, var(--gr-color-gray-700));
+}
+
+[data-theme='dark'] .gr-blog-review-verdict__prompt {
+	color: var(--gr-color-neutral-300, var(--gr-color-gray-300));
+}
+
+/* The notes field is the TextArea primitive — label, error text, and ARIA
+ * wiring come with it, so only the surrounding spacing belongs here. */
+.gr-blog-review-verdict__field {
+	margin-bottom: var(--gr-spacing-scale-4);
+}
+
+.gr-blog-review-verdict__error {
+	margin: var(--gr-spacing-scale-4) 0 0;
+	font-size: 0.8125rem;
+	color: var(--gr-color-error-700);
+}
+
+[data-theme='dark'] .gr-blog-review-verdict__error {
+	color: var(--gr-color-error-100);
+}
+
+/* Keep state badges and the agent marker distinguishable when the user forces
+ * a system colour scheme, where author background/border colours are dropped. */
+@media (forced-colors: active) {
+	.gr-blog-review-card__state,
+	.gr-blog-review-attribution__state,
+	.gr-blog-review-card__agent-badge,
+	.gr-blog-review-attribution__agent-badge {
+		border-color: CanvasText;
+	}
+}

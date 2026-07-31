@@ -600,3 +600,222 @@ export interface NavigationContext {
 	categories: CategoryData[];
 	currentPath: string;
 }
+
+// ============================================================================
+// Review workflow types
+// ============================================================================
+//
+// These mirror the pinned Lesser contract snapshot in
+// `docs/lesser/contracts/graphql-schema.graphql` (LESSER_REF v1.5.32), which
+// introduced the shareable-draft review surface: `DraftReview`,
+// `DraftReviewGrant`, `DraftReviewVerdictRecord`, the `DraftReviewVerdict`
+// enum, and the `sharedDraftReviews` / `draftReview` /
+// `shareDraftForReview` / `revokeDraftReview` / `submitDraftReview`
+// operations.
+//
+// The shapes below are deliberately *view models*, not the generated GraphQL
+// types: every field is optional except the identity fields, so a consumer can
+// render partial query selections without type gymnastics. Lesser remains
+// authoritative for review semantics — these types carry data, they do not
+// encode policy.
+
+/**
+ * Verdict a reviewer can record against a shared draft.
+ *
+ * Mirrors the Lesser `DraftReviewVerdict` enum.
+ */
+export type DraftReviewVerdict = 'APPROVED' | 'CHANGES_REQUESTED';
+
+/**
+ * Lifecycle status of the underlying draft.
+ *
+ * Mirrors the Lesser `DraftStatus` enum.
+ */
+export type DraftReviewStatusValue = 'DRAFT' | 'SCHEDULED' | 'PUBLISHING' | 'PUBLISHED' | 'FAILED';
+
+/**
+ * Minimal actor projection used across the review chrome.
+ *
+ * Mirrors the fields of the Lesser `Actor` type that the review chrome
+ * renders. `isAgent` is a first-class contract field — the chrome reads it, it
+ * does not infer agent-ness from anything else.
+ */
+export interface ReviewActorData {
+	/** Actor identifier. */
+	id: string;
+	/** Handle, without the leading `@`. */
+	username: string;
+	/** Home domain for remote actors. Omitted or null for local actors. */
+	domain?: string | null;
+	/** Human-facing display name. Falls back to `username` when absent. */
+	displayName?: string | null;
+	/** Avatar image URL. */
+	avatar?: string | null;
+	/** Whether this actor is a Lesser agent (contract field `Actor.isAgent`). */
+	isAgent?: boolean;
+}
+
+/**
+ * A single recorded reviewer verdict.
+ *
+ * Mirrors the Lesser `DraftReviewVerdictRecord` type.
+ */
+export interface ReviewVerdictRecordData {
+	/** The verdict that was recorded. */
+	verdict: DraftReviewVerdict;
+	/** Reviewer-supplied notes. Required in practice for CHANGES_REQUESTED. */
+	notes?: string | null;
+	/** The actor who recorded the verdict. */
+	reviewer: ReviewActorData;
+	/** ISO-8601 timestamp for when the verdict was recorded. */
+	recordedAt: string;
+}
+
+/**
+ * An outstanding review invitation.
+ *
+ * Mirrors the Lesser `DraftReviewGrant` type. Grants are revocable upstream via
+ * `revokeDraftReview`; the chrome surfaces that a grant exists and leaves
+ * revocation to the consumer.
+ */
+export interface ReviewGrantData {
+	/** The invited reviewer. */
+	reviewer: ReviewActorData;
+	/** ISO-8601 timestamp for when the invitation was granted. */
+	grantedAt: string;
+}
+
+/**
+ * A shared draft under review.
+ *
+ * Mirrors the Lesser `DraftReview` type.
+ */
+export interface DraftReviewData {
+	/** Identifier of the draft under review. */
+	draftId: string;
+	/** Draft title. */
+	title?: string | null;
+	/** Draft subtitle / standfirst. */
+	subtitle?: string | null;
+	/** Short excerpt used in queue listings. */
+	excerpt?: string | null;
+	/** Source format of the draft body. */
+	contentFormat?: 'HTML' | 'MARKDOWN';
+	/** Publication lifecycle status of the draft. */
+	status?: DraftReviewStatusValue;
+	/** ISO-8601 timestamp for a scheduled publication, when scheduled. */
+	scheduledAt?: string | null;
+	/** ISO-8601 timestamp of the last draft update. */
+	updatedAt: string;
+	/** ISO-8601 timestamp of draft creation. */
+	createdAt?: string;
+	/** The actor that generated the draft. Present for agent-authored drafts. */
+	generatedBy?: ReviewActorData | null;
+	/** The actor that most recently reviewed the draft. */
+	reviewedBy?: ReviewActorData | null;
+	/**
+	 * Server-authored review status string.
+	 *
+	 * Lesser owns this value and it is the authoritative status. The chrome
+	 * renders it verbatim when present and never overrides it.
+	 */
+	reviewStatus?: string | null;
+	/** Editor-facing notes carried alongside the draft. */
+	editorNotes?: string | null;
+	/** The outstanding review invitation, when one is open. */
+	grant?: ReviewGrantData | null;
+	/** Verdicts recorded so far. */
+	verdicts?: readonly ReviewVerdictRecordData[];
+}
+
+/**
+ * A presentation-only description of the approval rules in force.
+ *
+ * Lesser's rules are **cumulative, not exclusive**. `PublishDraft` evaluates
+ * unanimous active-reviewer approval for *every* draft, and additionally
+ * requires the instance principal's own approval whenever the draft records a
+ * generator. A generated draft therefore has to satisfy both at once.
+ *
+ * This descriptor exists so the chrome can make those rules *legible*. It is
+ * never used to enable, disable, or gate a verdict submission — Lesser enforces
+ * the policy and rejects submissions it does not permit.
+ *
+ * It deliberately carries **no progress count**. Progress would have to count
+ * reviewers holding an active grant at the current round, and the pinned
+ * projection exposes only the viewer's own `grant`. Counting `verdicts` instead
+ * would be wrong: verdicts are an immutable append-only history, so repeats and
+ * revoke/re-grant cycles make "3 of 3 recorded" meaningless.
+ */
+export interface ReviewApprovalRequirement {
+	/**
+	 * Unanimous approval from every reviewer holding an active grant.
+	 *
+	 * Always required — Lesser evaluates this rule for every draft. With no
+	 * active grants it is vacuously satisfied, which is how human-authored
+	 * drafts keep their pre-review behaviour.
+	 */
+	allActiveReviewers: true;
+	/**
+	 * Whether the instance principal's own approval is *additionally* required.
+	 *
+	 * True whenever the draft records a generator. Keyed on the presence of
+	 * `generatedBy`, **not** on `generatedBy.isAgent`: Lesser tests a non-empty
+	 * `GeneratedBy` string, so a delegated local actor triggers the rule exactly
+	 * as an agent does.
+	 */
+	principalApproval: boolean;
+	/**
+	 * How many reviewers hold an active grant, when the caller can enumerate
+	 * them from a source that genuinely exposes the active set.
+	 *
+	 * Omitted on the pinned projection — the chrome then names the rule without
+	 * implying any completion.
+	 */
+	activeReviewerCount?: number;
+}
+
+/**
+ * Tone used to style a resolved review state.
+ */
+export type ReviewStateTone = 'approved' | 'changes-requested' | 'pending';
+
+/**
+ * A resolved, renderable review state.
+ */
+export interface ReviewStateDescriptor {
+	/** Styling tone for the state badge. */
+	tone: ReviewStateTone;
+	/** Text rendered in the badge. Always present — state is never colour-only. */
+	label: string;
+	/**
+	 * Where the label came from.
+	 *
+	 * - `server` — taken verbatim from `reviewStatus`.
+	 * - `verdicts` — names the newest row of the recorded verdict history,
+	 *   because `reviewStatus` was absent.
+	 * - `none` — no review activity has been recorded at all.
+	 *
+	 * `server` and `verdicts` are both **latest activity, not publication
+	 * state**. Lesser overwrites `ReviewStatus` on every verdict submission, so
+	 * it reports the most recent submission rather than the publication gate;
+	 * the gate itself is reconstructed server-side from active grants and is not
+	 * exposed by the pinned projection. Consumers must not read either value as
+	 * "this draft may publish".
+	 */
+	source: 'server' | 'verdicts' | 'none';
+}
+
+/**
+ * Payload handed to `Review.VerdictActions`' `onSubmit` handler.
+ *
+ * Shaped to the arguments of Lesser's `submitDraftReview` mutation so a
+ * consumer can forward it to the adapters layer unchanged.
+ */
+export interface VerdictSubmission {
+	/** Identifier of the draft being reviewed. */
+	draftId: string;
+	/** The verdict being recorded. */
+	verdict: DraftReviewVerdict;
+	/** Reviewer notes. Omitted when the reviewer left the field empty. */
+	notes?: string;
+}
