@@ -9,6 +9,43 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## Unreleased
 
+### Review workflow chrome (M2c)
+
+**Semver impact: minor.** Everything below is additive — no existing component
+prop, slot, event, export, CSS custom property, or CLI command changed. The
+recommended version for the next signed tag is **0.12.0**.
+
+- Contracts: pinned Lesser snapshot bumped `v1.5.31` → `v1.5.32`, which adds the
+  shareable-draft review surface (`DraftReview`, `DraftReviewGrant`,
+  `DraftReviewVerdictRecord`, the `DraftReviewVerdict` enum, and the
+  `sharedDraftReviews` / `draftReview` / `shareDraftForReview` /
+  `revokeDraftReview` / `submitDraftReview` operations). `openapi.yaml` is
+  byte-identical between the two releases, so the REST codegen output is
+  unchanged.
+- Feature: new `Review` compound component in the blog face —
+  `Review.QueueCard`, `Review.AttributionStrip`, and `Review.VerdictActions`,
+  plus the `describeApprovalRequirement` / `resolveReviewState` /
+  `formatReviewDateTime` / `reviewActorHandle` / `reviewActorName` helpers and
+  eleven new exported types.
+- Feature: `LesserGraphQLAdapter` gains `getSharedDraftReviews`,
+  `getDraftReview`, `shareDraftForReview`, `revokeDraftReview`, and
+  `submitDraftReview`, plus the `createSubmitDraftReviewHandler` binding that
+  wires `Review.VerdictActions` to the mutation.
+- Feature: `greater add review` installs the chrome; the blog face now lists
+  `review` among its components.
+- Theming: adds `--gr-blog-review-*` custom properties (queue-card padding and
+  radius, plus approved / changes-requested / pending / agent tone triples) with
+  light and dark values. No existing token was renamed or redefined.
+- Accessibility: review state is always carried by text, never colour alone;
+  queue cards are labelled by their heading; the notes field uses the `TextArea`
+  primitive's label and ARIA wiring; a `forced-colors` block keeps state badges
+  and the agent marker distinguishable.
+
+Vendor note for consumers: after installing, run `greater doctor --csp`. The
+chrome renders under a strict CSP with no inline styles or scripts.
+
+### Other
+
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
