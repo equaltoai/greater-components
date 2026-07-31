@@ -60,7 +60,16 @@ come from the `Modal` primitive.
 	let errorMessage = $state('');
 	let notesTouched = $state(false);
 
-	const open = $derived(pendingVerdict !== null);
+	/*
+	 * Dialog visibility is its own bindable state rather than a derivation of
+	 * `pendingVerdict`. Modal writes `open = false` directly on every close path
+	 * — Escape, backdrop, and the header close button — and the close button is
+	 * not gated by `closeOnEscape` / `closeOnBackdrop`. Binding keeps the two
+	 * sides in agreement; deriving would let Modal's write and the derivation
+	 * disagree whenever a close is refused (see `handleDialogClose`).
+	 */
+	let dialogOpen = $state(false);
+
 	const rootClass = $derived(['gr-blog-review-verdict', className].filter(Boolean).join(' '));
 
 	const notesId = $derived(`gr-blog-review-verdict-notes-${draftId}`);
@@ -76,19 +85,36 @@ come from the `Modal` primitive.
 
 	const confirmLabel = $derived(pendingVerdict === 'APPROVED' ? approveLabel : requestChangesLabel);
 
-	function openDialog(verdict: DraftReviewVerdict) {
-		pendingVerdict = verdict;
+	function reset() {
+		pendingVerdict = null;
 		notes = '';
 		notesTouched = false;
 		errorMessage = '';
 	}
 
-	function closeDialog() {
-		if (submitting) return;
-		pendingVerdict = null;
+	function openDialog(verdict: DraftReviewVerdict) {
+		pendingVerdict = verdict;
 		notes = '';
 		notesTouched = false;
 		errorMessage = '';
+		dialogOpen = true;
+	}
+
+	function cancel() {
+		if (submitting) return;
+		dialogOpen = false;
+	}
+
+	/**
+	 * Runs after Modal has already closed itself.
+	 *
+	 * A close while a submission is in flight is not honoured: the pending
+	 * verdict is kept so that a rejection can reopen the dialog with its error
+	 * rather than failing silently behind a dismissed dialog.
+	 */
+	function handleDialogClose() {
+		if (submitting) return;
+		reset();
 	}
 
 	async function confirm() {
@@ -109,11 +135,13 @@ come from the `Modal` primitive.
 				verdict: pendingVerdict,
 				...(trimmedNotes ? { notes: trimmedNotes } : {}),
 			});
-			pendingVerdict = null;
-			notes = '';
-			notesTouched = false;
+			dialogOpen = false;
+			reset();
 		} catch (error) {
 			errorMessage = error instanceof Error ? error.message : 'Could not record the verdict.';
+			// Reassert visibility in case the reviewer dismissed the dialog while
+			// the submission was still in flight — the failure must stay visible.
+			dialogOpen = true;
 		} finally {
 			submitting = false;
 		}
@@ -142,12 +170,12 @@ come from the `Modal` primitive.
 </div>
 
 <Modal
-	{open}
+	bind:open={dialogOpen}
 	title={dialogTitle}
 	size="md"
 	closeOnEscape={!submitting}
 	closeOnBackdrop={!submitting}
-	onClose={closeDialog}
+	onClose={handleDialogClose}
 	class="gr-blog-review-verdict__dialog"
 >
 	{#if pendingVerdict === 'APPROVED'}
@@ -178,7 +206,7 @@ come from the `Modal` primitive.
 	{/if}
 
 	{#snippet footer()}
-		<Button variant="ghost" size="sm" disabled={submitting} onclick={closeDialog}>Cancel</Button>
+		<Button variant="ghost" size="sm" disabled={submitting} onclick={cancel}>Cancel</Button>
 		<Button
 			variant="solid"
 			size="sm"

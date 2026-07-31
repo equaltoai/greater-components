@@ -447,6 +447,54 @@ describe('Review workflow chrome', () => {
 			expect(onSubmit).not.toHaveBeenCalled();
 		});
 
+		it('reopens with the failure when dismissed while the submission is in flight', async () => {
+			// Modal's header close button writes open = false unconditionally — it is
+			// not gated by closeOnEscape / closeOnBackdrop — so a reviewer can dismiss
+			// the dialog mid-submit. A rejection must not be lost behind it.
+			let rejectSubmission!: (reason: Error) => void;
+			const onSubmit = vi.fn(
+				() =>
+					new Promise((_resolve, reject) => {
+						rejectSubmission = reject;
+					})
+			);
+
+			render(VerdictActions, { props: { ...baseProps, onSubmit } });
+
+			await fireEvent.click(screen.getByRole('button', { name: 'Approve' }));
+			const dialog = await screen.findByRole('dialog');
+			await fireEvent.click(within(dialog).getByRole('button', { name: 'Approve' }));
+
+			// Dismiss while still in flight.
+			await fireEvent.click(screen.getByRole('button', { name: 'Close modal' }));
+
+			rejectSubmission(new Error('reviewer not invited'));
+
+			expect(await screen.findByRole('alert')).toHaveTextContent('reviewer not invited');
+			expect(screen.getByRole('dialog')).toBeInTheDocument();
+		});
+
+		it('ignores Cancel while a submission is in flight', async () => {
+			let resolveSubmission!: () => void;
+			const onSubmit = vi.fn(
+				() =>
+					new Promise<void>((resolve) => {
+						resolveSubmission = resolve;
+					})
+			);
+
+			render(VerdictActions, { props: { ...baseProps, onSubmit } });
+
+			await fireEvent.click(screen.getByRole('button', { name: 'Approve' }));
+			const dialog = await screen.findByRole('dialog');
+			await fireEvent.click(within(dialog).getByRole('button', { name: 'Approve' }));
+
+			expect(within(dialog).getByRole('button', { name: 'Cancel' })).toBeDisabled();
+
+			resolveSubmission();
+			await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+		});
+
 		it('disables both verdict actions when disabled', () => {
 			render(VerdictActions, { props: { ...baseProps, disabled: true } });
 
