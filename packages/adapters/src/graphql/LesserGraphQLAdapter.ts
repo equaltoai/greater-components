@@ -112,6 +112,9 @@ import type {
 	UploadMediaMutationVariables,
 	UpdateMediaMutationVariables,
 	Actor,
+	SharedDraftReviewsQueryVariables,
+	SubmitDraftReviewMutationVariables,
+	DraftReviewVerdict,
 } from './generated/types.js';
 
 import {
@@ -257,6 +260,11 @@ import {
 	AdminSuspendAgentDocument,
 	IncorporateSoulDocument,
 	AgentActivityUpdatesDocument,
+	SharedDraftReviewsDocument,
+	DraftReviewDocument,
+	ShareDraftForReviewDocument,
+	RevokeDraftReviewDocument,
+	SubmitDraftReviewDocument,
 } from './generated/types.js';
 
 export type ViewerQuery = { viewer: Actor };
@@ -1966,10 +1974,95 @@ export class LesserGraphQLAdapter {
 			variables,
 		});
 	}
+
+	// ==========================================================================
+	// Shared-draft review (Lesser M2a review contract)
+	// ==========================================================================
+
+	/**
+	 * Lists drafts shared with the viewer for review.
+	 */
+	async getSharedDraftReviews(variables: SharedDraftReviewsQueryVariables = {}) {
+		const data = await this.query(SharedDraftReviewsDocument, variables);
+		return data.sharedDraftReviews;
+	}
+
+	/**
+	 * Fetches a single shared draft under review.
+	 */
+	async getDraftReview(id: string) {
+		const data = await this.query(DraftReviewDocument, { id });
+		return data.draftReview;
+	}
+
+	/**
+	 * Invites a reviewer to a draft.
+	 */
+	async shareDraftForReview(draftId: string, reviewer: string) {
+		const data = await this.mutate(ShareDraftForReviewDocument, { draftId, reviewer });
+		return data.shareDraftForReview;
+	}
+
+	/**
+	 * Revokes a reviewer's invitation to a draft.
+	 */
+	async revokeDraftReview(draftId: string, reviewer: string) {
+		const data = await this.mutate(RevokeDraftReviewDocument, { draftId, reviewer });
+		return data.revokeDraftReview;
+	}
+
+	/**
+	 * Records a reviewer verdict against a draft.
+	 *
+	 * Lesser owns review policy: it decides whether the caller may record this
+	 * verdict and what the resulting `reviewStatus` becomes. This method
+	 * forwards the submission and returns the server's updated `DraftReview`.
+	 */
+	async submitDraftReview(variables: SubmitDraftReviewMutationVariables) {
+		const data = await this.mutate(SubmitDraftReviewDocument, variables);
+		return data.submitDraftReview;
+	}
 }
 
 export function createLesserGraphQLAdapter(
 	config: LesserGraphQLAdapterConfig
 ): LesserGraphQLAdapter {
 	return new LesserGraphQLAdapter(config);
+}
+
+/**
+ * Submission payload accepted by {@link createSubmitDraftReviewHandler}.
+ *
+ * Structurally identical to the `VerdictSubmission` emitted by the blog face's
+ * `Review.VerdictActions` component, so the component's `onSubmit` can be wired
+ * straight through without an adapter shim in consumer code.
+ */
+export interface DraftReviewSubmission {
+	draftId: string;
+	verdict: DraftReviewVerdict;
+	notes?: string;
+}
+
+/**
+ * Builds an `onSubmit` handler for the blog face's `Review.VerdictActions`.
+ *
+ * Usage:
+ *
+ * ```svelte
+ * <Review.VerdictActions
+ *   draftId={review.draftId}
+ *   onSubmit={createSubmitDraftReviewHandler(adapter)}
+ * />
+ * ```
+ *
+ * Errors propagate to the caller so the component can surface them in its
+ * confirmation dialog and let the reviewer retry.
+ */
+export function createSubmitDraftReviewHandler(adapter: LesserGraphQLAdapter) {
+	return (submission: DraftReviewSubmission) =>
+		adapter.submitDraftReview({
+			draftId: submission.draftId,
+			verdict: submission.verdict,
+			notes: submission.notes ?? null,
+		});
 }

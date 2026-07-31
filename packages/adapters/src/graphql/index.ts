@@ -7,9 +7,14 @@
 export { createGraphQLClient, getGraphQLClient, closeGraphQLClient } from './client.js';
 export type { GraphQLClientConfig, GraphQLClientInstance } from './client.js';
 
-export { LesserGraphQLAdapter, createLesserGraphQLAdapter } from './LesserGraphQLAdapter.js';
+export {
+	LesserGraphQLAdapter,
+	createLesserGraphQLAdapter,
+	createSubmitDraftReviewHandler,
+} from './LesserGraphQLAdapter.js';
 export type {
 	LesserGraphQLAdapterConfig,
+	DraftReviewSubmission,
 	TimelineVariables,
 	CreateNoteVariables,
 	ConversationMessagesVariables,
