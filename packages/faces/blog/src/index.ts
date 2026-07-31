@@ -45,6 +45,18 @@ export { Navigation } from './components/Navigation/index.js';
  * Editor compound component for content creation
  */
 export { Editor } from './components/Editor/index.js';
+
+/**
+ * Review compound component for the shared-draft review workflow
+ */
+export { Review } from './components/Review/index.js';
+export {
+	describeApprovalRequirement,
+	formatReviewDateTime,
+	resolveReviewState,
+	reviewActorHandle,
+	reviewActorName,
+} from './components/Review/index.js';
 export {
 	buildArticleShareUrl,
 	createBrowserArticleShareHandlers,
@@ -87,4 +99,16 @@ export type {
 	ArchiveEntry,
 	TagData,
 	CategoryData,
+	// Review workflow types
+	DraftReviewData,
+	DraftReviewStatusValue,
+	DraftReviewVerdict,
+	ReviewActorData,
+	ReviewApprovalRequirement,
+	ReviewApprovalRequirementKind,
+	ReviewGrantData,
+	ReviewStateDescriptor,
+	ReviewStateTone,
+	ReviewVerdictRecordData,
+	VerdictSubmission,
 } from './types.js';
