@@ -3413,7 +3413,7 @@ packages:
       '@testing-library/dom': '>=7.21.4'
 
   '@theory-cloud/facetheory@https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.1/theory-cloud-facetheory-4.0.1.tgz':
-    resolution: {tarball: https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.1/theory-cloud-facetheory-4.0.1.tgz}
+    resolution: {integrity: sha512-8L+CpHTSvCbAjTvkIBNFactdR167BqwjaNESNz5AYROmWRuY+IQbxf83DfecALKJHUAKNF6YZFTU7MxDtb50ig==, tarball: https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.1/theory-cloud-facetheory-4.0.1.tgz}
     version: 4.0.1
     engines: {node: '>=20'}
     hasBin: true
