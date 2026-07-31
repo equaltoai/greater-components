@@ -77,6 +77,13 @@ export interface LinkifyHtmlOptions extends LinkifyOptions {
  *
  * This is not a sanitizer. Callers must sanitize `html` first — anything unsafe
  * in the input stays unsafe in the output.
+ *
+ * When `mentions` or `tags` is supplied, each text node is scanned once and
+ * every candidate token is resolved against those entities by name: a token
+ * matches only as a whole (`@user10` never resolves to `@user1`), optionally
+ * minus trailing prose punctuation (`@alice.` links `@alice`). A mention may
+ * carry an `@domain` suffix. The scan cost is a function of the content length,
+ * not of how many entities the caller supplies.
  */
 export declare function linkifyHtml(html: string, options?: LinkifyHtmlOptions): string;
 /**
