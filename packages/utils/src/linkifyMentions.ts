@@ -175,8 +175,31 @@ export interface LinkifyHtmlOptions extends LinkifyOptions {
 /** Protocols permitted on generated link hrefs. */
 const LINKIFY_PROTOCOLS = new Set(['http:', 'https:', 'mailto:']);
 
-/** Elements whose descendants are never linkified. */
-const LINKIFY_SKIP_TAGS = new Set(['a', 'code', 'pre']);
+/**
+ * Elements whose descendants are never linkified.
+ *
+ * `a`, `code` and `pre` are prose barriers: an anchor cannot nest, and the other
+ * two render their text literally. The rest are HTML raw-text and
+ * escapable-raw-text elements, whose character data is a script, a stylesheet or
+ * a control value rather than prose. `linkifyHtml` is not a sanitizer, so a
+ * caller whose sanitizer policy retains any of them must get their contents back
+ * unmodified instead of rewritten into serialized anchors.
+ */
+const LINKIFY_SKIP_TAGS = new Set([
+	'a',
+	'code',
+	'pre',
+	'script',
+	'style',
+	'textarea',
+	'title',
+	'iframe',
+	'noembed',
+	'noframes',
+	'noscript',
+	'plaintext',
+	'xmp',
+]);
 
 /** Ordered alternation: URLs win over mentions, mentions over hashtags. */
 const GENERIC_LINK_SOURCE =

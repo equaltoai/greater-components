@@ -211,6 +211,40 @@ describe('linkifyHtml', () => {
 			expect(result).not.toContain('onerror');
 		});
 
+		describe('raw-text elements are linkification barriers', () => {
+			// linkifyHtml is not a sanitizer, so a caller whose policy retains any of
+			// these must get their character data back unmodified: it is a script, a
+			// stylesheet or a control value, not prose.
+			const rawText = [
+				'script',
+				'style',
+				'textarea',
+				'title',
+				'iframe',
+				'noembed',
+				'noframes',
+				'noscript',
+				'xmp',
+			];
+
+			for (const tag of rawText) {
+				it(`does not rewrite text inside <${tag}>`, () => {
+					const html = `<${tag}>@alice #svelte https://example.com</${tag}>`;
+					const result = linkifyHtml(html);
+
+					expect(result).not.toContain('<a href');
+					expect(result).toContain('@alice');
+				});
+			}
+
+			it('still linkifies prose that follows a raw-text element', () => {
+				const result = linkifyHtml('<p><style>@media a</style> @linked</p>');
+
+				expect(result).toContain('<style>@media a</style>');
+				expect(result).toContain('<a href="/users/linked" class="mention"');
+			});
+		});
+
 		it('escapes text content that arrives as raw characters', () => {
 			// A `<` surviving sanitization as text stays inert text after linkify.
 			const result = linkifyHtml('<p>a &lt;script&gt;alert(1)&lt;/script&gt; @alice</p>');
