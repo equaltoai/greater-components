@@ -6013,7 +6013,7 @@
 }
 
 .content a {
-	color: var(--color-link, #1d9bf0);
+	color: var(--color-link, var(--gr-semantic-action-link-default, #2563eb));
 	text-decoration: none;
 }
 
@@ -6022,12 +6022,12 @@
 }
 
 .content .mention {
-	color: var(--color-link, #1d9bf0);
+	color: var(--color-link, var(--gr-semantic-action-link-default, #2563eb));
 	font-weight: 500;
 }
 
 .content .hashtag {
-	color: var(--color-link, #1d9bf0);
+	color: var(--color-link, var(--gr-semantic-action-link-default, #2563eb));
 }
 
 .content blockquote {
@@ -14765,7 +14765,7 @@
 
 /* Content links styling */
 .status-content a {
-	color: var(--status-link-color, #1d9bf0);
+	color: var(--status-link-color, var(--gr-semantic-action-link-default, #2563eb));
 	text-decoration: none;
 }
 
@@ -14775,13 +14775,13 @@
 
 /* Mentions styling */
 .status-content .mention {
-	color: var(--status-mention-color, #1d9bf0);
+	color: var(--status-mention-color, var(--gr-semantic-action-link-default, #2563eb));
 	font-weight: 500;
 }
 
 /* Hashtags styling */
 .status-content .hashtag {
-	color: var(--status-hashtag-color, #1d9bf0);
+	color: var(--status-hashtag-color, var(--gr-semantic-action-link-default, #2563eb));
 	font-weight: 500;
 }
 
