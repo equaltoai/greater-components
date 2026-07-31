@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-07-31T21:45:16.058Z",
+  "generatedAt": "2026-07-31T22:08:46.083Z",
   "ref": "greater-v0.11.9",
   "version": "0.11.9",
   "checksums": {
@@ -795,7 +795,7 @@
     "packages/utils/src/index.ts": "sha256-w+0L5rTVOAX5kprQ0LxJse8Dc4sHACp3AlcvrIWVj8I=",
     "packages/utils/src/keyboardShortcuts.d.ts": "sha256-X+hdvUkQtT3rab6RpWFUXzD9OrFFJhv2q6/izwBag7Q=",
     "packages/utils/src/keyboardShortcuts.ts": "sha256-7dBaO/E8GEkTaZCvu4tX8UcHOsFLOnmdMfKjknRYnkc=",
-    "packages/utils/src/linkifyMentions.d.ts": "sha256-TYoB1KtLl20jIUy0adyxnEkNY3VlDiwjqx9dPyQwIl4=",
+    "packages/utils/src/linkifyMentions.d.ts": "sha256-pOEHr3eGRd5ynj8MwmV9zsBO19j/6XXRnbb1JzcQJCs=",
     "packages/utils/src/linkifyMentions.ts": "sha256-mDXCEIP3K88JQrCg0LA4iqR/hj/3GKOSWC1v7Wq5TdI=",
     "packages/utils/src/performance.d.ts": "sha256-uB7zUT2vaSbzeIT2pj/QJMEsPo9dn+X5pCZKJYhyvYA=",
     "packages/utils/src/performance.ts": "sha256-LMUTDxU/I0iVXx9rNJxMtv4VtKdJ3Za0dc7/xUAIPjo=",
@@ -5471,8 +5471,8 @@
         },
         {
           "path": "src/linkifyMentions.d.ts",
-          "checksum": "sha256-TYoB1KtLl20jIUy0adyxnEkNY3VlDiwjqx9dPyQwIl4=",
-          "size": 3247
+          "checksum": "sha256-pOEHr3eGRd5ynj8MwmV9zsBO19j/6XXRnbb1JzcQJCs=",
+          "size": 3316
         },
         {
           "path": "src/linkifyMentions.ts",

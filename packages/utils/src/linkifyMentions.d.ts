@@ -69,13 +69,14 @@ export interface LinkifyHtmlOptions extends LinkifyOptions {
 /**
  * Linkify mentions, hashtags, and URLs inside **already-sanitized** HTML.
  *
- * Unlike `linkifyMentions`, which takes plain text and escapes it, this treats
- * its input as trusted markup: it parses the HTML and rewrites text nodes only,
- * so existing tags survive intact instead of being escaped into literal
- * `&lt;p&gt;`. Text content and generated attribute values are escaped by the
- * HTML serializer, and generated hrefs are protocol-checked.
+ * Unlike {@link linkifyMentions}, which takes plain text and escapes it, this
+ * treats its input as trusted markup: it parses the HTML and rewrites text
+ * nodes only, so existing tags survive intact instead of being escaped into
+ * literal `&lt;p&gt;`. Text content and generated attribute values are escaped
+ * by the HTML serializer, and generated hrefs are protocol-checked.
  *
- * This is not a sanitizer. Callers must sanitize `html` first.
+ * This is not a sanitizer. Callers must sanitize `html` first — anything unsafe
+ * in the input stays unsafe in the output.
  */
 export declare function linkifyHtml(html: string, options?: LinkifyHtmlOptions): string;
 /**
