@@ -18,6 +18,7 @@ This document lists the primary **public** components and entrypoints intended f
 - `Publication`
 - `Navigation`
 - `Editor`
+- `Review`
 
 ### Community Face
 
