@@ -1727,6 +1727,56 @@ export type DraftPreview = {
   readonly success: Scalars['Boolean']['output'];
 };
 
+export type DraftReview = {
+  readonly __typename: 'DraftReview';
+  readonly contentFormat: ContentFormat;
+  readonly createdAt: Scalars['Time']['output'];
+  readonly draftId: Scalars['ID']['output'];
+  readonly editorNotes?: Maybe<Scalars['String']['output']>;
+  readonly excerpt?: Maybe<Scalars['String']['output']>;
+  readonly generatedBy?: Maybe<Actor>;
+  readonly grant?: Maybe<DraftReviewGrant>;
+  readonly reviewStatus?: Maybe<Scalars['String']['output']>;
+  readonly reviewedBy?: Maybe<Actor>;
+  readonly scheduledAt?: Maybe<Scalars['Time']['output']>;
+  readonly status: DraftStatus;
+  readonly subtitle?: Maybe<Scalars['String']['output']>;
+  readonly title?: Maybe<Scalars['String']['output']>;
+  readonly updatedAt: Scalars['Time']['output'];
+  readonly verdicts: ReadonlyArray<DraftReviewVerdictRecord>;
+};
+
+export type DraftReviewConnection = {
+  readonly __typename: 'DraftReviewConnection';
+  readonly edges: ReadonlyArray<DraftReviewEdge>;
+  readonly pageInfo: PageInfo;
+  readonly totalCount: Scalars['Int']['output'];
+};
+
+export type DraftReviewEdge = {
+  readonly __typename: 'DraftReviewEdge';
+  readonly cursor: Scalars['Cursor']['output'];
+  readonly node: DraftReview;
+};
+
+export type DraftReviewGrant = {
+  readonly __typename: 'DraftReviewGrant';
+  readonly grantedAt: Scalars['Time']['output'];
+  readonly reviewer: Actor;
+};
+
+export type DraftReviewVerdict =
+  | 'APPROVED'
+  | 'CHANGES_REQUESTED';
+
+export type DraftReviewVerdictRecord = {
+  readonly __typename: 'DraftReviewVerdictRecord';
+  readonly notes?: Maybe<Scalars['String']['output']>;
+  readonly recordedAt: Scalars['Time']['output'];
+  readonly reviewer: Actor;
+  readonly verdict: DraftReviewVerdict;
+};
+
 export type DraftStatus =
   | 'DRAFT'
   | 'FAILED'
@@ -3014,6 +3064,7 @@ export type Mutation = {
   readonly revokeAgentAccessLease: AgentAccessLease;
   readonly revokeAgentRuntimeSession: AgentRuntimeSession;
   readonly revokeAgentToken: Scalars['Boolean']['output'];
+  readonly revokeDraftReview: Scalars['Boolean']['output'];
   readonly revokeVouch: Scalars['Boolean']['output'];
   readonly saveMarkers: MarkerSet;
   readonly scheduleDraft: Draft;
@@ -3024,8 +3075,10 @@ export type Mutation = {
   readonly sendSoulBootstrapConversationMessage: SoulBootstrapMutationPayload;
   readonly setFederationLimit: FederationLimit;
   readonly setInstanceBudget: InstanceBudget;
+  readonly shareDraftForReview: DraftReview;
   readonly shareObject: Object;
   readonly startHostedSoulBootstrap: SoulBootstrapMutationPayload;
+  readonly submitDraftReview: DraftReview;
   readonly submitModerationReview: ModerationReviewResult;
   readonly syncMissingReplies: SyncRepliesPayload;
   readonly syncThread: SyncThreadPayload;
@@ -3763,6 +3816,12 @@ export type MutationRevokeAgentTokenArgs = {
 };
 
 
+export type MutationRevokeDraftReviewArgs = {
+  draftId: Scalars['ID']['input'];
+  reviewer: Scalars['String']['input'];
+};
+
+
 export type MutationRevokeVouchArgs = {
   id: Scalars['ID']['input'];
 };
@@ -3831,6 +3890,12 @@ export type MutationSetInstanceBudgetArgs = {
 };
 
 
+export type MutationShareDraftForReviewArgs = {
+  draftId: Scalars['ID']['input'];
+  reviewer: Scalars['String']['input'];
+};
+
+
 export type MutationShareObjectArgs = {
   id: Scalars['ID']['input'];
 };
@@ -3838,6 +3903,13 @@ export type MutationShareObjectArgs = {
 
 export type MutationStartHostedSoulBootstrapArgs = {
   input: StartHostedSoulBootstrapInput;
+};
+
+
+export type MutationSubmitDraftReviewArgs = {
+  draftId: Scalars['ID']['input'];
+  notes?: InputMaybe<Scalars['String']['input']>;
+  verdict: DraftReviewVerdict;
 };
 
 
@@ -4560,6 +4632,7 @@ export type Query = {
   readonly domainBlocks: DomainBlockPage;
   readonly draft?: Maybe<Draft>;
   readonly draftPreview: DraftPreview;
+  readonly draftReview?: Maybe<DraftReview>;
   readonly droneWorkflow?: Maybe<AgentWorkflowSurface>;
   readonly endorsements: ReadonlyArray<Actor>;
   readonly explainObject: ObjectExplanation;
@@ -4640,6 +4713,7 @@ export type Query = {
   readonly series?: Maybe<Series>;
   readonly seriesBySlug?: Maybe<Series>;
   readonly severedRelationships: SeveredRelationshipConnection;
+  readonly sharedDraftReviews: DraftReviewConnection;
   readonly slowQueries: ReadonlyArray<QueryPerformance>;
   readonly soulBootstrap?: Maybe<SoulBootstrapSurface>;
   readonly statusFavouritedBy: ActorListPage;
@@ -4925,6 +4999,11 @@ export type QueryDraftArgs = {
 
 
 export type QueryDraftPreviewArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryDraftReviewArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -5309,6 +5388,12 @@ export type QuerySeveredRelationshipsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   instance?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QuerySharedDraftReviewsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
