@@ -363,6 +363,36 @@ import type { GenericStatus } from '../generics/index.js';`;
 		expect(result.content).toContain("from '../../blog-share.js'");
 	});
 
+	it('rewrites blog Review component type imports to face-scoped files', () => {
+		// `Review` was missing from BLOG_COMPONENT_ROOTS, so `greater add review`
+		// produced a checksum-valid install whose files could not resolve
+		// `../../types.js` — blog-types installs as `lib/blog-types.ts`.
+		const content = `<script lang="ts">
+\timport type { DraftReviewData } from '../../types.js';
+</script>`;
+
+		for (const file of [
+			'lib/components/Review/QueueCard.svelte',
+			'lib/components/Review/AttributionStrip.svelte',
+			'lib/components/Review/VerdictActions.svelte',
+		]) {
+			const result = transformImports(content, config, file);
+
+			expect(result.transformedCount, file).toBe(1);
+			expect(result.content, file).toContain("from '../../blog-types.js'");
+			expect(result.content, file).not.toContain("from '../../types.js'");
+		}
+	});
+
+	it('rewrites the Review state helper, which is a .ts file rather than a component', () => {
+		const content = `import type { DraftReviewData } from '../../types.js';`;
+
+		const result = transformImports(content, config, 'lib/components/Review/state.ts');
+
+		expect(result.transformedCount).toBe(1);
+		expect(result.content).toBe(`import type { DraftReviewData } from '../../blog-types.js';`);
+	});
+
 	it('rewrites shallow blog share helper imports to face-scoped types', () => {
 		const content = `import type { ArticleData, ArticleHandlers } from './types.js';`;
 

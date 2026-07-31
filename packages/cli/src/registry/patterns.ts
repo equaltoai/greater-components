@@ -161,7 +161,9 @@ export const patternRegistry: Record<string, PatternMetadata> = {
 		files: [{ path: 'lib/patterns/BookmarkManager.svelte', content: '', type: 'component' }],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
-		registryDependencies: ['menu'],
+		// BookmarkManager.svelte imports `../types.js`, which installs as
+		// `lib/types.ts` from the social-types entry.
+		registryDependencies: ['menu', 'social-types'],
 		tags: ['activitypub', 'bookmarks', 'saved', 'pattern'],
 		version: '1.0.0',
 		domain: 'social',

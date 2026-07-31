@@ -80,7 +80,25 @@ const HEADLESS_PRIMITIVE_SUBPATHS = [
 	'textfield',
 	'tooltip',
 ] as const;
-const BLOG_COMPONENT_ROOTS = new Set(['Article', 'Author', 'Publication', 'Navigation', 'Editor']);
+/**
+ * Blog-face component directories whose installed layout differs from the
+ * source layout: the face's `src/types.ts` installs as `lib/blog-types.ts` and
+ * `src/share.ts` as `lib/blog-share.ts`, so `../../types` / `../../share`
+ * imports inside these directories have to be rewritten.
+ *
+ * Every directory under `packages/faces/blog/src/components/` that the registry
+ * ships must appear here. Omitting one produces a checksum-valid but broken
+ * install: the files copy and verify, then fail to resolve `../../types.js`.
+ * `audit-cli-registry.mjs` enforces the enumeration against the registry.
+ */
+const BLOG_COMPONENT_ROOTS = new Set([
+	'Article',
+	'Author',
+	'Publication',
+	'Navigation',
+	'Editor',
+	'Review',
+]);
 
 /**
  * Core packages that should be mapped to the greater alias
