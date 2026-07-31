@@ -3,7 +3,7 @@
 import { describe, expect, it } from 'vitest';
 import { render } from 'svelte/server';
 import ContentRenderer from '../../src/components/ContentRenderer.svelte';
-import { CONTENT_CASES, MENTIONS, expectedBody } from './ContentRenderer.expected';
+import { CONTENT_CASES, MENTIONS, SSR_BODIES, expectedBody } from './ContentRenderer.expected';
 
 /**
  * Before #926 the status body was written by a Svelte action (`use:setHtml`).
@@ -111,6 +111,23 @@ describe('ContentRenderer SSR', () => {
 					tags: testCase.tags,
 				})
 			);
+		});
+	}
+
+	// Keeps the fixtures the hydration suite hydrates into honest: if Svelte's
+	// markers or the rendered body ever change, this fails rather than the
+	// hydration suite quietly testing markup the server no longer emits.
+	for (const testCase of CONTENT_CASES) {
+		it(`matches the recorded SSR fixture for ${testCase.name}`, () => {
+			const { body } = render(ContentRenderer, {
+				props: {
+					content: testCase.content,
+					mentions: testCase.mentions,
+					tags: testCase.tags,
+				},
+			});
+
+			expect(body).toBe(SSR_BODIES[testCase.name]);
 		});
 	}
 

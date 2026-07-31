@@ -123,3 +123,23 @@ export const CONTENT_CASES: ContentCase[] = [
 		forbidden: ['&lt;p&gt;', '&lt;em&gt;'],
 	},
 ];
+
+/**
+ * Real server output, captured from `render()` in `svelte/server`.
+ *
+ * The SSR suite asserts `render(...).body` equals these exactly, which keeps
+ * them honest — if Svelte's hydration markers or the rendered body ever change,
+ * that assertion fails loudly rather than these drifting into fiction. The
+ * hydration suite then seeds a container with these strings and hydrates into
+ * them, which is a genuine SSR -> hydrate test rather than a client re-render.
+ */
+export const SSR_BODIES: Record<string, string> = {
+	'mention-less markup':
+		'<!--[--><div class="content-renderer "><!--[-1--><!--]--> <!--[0--><div class="content" id="" aria-hidden="false"><!--1k89ph9--><p>Hello <strong>world</strong></p><!----></div><!--]--></div><!--]-->',
+	'mention-bearing content with known mentions':
+		'<!--[--><div class="content-renderer "><!--[-1--><!--]--> <!--[0--><div class="content" id="" aria-hidden="false"><!--mg76pu--><p>Hello <a href="https://example.com/@alice" class="mention" rel="noopener noreferrer" target="_blank">@alice</a></p><!----></div><!--]--></div><!--]-->',
+	'mixed markup, mention and tag':
+		'<!--[--><div class="content-renderer "><!--[-1--><!--]--> <!--[0--><div class="content" id="" aria-hidden="false"><!--1qocubf--><p>Hello <strong>world</strong> <a href="https://example.com/@alice" class="mention" rel="noopener noreferrer" target="_blank">@alice</a> about <a href="https://example.com/tags/svelte" class="hashtag" rel="noopener noreferrer" target="_blank">#svelte</a></p><!----></div><!--]--></div><!--]-->',
+	'generic linkification without known entities':
+		'<!--[--><div class="content-renderer "><!--[-1--><!--]--> <!--[0--><div class="content" id="" aria-hidden="false"><!--uak1wq--><p>Hello <em>there</em> <a href="/users/bob" class="mention" rel="noopener noreferrer" target="_blank">@bob</a> and <a href="/tags/greater" class="hashtag" rel="noopener noreferrer" target="_blank">#greater</a></p><!----></div><!--]--></div><!--]-->',
+};
