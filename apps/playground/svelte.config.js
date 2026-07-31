@@ -29,6 +29,14 @@ const config = {
 				if (path === '/greater-components/docs' || path === '/docs') {
 					return;
 				}
+				// Demo mention and hashtag links. ContentRenderer linkifies mentions
+				// and tags in the demo status bodies to its defaults (`/users/`,
+				// `/tags/`), and the playground has no profile or tag routes for the
+				// crawler to reach. These bodies only became crawlable once status
+				// content started server-rendering (equaltoai/greater-components#926).
+				if (/^\/(users|tags)\//.test(path)) {
+					return;
+				}
 				throw new Error(message);
 			},
 		},
