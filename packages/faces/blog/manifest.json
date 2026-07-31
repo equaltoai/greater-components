@@ -89,6 +89,12 @@
       "props": ["article", "config", "handlers"],
       "exports": true
     },
+    "Review": {
+      "description": "Compound component for the shared-draft review workflow: queue cards, attribution strip, and confirm-guarded verdict actions",
+      "subcomponents": ["QueueCard", "AttributionStrip", "VerdictActions"],
+      "props": ["review", "approvalRequirement", "draftId", "onSubmit"],
+      "exports": true
+    },
     "ReadingTime": {
       "description": "Displays estimated reading time for an article",
       "props": ["content", "wordsPerMinute"],
@@ -154,6 +160,16 @@
     "seo": {
       "description": "SEO and metadata generation utilities",
       "exports": ["generateStructuredData", "generateOpenGraphTags", "generateCanonicalUrl"]
+    },
+    "review": {
+      "description": "Display helpers for the shared-draft review workflow. Presentation only — Lesser owns review policy.",
+      "exports": [
+        "describeApprovalRequirement",
+        "formatReviewDateTime",
+        "resolveReviewState",
+        "reviewActorHandle",
+        "reviewActorName"
+      ]
     }
   },
   "types": [
@@ -181,7 +197,18 @@
     "SEOData",
     "ReadingTimeData",
     "SeriesData",
-    "HeadingData"
+    "HeadingData",
+    "DraftReviewData",
+    "DraftReviewStatusValue",
+    "DraftReviewVerdict",
+    "ReviewActorData",
+    "ReviewApprovalRequirement",
+    "ReviewApprovalRequirementKind",
+    "ReviewGrantData",
+    "ReviewStateDescriptor",
+    "ReviewStateTone",
+    "ReviewVerdictRecordData",
+    "VerdictSubmission"
   ],
   "dependencies": {
     "internal": [

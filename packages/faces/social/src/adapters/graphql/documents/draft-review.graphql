@@ -1,0 +1,86 @@
+# Shared-draft review operations (Lesser M2a review contract, LESSER_REF v1.5.32)
+#
+# Selection is scoped to exactly what the review chrome renders
+# (Review.QueueCard / Review.AttributionStrip / Review.VerdictActions), so the
+# queue list stays cheap and the generated types stay narrow.
+
+fragment ReviewActorFields on Actor {
+	id
+	username
+	domain
+	displayName
+	avatar
+	isAgent
+}
+
+fragment DraftReviewFields on DraftReview {
+	draftId
+	title
+	subtitle
+	excerpt
+	contentFormat
+	status
+	scheduledAt
+	updatedAt
+	createdAt
+	reviewStatus
+	editorNotes
+	generatedBy {
+		...ReviewActorFields
+	}
+	reviewedBy {
+		...ReviewActorFields
+	}
+	grant {
+		grantedAt
+		reviewer {
+			...ReviewActorFields
+		}
+	}
+	verdicts {
+		verdict
+		notes
+		recordedAt
+		reviewer {
+			...ReviewActorFields
+		}
+	}
+}
+
+query SharedDraftReviews($first: Int, $after: Cursor) {
+	sharedDraftReviews(first: $first, after: $after) {
+		totalCount
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+		edges {
+			cursor
+			node {
+				...DraftReviewFields
+			}
+		}
+	}
+}
+
+query DraftReview($id: ID!) {
+	draftReview(id: $id) {
+		...DraftReviewFields
+	}
+}
+
+mutation ShareDraftForReview($draftId: ID!, $reviewer: String!) {
+	shareDraftForReview(draftId: $draftId, reviewer: $reviewer) {
+		...DraftReviewFields
+	}
+}
+
+mutation RevokeDraftReview($draftId: ID!, $reviewer: String!) {
+	revokeDraftReview(draftId: $draftId, reviewer: $reviewer)
+}
+
+mutation SubmitDraftReview($draftId: ID!, $verdict: DraftReviewVerdict!, $notes: String) {
+	submitDraftReview(draftId: $draftId, verdict: $verdict, notes: $notes) {
+		...DraftReviewFields
+	}
+}

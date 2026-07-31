@@ -75,7 +75,7 @@ export const faceRegistry: Record<string, FaceManifest> = {
 			primitives: ['button', 'modal', 'menu', 'tooltip', 'tabs'],
 			shared: ['auth', 'compose', 'notifications', 'search'],
 			patterns: ['thread-view', 'content-warning-handler', 'media-composer', 'bookmark-manager'],
-			components: ['article', 'author', 'publication', 'navigation', 'editor'],
+			components: ['article', 'author', 'publication', 'navigation', 'editor', 'review'],
 		},
 		styles: {
 			main: '@equaltoai/greater-components/faces/blog/style.css',

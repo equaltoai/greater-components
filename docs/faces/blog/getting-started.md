@@ -2,7 +2,7 @@
 
 > Medium/WordPress-style UI components for long-form publishing.
 
-The Blog Face provides components designed for blog platforms, publications, and content management systems. It includes Article, Author, Publication, Navigation, and Editor components optimized for long-form reading experiences.
+The Blog Face provides components designed for blog platforms, publications, and content management systems. It includes Article, Author, Publication, Navigation, and Editor components optimized for long-form reading experiences, plus Review components for the shared-draft review workflow.
 
 ## Installation
 
@@ -148,6 +148,7 @@ SSR import path, and release/export verification command.
 | `Publication` | Publication/blog branding  | Coming soon                                 |
 | `Navigation`  | Categories, archives, tags | Coming soon                                 |
 | `Editor`      | Rich text editor           | Coming soon                                 |
+| `Review`      | Shared-draft review chrome | [Review Workflow](./review-workflow.md)     |
 
 ## Content Rendering
 
