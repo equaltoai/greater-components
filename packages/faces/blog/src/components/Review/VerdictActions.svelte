@@ -17,7 +17,7 @@ come from the `Modal` primitive.
 -->
 
 <script lang="ts">
-	import { Button, Modal } from '@equaltoai/greater-components-primitives';
+	import { Button, Modal, TextArea } from '@equaltoai/greater-components-primitives';
 	import type { DraftReviewVerdict, VerdictSubmission } from '../../types.js';
 
 	interface Props {
@@ -64,7 +64,6 @@ come from the `Modal` primitive.
 	const rootClass = $derived(['gr-blog-review-verdict', className].filter(Boolean).join(' '));
 
 	const notesId = $derived(`gr-blog-review-verdict-notes-${draftId}`);
-	const notesErrorId = $derived(`${notesId}-error`);
 	const errorId = $derived(`gr-blog-review-verdict-error-${draftId}`);
 
 	const notesRequired = $derived(pendingVerdict === 'CHANGES_REQUESTED' && requireNotesForChanges);
@@ -162,30 +161,17 @@ come from the `Modal` primitive.
 		</p>
 	{/if}
 
-	<div class="gr-blog-review-verdict__field">
-		<label class="gr-blog-review-verdict__label" for={notesId}>
-			Notes
-			{#if notesRequired}
-				<span class="gr-blog-review-verdict__required">(required)</span>
-			{/if}
-		</label>
-		<textarea
-			id={notesId}
-			class="gr-blog-review-verdict__notes"
-			rows="4"
-			bind:value={notes}
-			onblur={() => (notesTouched = true)}
-			disabled={submitting}
-			aria-required={notesRequired}
-			aria-invalid={showNotesError}
-			aria-describedby={showNotesError ? notesErrorId : undefined}
-		></textarea>
-		{#if showNotesError}
-			<p class="gr-blog-review-verdict__field-error" id={notesErrorId}>
-				Notes are required when requesting changes.
-			</p>
-		{/if}
-	</div>
+	<TextArea
+		id={notesId}
+		label="Notes"
+		class="gr-blog-review-verdict__field"
+		rows={4}
+		bind:value={notes}
+		onblur={() => (notesTouched = true)}
+		disabled={submitting}
+		required={notesRequired}
+		errorMessage={showNotesError ? 'Notes are required when requesting changes.' : undefined}
+	/>
 
 	{#if errorMessage}
 		<p class="gr-blog-review-verdict__error" id={errorId} role="alert">{errorMessage}</p>

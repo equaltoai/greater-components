@@ -394,14 +394,17 @@ describe('Review workflow chrome', () => {
 			const dialog = await screen.findByRole('dialog');
 			const notes = within(dialog).getByLabelText(/Notes/);
 
-			expect(notes).toHaveAttribute('aria-required', 'true');
+			expect(notes).toBeRequired();
 
 			await fireEvent.blur(notes);
 
 			expect(notes).toHaveAttribute('aria-invalid', 'true');
-			expect(
-				within(dialog).getByText('Notes are required when requesting changes.')
-			).toBeInTheDocument();
+
+			// The TextArea primitive renders the error with role="alert" and wires
+			// it to the field via aria-describedby.
+			const fieldError = within(dialog).getByText('Notes are required when requesting changes.');
+			expect(fieldError).toBeInTheDocument();
+			expect(notes.getAttribute('aria-describedby')).toContain(fieldError.id);
 		});
 
 		it('allows a notes-free changes verdict when the guard is disabled', async () => {

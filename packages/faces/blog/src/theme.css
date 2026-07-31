@@ -1042,68 +1042,20 @@
 	color: var(--gr-color-neutral-300, var(--gr-color-gray-300));
 }
 
+/* The notes field is the TextArea primitive — label, error text, and ARIA
+ * wiring come with it, so only the surrounding spacing belongs here. */
 .gr-blog-review-verdict__field {
-	display: flex;
-	flex-direction: column;
-	gap: var(--gr-spacing-scale-2);
+	margin-bottom: var(--gr-spacing-scale-4);
 }
 
-.gr-blog-review-verdict__label {
-	font-size: 0.8125rem;
-	font-weight: 600;
-	color: var(--gr-color-neutral-800, var(--gr-color-gray-800));
-}
-
-[data-theme='dark'] .gr-blog-review-verdict__label {
-	color: var(--gr-color-neutral-200, var(--gr-color-gray-200));
-}
-
-.gr-blog-review-verdict__required {
-	font-weight: 400;
-	color: var(--gr-color-neutral-600, var(--gr-color-gray-600));
-}
-
-.gr-blog-review-verdict__notes {
-	width: 100%;
-	padding: var(--gr-spacing-scale-3);
-	background: var(--gr-semantic-background-input, var(--gr-color-neutral-0, #ffffff));
-	color: inherit;
-	border: 1px solid var(--gr-color-border, var(--gr-color-neutral-300, var(--gr-color-gray-300)));
-	border-radius: var(--gr-radii-md);
-	font-family: inherit;
-	font-size: 0.9375rem;
-	line-height: 1.5;
-	resize: vertical;
-}
-
-[data-theme='dark'] .gr-blog-review-verdict__notes {
-	background: var(--gr-color-neutral-900, var(--gr-color-gray-900));
-	border-color: var(--gr-color-neutral-600, var(--gr-color-gray-600));
-}
-
-.gr-blog-review-verdict__notes:focus-visible {
-	outline: 2px solid var(--gr-color-focus, var(--gr-color-primary-500));
-	outline-offset: 1px;
-}
-
-.gr-blog-review-verdict__notes[aria-invalid='true'] {
-	border-color: var(--gr-color-error-500);
-}
-
-.gr-blog-review-verdict__field-error,
 .gr-blog-review-verdict__error {
-	margin: 0;
+	margin: var(--gr-spacing-scale-4) 0 0;
 	font-size: 0.8125rem;
 	color: var(--gr-color-error-700);
 }
 
-[data-theme='dark'] .gr-blog-review-verdict__field-error,
 [data-theme='dark'] .gr-blog-review-verdict__error {
 	color: var(--gr-color-error-100);
-}
-
-.gr-blog-review-verdict__error {
-	margin-top: var(--gr-spacing-scale-4);
 }
 
 /* Keep state badges and the agent marker distinguishable when the user forces
