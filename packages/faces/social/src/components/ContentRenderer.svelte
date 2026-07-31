@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { sanitizeHtml, linkifyMentions, useStableId } from '@equaltoai/greater-components-utils';
+	import { sanitizeHtml, linkifyHtml, useStableId } from '@equaltoai/greater-components-utils';
 	import { untrack } from 'svelte';
 	import type { Mention, Tag } from '../types';
 
@@ -65,29 +65,9 @@
 		}
 	}
 
-	const allowedLinkProtocols = new Set(['http:', 'https:', 'mailto:']);
-
-	function escapeRegExp(value: string): string {
-		return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-	}
-
-	function toSafeHref(url: string): string | null {
-		if (!url || typeof url !== 'string') return null;
-		const trimmed = url.trim();
-		if (!trimmed) return null;
-
-		try {
-			const parsed = new URL(trimmed, 'https://example.invalid');
-			if (!allowedLinkProtocols.has(parsed.protocol)) return null;
-			return encodeURI(trimmed);
-		} catch {
-			return null;
-		}
-	}
-
 	function processContent(html: string): string {
-		// First sanitize the HTML
-		let processed = sanitizeHtml(html, {
+		// Sanitization stays authoritative and upstream of linkification.
+		const sanitized = sanitizeHtml(html, {
 			allowedTags: [
 				'p',
 				'br',
@@ -117,53 +97,19 @@
 			allowedAttributes: ['href', 'title', 'class', 'rel', 'target'],
 		});
 
-		// Replace mention links if we have mention data
-		if (mentions.length > 0) {
-			mentions.forEach((mention) => {
-				const pattern = new RegExp(`@${escapeRegExp(mention.username)}(@[\\w.-]+)?`, 'g');
-				const safeUrl = toSafeHref(mention.url);
-				processed = processed.replace(pattern, (match) => {
-					if (!safeUrl) return match;
-					return `<a href="${safeUrl}" class="mention" rel="noopener noreferrer" target="_blank">${match}</a>`;
-				});
-			});
-		}
-
-		// Replace hashtag links if we have tag data
-		if (tags.length > 0) {
-			tags.forEach((tag) => {
-				const pattern = new RegExp(`#${escapeRegExp(tag.name)}\\b`, 'gi');
-				const safeUrl = toSafeHref(tag.url);
-				processed = processed.replace(pattern, (match) => {
-					if (!safeUrl) return match;
-					return `<a href="${safeUrl}" class="hashtag" rel="noopener noreferrer" target="_blank">${match}</a>`;
-				});
-			});
-		}
-
-		// If no specific mention/tag data, use generic linkification
-		if (mentions.length === 0 && tags.length === 0) {
-			processed = linkifyMentions(processed, {
-				mentionBaseUrl,
-				hashtagBaseUrl,
-				openInNewTab: true,
-				nofollow: false,
-			});
-		}
-
-		return processed;
+		// Linkify text nodes only. Passing sanitized markup through the plain-text
+		// linkifier would escape it into literal `&lt;p&gt;` (see #926).
+		return linkifyHtml(sanitized, {
+			mentions,
+			tags,
+			mentionBaseUrl,
+			hashtagBaseUrl,
+			openInNewTab: true,
+			nofollow: false,
+		});
 	}
 
 	const processedContent = $derived(processContent(content));
-
-	function setHtml(node: HTMLElement, html: string) {
-		node.innerHTML = html;
-		return {
-			update(newHtml: string) {
-				node.innerHTML = newHtml;
-			},
-		};
-	}
 </script>
 
 <div class={`content-renderer ${className}`}>
@@ -187,7 +133,11 @@
 			class:collapsed={!!spoilerText && !expanded}
 			id={contentId}
 			aria-hidden={!!spoilerText && !expanded}
-			use:setHtml={processedContent}
-		></div>
+		>
+			<!-- Sanitized upstream by processContent; rendered declaratively so the
+			     body server-renders instead of being written by a client-only action. -->
+			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+			{@html processedContent}
+		</div>
 	{/if}
 </div>

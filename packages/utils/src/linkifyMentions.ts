@@ -1,3 +1,7 @@
+import { unified } from 'unified';
+import rehypeParse from 'rehype-parse';
+import rehypeStringify from 'rehype-stringify';
+
 export interface LinkifyOptions {
 	/**
 	 * Base URL for user mentions (e.g., "https://mastodon.social/@")
@@ -136,6 +140,310 @@ export function linkifyMentions(text: string, options: LinkifyOptions = {}): str
 	});
 
 	return result.trim();
+}
+
+/**
+ * Reference to a mention supplied alongside a status payload.
+ */
+export interface LinkifyMentionRef {
+	/** Bare username, without the leading `@` */
+	username: string;
+	/** Canonical profile URL for the mention */
+	url?: string;
+}
+
+/**
+ * Reference to a hashtag supplied alongside a status payload.
+ */
+export interface LinkifyTagRef {
+	/** Tag name, without the leading `#` */
+	name: string;
+	/** Canonical tag URL */
+	url?: string;
+}
+
+export interface LinkifyHtmlOptions extends LinkifyOptions {
+	/**
+	 * Known mentions to linkify. When either `mentions` or `tags` is non-empty,
+	 * only those are linkified and generic pattern matching is skipped.
+	 */
+	mentions?: LinkifyMentionRef[];
+	/** Known hashtags to linkify. See `mentions` for precedence. */
+	tags?: LinkifyTagRef[];
+}
+
+/** Protocols permitted on generated link hrefs. */
+const LINKIFY_PROTOCOLS = new Set(['http:', 'https:', 'mailto:']);
+
+/** Elements whose descendants are never linkified. */
+const LINKIFY_SKIP_TAGS = new Set(['a', 'code', 'pre']);
+
+/** Ordered alternation: URLs win over mentions, mentions over hashtags. */
+const GENERIC_LINK_SOURCE =
+	'(^|\\s)(?:' +
+	'((?:https?:\\/\\/)?(?:[\\w-]+\\.)+[a-z]{2,}(?:\\/[^\\s]*)?)' +
+	'|(@[\\w\\-.]+(?:@[\\w\\-.]+)?)' +
+	'|(#[\\p{L}\\p{N}_]+)' +
+	')';
+
+function escapeRegExp(value: string): string {
+	return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Validate an href that may be relative. Returns null when the URL is missing,
+ * unparseable, or uses a protocol outside the allow-list (e.g. `javascript:`).
+ */
+function toSafeHref(url: string | undefined): string | null {
+	if (!url || typeof url !== 'string') return null;
+	const trimmed = url.trim();
+	if (!trimmed) return null;
+
+	try {
+		const parsed = new URL(trimmed, 'https://example.invalid');
+		if (!LINKIFY_PROTOCOLS.has(parsed.protocol)) return null;
+		return trimmed;
+	} catch {
+		return null;
+	}
+}
+
+/** As `toSafeHref`, but the URL must resolve on its own without a base. */
+function toSafeAbsoluteHref(url: string): string | null {
+	try {
+		const parsed = new URL(url);
+		if (!LINKIFY_PROTOCOLS.has(parsed.protocol)) return null;
+		return url;
+	} catch {
+		return null;
+	}
+}
+
+/**
+ * Minimal structural view of the HTML AST rehype produces. Declared locally
+ * rather than imported from `hast` so this file needs no type-only package when
+ * consumers vendor it through the CLI.
+ */
+interface LinkifyNode {
+	type: string;
+	children?: LinkifyNode[];
+}
+
+interface LinkifyTextNode extends LinkifyNode {
+	type: 'text';
+	value: string;
+}
+
+interface LinkifyElementNode extends LinkifyNode {
+	type: 'element';
+	tagName: string;
+	properties: Record<string, unknown>;
+	children: LinkifyNode[];
+}
+
+function textNode(value: string): LinkifyTextNode {
+	return { type: 'text', value };
+}
+
+function isTextNode(node: LinkifyNode): node is LinkifyTextNode {
+	return node.type === 'text';
+}
+
+function isElementNode(node: LinkifyNode): node is LinkifyElementNode {
+	return node.type === 'element';
+}
+
+type LinkifySegment = LinkifyTextNode | LinkifyElementNode;
+
+/**
+ * Replace pattern matches inside text segments with generated nodes. Element
+ * segments produced by an earlier pass are left alone, so a run of text is
+ * never linkified twice.
+ */
+function splitSegments(
+	segments: LinkifySegment[],
+	pattern: RegExp,
+	build: (match: RegExpExecArray) => LinkifySegment[] | null
+): LinkifySegment[] {
+	const out: LinkifySegment[] = [];
+
+	for (const segment of segments) {
+		if (!isTextNode(segment)) {
+			out.push(segment);
+			continue;
+		}
+
+		const { value } = segment;
+		const pending: LinkifySegment[] = [];
+		let cursor = 0;
+
+		pattern.lastIndex = 0;
+		let match = pattern.exec(value);
+
+		while (match !== null) {
+			const replacement = build(match);
+
+			if (replacement) {
+				if (match.index > cursor) {
+					pending.push(textNode(value.slice(cursor, match.index)));
+				}
+				pending.push(...replacement);
+				cursor = match.index + match[0].length;
+			}
+
+			// Guard against a zero-length match stalling the scan.
+			if (pattern.lastIndex === match.index) pattern.lastIndex += 1;
+			match = pattern.exec(value);
+		}
+
+		if (pending.length === 0) {
+			out.push(segment);
+			continue;
+		}
+
+		if (cursor < value.length) {
+			pending.push(textNode(value.slice(cursor)));
+		}
+
+		out.push(...pending);
+	}
+
+	return out;
+}
+
+/**
+ * Walk a child list, rewriting text nodes and recursing into elements that are
+ * not linkification barriers.
+ */
+function linkifyChildren(
+	children: readonly LinkifyNode[],
+	transform: (text: LinkifyTextNode) => LinkifySegment[] | null
+): LinkifyNode[] {
+	const out: LinkifyNode[] = [];
+
+	for (const child of children) {
+		if (isTextNode(child)) {
+			const replaced = transform(child);
+			out.push(...(replaced ?? [child]));
+			continue;
+		}
+
+		if (isElementNode(child) && !LINKIFY_SKIP_TAGS.has(child.tagName)) {
+			child.children = linkifyChildren(child.children, transform);
+		}
+
+		out.push(child);
+	}
+
+	return out;
+}
+
+/**
+ * Linkify mentions, hashtags, and URLs inside **already-sanitized** HTML.
+ *
+ * Unlike {@link linkifyMentions}, which takes plain text and escapes it, this
+ * treats its input as trusted markup: it parses the HTML and rewrites text
+ * nodes only, so existing tags survive intact instead of being escaped into
+ * literal `&lt;p&gt;`. Text content and generated attribute values are escaped
+ * by the HTML serializer, and generated hrefs are protocol-checked.
+ *
+ * This is not a sanitizer. Callers must sanitize `html` first — anything unsafe
+ * in the input stays unsafe in the output.
+ */
+export function linkifyHtml(html: string, options: LinkifyHtmlOptions = {}): string {
+	if (!html || typeof html !== 'string') return '';
+
+	const {
+		mentionBaseUrl = '/users/',
+		hashtagBaseUrl = '/tags/',
+		mentionClass = 'mention',
+		hashtagClass = 'hashtag',
+		urlClass = 'url',
+		openInNewTab = true,
+		maxUrlLength = 30,
+		nofollow = true,
+		mentions = [],
+		tags = [],
+	} = options;
+
+	const relValue =
+		`${openInNewTab ? 'noopener noreferrer' : ''}${nofollow ? ' nofollow' : ''}`.trim();
+
+	const anchor = (href: string, className: string, label: string): LinkifyElementNode => ({
+		type: 'element',
+		tagName: 'a',
+		properties: {
+			href,
+			className: [className],
+			...(relValue ? { rel: relValue.split(' ') } : {}),
+			...(openInNewTab ? { target: '_blank' } : {}),
+		},
+		children: [textNode(label)],
+	});
+
+	const useKnownEntities = mentions.length > 0 || tags.length > 0;
+
+	const transform = (text: LinkifyTextNode): LinkifySegment[] | null => {
+		let segments: LinkifySegment[] = [text];
+
+		if (useKnownEntities) {
+			for (const mention of mentions) {
+				const href = toSafeHref(mention?.url);
+				if (!href || !mention.username) continue;
+
+				const pattern = new RegExp(`@${escapeRegExp(mention.username)}(?:@[\\w.-]+)?`, 'g');
+				segments = splitSegments(segments, pattern, (match) => [
+					anchor(href, mentionClass, match[0]),
+				]);
+			}
+
+			for (const tag of tags) {
+				const href = toSafeHref(tag?.url);
+				if (!href || !tag.name) continue;
+
+				const pattern = new RegExp(`#${escapeRegExp(tag.name)}\\b`, 'gi');
+				segments = splitSegments(segments, pattern, (match) => [
+					anchor(href, hashtagClass, match[0]),
+				]);
+			}
+		} else {
+			segments = splitSegments(segments, new RegExp(GENERIC_LINK_SOURCE, 'giu'), (match) => {
+				const [, boundary = '', url, mention, hashtag] = match;
+				const lead: LinkifySegment[] = boundary ? [textNode(boundary)] : [];
+
+				if (url) {
+					const href = toSafeAbsoluteHref(url.startsWith('http') ? url : `https://${url}`);
+					if (!href) return null;
+					return [...lead, anchor(href, urlClass, truncateUrl(href, maxUrlLength))];
+				}
+
+				if (mention) {
+					const href = toSafeHref(mentionBaseUrl + mention.slice(1));
+					if (!href) return null;
+					return [...lead, anchor(href, mentionClass, mention)];
+				}
+
+				if (hashtag) {
+					const href = toSafeHref(hashtagBaseUrl + encodeURIComponent(hashtag.slice(1)));
+					if (!href) return null;
+					return [...lead, anchor(href, hashtagClass, hashtag)];
+				}
+
+				return null;
+			});
+		}
+
+		return segments.length === 1 && segments[0] === text ? null : segments;
+	};
+
+	const processor = unified().use(rehypeParse, { fragment: true }).use(rehypeStringify);
+	const tree = processor.parse(html);
+
+	// The local node types mirror the subset of hast rehype emits here.
+	const root = tree as unknown as LinkifyNode;
+	root.children = linkifyChildren(root.children ?? [], transform);
+
+	return processor.stringify(tree);
 }
 
 /**

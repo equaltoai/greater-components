@@ -40,6 +40,45 @@ export interface LinkifyOptions {
  */
 export declare function linkifyMentions(text: string, options?: LinkifyOptions): string;
 /**
+ * Reference to a mention supplied alongside a status payload.
+ */
+export interface LinkifyMentionRef {
+	/** Bare username, without the leading `@` */
+	username: string;
+	/** Canonical profile URL for the mention */
+	url?: string;
+}
+/**
+ * Reference to a hashtag supplied alongside a status payload.
+ */
+export interface LinkifyTagRef {
+	/** Tag name, without the leading `#` */
+	name: string;
+	/** Canonical tag URL */
+	url?: string;
+}
+export interface LinkifyHtmlOptions extends LinkifyOptions {
+	/**
+	 * Known mentions to linkify. When either `mentions` or `tags` is non-empty,
+	 * only those are linkified and generic pattern matching is skipped.
+	 */
+	mentions?: LinkifyMentionRef[];
+	/** Known hashtags to linkify. See `mentions` for precedence. */
+	tags?: LinkifyTagRef[];
+}
+/**
+ * Linkify mentions, hashtags, and URLs inside **already-sanitized** HTML.
+ *
+ * Unlike `linkifyMentions`, which takes plain text and escapes it, this treats
+ * its input as trusted markup: it parses the HTML and rewrites text nodes only,
+ * so existing tags survive intact instead of being escaped into literal
+ * `&lt;p&gt;`. Text content and generated attribute values are escaped by the
+ * HTML serializer, and generated hrefs are protocol-checked.
+ *
+ * This is not a sanitizer. Callers must sanitize `html` first.
+ */
+export declare function linkifyHtml(html: string, options?: LinkifyHtmlOptions): string;
+/**
  * Extract mentions from text
  * @param text - The text to extract mentions from
  * @returns Array of mentions (without @ prefix)
