@@ -96,6 +96,68 @@ describe('Review workflow chrome', () => {
 			});
 		});
 
+		it('breaks a recordedAt tie by append order, matching the history', () => {
+			// Lesser returns the history in order, so on an exact timestamp tie the
+			// later row is the later submission.
+			const review = createMockDraftReview('d1', {
+				verdicts: [
+					createMockVerdict({ verdict: 'APPROVED', recordedAt: '2026-07-30T10:00:00.000Z' }),
+					createMockVerdict({
+						verdict: 'CHANGES_REQUESTED',
+						recordedAt: '2026-07-30T10:00:00.000Z',
+					}),
+				],
+			});
+
+			expect(resolveReviewState(review).label).toBe('Latest verdict: Changes requested');
+		});
+
+		it('does not let an unparseable timestamp displace a placeable one', () => {
+			const review = createMockDraftReview('d1', {
+				verdicts: [
+					createMockVerdict({ verdict: 'APPROVED', recordedAt: '2026-07-30T10:00:00.000Z' }),
+					createMockVerdict({ verdict: 'CHANGES_REQUESTED', recordedAt: 'not-a-timestamp' }),
+				],
+			});
+
+			expect(resolveReviewState(review).label).toBe('Latest verdict: Approved');
+		});
+
+		it('still reports activity when no timestamp can be parsed at all', () => {
+			const review = createMockDraftReview('d1', {
+				verdicts: [
+					createMockVerdict({ verdict: 'APPROVED', recordedAt: 'nope' }),
+					createMockVerdict({ verdict: 'CHANGES_REQUESTED', recordedAt: 'nope' }),
+				],
+			});
+
+			// Unusable timestamps must not collapse real activity into "nothing
+			// recorded" — that would understate the review state.
+			expect(resolveReviewState(review)).toMatchObject({
+				label: 'Latest verdict: Changes requested',
+				source: 'verdicts',
+			});
+		});
+
+		it('treats a blank reviewStatus as no status rather than a blank badge', () => {
+			const review = createMockDraftReview('d1', { reviewStatus: '   ' });
+
+			expect(resolveReviewState(review)).toMatchObject({
+				label: 'No review activity recorded',
+				source: 'none',
+			});
+		});
+
+		it('reports an active reviewer count of zero rather than dropping it', () => {
+			// Zero active grants is meaningful — it is the vacuous case that lets a
+			// human-authored draft publish. It must not be swallowed as falsy.
+			const requirement = describeApprovalRequirement(createMockDraftReview('d1'), {
+				activeReviewerCount: 0,
+			});
+
+			expect(requirement).toHaveProperty('activeReviewerCount', 0);
+		});
+
 		it('orders by recordedAt, not by array position', () => {
 			const review = createMockDraftReview('d1', {
 				verdicts: [
