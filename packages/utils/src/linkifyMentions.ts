@@ -214,32 +214,53 @@ function escapeRegExp(value: string): string {
 }
 
 /**
- * Validate an href that may be relative. Returns null when the URL is missing,
- * unparseable, or uses a protocol outside the allow-list (e.g. `javascript:`).
+ * Sentinel origin relative hrefs are resolved against. Any relative form that
+ * leaves this origin once resolved addresses another host and is rejected.
+ */
+const LINKIFY_RELATIVE_BASE = 'https://linkify.invalid';
+
+function parseUrl(value: string, base?: string): URL | null {
+	try {
+		return new URL(value, base);
+	} catch {
+		return null;
+	}
+}
+
+/**
+ * Validate an href that may be relative.
+ *
+ * Absolute URLs must use an allow-listed protocol. Relative URLs must still
+ * resolve to the sentinel origin once parsed, which rejects the shapes that read
+ * as relative but address another host: `//evil.example/p`, `\\evil.example\p`
+ * and `/\evil.example/p` are all authority references under WHATWG URL rules and
+ * would inherit the page's scheme rather than stay on its origin.
+ *
+ * Returns null when the URL is missing, unparseable, off-origin, or uses a
+ * protocol outside the allow-list (e.g. `javascript:`).
  */
 function toSafeHref(url: string | undefined): string | null {
 	if (!url || typeof url !== 'string') return null;
 	const trimmed = url.trim();
 	if (!trimmed) return null;
 
-	try {
-		const parsed = new URL(trimmed, 'https://example.invalid');
-		if (!LINKIFY_PROTOCOLS.has(parsed.protocol)) return null;
-		return trimmed;
-	} catch {
-		return null;
+	const absolute = parseUrl(trimmed);
+	if (absolute) {
+		return LINKIFY_PROTOCOLS.has(absolute.protocol) ? trimmed : null;
 	}
+
+	const resolved = parseUrl(trimmed, LINKIFY_RELATIVE_BASE);
+	if (!resolved) return null;
+	if (!LINKIFY_PROTOCOLS.has(resolved.protocol)) return null;
+	if (resolved.origin !== LINKIFY_RELATIVE_BASE) return null;
+	return trimmed;
 }
 
 /** As `toSafeHref`, but the URL must resolve on its own without a base. */
 function toSafeAbsoluteHref(url: string): string | null {
-	try {
-		const parsed = new URL(url);
-		if (!LINKIFY_PROTOCOLS.has(parsed.protocol)) return null;
-		return url;
-	} catch {
-		return null;
-	}
+	const parsed = parseUrl(url);
+	if (!parsed) return null;
+	return LINKIFY_PROTOCOLS.has(parsed.protocol) ? url : null;
 }
 
 /**

@@ -211,6 +211,62 @@ describe('linkifyHtml', () => {
 			expect(result).not.toContain('onerror');
 		});
 
+		// Chromium resolution for every string below is pinned in
+		// packages/testing/tests/demo/linkify-url-policy.spec.ts. Keep the two lists
+		// in step: this asserts what linkifyHtml emits, that asserts what a browser
+		// does with it.
+		describe('generated hrefs stay on an explicit scheme or the page origin', () => {
+			const offOrigin = [
+				['scheme-relative', '//evil.example/p'],
+				['scheme-relative with backslashes', '\\\\evil.example\\p'],
+				['slash-backslash authority', '/\\evil.example/p'],
+				['backslash-slash authority', '\\/evil.example/p'],
+				['scheme-relative with an embedded newline', '/\n/evil.example/p'],
+			] as const;
+
+			for (const [shape, url] of offOrigin) {
+				it(`rejects a ${shape} mention URL`, () => {
+					const result = linkifyHtml('<p>Hi @a and #b</p>', {
+						mentions: [{ username: 'a', url }],
+						tags: [{ name: 'b', url }],
+					});
+
+					expect(result).toBe('<p>Hi @a and #b</p>');
+					expect(result).not.toContain('evil.example');
+					expect(result).not.toContain('<a');
+				});
+			}
+
+			const sameOriginOrExplicit = [
+				['absolute https', 'https://example.com/@a'],
+				['absolute http', 'http://example.com/@a'],
+				['mailto', 'mailto:a@example.com'],
+				['absolute path', '/users/a'],
+				['relative path', 'users/a'],
+				['dot-relative path', './users/a'],
+				['query only', '?user=a'],
+				['fragment only', '#a'],
+			] as const;
+
+			for (const [shape, url] of sameOriginOrExplicit) {
+				it(`accepts an ${shape} mention URL`, () => {
+					const result = linkifyHtml('<p>Hi @a</p>', { mentions: [{ username: 'a', url }] });
+					expect(result).toContain('class="mention"');
+				});
+			}
+
+			it('rejects a non-allow-listed absolute scheme', () => {
+				for (const url of [
+					'javascript:alert(1)',
+					'data:text/html,<script>1</script>',
+					'vbscript:x',
+				]) {
+					const result = linkifyHtml('<p>Hi @a</p>', { mentions: [{ username: 'a', url }] });
+					expect(result).toBe('<p>Hi @a</p>');
+				}
+			});
+		});
+
 		describe('raw-text elements are linkification barriers', () => {
 			// linkifyHtml is not a sanitizer, so a caller whose policy retains any of
 			// these must get their character data back unmodified: it is a script, a
