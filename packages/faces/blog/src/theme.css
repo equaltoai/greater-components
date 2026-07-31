@@ -893,17 +893,36 @@
 	color: var(--gr-color-neutral-400, var(--gr-color-gray-400));
 }
 
+.gr-blog-review-card__state-group {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	align-self: flex-start;
+	gap: var(--gr-spacing-scale-1);
+}
+
 .gr-blog-review-card__state {
 	display: inline-flex;
 	align-items: center;
-	align-self: flex-start;
+	align-self: flex-end;
 	margin: 0;
 	padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-3);
 	border: 1px solid transparent;
 	border-radius: var(--gr-radii-full);
 	font-size: 0.75rem;
 	font-weight: 600;
-	white-space: nowrap;
+}
+
+/* The badge never states publication readiness — this note says so in text,
+   so the meaning does not depend on the badge colour. */
+.gr-blog-review-card__state-note {
+	font-size: 0.6875rem;
+	text-align: right;
+	color: var(--gr-color-neutral-600, var(--gr-color-gray-600));
+}
+
+[data-theme='dark'] .gr-blog-review-card__state-note {
+	color: var(--gr-color-neutral-400, var(--gr-color-gray-400));
 }
 
 .gr-blog-review-card__state--approved {

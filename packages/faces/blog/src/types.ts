@@ -729,32 +729,49 @@ export interface DraftReviewData {
 }
 
 /**
- * Which approval rule governs a draft.
+ * A presentation-only description of the approval rules in force.
  *
- * - `principal-approval` — agent-authored drafts require the principal's approval.
- * - `all-reviewers` — other drafts require a verdict from every invited reviewer.
- */
-export type ReviewApprovalRequirementKind = 'principal-approval' | 'all-reviewers';
-
-/**
- * A presentation-only description of the approval rule in force.
+ * Lesser's rules are **cumulative, not exclusive**. `PublishDraft` evaluates
+ * unanimous active-reviewer approval for *every* draft, and additionally
+ * requires the instance principal's own approval whenever the draft records a
+ * generator. A generated draft therefore has to satisfy both at once.
  *
- * This descriptor exists so the chrome can make approval semantics *legible*.
- * It is never used to enable, disable, or gate a verdict submission — Lesser
- * enforces the policy, and `DraftReviewData.reviewStatus` remains the
- * authoritative status.
+ * This descriptor exists so the chrome can make those rules *legible*. It is
+ * never used to enable, disable, or gate a verdict submission — Lesser enforces
+ * the policy and rejects submissions it does not permit.
+ *
+ * It deliberately carries **no progress count**. Progress would have to count
+ * reviewers holding an active grant at the current round, and the pinned
+ * projection exposes only the viewer's own `grant`. Counting `verdicts` instead
+ * would be wrong: verdicts are an immutable append-only history, so repeats and
+ * revoke/re-grant cycles make "3 of 3 recorded" meaningless.
  */
 export interface ReviewApprovalRequirement {
-	/** The approval rule in force. */
-	kind: ReviewApprovalRequirementKind;
-	/** Number of reviewer verdicts recorded so far. */
-	recorded: number;
 	/**
-	 * Number of reviewer verdicts required, when the consumer knows the invited
-	 * reviewer count. Omitted when unknown — the chrome then shows the recorded
-	 * count without implying a total.
+	 * Unanimous approval from every reviewer holding an active grant.
+	 *
+	 * Always required — Lesser evaluates this rule for every draft. With no
+	 * active grants it is vacuously satisfied, which is how human-authored
+	 * drafts keep their pre-review behaviour.
 	 */
-	required?: number;
+	allActiveReviewers: true;
+	/**
+	 * Whether the instance principal's own approval is *additionally* required.
+	 *
+	 * True whenever the draft records a generator. Keyed on the presence of
+	 * `generatedBy`, **not** on `generatedBy.isAgent`: Lesser tests a non-empty
+	 * `GeneratedBy` string, so a delegated local actor triggers the rule exactly
+	 * as an agent does.
+	 */
+	principalApproval: boolean;
+	/**
+	 * How many reviewers hold an active grant, when the caller can enumerate
+	 * them from a source that genuinely exposes the active set.
+	 *
+	 * Omitted on the pinned projection — the chrome then names the rule without
+	 * implying any completion.
+	 */
+	activeReviewerCount?: number;
 }
 
 /**
@@ -773,11 +790,19 @@ export interface ReviewStateDescriptor {
 	/**
 	 * Where the label came from.
 	 *
-	 * - `server` — taken verbatim from `reviewStatus` (authoritative).
-	 * - `derived` — computed from the recorded verdicts because `reviewStatus`
-	 *   was absent.
+	 * - `server` — taken verbatim from `reviewStatus`.
+	 * - `verdicts` — names the newest row of the recorded verdict history,
+	 *   because `reviewStatus` was absent.
+	 * - `none` — no review activity has been recorded at all.
+	 *
+	 * `server` and `verdicts` are both **latest activity, not publication
+	 * state**. Lesser overwrites `ReviewStatus` on every verdict submission, so
+	 * it reports the most recent submission rather than the publication gate;
+	 * the gate itself is reconstructed server-side from active grants and is not
+	 * exposed by the pinned projection. Consumers must not read either value as
+	 * "this draft may publish".
 	 */
-	source: 'server' | 'derived';
+	source: 'server' | 'verdicts' | 'none';
 }
 
 /**

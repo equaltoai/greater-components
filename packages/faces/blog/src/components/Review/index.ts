@@ -21,6 +21,7 @@ export { default as AttributionStrip } from './AttributionStrip.svelte';
 export { default as VerdictActions } from './VerdictActions.svelte';
 
 export {
+	REVIEW_STATE_QUALIFIER,
 	describeApprovalRequirement,
 	formatReviewDateTime,
 	resolveReviewState,

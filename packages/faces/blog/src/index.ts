@@ -105,7 +105,6 @@ export type {
 	DraftReviewVerdict,
 	ReviewActorData,
 	ReviewApprovalRequirement,
-	ReviewApprovalRequirementKind,
 	ReviewGrantData,
 	ReviewStateDescriptor,
 	ReviewStateTone,

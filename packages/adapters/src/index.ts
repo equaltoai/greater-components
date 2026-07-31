@@ -58,6 +58,12 @@ export type {
 	UploadMediaMutationVariables,
 	UploadMediaMutation,
 	UploadMediaPayload,
+	// Shared-draft review projection. Consumers mapping `edges[].node` into the
+	// blog face's review chrome need these to keep their mapping type-checked
+	// against the pinned Lesser contract.
+	SharedDraftReviewsQuery,
+	SharedDraftReviewsQueryVariables,
+	DraftReviewVerdict,
 } from './graphql';
 
 // Soul inventory (Lesser REST)

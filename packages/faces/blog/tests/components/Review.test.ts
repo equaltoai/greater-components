@@ -18,11 +18,13 @@ import {
 
 describe('Review workflow chrome', () => {
 	describe('state helpers', () => {
-		it('renders a server-supplied reviewStatus verbatim and marks it authoritative', () => {
+		it('renders a server-supplied reviewStatus verbatim, as latest activity', () => {
 			const review = createMockDraftReview('d1', { reviewStatus: 'Awaiting principal sign-off' });
 			const state = resolveReviewState(review);
 
 			expect(state.label).toBe('Awaiting principal sign-off');
+			// `source: 'server'` means "Lesser said this", NOT "this is the gate".
+			// Lesser overwrites ReviewStatus on every verdict submission.
 			expect(state.source).toBe('server');
 		});
 
@@ -40,68 +42,161 @@ describe('Review workflow chrome', () => {
 			expect(resolveReviewState(changes).tone).toBe('changes-requested');
 		});
 
-		it('derives an awaiting state when there is no status and no verdict', () => {
+		it('reports no activity when there is no status and no verdict', () => {
 			const state = resolveReviewState(createMockDraftReview('d1'));
 
 			expect(state).toMatchObject({
 				tone: 'pending',
-				label: 'Awaiting review',
-				source: 'derived',
+				label: 'No review activity recorded',
+				source: 'none',
 			});
 		});
 
-		it('lets a recorded CHANGES_REQUESTED outrank recorded approvals', () => {
+		it('names the newest verdict record rather than deriving a gate state', () => {
+			// An earlier APPROVED followed by a later CHANGES_REQUESTED. The old
+			// implementation scanned the whole history for any CHANGES_REQUESTED;
+			// the point here is that the *newest* row wins, and that the label
+			// names the record instead of asserting the draft's state.
 			const review = createMockDraftReview('d1', {
 				verdicts: [
-					createMockVerdict({ verdict: 'APPROVED' }),
-					createMockVerdict({ verdict: 'CHANGES_REQUESTED', notes: 'Tighten the intro' }),
+					createMockVerdict({ verdict: 'APPROVED', recordedAt: '2026-07-30T09:00:00.000Z' }),
+					createMockVerdict({
+						verdict: 'CHANGES_REQUESTED',
+						notes: 'Tighten the intro',
+						recordedAt: '2026-07-30T11:00:00.000Z',
+					}),
 				],
 			});
 
 			expect(resolveReviewState(review)).toMatchObject({
 				tone: 'changes-requested',
-				source: 'derived',
+				label: 'Latest verdict: Changes requested',
+				source: 'verdicts',
 			});
 		});
 
-		it('derives approved only when every recorded verdict approves', () => {
+		it('lets a later approval supersede an earlier changes-requested', () => {
+			// The inverse ordering. A history-wide "any CHANGES_REQUESTED wins"
+			// rule would report changes-requested here, which is wrong: the
+			// reviewer came back and approved.
 			const review = createMockDraftReview('d1', {
 				verdicts: [
+					createMockVerdict({
+						verdict: 'CHANGES_REQUESTED',
+						notes: 'Tighten the intro',
+						recordedAt: '2026-07-30T09:00:00.000Z',
+					}),
+					createMockVerdict({ verdict: 'APPROVED', recordedAt: '2026-07-30T11:00:00.000Z' }),
+				],
+			});
+
+			expect(resolveReviewState(review)).toMatchObject({
+				label: 'Latest verdict: Approved',
+				source: 'verdicts',
+			});
+		});
+
+		it('orders by recordedAt, not by array position', () => {
+			const review = createMockDraftReview('d1', {
+				verdicts: [
+					createMockVerdict({ verdict: 'APPROVED', recordedAt: '2026-07-30T12:00:00.000Z' }),
+					createMockVerdict({
+						verdict: 'CHANGES_REQUESTED',
+						recordedAt: '2026-07-30T08:00:00.000Z',
+					}),
+				],
+			});
+
+			expect(resolveReviewState(review).label).toBe('Latest verdict: Approved');
+		});
+
+		it('never labels a resolved state as a bare publication decision', () => {
+			// Guards the F2 rule directly: no branch may emit "Approved" or
+			// "Changes requested" standing alone, because neither reviewStatus nor
+			// the verdict history is the publication gate.
+			const cases = [
+				createMockDraftReview('d1'),
+				createMockDraftReview('d2', { verdicts: [createMockVerdict({ verdict: 'APPROVED' })] }),
+				createMockDraftReview('d3', {
+					verdicts: [createMockVerdict({ verdict: 'CHANGES_REQUESTED' })],
+				}),
+			];
+
+			for (const review of cases) {
+				const { label } = resolveReviewState(review);
+				expect(label).not.toBe('Approved');
+				expect(label).not.toBe('Changes requested');
+			}
+		});
+
+		it('requires both unanimous reviewers and the principal for a generated draft', () => {
+			// Mirrors lesser's TestDraftReviewGateRequiresAllActiveReviewersAndPrincipal:
+			// PublishDraft evaluates HasUnanimousActiveApproval for every draft and
+			// HasPrincipalApproval as well when GeneratedBy is non-empty.
+			const review = createMockDraftReview('d1', { generatedBy: createMockAgentActor('a1') });
+
+			expect(describeApprovalRequirement(review)).toEqual({
+				allActiveReviewers: true,
+				principalApproval: true,
+			});
+		});
+
+		it('arms the principal rule for a delegated non-agent generator', () => {
+			// Lesser keys the rule on a non-empty GeneratedBy string, not on
+			// Actor.isAgent, so a delegated local actor counts exactly the same.
+			const review = createMockDraftReview('d1', {
+				generatedBy: createMockReviewActor('h1', { isAgent: false }),
+			});
+
+			expect(describeApprovalRequirement(review)).toEqual({
+				allActiveReviewers: true,
+				principalApproval: true,
+			});
+		});
+
+		it('requires only unanimous active reviewers when no generator is recorded', () => {
+			const review = createMockDraftReview('d1', { generatedBy: null });
+
+			expect(describeApprovalRequirement(review)).toEqual({
+				allActiveReviewers: true,
+				principalApproval: false,
+			});
+		});
+
+		it('treats an identity-less generator projection as no generator', () => {
+			const review = createMockDraftReview('d1', {
+				generatedBy: { id: '  ', username: '  ', isAgent: true },
+			});
+
+			expect(describeApprovalRequirement(review).principalApproval).toBe(false);
+		});
+
+		it('never reports progress derived from the immutable verdict history', () => {
+			// verdicts are append-only rounds: repeats and revoke/re-grant cycles
+			// make any count taken from them meaningless as progress.
+			const review = createMockDraftReview('d1', {
+				generatedBy: createMockReviewActor('h1'),
+				verdicts: [
 					createMockVerdict(),
+					createMockVerdict({ reviewer: createMockReviewActor('r2') }),
 					createMockVerdict({ reviewer: createMockReviewActor('r2') }),
 				],
 			});
 
-			expect(resolveReviewState(review)).toMatchObject({ tone: 'approved', source: 'derived' });
+			const requirement = describeApprovalRequirement(review);
+			expect(requirement).not.toHaveProperty('recorded');
+			expect(requirement).not.toHaveProperty('required');
+			expect(requirement).not.toHaveProperty('activeReviewerCount');
 		});
 
-		it('describes agent-authored drafts as requiring principal approval', () => {
-			const review = createMockDraftReview('d1', { generatedBy: createMockAgentActor('a1') });
-
-			expect(describeApprovalRequirement(review)).toEqual({
-				kind: 'principal-approval',
-				recorded: 0,
-				required: 1,
-			});
-		});
-
-		it('describes human-authored drafts as requiring all invited reviewers', () => {
-			const review = createMockDraftReview('d1', {
-				generatedBy: createMockReviewActor('h1'),
-				verdicts: [createMockVerdict()],
-			});
-
-			expect(describeApprovalRequirement(review, { invitedReviewerCount: 3 })).toEqual({
-				kind: 'all-reviewers',
-				recorded: 1,
-				required: 3,
-			});
-		});
-
-		it('omits a required count when the invited reviewer count is unknown', () => {
+		it('reports an active reviewer count only when the caller supplies one', () => {
 			const review = createMockDraftReview('d1', { generatedBy: createMockReviewActor('h1') });
 
-			expect(describeApprovalRequirement(review)).not.toHaveProperty('required');
+			expect(describeApprovalRequirement(review, { activeReviewerCount: 3 })).toEqual({
+				allActiveReviewers: true,
+				principalApproval: true,
+				activeReviewerCount: 3,
+			});
 		});
 
 		it('formats local and remote handles', () => {
@@ -201,7 +296,21 @@ describe('Review workflow chrome', () => {
 				},
 			});
 
-			expect(screen.getByText('Changes requested')).toBeInTheDocument();
+			expect(screen.getByText('Latest verdict: Changes requested')).toBeInTheDocument();
+		});
+
+		it('qualifies the card state badge as latest activity', () => {
+			// The badge colour must never be the only thing distinguishing
+			// "someone approved" from "this draft may publish".
+			render(QueueCard, {
+				props: {
+					review: createMockDraftReview('d1', {
+						verdicts: [createMockVerdict({ verdict: 'APPROVED' })],
+					}),
+				},
+			});
+
+			expect(screen.getByText('latest activity, not publication state')).toBeInTheDocument();
 		});
 
 		it('hides the excerpt when asked', () => {
@@ -242,7 +351,7 @@ describe('Review workflow chrome', () => {
 			expect(screen.getByText('Not recorded')).toBeInTheDocument();
 			expect(screen.getByText('Not yet reviewed')).toBeInTheDocument();
 			expect(screen.getByText('None')).toBeInTheDocument();
-			expect(screen.getByText('Awaiting review')).toBeInTheDocument();
+			expect(screen.getByText('No review activity recorded')).toBeInTheDocument();
 		});
 
 		it('omits empty fields when showEmptyFields is false', () => {
@@ -257,48 +366,90 @@ describe('Review workflow chrome', () => {
 			expect(screen.getByText('Review status')).toBeInTheDocument();
 		});
 
-		it('discloses when the status was summarised rather than served', () => {
-			render(AttributionStrip, { props: { review: createMockDraftReview('d1') } });
-
-			expect(screen.getByText('summarised from recorded verdicts')).toBeInTheDocument();
-		});
-
-		it('does not claim a summary when the server supplied the status', () => {
+		it('qualifies a server-supplied status as latest activity, not publication state', () => {
 			render(AttributionStrip, {
-				props: { review: createMockDraftReview('d1', { reviewStatus: 'In review' }) },
+				props: { review: createMockDraftReview('d1', { reviewStatus: 'Approved' }) },
 			});
 
-			expect(screen.queryByText('summarised from recorded verdicts')).not.toBeInTheDocument();
+			expect(screen.getByText('latest activity, not publication state')).toBeInTheDocument();
 		});
 
-		it('makes principal approval legible for agent-authored drafts', () => {
+		it('qualifies a verdict-sourced status the same way', () => {
+			render(AttributionStrip, {
+				props: {
+					review: createMockDraftReview('d1', {
+						verdicts: [createMockVerdict({ verdict: 'APPROVED' })],
+					}),
+				},
+			});
+
+			expect(screen.getByText('Latest verdict: Approved')).toBeInTheDocument();
+			expect(screen.getByText('latest activity, not publication state')).toBeInTheDocument();
+		});
+
+		it('omits the qualifier only when nothing has been recorded', () => {
+			render(AttributionStrip, { props: { review: createMockDraftReview('d1') } });
+
+			expect(screen.queryByText('latest activity, not publication state')).not.toBeInTheDocument();
+		});
+
+		it('states both requirements for a generated draft', () => {
 			const review = createMockDraftReview('d1', { generatedBy: createMockAgentActor('a1') });
 
 			render(AttributionStrip, {
 				props: { review, approvalRequirement: describeApprovalRequirement(review) },
 			});
 
-			expect(
-				screen.getByText(/requires the principal's approval\. No verdict recorded yet\./)
-			).toBeInTheDocument();
+			const approval = screen.getByText(/Requires approval from/);
+			expect(approval).toHaveTextContent('every reviewer with an active invitation');
+			expect(approval).toHaveTextContent('from the instance principal as well');
+			expect(approval).toHaveTextContent('Both are required.');
 		});
 
-		it('makes the all-reviewers rule legible with counts', () => {
+		it('states both requirements for a delegated non-agent generator', () => {
 			const review = createMockDraftReview('d1', {
-				generatedBy: createMockReviewActor('h1'),
-				verdicts: [createMockVerdict()],
+				generatedBy: createMockReviewActor('h1', { isAgent: false }),
 			});
+
+			render(AttributionStrip, {
+				props: { review, approvalRequirement: describeApprovalRequirement(review) },
+			});
+
+			expect(screen.getByText(/Requires approval from/)).toHaveTextContent(
+				'from the instance principal as well'
+			);
+		});
+
+		it('states only the reviewer rule when no generator is recorded', () => {
+			const review = createMockDraftReview('d1', { generatedBy: null });
 
 			render(AttributionStrip, {
 				props: {
 					review,
-					approvalRequirement: describeApprovalRequirement(review, { invitedReviewerCount: 3 }),
+					approvalRequirement: describeApprovalRequirement(review, { activeReviewerCount: 3 }),
 				},
 			});
 
-			expect(
-				screen.getByText('Requires a verdict from all 3 invited reviewers. 1 of 3 recorded.')
-			).toBeInTheDocument();
+			const approval = screen.getByText(/Requires approval from/);
+			expect(approval).toHaveTextContent('all 3 reviewers with an active invitation');
+			expect(approval).not.toHaveTextContent('instance principal');
+		});
+
+		it('never renders an "N of M" progress claim', () => {
+			const review = createMockDraftReview('d1', {
+				generatedBy: createMockReviewActor('h1'),
+				verdicts: [createMockVerdict(), createMockVerdict()],
+			});
+
+			const { container } = render(AttributionStrip, {
+				props: {
+					review,
+					approvalRequirement: describeApprovalRequirement(review, { activeReviewerCount: 3 }),
+				},
+			});
+
+			expect(container.textContent).not.toMatch(/\d+\s+of\s+\d+/);
+			expect(container.textContent).not.toMatch(/recorded so far/);
 		});
 
 		it('states that an outstanding invitation is revocable', () => {

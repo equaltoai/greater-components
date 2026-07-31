@@ -13,7 +13,12 @@ link and actions sit alongside it.
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { DraftReviewData } from '../../types.js';
-	import { formatReviewDateTime, resolveReviewState, reviewActorName } from './state.js';
+	import {
+		REVIEW_STATE_QUALIFIER,
+		formatReviewDateTime,
+		resolveReviewState,
+		reviewActorName,
+	} from './state.js';
 
 	interface Props {
 		/** The shared draft under review. */
@@ -83,9 +88,14 @@ link and actions sit alongside it.
 			{/if}
 		</svelte:element>
 
-		<p class={stateClass}>
-			<span class="gr-blog-review-card__state-label">{state.label}</span>
-		</p>
+		<div class="gr-blog-review-card__state-group">
+			<p class={stateClass}>
+				<span class="gr-blog-review-card__state-label">{state.label}</span>
+			</p>
+			{#if state.source !== 'none'}
+				<span class="gr-blog-review-card__state-note">{REVIEW_STATE_QUALIFIER}</span>
+			{/if}
+		</div>
 	</div>
 
 	{#if subtitle}

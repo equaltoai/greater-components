@@ -14,19 +14,72 @@ Pinned contract: `docs/lesser/contracts/graphql-schema.graphql` at
 **Lesser owns review semantics. These components render data and report reviewer
 intent; they do not decide anything.**
 
-- `reviewStatus` is the authoritative status. When the server supplies it, the
-  chrome renders it **verbatim**. Only when it is absent does the chrome
-  summarise the recorded verdicts, and it labels that summary as derived.
-- Agent authorship comes from the contract field `Actor.isAgent`. It is never
-  inferred from a name, a domain, or anything else.
-- `describeApprovalRequirement()` mirrors Lesser's rule for **display only**.
-  Nothing consumes its result to enable, disable, or gate a submission. The
-  verdict buttons are gated solely by the consumer's `disabled` prop, and the
-  server rejects submissions it does not permit.
+### `reviewStatus` is latest activity, not publication state
 
-The rule it mirrors: agent-authored drafts require the principal's approval;
-other drafts require a verdict from every invited reviewer. Invitations are
-revocable via `revokeDraftReview`.
+Lesser's `SubmitDraftReviewVerdict` overwrites `Draft.ReviewStatus` with the
+submitted verdict on **every** submission, so the field names the most recent
+submission — a later `CHANGES_REQUESTED` from one reviewer replaces an earlier
+`APPROVED` from another. It is not the publication gate.
+
+The real gate is reconstructed server-side: for each reviewer holding an active
+grant, Lesser takes that reviewer's newest verdict recorded _after_ the grant
+was issued, and requires every one of them to be `APPROVED`. That
+reconstruction needs the active-grant set and the instance principal's
+identity, and the pinned projection exposes neither — `DraftReview.grant` is
+the _viewer's own_ invitation, not the active set.
+
+So the chrome renders `reviewStatus` verbatim, and when it is absent names the
+newest recorded verdict, and in both cases pairs the badge with the exact
+qualifier **"latest activity, not publication state"**. It never derives an
+Approved / Changes-requested _state_, and it never renders a completion claim.
+With no activity at all it shows "No review activity recorded".
+
+A server-computed gate state would be the honest thing to display. It is not in
+the pinned contract; see "Upstream candidate" below.
+
+### The approval rules are cumulative
+
+`describeApprovalRequirement()` mirrors Lesser's rules for **display only**.
+Nothing consumes its result to enable, disable, or gate a submission. The
+verdict buttons are gated solely by the consumer's `disabled` prop, and the
+server rejects submissions it does not permit.
+
+The rules it mirrors, from `PublishDraft`, apply **together** — they are not
+alternatives:
+
+1. **Always** — unanimous approval from every reviewer holding an active
+   (unrevoked) grant. With no active grants this is vacuously satisfied, which
+   is how human-authored drafts keep their pre-review behaviour.
+2. **Additionally, whenever the draft records a generator** — the instance
+   principal's own active grant and current `APPROVED` verdict. No other
+   reviewer can substitute, and a generated draft that never grants the
+   principal fails closed.
+
+Rule 2 is keyed on a non-empty `generatedBy`, **not** on `generatedBy.isAgent`.
+Lesser tests `strings.TrimSpace(draft.GeneratedBy) != ""`, so a draft generated
+by a delegated local actor arms the principal rule exactly as an agent-generated
+draft does. (`Actor.isAgent` is still a real contract field and still drives the
+"Agent-generated" badge — it just does not decide approval semantics.)
+
+The descriptor reports **no progress count**. Honest progress would count
+reviewers with an active grant at the current round; counting `verdicts`
+instead would be wrong, because that history is immutable and append-only, so
+repeats and revoke/re-grant cycles make "3 of 3 recorded" meaningless. Supply
+`activeReviewerCount` only from a source that genuinely enumerates active
+grants; otherwise the chrome names the rules and stays neutral.
+
+Invitations are revocable via `revokeDraftReview`. A revoked grant leaves the
+required set immediately while its verdict history remains as audit-only record.
+
+### Upstream candidate
+
+The chrome would render a publication-gate state if the contract carried one.
+Today it cannot be computed client-side without the active-grant set and the
+principal identity, and reimplementing Lesser's gate in the chrome would be a
+correctness hazard — a second implementation that can disagree with the one
+that actually gates publication. A server-computed gate field on `DraftReview`
+is recorded as a Lesser upstream candidate, routed via factory, rather than
+worked around here.
 
 ## Components
 
@@ -62,7 +115,9 @@ outstanding invitation and the approval rule when supplied.
 | `density`             | `'sm' \| 'md'`              | default `'sm'`                       |
 
 Empty fields render an explicit empty state rather than disappearing — "not
-recorded" is information a reviewer needs. Review status is always shown.
+recorded" is information a reviewer needs. Review status is always shown, and
+is always accompanied by the "latest activity, not publication state"
+qualifier.
 
 ### `Review.VerdictActions`
 

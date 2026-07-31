@@ -2,9 +2,13 @@
 Review.AttributionStrip - SSR-safe attribution for a shared draft under review
 
 Shows `generatedBy`, `reviewedBy`, `reviewStatus`, and `editorNotes` so a
-reviewer can see exactly what the agent did and what has been decided, plus —
-when supplied — a plain-language statement of which approval rule is in force
-and whether an outstanding invitation exists.
+reviewer can see exactly what the agent did and what has most recently
+happened, plus — when supplied — a plain-language statement of which approval
+rules are in force and whether an outstanding invitation exists.
+
+The review-status row is always qualified as "latest activity, not publication
+state": `reviewStatus` is overwritten on every verdict submission upstream, so
+neither it nor the verdict history is the publication gate.
 
 Empty fields are rendered with an explicit empty state by default rather than
 being silently dropped: "not recorded" is itself information a reviewer needs.
@@ -14,6 +18,7 @@ being silently dropped: "not recorded" is itself information a reviewer needs.
 	import { DefinitionList, DefinitionItem } from '@equaltoai/greater-components-primitives';
 	import type { DraftReviewData, ReviewApprovalRequirement } from '../../types.js';
 	import {
+		REVIEW_STATE_QUALIFIER,
 		formatReviewDateTime,
 		resolveReviewState,
 		reviewActorHandle,
@@ -69,22 +74,22 @@ being silently dropped: "not recorded" is itself information a reviewer needs.
 	const grantHandle = $derived(reviewActorHandle(review.grant?.reviewer));
 	const grantedAt = $derived(formatReviewDateTime(review.grant?.grantedAt));
 
+	// Names Lesser's rules without claiming progress against them: the active
+	// grant set and the principal's identity are not in the pinned projection,
+	// so any "N of M" here would be invented.
 	const approvalText = $derived.by(() => {
 		if (!approvalRequirement) return '';
 
-		const { kind, recorded, required } = approvalRequirement;
+		const { principalApproval, activeReviewerCount } = approvalRequirement;
 
-		if (kind === 'principal-approval') {
-			return recorded > 0
-				? `Agent-generated draft — requires the principal's approval. ${recorded} verdict${recorded === 1 ? '' : 's'} recorded.`
-				: "Agent-generated draft — requires the principal's approval. No verdict recorded yet.";
-		}
+		const reviewers =
+			activeReviewerCount === undefined
+				? 'every reviewer with an active invitation'
+				: `all ${activeReviewerCount} reviewer${activeReviewerCount === 1 ? '' : 's'} with an active invitation`;
 
-		if (required === undefined) {
-			return `Requires a verdict from every invited reviewer. ${recorded} recorded so far.`;
-		}
-
-		return `Requires a verdict from all ${required} invited reviewer${required === 1 ? '' : 's'}. ${recorded} of ${required} recorded.`;
+		return principalApproval
+			? `Requires approval from ${reviewers}, and — because this draft records a generator — from the instance principal as well. Both are required.`
+			: `Requires approval from ${reviewers}.`;
 	});
 </script>
 
@@ -117,9 +122,9 @@ being silently dropped: "not recorded" is itself information a reviewer needs.
 
 		<DefinitionItem label="Review status">
 			<span class={stateClass}>{state.label}</span>
-			{#if state.source === 'derived'}
+			{#if state.source !== 'none'}
 				<span class="gr-blog-review-attribution__state-source">
-					summarised from recorded verdicts
+					{REVIEW_STATE_QUALIFIER}
 				</span>
 			{/if}
 		</DefinitionItem>

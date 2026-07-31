@@ -5,7 +5,17 @@ import type {
 	ReviewApprovalRequirement,
 	ReviewStateDescriptor,
 	ReviewStateTone,
+	ReviewVerdictRecordData,
 } from '../../types.js';
+
+/**
+ * The qualifier the chrome renders alongside every resolved review state.
+ *
+ * Neither `reviewStatus` nor the verdict history is the publication gate, so
+ * the state badge is always accompanied by this disclaimer. Exported so
+ * consumers and tests assert the exact string rather than a paraphrase.
+ */
+export const REVIEW_STATE_QUALIFIER = 'latest activity, not publication state';
 
 /**
  * Formats a review timestamp for display while preserving a machine-readable
@@ -65,19 +75,55 @@ function toneForServerStatus(status: string): ReviewStateTone {
 }
 
 /**
+ * Picks the newest row of a verdict history.
+ *
+ * Ordering is by `recordedAt`. A row whose timestamp cannot be parsed never
+ * wins the comparison, but it still counts as activity — the last such row is
+ * used only when no row in the history has a usable timestamp. Lesser returns
+ * the history in order, so the last row is the right fallback.
+ */
+function latestVerdict(
+	verdicts: readonly ReviewVerdictRecordData[]
+): ReviewVerdictRecordData | undefined {
+	let newest: ReviewVerdictRecordData | undefined;
+	let newestTime = Number.NEGATIVE_INFINITY;
+	let fallback: ReviewVerdictRecordData | undefined;
+
+	for (const record of verdicts) {
+		if (!record) continue;
+		fallback = record;
+
+		const time = Date.parse(record.recordedAt ?? '');
+		if (!Number.isNaN(time) && time >= newestTime) {
+			newest = record;
+			newestTime = time;
+		}
+	}
+
+	return newest ?? fallback;
+}
+
+/**
  * Resolves the review state to render for a draft.
  *
- * Resolution order:
+ * **This is latest activity, never the publication gate.** Both branches below
+ * report what most recently happened, not whether the draft may publish:
  *
- * 1. When Lesser supplied `reviewStatus`, that string is authoritative and is
- *    rendered verbatim (`source: 'server'`).
- * 2. Otherwise the state is summarised from the recorded verdicts
- *    (`source: 'derived'`). A recorded `CHANGES_REQUESTED` takes precedence
- *    over recorded approvals, so the summary never reads "Approved" while a
- *    reviewer has changes outstanding.
+ * 1. When Lesser supplied `reviewStatus`, that string is rendered verbatim
+ *    (`source: 'server'`). Lesser overwrites `Draft.ReviewStatus` with the
+ *    verdict on *every* submission, so it names the most recent submission —
+ *    a later `CHANGES_REQUESTED` from one reviewer replaces an earlier
+ *    `APPROVED` from another, and neither reflects the gate.
+ * 2. Otherwise the newest recorded verdict is named (`source: 'verdicts'`).
  *
- * This is a *display* summary. It does not decide whether a draft may publish —
- * Lesser owns that.
+ * The real gate reconstructs, per reviewer holding an active grant, that
+ * reviewer's newest verdict recorded *after* the grant was issued, and requires
+ * all of them to approve — plus the instance principal for generated drafts.
+ * That reconstruction needs the active-grant set and the principal's identity,
+ * neither of which the pinned projection exposes, so the chrome does not
+ * attempt it. See {@link describeApprovalRequirement}.
+ *
+ * Renderers pair the result with {@link REVIEW_STATE_QUALIFIER}.
  */
 export function resolveReviewState(review: DraftReviewData): ReviewStateDescriptor {
 	const serverStatus = review.reviewStatus?.trim();
@@ -89,16 +135,16 @@ export function resolveReviewState(review: DraftReviewData): ReviewStateDescript
 		};
 	}
 
-	const verdicts = review.verdicts ?? [];
-	if (verdicts.length === 0) {
-		return { tone: 'pending', label: 'Awaiting review', source: 'derived' };
+	const newest = latestVerdict(review.verdicts ?? []);
+	if (!newest) {
+		return { tone: 'pending', label: 'No review activity recorded', source: 'none' };
 	}
 
-	if (verdicts.some((record) => record.verdict === 'CHANGES_REQUESTED')) {
-		return { tone: 'changes-requested', label: 'Changes requested', source: 'derived' };
-	}
-
-	return { tone: 'approved', label: 'Approved', source: 'derived' };
+	// The label names the verdict *record*, so it reads as history rather than
+	// as a decision about the draft.
+	return newest.verdict === 'CHANGES_REQUESTED'
+		? { tone: 'changes-requested', label: 'Latest verdict: Changes requested', source: 'verdicts' }
+		: { tone: 'approved', label: 'Latest verdict: Approved', source: 'verdicts' };
 }
 
 /**
@@ -106,44 +152,66 @@ export function resolveReviewState(review: DraftReviewData): ReviewStateDescript
  */
 export interface DescribeApprovalRequirementOptions {
 	/**
-	 * How many reviewers were invited, when the consumer knows it.
+	 * How many reviewers hold an **active** (unrevoked) grant on this draft.
 	 *
-	 * The pinned contract exposes only the single outstanding `grant`, not the
-	 * full invite list, so this cannot be derived from `DraftReviewData` alone.
-	 * When omitted the descriptor reports the recorded count without implying a
-	 * total.
+	 * The pinned projection exposes only `DraftReview.grant` — the *viewer's
+	 * own* invitation — not the full active set, so this cannot be derived from
+	 * `DraftReviewData`. Supply it only from a source that genuinely enumerates
+	 * active grants; when omitted the descriptor names the rules without
+	 * implying any completion.
+	 *
+	 * Note this is the *active* count, not an invited count: a revoked grant
+	 * leaves the required set immediately while its verdict history remains as
+	 * audit-only record.
 	 */
-	invitedReviewerCount?: number;
+	activeReviewerCount?: number;
 }
 
 /**
- * Describes, for display only, which approval rule governs a draft.
+ * Whether the draft records a generator, which is what arms the principal rule.
  *
- * The rule mirrored here is Lesser's: agent-authored drafts (`generatedBy` is
- * an agent, per the contract's `Actor.isAgent`) require the principal's
- * approval; other drafts require a verdict from every invited reviewer.
+ * Lesser tests `strings.TrimSpace(draft.GeneratedBy) != ""` — a plain non-empty
+ * string check. It is deliberately **not** keyed on `Actor.isAgent`, so a draft
+ * generated by a delegated local actor arms the rule exactly as an agent-
+ * generated draft does. An actor projection with no usable identity is treated
+ * as absent, mirroring the upstream trim.
+ */
+function hasRecordedGenerator(review: DraftReviewData): boolean {
+	const generator = review.generatedBy;
+	if (!generator) return false;
+
+	return Boolean(generator.id?.trim() || generator.username?.trim());
+}
+
+/**
+ * Describes, for display only, which approval rules govern a draft.
+ *
+ * Lesser's rules are **cumulative**. `PublishDraft` requires unanimous approval
+ * from every active reviewer grant for *every* draft, and — whenever the draft
+ * records a generator — additionally requires the instance principal's own
+ * active grant and current `APPROVED` verdict. A generated draft must satisfy
+ * both; no other reviewer can substitute for the principal, and a generated
+ * draft that never grants the principal fails closed.
  *
  * This is a **presentation mirror, not an enforcement point**. Nothing in the
  * review chrome consumes the result to enable, disable, or gate a verdict
- * submission; Lesser enforces the policy and rejects invalid submissions, and
- * `DraftReviewData.reviewStatus` remains the authoritative status. The
- * descriptor exists purely so a reviewer can see what is being asked of them.
+ * submission; Lesser enforces the policy and rejects invalid submissions.
+ *
+ * The descriptor reports no progress. Doing so honestly would require counting
+ * reviewers with an active grant at the current round — data the pinned
+ * projection does not carry — and counting `verdicts` instead would be wrong,
+ * because that history is immutable and append-only. The chrome therefore names
+ * the rules and stays neutral about how far along they are.
  */
 export function describeApprovalRequirement(
 	review: DraftReviewData,
 	options: DescribeApprovalRequirementOptions = {}
 ): ReviewApprovalRequirement {
-	const recorded = review.verdicts?.length ?? 0;
-
-	if (review.generatedBy?.isAgent) {
-		return { kind: 'principal-approval', recorded, required: 1 };
-	}
+	const { activeReviewerCount } = options;
 
 	return {
-		kind: 'all-reviewers',
-		recorded,
-		...(options.invitedReviewerCount === undefined
-			? {}
-			: { required: options.invitedReviewerCount }),
+		allActiveReviewers: true,
+		principalApproval: hasRecordedGenerator(review),
+		...(activeReviewerCount === undefined ? {} : { activeReviewerCount }),
 	};
 }
