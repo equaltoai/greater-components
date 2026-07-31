@@ -185,6 +185,124 @@ describe('linkifyHtml', () => {
 			expect(result).toContain('@axb');
 			expect(result.match(/class="mention"/g)).toHaveLength(1);
 		});
+
+		it('resolves a whole token, so a shorter username is not a prefix match', () => {
+			// The pass-per-entity implementation matched `@user1` inside `@user10`,
+			// linking the wrong profile and stranding the trailing digits as text.
+			const result = linkifyHtml('<p>@user1 @user10</p>', {
+				mentions: [
+					{ username: 'user1', url: 'https://example.com/@user1' },
+					{ username: 'user10', url: 'https://example.com/@user10' },
+				],
+			});
+
+			expect(result).toContain('href="https://example.com/@user1" class="mention"');
+			expect(result).toContain('href="https://example.com/@user10" class="mention"');
+			expect(result).toContain('>@user10</a>');
+			expect(result).not.toContain('</a>0');
+		});
+
+		it('leaves an unknown mention alone even when a known one is a prefix of it', () => {
+			const result = linkifyHtml('<p>@alice @alicia</p>', {
+				mentions: [{ username: 'alice', url: 'https://example.com/@alice' }],
+			});
+
+			expect(result).toContain('>@alice</a>');
+			expect(result).toContain('@alicia');
+			expect(result.match(/class="mention"/g)).toHaveLength(1);
+		});
+
+		it('links the entity but not the sentence punctuation that follows it', () => {
+			const result = linkifyHtml('<p>ask @alice. see #svelte.</p>', {
+				mentions: [{ username: 'alice', url: 'https://example.com/@alice' }],
+				tags: [{ name: 'svelte', url: 'https://example.com/tags/svelte' }],
+			});
+
+			expect(result).toContain('>@alice</a>.');
+			expect(result).toContain('>#svelte</a>.');
+		});
+
+		it('keeps a hashtag boundary: a known tag does not match a longer word', () => {
+			const result = linkifyHtml('<p>#svelte #svelte5</p>', {
+				tags: [{ name: 'svelte', url: 'https://example.com/tags/svelte' }],
+			});
+
+			expect(result).toContain('>#svelte</a>');
+			expect(result).toContain('#svelte5');
+			expect(result.match(/class="hashtag"/g)).toHaveLength(1);
+		});
+
+		it('matches a hashtag case-insensitively but keeps the text as written', () => {
+			const result = linkifyHtml('<p>#Svelte</p>', {
+				tags: [{ name: 'svelte', url: 'https://example.com/tags/svelte' }],
+			});
+
+			expect(result).toContain('href="https://example.com/tags/svelte"');
+			expect(result).toContain('>#Svelte</a>');
+		});
+
+		it('takes the first entry when two entities share a name', () => {
+			const result = linkifyHtml('<p>@alice</p>', {
+				mentions: [
+					{ username: 'alice', url: 'https://first.example/@alice' },
+					{ username: 'alice', url: 'https://second.example/@alice' },
+				],
+			});
+
+			expect(result).toContain('href="https://first.example/@alice"');
+			expect(result).not.toContain('second.example');
+		});
+	});
+
+	describe('known-entity processing scales linearly (SSR resource safety)', () => {
+		// Status bodies render on the server, so the cost of a federated peer's
+		// mention and tag arrays is spent on a render worker. The previous
+		// implementation ran one segment-splitting pass per entity over a segment
+		// list the earlier passes had grown: doubling the reference count cost
+		// roughly 4x. These bounds are deliberately loose — they are an
+		// order-of-growth assertion, not a benchmark.
+		const buildStatus = (refs: number) => {
+			const mentions = Array.from({ length: refs }, (_, i) => ({
+				username: `user${i}`,
+				url: `https://example.com/@user${i}`,
+			}));
+			const tags = Array.from({ length: refs }, (_, i) => ({
+				name: `tag${i}`,
+				url: `https://example.com/tags/tag${i}`,
+			}));
+			const body = Array.from({ length: refs }, (_, i) => `@user${i} #tag${i}`).join(' ');
+
+			return { html: `<p>${body}</p>`, mentions, tags };
+		};
+
+		const timeLinkify = (refs: number): number => {
+			const { html, mentions, tags } = buildStatus(refs);
+			// Warm the code paths so the measurement is not dominated by first-call JIT.
+			linkifyHtml(html, { mentions, tags });
+
+			const started = performance.now();
+			const result = linkifyHtml(html, { mentions, tags });
+			const elapsed = performance.now() - started;
+
+			// Guard against measuring a no-op.
+			expect(result.match(/class="mention"/g)).toHaveLength(refs);
+			expect(result.match(/class="hashtag"/g)).toHaveLength(refs);
+
+			return elapsed;
+		};
+
+		it('grows sub-quadratically as the reference count grows 8x', () => {
+			const small = Math.max(timeLinkify(1_000), 1);
+			const large = timeLinkify(8_000);
+
+			// Linear is ~8x. Quadratic is ~64x. Fail well below the quadratic curve.
+			expect(large / small).toBeLessThan(24);
+		});
+
+		it('processes 10,000 references well inside an SSR request budget', () => {
+			// ~37ms on the indexed walk against ~1450ms on the pass-per-entity walk.
+			expect(timeLinkify(5_000)).toBeLessThan(750);
+		});
 	});
 
 	describe('security invariants', () => {

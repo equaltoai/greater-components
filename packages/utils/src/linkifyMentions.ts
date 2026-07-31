@@ -209,10 +209,6 @@ const GENERIC_LINK_SOURCE =
 	'|(#[\\p{L}\\p{N}_]+)' +
 	')';
 
-function escapeRegExp(value: string): string {
-	return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
 /**
  * Sentinel origin relative hrefs are resolved against. Any relative form that
  * leaves this origin once resolved addresses another host and is rejected.
@@ -299,6 +295,17 @@ function isElementNode(node: LinkifyNode): node is LinkifyElementNode {
 
 type LinkifySegment = LinkifyTextNode | LinkifyElementNode;
 
+interface LinkifyReplacement {
+	nodes: LinkifySegment[];
+	/**
+	 * How many characters of the match `nodes` account for. Defaults to the whole
+	 * match; a shorter value hands the unconsumed tail back to the scanner as
+	 * text, which is how a token that picked up trailing prose punctuation links
+	 * only its resolved prefix.
+	 */
+	consumed?: number;
+}
+
 /**
  * Replace pattern matches inside text segments with generated nodes. Element
  * segments produced by an earlier pass are left alone, so a run of text is
@@ -307,7 +314,7 @@ type LinkifySegment = LinkifyTextNode | LinkifyElementNode;
 function splitSegments(
 	segments: LinkifySegment[],
 	pattern: RegExp,
-	build: (match: RegExpExecArray) => LinkifySegment[] | null
+	build: (match: RegExpExecArray) => LinkifyReplacement | null
 ): LinkifySegment[] {
 	const out: LinkifySegment[] = [];
 
@@ -331,12 +338,13 @@ function splitSegments(
 				if (match.index > cursor) {
 					pending.push(textNode(value.slice(cursor, match.index)));
 				}
-				pending.push(...replacement);
-				cursor = match.index + match[0].length;
+				pending.push(...replacement.nodes);
+				cursor = match.index + (replacement.consumed ?? match[0].length);
+				pattern.lastIndex = cursor;
 			}
 
-			// Guard against a zero-length match stalling the scan.
-			if (pattern.lastIndex === match.index) pattern.lastIndex += 1;
+			// Guard against a zero-length match, or an unconsumed prefix, stalling the scan.
+			if (pattern.lastIndex <= match.index) pattern.lastIndex = match.index + 1;
 			match = pattern.exec(value);
 		}
 
@@ -353,6 +361,79 @@ function splitSegments(
 	}
 
 	return out;
+}
+
+/**
+ * Characters a mention or hashtag token may be built from. This is the scanning
+ * alphabet, not a validation rule: the token it delimits is resolved against the
+ * supplied entity index, and anything unknown is left as plain text.
+ */
+const ENTITY_TOKEN_BODY = '[\\p{L}\\p{N}\\p{M}_.-]+';
+
+/**
+ * One alternation finds every mention and hashtag candidate in a text node in a
+ * single left-to-right scan. A mention may carry an `@domain` suffix
+ * (`@alice@example.com`); a hashtag may not.
+ */
+const KNOWN_ENTITY_SOURCE = `@(${ENTITY_TOKEN_BODY})(@[\\w.-]+)?|#(${ENTITY_TOKEN_BODY})`;
+
+/** Punctuation a token picks up from prose: `@alice.`, `#svelte-`. */
+const TRAILING_PUNCTUATION = /[.-]+$/;
+
+/** Entity name to validated href. */
+type EntityIndex = Map<string, string>;
+
+/**
+ * Index the known entities once per call so each scanned token resolves with a
+ * constant-cost map lookup.
+ *
+ * The previous implementation ran one `splitSegments` pass per entity, and every
+ * pass walked the segment list the earlier passes had grown — quadratic in the
+ * number of mentions and tags a status carries. Since status bodies now render
+ * on the server, that cost was a federated peer's to spend on a render worker.
+ */
+function buildEntityIndex(
+	entries: ReadonlyArray<{ name?: string; url?: string }>,
+	foldCase: boolean
+): EntityIndex {
+	const index: EntityIndex = new Map();
+
+	for (const entry of entries) {
+		if (!entry?.name) continue;
+
+		const href = toSafeHref(entry.url);
+		if (!href) continue;
+
+		const key = foldCase ? entry.name.toLowerCase() : entry.name;
+		// First entry wins, matching the pass-per-entity ordering this replaced.
+		if (!index.has(key)) index.set(key, href);
+	}
+
+	return index;
+}
+
+/**
+ * Resolve a scanned token against an index. The whole token is tried first, then
+ * the token with trailing punctuation removed, so `@alice.` at the end of a
+ * sentence links `@alice` and leaves the period as text. Both probes are bounded
+ * by the token's own length, so resolution cost does not grow with the number of
+ * entities supplied.
+ */
+function resolveEntity(
+	index: EntityIndex,
+	token: string,
+	foldCase: boolean
+): { name: string; href: string } | null {
+	if (index.size === 0) return null;
+
+	const direct = index.get(foldCase ? token.toLowerCase() : token);
+	if (direct !== undefined) return { name: token, href: direct };
+
+	const trimmed = token.replace(TRAILING_PUNCTUATION, '');
+	if (!trimmed || trimmed.length === token.length) return null;
+
+	const href = index.get(foldCase ? trimmed.toLowerCase() : trimmed);
+	return href === undefined ? null : { name: trimmed, href };
 }
 
 /**
@@ -393,6 +474,13 @@ function linkifyChildren(
  *
  * This is not a sanitizer. Callers must sanitize `html` first — anything unsafe
  * in the input stays unsafe in the output.
+ *
+ * When `mentions` or `tags` is supplied, each text node is scanned once and
+ * every candidate token is resolved against those entities by name: a token
+ * matches only as a whole (`@user10` never resolves to `@user1`), optionally
+ * minus trailing prose punctuation (`@alice.` links `@alice`). A mention may
+ * carry an `@domain` suffix. The scan cost is a function of the content length,
+ * not of how many entities the caller supplies.
  */
 export function linkifyHtml(html: string, options: LinkifyHtmlOptions = {}): string {
 	if (!html || typeof html !== 'string') return '';
@@ -427,29 +515,49 @@ export function linkifyHtml(html: string, options: LinkifyHtmlOptions = {}): str
 
 	const useKnownEntities = mentions.length > 0 || tags.length > 0;
 
+	// Built once per call, not once per text node, and never once per entity.
+	const mentionIndex = useKnownEntities
+		? buildEntityIndex(
+				mentions.map((mention) => ({ name: mention?.username, url: mention?.url })),
+				false
+			)
+		: (new Map() as EntityIndex);
+	const tagIndex = useKnownEntities
+		? buildEntityIndex(
+				tags.map((tag) => ({ name: tag?.name, url: tag?.url })),
+				true
+			)
+		: (new Map() as EntityIndex);
+
 	const transform = (text: LinkifyTextNode): LinkifySegment[] | null => {
 		let segments: LinkifySegment[] = [text];
 
 		if (useKnownEntities) {
-			for (const mention of mentions) {
-				const href = toSafeHref(mention?.url);
-				if (!href || !mention.username) continue;
+			segments = splitSegments(segments, new RegExp(KNOWN_ENTITY_SOURCE, 'gu'), (match) => {
+				const [, mentionToken, domain = '', tagToken] = match;
 
-				const pattern = new RegExp(`@${escapeRegExp(mention.username)}(?:@[\\w.-]+)?`, 'g');
-				segments = splitSegments(segments, pattern, (match) => [
-					anchor(href, mentionClass, match[0]),
-				]);
-			}
+				if (mentionToken !== undefined) {
+					const resolved = resolveEntity(mentionIndex, mentionToken, false);
+					if (!resolved) return null;
 
-			for (const tag of tags) {
-				const href = toSafeHref(tag?.url);
-				if (!href || !tag.name) continue;
+					// A `@domain` suffix belongs to the link only when the whole local
+					// part resolved: `@alice.@example.com` links `@alice` and leaves the
+					// rest as text, exactly as the per-entity patterns did.
+					const suffix = resolved.name.length === mentionToken.length ? domain : '';
+					const label = `@${resolved.name}${suffix}`;
+					return { nodes: [anchor(resolved.href, mentionClass, label)], consumed: label.length };
+				}
 
-				const pattern = new RegExp(`#${escapeRegExp(tag.name)}\\b`, 'gi');
-				segments = splitSegments(segments, pattern, (match) => [
-					anchor(href, hashtagClass, match[0]),
-				]);
-			}
+				if (tagToken !== undefined) {
+					const resolved = resolveEntity(tagIndex, tagToken, true);
+					if (!resolved) return null;
+
+					const label = `#${resolved.name}`;
+					return { nodes: [anchor(resolved.href, hashtagClass, label)], consumed: label.length };
+				}
+
+				return null;
+			});
 		} else {
 			segments = splitSegments(segments, new RegExp(GENERIC_LINK_SOURCE, 'giu'), (match) => {
 				const [, boundary = '', url, mention, hashtag] = match;
@@ -458,19 +566,19 @@ export function linkifyHtml(html: string, options: LinkifyHtmlOptions = {}): str
 				if (url) {
 					const href = toSafeAbsoluteHref(url.startsWith('http') ? url : `https://${url}`);
 					if (!href) return null;
-					return [...lead, anchor(href, urlClass, truncateUrl(href, maxUrlLength))];
+					return { nodes: [...lead, anchor(href, urlClass, truncateUrl(href, maxUrlLength))] };
 				}
 
 				if (mention) {
 					const href = toSafeHref(mentionBaseUrl + mention.slice(1));
 					if (!href) return null;
-					return [...lead, anchor(href, mentionClass, mention)];
+					return { nodes: [...lead, anchor(href, mentionClass, mention)] };
 				}
 
 				if (hashtag) {
 					const href = toSafeHref(hashtagBaseUrl + encodeURIComponent(hashtag.slice(1)));
 					if (!href) return null;
-					return [...lead, anchor(href, hashtagClass, hashtag)];
+					return { nodes: [...lead, anchor(href, hashtagClass, hashtag)] };
 				}
 
 				return null;
