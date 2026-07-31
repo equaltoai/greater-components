@@ -24,7 +24,7 @@ const config = {
 		},
 		prerender: {
 			entries: ['*'],
-			handleHttpError: ({ path, message }) => {
+			handleHttpError: ({ status, path, message }) => {
 				// Skip 404 errors for external links like /docs
 				if (path === '/greater-components/docs' || path === '/docs') {
 					return;
@@ -34,7 +34,9 @@ const config = {
 				// `/tags/`), and the playground has no profile or tag routes for the
 				// crawler to reach. These bodies only became crawlable once status
 				// content started server-rendering (equaltoai/greater-components#926).
-				if (/^\/(users|tags)\//.test(path)) {
+				// Scoped to the missing-route case only: any other prerender failure
+				// under these paths is a real break and must still fail the build.
+				if (status === 404 && /^(\/greater-components)?\/(users|tags)\//.test(path)) {
 					return;
 				}
 				throw new Error(message);
