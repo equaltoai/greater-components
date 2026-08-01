@@ -5848,6 +5848,33 @@
 	color: var(--gr-semantic-action-error-default);
 }
 
+/*
+ * Submit failure surfaced inline (role="alert"). Reuses the already
+ * contrast-validated error foreground token rather than introducing a new one,
+ * so the theming contract is unchanged.
+ */
+.gr-compose-box__error {
+	padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
+	border-radius: var(--gr-radii-md);
+	border-left: 3px solid var(--gr-semantic-action-error-default);
+	background-color: var(--gr-semantic-background-secondary);
+	color: var(--gr-semantic-action-error-default);
+	font-size: var(--gr-typography-fontSize-sm);
+	font-weight: var(--gr-typography-fontWeight-medium);
+	line-height: var(--gr-typography-lineHeight-normal);
+}
+
+/*
+ * Explains why wider visibility options are disabled in a reply/quote context.
+ * Referenced by the select's aria-describedby, so it must stay in the
+ * accessibility tree — never `display: none`.
+ */
+.gr-compose-box__visibility-note {
+	font-size: var(--gr-typography-fontSize-sm);
+	line-height: var(--gr-typography-lineHeight-normal);
+	color: var(--gr-semantic-foreground-secondary);
+}
+
 .gr-compose-box__media,
 .gr-compose-box__poll {
 	padding: var(--gr-spacing-scale-2);

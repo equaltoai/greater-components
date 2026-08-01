@@ -560,6 +560,26 @@ export {
 	shouldHighlightNotification,
 } from './utils/notificationGrouping';
 
+/**
+ * Reply/quote reach constraints (Lesser v1.5.33).
+ *
+ * Exported so faces and consuming apps can apply the same UX constraint the
+ * composer does. The server remains the enforcer; these narrow only.
+ * @public
+ */
+export {
+	COMPOSE_VISIBILITY_ORDER,
+	allowedChildVisibilities,
+	constrainVisibility,
+	isComposeVisibility,
+	isReachRejection,
+	isReachWidening,
+	reachRank,
+	visibilityLabel,
+} from './utils/reach.js';
+
+export type { ComposeVisibility } from './utils/reach.js';
+
 // Export stores and transport
 export { TransportManager } from './lib/transport';
 export { TimelineStore } from './lib/timelineStore';

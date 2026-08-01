@@ -10,6 +10,14 @@
 		ComposeMediaAttachment,
 		ComposePoll,
 	} from '../types.js';
+	import {
+		allowedChildVisibilities,
+		constrainVisibility,
+		isReachRejection,
+		visibilityLabel,
+		COMPOSE_VISIBILITY_ORDER,
+		type ComposeVisibility,
+	} from '../utils/reach.js';
 
 	interface Props extends ComposeBoxProps {
 		mediaSlot?: Snippet<
@@ -39,6 +47,7 @@
 	let {
 		initialContent = '',
 		replyToStatus,
+		quotedStatus,
 		maxLength = 500,
 		maxCwLength = 100,
 		placeholder = "What's on your mind?",
@@ -72,9 +81,37 @@
 	let contentWarning = $state('');
 	let hasContentWarning = $state(false);
 
-	let visibility = $state<'public' | 'unlisted' | 'private' | 'direct'>(
-		untrack(() => defaultVisibility)
+	// The parent whose reach bounds this post. Lesser applies the same rule to
+	// replies and quotes; a reply target wins when both are supplied.
+	const parentStatus = $derived(replyToStatus ?? quotedStatus);
+	const parentVisibility = $derived(parentStatus?.visibility);
+
+	/**
+	 * Visibilities Lesser will accept for this post. Equal or narrower than the
+	 * parent; a direct or conversation parent leaves only `direct`, so there is
+	 * no public quote path for it. Unconstrained for a fresh post, or when the
+	 * parent's reach is unreadable — see `allowedChildVisibilities`.
+	 */
+	const allowedVisibilities = $derived(allowedChildVisibilities(parentVisibility));
+
+	// Only claim a constraint when one is actually in force, so the note never
+	// contradicts a picker where nothing is disabled.
+	const isConstrainedComposition = $derived(
+		allowedVisibilities.length < COMPOSE_VISIBILITY_ORDER.length
 	);
+
+	let visibility = $state<ComposeVisibility>(
+		untrack(() => constrainVisibility(replyToStatus?.visibility ?? quotedStatus?.visibility, defaultVisibility))
+	);
+
+	/**
+	 * Inline error shown when the server refuses the submission.
+	 *
+	 * Reach is re-checked at submit time, so a parent can narrow between render
+	 * and submit. That race is the reason this exists: the composer explains the
+	 * refusal instead of failing silently.
+	 */
+	let submitError = $state<string | null>(null);
 	let mediaAttachments = $state<ComposeMediaAttachment[]>([]);
 	let poll = $state<ComposePoll | undefined>();
 	let isSubmitting = $state(false);
@@ -138,6 +175,19 @@
 	const cwId = $derived(composeId ? `${composeId}-cw` : undefined);
 	const charCountId = $derived(composeId ? `${composeId}-char-count` : undefined);
 	const cwCharCountId = $derived(composeId ? `${composeId}-cw-char-count` : undefined);
+	const visibilityNoteId = $derived(composeId ? `${composeId}-visibility-note` : undefined);
+	const submitErrorId = $derived(composeId ? `${composeId}-submit-error` : undefined);
+
+	// Keep the selection inside what the server will accept. If the parent
+	// narrows, the selection narrows with it — this only ever narrows, so it
+	// cannot widen an author's choice behind their back.
+	$effect(() => {
+		const allowed = allowedVisibilities;
+		const current = untrack(() => visibility);
+		if (!allowed.includes(current)) {
+			visibility = constrainVisibility(untrack(() => parentVisibility), current);
+		}
+	});
 
 	// Handle content input
 	function handleInput(event: Event) {
@@ -245,7 +295,12 @@
 					content = draft.content || '';
 					contentWarning = draft.contentWarning || '';
 					hasContentWarning = draft.hasContentWarning || false;
-					visibility = draft.visibility || defaultVisibility;
+					// A draft saved against a different (or no) parent may carry
+					// a wider visibility than this composition allows.
+					visibility = constrainVisibility(
+						parentVisibility,
+						draft.visibility || defaultVisibility
+					);
 					mediaAttachments = draft.mediaAttachments || [];
 					poll = draft.poll;
 				}
@@ -269,6 +324,7 @@
 		if (!canSubmit || !onSubmit) return;
 
 		isSubmitting = true;
+		submitError = null;
 
 		try {
 			await onSubmit(draftData);
@@ -282,6 +338,15 @@
 			clearDraft();
 		} catch (error) {
 			console.error('Failed to submit:', error);
+			// Lesser re-checks reach at submit time, so a parent that narrowed
+			// after render is refused with UNPROCESSABLE_ENTITY even though the
+			// picker offered this option. Explain that rather than failing
+			// silently; the author's text is deliberately left intact.
+			submitError = isReachRejection(error)
+				? `This ${replyToStatus ? 'reply' : 'post'} can't reach a wider audience than the post it ${
+						replyToStatus ? 'replies to' : 'quotes'
+					}. Choose a narrower visibility and try again.`
+				: 'Your post could not be sent. Please try again.';
 		} finally {
 			isSubmitting = false;
 		}
@@ -347,6 +412,18 @@
 			<span class="gr-compose-box__reply-label">
 				Replying to @{replyToStatus.account.acct}
 			</span>
+		</div>
+	{:else if quotedStatus}
+		<div class="gr-compose-box__reply-context">
+			<span class="gr-compose-box__reply-label">
+				Quoting @{quotedStatus.account.acct}
+			</span>
+		</div>
+	{/if}
+
+	{#if submitError}
+		<div id={submitErrorId} class="gr-compose-box__error" role="alert">
+			{submitError}
 		</div>
 	{/if}
 
@@ -515,12 +592,31 @@
 					bind:value={visibility}
 					{disabled}
 					aria-label="Post visibility"
+					aria-describedby={isConstrainedComposition ? visibilityNoteId : undefined}
 				>
-					<option value="public">Public</option>
-					<option value="unlisted">Unlisted</option>
-					<option value="private">Followers only</option>
-					<option value="direct">Direct</option>
+					<!--
+						Options wider than the parent stay rendered but disabled.
+						Removing them would silently change the menu between a
+						fresh post and a reply; disabling shows the constraint
+						exists and the note below says why.
+					-->
+					{#each COMPOSE_VISIBILITY_ORDER as option (option)}
+						<option value={option} disabled={!allowedVisibilities.includes(option)}>
+							{visibilityLabel(option)}
+						</option>
+					{/each}
 				</select>
+				{#if isConstrainedComposition}
+					<span id={visibilityNoteId} class="gr-compose-box__visibility-note">
+						{allowedVisibilities.length === 1
+							? `This ${replyToStatus ? 'reply' : 'quote'} can only be ${visibilityLabel(
+									allowedVisibilities[0]!
+								).toLowerCase()}, matching the post it ${replyToStatus ? 'replies to' : 'quotes'}.`
+							: `This ${replyToStatus ? 'reply' : 'quote'} can't reach a wider audience than the post it ${
+									replyToStatus ? 'replies to' : 'quotes'
+								}.`}
+					</span>
+				{/if}
 			{/if}
 		</div>
 
