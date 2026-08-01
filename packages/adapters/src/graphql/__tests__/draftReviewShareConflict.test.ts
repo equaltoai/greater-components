@@ -17,6 +17,14 @@ import { ShareDraftForReviewDocument } from '../generated/types.js';
  *
  * The client's only job is to name that condition. It must not re-issue the
  * grant, retry, or present the refusal as success.
+ *
+ * Classification is by `extensions.code` and nothing else. At the pinned
+ * v1.5.33 the conditional-create path returns its storage error unwrapped, so
+ * Lesser's presenter attaches no code and Greater rethrows instead of
+ * classifying — see `docs/lesser/contracts/upstream-gaps.md`. Matching the
+ * message text would close that gap by guessing: server strings are not
+ * contract, so a wording change upstream would silently start reporting real
+ * faults as a benign "already invited" notice.
  */
 
 vi.mock('../client', () => ({
@@ -62,12 +70,13 @@ const conflictWithCode = {
 };
 
 /**
- * The same refusal unwrapped. `CreateDraftReviewGrant` returns the storage
- * error directly, so Lesser's presenter may attach no `extensions.code` and the
- * client sees only the message.
+ * The same refusal as v1.5.33 actually delivers it. `CreateDraftReviewGrant`
+ * returns the tabletheory error unwrapped, so `graphQLErrorPresenter` finds no
+ * `*AppError` and writes no `extensions.code` — the client is left with a
+ * message it must not read.
  */
 const conflictWithoutCode = {
-	errors: [{ message: 'dynamo: condition failed' }],
+	errors: [{ message: 'condition check failed: item with the same key already exists' }],
 };
 
 describe('isDraftReviewShareConflict', () => {
@@ -78,27 +87,47 @@ describe('isDraftReviewShareConflict', () => {
 		).toBe(true);
 	});
 
-	it('recognises an unwrapped conditional-check message', () => {
-		expect(isDraftReviewShareConflict(conflictWithoutCode)).toBe(true);
-		expect(isDraftReviewShareConflict(new Error('ConditionalCheckFailedException'))).toBe(true);
-		expect(isDraftReviewShareConflict(new Error('grant already exists'))).toBe(true);
-	});
-
-	it('reads codes and messages preserved on an adapter error', () => {
+	it('reads the code preserved on an adapter error', () => {
 		expect(
 			isDraftReviewShareConflict(
 				new LesserGraphQLAdapterError('safe', { serverCodes: ['CONFLICT'] })
 			)
 		).toBe(true);
+	});
+
+	/**
+	 * The upstream gap, asserted as behaviour rather than papered over. When
+	 * Lesser starts coding this failure these expectations flip — that is the
+	 * signal to resync the snapshot, not a regression.
+	 */
+	it('does not classify an uncoded conflict, however the message reads', () => {
+		expect(isDraftReviewShareConflict(conflictWithoutCode)).toBe(false);
+		expect(isDraftReviewShareConflict(new Error('ConditionalCheckFailedException'))).toBe(false);
+		expect(isDraftReviewShareConflict(new Error('grant already exists'))).toBe(false);
 		expect(
 			isDraftReviewShareConflict(
 				new LesserGraphQLAdapterError('safe', { debugMessages: ['conditional check failed'] })
 			)
-		).toBe(true);
+		).toBe(false);
 	});
 
-	it('does not claim an unrelated failure', () => {
+	/**
+	 * The reason message matching was rejected: text this broad appears in
+	 * failures that have nothing to do with an existing grant, and reading it
+	 * would present a fault as a benign notice.
+	 */
+	it('does not claim an unrelated failure that merely mentions a duplicate', () => {
 		expect(isDraftReviewShareConflict(new Error('network down'))).toBe(false);
+		expect(
+			isDraftReviewShareConflict({
+				errors: [
+					{
+						message: 'duplicate request id rejected by the rate limiter',
+						extensions: { code: 'TOO_MANY_REQUESTS' },
+					},
+				],
+			})
+		).toBe(false);
 		expect(isDraftReviewShareConflict({ errors: [{ extensions: { code: 'FORBIDDEN' } }] })).toBe(
 			false
 		);
@@ -145,11 +174,8 @@ describe('shareDraftForReviewIfAbsent (Lesser v1.5.33 conditional grant)', () =>
 		});
 	});
 
-	it.each([
-		['a structured conflict code', conflictWithCode],
-		['an unwrapped conditional-check message', conflictWithoutCode],
-	])('reports a duplicate share as already-invited given %s', async (_label, failure) => {
-		mockApolloClient.mutate.mockResolvedValue(failure);
+	it('reports a duplicate share as already-invited given a structured conflict code', async () => {
+		mockApolloClient.mutate.mockResolvedValue(conflictWithCode);
 
 		const outcome = await adapter.shareDraftForReviewIfAbsent('draft-1', 'reviewer');
 
@@ -160,6 +186,20 @@ describe('shareDraftForReviewIfAbsent (Lesser v1.5.33 conditional grant)', () =>
 			cause: expect.any(LesserGraphQLAdapterError),
 		});
 		// No auto-regrant and no retry: one attempt, full stop.
+		expect(mockApolloClient.mutate).toHaveBeenCalledTimes(1);
+	});
+
+	/**
+	 * The v1.5.33 shape. Rethrowing is the honest outcome while the code is
+	 * missing: a caller told "already invited" on the strength of a message
+	 * string could be looking at any failure at all.
+	 */
+	it('rethrows an uncoded conditional-create conflict rather than guessing', async () => {
+		mockApolloClient.mutate.mockResolvedValue(conflictWithoutCode);
+
+		await expect(adapter.shareDraftForReviewIfAbsent('draft-1', 'reviewer')).rejects.toBeInstanceOf(
+			LesserGraphQLAdapterError
+		);
 		expect(mockApolloClient.mutate).toHaveBeenCalledTimes(1);
 	});
 

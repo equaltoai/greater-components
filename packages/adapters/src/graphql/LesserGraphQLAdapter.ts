@@ -615,41 +615,36 @@ export type ShareDraftForReviewOutcome =
 /**
  * Server codes that unambiguously mean "this grant already exists".
  *
- * Lesser maps a DynamoDB conditional-check failure to `CodeConflict`
- * (pkg/errors/storage.go `DynamoDBConditionalCheckFailed`), which the GraphQL
- * error presenter surfaces as `extensions.code`.
+ * These are Lesser's own `AppError` codes (pkg/errors/codes.go `CodeConflict`,
+ * `CodeAlreadyExists`), which the GraphQL error presenter copies verbatim onto
+ * `extensions.code` (cmd/graphql/main.go `graphQLErrorPresenter`). A code is
+ * contract surface; the message beside it is not.
  */
 const DRAFT_REVIEW_CONFLICT_CODES: readonly string[] = ['CONFLICT', 'ALREADY_EXISTS'];
 
 /**
- * Message shapes a conditional-create failure surfaces when it reaches the
- * client unwrapped.
- *
- * `CreateDraftReviewGrant` returns the storage error directly, so it is not
- * always an `AppError` by the time Lesser's presenter runs and may arrive with
- * no `extensions.code` at all. Matching the message is the fallback, not the
- * primary signal — see `isDraftReviewShareConflict`.
- */
-const DRAFT_REVIEW_CONFLICT_MESSAGE =
-	/conditional[ _-]?check[ _-]?failed|condition[ _-]?failed|already[ _-]?exists|duplicate/i;
-
-/**
  * True when a failed share was refused because the grant already exists.
  *
- * Deliberately conservative: an unrecognised failure is *not* a conflict, so
- * the caller rethrows rather than presenting a genuine fault as a benign "already
- * invited" notice.
+ * Classification is by `extensions.code` only. The obvious alternative —
+ * matching the failure text — was deliberately rejected: server message strings
+ * are not contract, so a wording change upstream would silently reclassify a
+ * genuine fault as a benign "already invited" notice, and a substring as broad
+ * as "duplicate" can appear in failures that have nothing to do with this grant.
+ * Presenting a fault as an expected condition is the worse error in both
+ * directions.
+ *
+ * Known upstream gap at the pinned v1.5.33, reported rather than worked around:
+ * `CreateDraftReviewGrant` returns its storage error unwrapped, so
+ * `graphQLErrorPresenter` finds no `*AppError`, attaches no `extensions.code`,
+ * and that conflict is *not* recognised here. The share then surfaces as an
+ * ordinary error, which is the honest outcome while the code is missing — see
+ * `docs/lesser/contracts/upstream-gaps.md`. Once Lesser maps the conditional
+ * failure to `CodeConflict`, this function recognises it with no change.
  */
 export function isDraftReviewShareConflict(error: unknown): boolean {
 	const codes =
 		error instanceof LesserGraphQLAdapterError ? error.serverCodes : extractServerErrorCodes(error);
-	if (codes.some((code) => DRAFT_REVIEW_CONFLICT_CODES.includes(code))) {
-		return true;
-	}
-
-	const messages =
-		error instanceof LesserGraphQLAdapterError ? error.debugMessages : extractDebugMessages(error);
-	return messages.some((message) => DRAFT_REVIEW_CONFLICT_MESSAGE.test(message));
+	return codes.some((code) => DRAFT_REVIEW_CONFLICT_CODES.includes(code));
 }
 
 export class LesserGraphQLAdapter {
@@ -2112,6 +2107,11 @@ export class LesserGraphQLAdapter {
 	 * `already-invited` means "the server refused because a grant exists" — a
 	 * notice to show, not a success to act on. Re-enabling a revoked reviewer
 	 * is a deliberate re-share, which Lesser's regrant path already accepts.
+	 *
+	 * Recognition depends on Lesser sending a typed conflict code. At the pinned
+	 * v1.5.33 the conditional-create path sends none, so callers must still
+	 * handle a thrown error from a duplicate share; see
+	 * {@link isDraftReviewShareConflict} for the gap and its upstream status.
 	 */
 	async shareDraftForReviewIfAbsent(
 		draftId: string,
