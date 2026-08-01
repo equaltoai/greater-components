@@ -303,6 +303,60 @@ describe('linkifyHtml', () => {
 			// ~37ms on the indexed walk against ~1450ms on the pass-per-entity walk.
 			expect(timeLinkify(5_000)).toBeLessThan(750);
 		});
+
+		// A second input class: a token the scanner finds but the index cannot
+		// resolve, whose tail is a long `.`/`-` run terminated by a character that
+		// blocks a `$` anchor. Resolving the suffix with `/[.-]+$/` made the engine
+		// retry that run from every offset inside it — quadratic in the token
+		// length, and worse at 100k characters than the pattern walk it replaced.
+		const buildPunctuationRun = (chars: number) => ({
+			html: `<p>@${'.'.repeat(chars - 1)}a</p>`,
+			mentions: [{ username: 'alice', url: 'https://example.com/@alice' }],
+		});
+
+		const timePunctuationRun = (chars: number): number => {
+			const { html, mentions } = buildPunctuationRun(chars);
+			// Warm the code paths so the measurement is not dominated by first-call JIT.
+			linkifyHtml(html, { mentions });
+
+			const started = performance.now();
+			const result = linkifyHtml(html, { mentions });
+			const elapsed = performance.now() - started;
+
+			// Guard against measuring a no-op: the token must reach resolution and
+			// stay plain text, which is the path that used to backtrack.
+			expect(result).not.toContain('<a');
+
+			return elapsed;
+		};
+
+		it('grows sub-quadratically as a trailing-punctuation run grows 8x', () => {
+			const small = Math.max(timePunctuationRun(12_500), 1);
+			const large = timePunctuationRun(100_000);
+
+			// Linear is ~8x. Quadratic is ~64x. Fail well below the quadratic curve.
+			expect(large / small).toBeLessThan(24);
+		});
+
+		it('resolves a 100,000-character near-token well inside an SSR request budget', () => {
+			// ~2ms on the bounded backwards scan against ~3,600ms on the regex suffix.
+			expect(timePunctuationRun(100_000)).toBeLessThan(750);
+		});
+
+		it('appends more segments than the engine accepts as call arguments', () => {
+			// The replacement list was flushed with `out.push(...pending)`, which
+			// passes one argument per segment: Node 24 threw `RangeError: Maximum
+			// call stack size exceeded` at 70,000 linked tokens — reachable by a
+			// ~540kB federated status. The append must be bounded by the array
+			// length, not by the call stack.
+			const refs = 35_000;
+			const { html, mentions, tags } = buildStatus(refs);
+
+			const result = linkifyHtml(html, { mentions, tags });
+
+			expect(result.match(/class="mention"/g)).toHaveLength(refs);
+			expect(result.match(/class="hashtag"/g)).toHaveLength(refs);
+		});
 	});
 
 	describe('security invariants', () => {
