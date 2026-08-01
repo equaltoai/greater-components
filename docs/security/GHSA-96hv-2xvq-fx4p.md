@@ -1,25 +1,40 @@
 # GHSA-96hv-2xvq-fx4p (`ws`)
 
 [GHSA-96hv-2xvq-fx4p](https://github.com/advisories/GHSA-96hv-2xvq-fx4p) is a
-high-severity memory-exhaustion denial of service in `ws`. The affected 8.x range is
-`>=8.0.0 <8.21.0`; `8.21.0` is patched.
+high-severity memory-exhaustion denial of service in `ws`. The advisory identifies the
+following patched release in each affected major line:
+
+| Release line | Patched release |
+| ------------ | --------------- |
+| 5.x          | 5.2.5           |
+| 6.x          | 6.2.4           |
+| 7.x          | 7.5.11          |
+| 8.x          | 8.21.0          |
 
 ## Greater-components state
 
-Greater-components has a root `pnpm.overrides` rule that floors `ws@^8.0.0` to `^8.21.0`.
-The workspace lockfile resolves `ws` to `8.21.1`, and `pnpm why -r ws` reports no resolution
-below `8.21.0`.
+Greater-components reaches `ws` through two production dependency paths:
 
-The consumer path is `@apollo/client` to its optional `graphql-ws` peer, whose optional `ws`
-peer accepts `^8`. The consumer's package manager resolves that path, not greater-components'
-lockfile. Greater-components' root override only controls this repository; it does not propagate
-to consumers.
+1. `graphql-ws` declares `ws: ^8` as an optional peer dependency. Fresh consumer resolutions can
+   therefore select a patched 8.x release naturally. A stale consumer lockfile can retain an older,
+   vulnerable 8.x resolution.
+2. `viem@2.51.3` declared `ws: 8.20.1` as an exact production dependency. Fresh consumer installs
+   were therefore vulnerable by default on this path. The next adapters release fixes the source
+   dependency by changing `viem` from `2.51.3` to `^2.55.10`; `viem@2.55.10` pins patched
+   `ws@8.21.0`.
+
+The greater-components workspace lockfile resolves every `ws` path to at least `8.21.0`. That
+lockfile and the root `pnpm.overrides` rule only control this repository and do not propagate to
+consumers.
 
 ## Consumer guidance
 
-Fresh installs resolve `graphql-ws`'s `ws: ^8` peer to a patched release. Consumers whose stale
-lockfiles pin `ws` below `8.21.0` must update the lockfile entry or add their own package-manager
-override.
+Consumers on the adapters release containing this fix get `ws >=8.21.0` by default. Consumers
+pinned to an older greater-components release should update when possible. Until then, refresh the
+lockfile and use an override for both affected dependency paths.
+
+The pnpm and npm examples below have the same blast radius: they override `ws` only when it is a
+child of `graphql-ws` or `viem`.
 
 For pnpm, add this to `package.json` and reinstall:
 
@@ -27,7 +42,8 @@ For pnpm, add this to `package.json` and reinstall:
 {
 	"pnpm": {
 		"overrides": {
-			"ws@^8.0.0": "^8.21.0"
+			"graphql-ws>ws": "^8.21.0",
+			"viem>ws": "^8.21.0"
 		}
 	}
 }
@@ -38,10 +54,14 @@ For npm, add this to `package.json` and reinstall:
 ```json
 {
 	"overrides": {
-		"ws": "^8.21.0"
+		"graphql-ws": {
+			"ws": "^8.21.0"
+		},
+		"viem": {
+			"ws": "^8.21.0"
+		}
 	}
 }
 ```
 
-This guidance addresses [issue #922](https://github.com/equaltoai/greater-components/issues/922)
-and rides with the v0.13.0 release notes.
+This guidance addresses [issue #922](https://github.com/equaltoai/greater-components/issues/922).
