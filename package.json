@@ -41,7 +41,7 @@
     "test:coverage:report": "COVERAGE_LINES=75 COVERAGE_FUNCTIONS=75 COVERAGE_STATEMENTS=75 COVERAGE_BRANCHES=60 node scripts/aggregate-coverage.js",
     "test:e2e": "pnpm -r test:e2e",
     "test:unit": "pnpm -r test:unit",
-    "test:scripts": "node -e \"const { spawnSync } = require('node:child_process'); let failed = false; for (const script of ['test:scripts:dco', 'test:scripts:csp']) { const result = spawnSync(process.env.npm_execpath, ['run', script], { stdio: 'inherit', shell: process.platform === 'win32' }); if (result.status !== 0) failed = true; } process.exit(failed ? 1 : 0);\"",
+    "test:scripts": "node scripts/run-script-tests.mjs",
     "test:scripts:dco": "node scripts/check-dco.test.mjs",
     "test:scripts:csp": "vitest run scripts/audit-csp.test.mjs",
     "test:a11y": "pnpm --filter @equaltoai/greater-components-testing run test:a11y",
