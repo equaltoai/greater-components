@@ -25,12 +25,12 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: Verify system Chrome
+        run: google-chrome --version
       - name: Build packages
         run: pnpm build
       - name: Build FaceTheory example
         run: pnpm build:facetheory-example
-      - name: Verify system Chrome
-        run: google-chrome --version
       # Authenticate GitHub API calls made by CLI ref-pinning code under test;
       # unauthenticated calls rate-limit on shared runner egress IPs (#897 tracks
       # the steward-level fix: mock the network in the update-command unit tests).
