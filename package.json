@@ -41,6 +41,7 @@
     "test:coverage:report": "COVERAGE_LINES=75 COVERAGE_FUNCTIONS=75 COVERAGE_STATEMENTS=75 COVERAGE_BRANCHES=60 node scripts/aggregate-coverage.js",
     "test:e2e": "pnpm -r test:e2e",
     "test:unit": "pnpm -r test:unit",
+    "test:scripts": "node scripts/check-dco.test.mjs && vitest run scripts/audit-csp.test.mjs",
     "test:a11y": "pnpm --filter @equaltoai/greater-components-testing run test:a11y",
     "test:a11y:ci": "node scripts/run-a11y-ci.js",
     "smoke:agent-face": "pnpm --filter @equaltoai/greater-components-agent-face... build && pnpm build:agent-face-example && pnpm exec tsc --noEmit -p examples/agent-face-svelte/tsconfig.json && pnpm --filter @equaltoai/playground build && pnpm --filter @equaltoai/greater-components exec vitest run tests/agent-face.smoke.test.ts",
