@@ -45,7 +45,17 @@ export interface BaseTransportConfig {
 
 	/** Optional logger implementation for transport diagnostics */
 	logger?: TransportLogger;
+}
 
+/**
+ * Credential-expiry handling, shared by transports that speak Lesser's
+ * subscribe-time expiry contract.
+ *
+ * Kept out of {@link BaseTransportConfig} deliberately: these are behavioural
+ * handlers with no default, not settings, so they must not appear in the
+ * `Required<Config>` shape the transports resolve their defaults into.
+ */
+export interface AuthExpiryConfig {
 	/**
 	 * Supplies a fresh credential when the server reports the current one
 	 * expired (Lesser v1.5.33 `TOKEN_EXPIRED`).
@@ -64,7 +74,7 @@ export interface BaseTransportConfig {
 	onAuthExpired?: AuthExpiredHandler;
 }
 
-export interface WebSocketClientConfig extends BaseTransportConfig {
+export interface WebSocketClientConfig extends BaseTransportConfig, AuthExpiryConfig {
 	/** Heartbeat interval in milliseconds (default: 30000) */
 	heartbeatInterval?: number;
 
@@ -77,6 +87,11 @@ export interface WebSocketClientConfig extends BaseTransportConfig {
 	/** Latency sampling interval in milliseconds (default: 10000) */
 	latencySamplingInterval?: number;
 }
+
+/** Config keys the WebSocket client resolves defaults for. */
+export type ResolvedWebSocketClientConfig = Required<
+	Omit<WebSocketClientConfig, keyof AuthExpiryConfig>
+>;
 
 export interface WebSocketMessage {
 	/** Message type/event name */

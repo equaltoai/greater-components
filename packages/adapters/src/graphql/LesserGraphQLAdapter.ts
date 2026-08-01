@@ -642,17 +642,13 @@ const DRAFT_REVIEW_CONFLICT_MESSAGE =
  */
 export function isDraftReviewShareConflict(error: unknown): boolean {
 	const codes =
-		error instanceof LesserGraphQLAdapterError
-			? error.serverCodes
-			: extractServerErrorCodes(error);
+		error instanceof LesserGraphQLAdapterError ? error.serverCodes : extractServerErrorCodes(error);
 	if (codes.some((code) => DRAFT_REVIEW_CONFLICT_CODES.includes(code))) {
 		return true;
 	}
 
 	const messages =
-		error instanceof LesserGraphQLAdapterError
-			? error.debugMessages
-			: extractDebugMessages(error);
+		error instanceof LesserGraphQLAdapterError ? error.debugMessages : extractDebugMessages(error);
 	return messages.some((message) => DRAFT_REVIEW_CONFLICT_MESSAGE.test(message));
 }
 

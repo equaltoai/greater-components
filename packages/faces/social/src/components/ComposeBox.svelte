@@ -101,7 +101,9 @@
 	);
 
 	let visibility = $state<ComposeVisibility>(
-		untrack(() => constrainVisibility(replyToStatus?.visibility ?? quotedStatus?.visibility, defaultVisibility))
+		untrack(() =>
+			constrainVisibility(replyToStatus?.visibility ?? quotedStatus?.visibility, defaultVisibility)
+		)
 	);
 
 	/**
@@ -185,7 +187,10 @@
 		const allowed = allowedVisibilities;
 		const current = untrack(() => visibility);
 		if (!allowed.includes(current)) {
-			visibility = constrainVisibility(untrack(() => parentVisibility), current);
+			visibility = constrainVisibility(
+				untrack(() => parentVisibility),
+				current
+			);
 		}
 	});
 
@@ -297,10 +302,7 @@
 					hasContentWarning = draft.hasContentWarning || false;
 					// A draft saved against a different (or no) parent may carry
 					// a wider visibility than this composition allows.
-					visibility = constrainVisibility(
-						parentVisibility,
-						draft.visibility || defaultVisibility
-					);
+					visibility = constrainVisibility(parentVisibility, draft.visibility || defaultVisibility);
 					mediaAttachments = draft.mediaAttachments || [];
 					poll = draft.poll;
 				}

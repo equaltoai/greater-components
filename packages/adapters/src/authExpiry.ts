@@ -29,7 +29,11 @@ export const UNAUTHENTICATED_CODE = 'UNAUTHENTICATED';
  * the adapter then reports terminal auth expiry rather than reconnecting with a
  * credential already known to be stale.
  */
-export type TokenRefreshCallback = () => Promise<string | null | undefined> | string | null | undefined;
+export type TokenRefreshCallback = () =>
+	| Promise<string | null | undefined>
+	| string
+	| null
+	| undefined;
 
 /** Notified when auth expiry is terminal for this transport. */
 export type AuthExpiredHandler = (error: AuthExpiredError) => void;
@@ -54,7 +58,10 @@ export class AuthExpiredError extends Error {
 	readonly reason: AuthExpiredReason;
 
 	constructor(reason: AuthExpiredReason, options: { cause?: unknown } = {}) {
-		super(authExpiredMessage(reason), options.cause === undefined ? undefined : { cause: options.cause });
+		super(
+			authExpiredMessage(reason),
+			options.cause === undefined ? undefined : { cause: options.cause }
+		);
 		this.name = 'AuthExpiredError';
 		this.reason = reason;
 	}
@@ -198,11 +205,13 @@ export function createSingleFlightRefresh(
 		inFlight = attempt;
 		// Release the slot once settled so a later expiry can refresh again,
 		// without letting a rejected refresh poison subsequent attempts.
-		void attempt.catch(() => undefined).finally(() => {
-			if (inFlight === attempt) {
-				inFlight = null;
-			}
-		});
+		void attempt
+			.catch(() => undefined)
+			.finally(() => {
+				if (inFlight === attempt) {
+					inFlight = null;
+				}
+			});
 
 		return attempt;
 	};

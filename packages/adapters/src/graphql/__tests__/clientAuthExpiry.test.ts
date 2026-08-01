@@ -77,7 +77,9 @@ vi.mock('@apollo/client/link/retry/index.js', () => ({
 vi.mock('@apollo/client/errors/index.js', () => ({
 	CombinedGraphQLErrors: {
 		is: (error: unknown) =>
-			Boolean(error && typeof error === 'object' && Array.isArray((error as { errors?: unknown }).errors)),
+			Boolean(
+				error && typeof error === 'object' && Array.isArray((error as { errors?: unknown }).errors)
+			),
 	},
 }));
 

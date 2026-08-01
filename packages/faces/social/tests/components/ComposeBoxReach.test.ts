@@ -127,7 +127,7 @@ describe('ComposeBox reply/quote reach constraint (Lesser v1.5.33)', () => {
 		const describedBy = select.getAttribute('aria-describedby');
 		expect(describedBy).toBe('composer-visibility-note');
 
-		const note = document.getElementById(describedBy!);
+		const note = document.getElementById(describedBy ?? '');
 		expect(note?.textContent).toMatch(/wider audience/i);
 	});
 

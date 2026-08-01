@@ -64,12 +64,7 @@ describe('allowedChildVisibilities', () => {
 	});
 
 	it('constrains each parent visibility to equal-or-narrower', () => {
-		expect(allowedChildVisibilities('public')).toEqual([
-			'public',
-			'unlisted',
-			'private',
-			'direct',
-		]);
+		expect(allowedChildVisibilities('public')).toEqual(['public', 'unlisted', 'private', 'direct']);
 		expect(allowedChildVisibilities('unlisted')).toEqual(['unlisted', 'private', 'direct']);
 		expect(allowedChildVisibilities('private')).toEqual(['private', 'direct']);
 	});
@@ -111,7 +106,8 @@ describe('constrainVisibility', () => {
 			for (const requested of COMPOSE_VISIBILITY_ORDER) {
 				const result = constrainVisibility(parent, requested);
 				expect(isReachWidening(parent, result)).toBe(false);
-				expect(reachRank(result)!).toBeGreaterThanOrEqual(reachRank(requested)!);
+				// Higher rank means narrower reach, so the result never widens.
+				expect(reachRank(result) ?? -1).toBeGreaterThanOrEqual(reachRank(requested) ?? -1);
 			}
 		}
 	});

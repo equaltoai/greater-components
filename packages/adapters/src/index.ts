@@ -17,11 +17,7 @@ export {
 	isAuthExpiredError,
 } from './authExpiry.js';
 
-export type {
-	AuthExpiredHandler,
-	AuthExpiredReason,
-	TokenRefreshCallback,
-} from './authExpiry.js';
+export type { AuthExpiredHandler, AuthExpiredReason, TokenRefreshCallback } from './authExpiry.js';
 
 // Transport Clients
 export { WebSocketClient } from './WebSocketClient';

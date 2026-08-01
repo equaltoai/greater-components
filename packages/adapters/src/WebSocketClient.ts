@@ -7,6 +7,7 @@ import {
 	type AuthExpiredHandler,
 } from './authExpiry.js';
 import type {
+	ResolvedWebSocketClientConfig,
 	WebSocketClientConfig,
 	WebSocketClientState,
 	WebSocketMessage,
@@ -22,7 +23,7 @@ import type {
  * WebSocketClient with automatic reconnection, heartbeat, and latency sampling
  */
 export class WebSocketClient implements TransportAdapter<WebSocketClientState> {
-	private config: Required<WebSocketClientConfig>;
+	private config: ResolvedWebSocketClientConfig;
 	private socket: WebSocket | null = null;
 	private state: WebSocketClientState;
 	private eventHandlers: Map<string, Set<WebSocketEventHandler>> = new Map();

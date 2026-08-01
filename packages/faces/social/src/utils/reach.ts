@@ -83,16 +83,12 @@ export function isReachWidening(parent: unknown, requested: unknown): boolean {
  * {@link isReachWidening}, which answers "will Lesser reject this?" and so
  * answers conservatively for the same input.
  */
-export function allowedChildVisibilities(
-	parentVisibility: unknown
-): readonly ComposeVisibility[] {
+export function allowedChildVisibilities(parentVisibility: unknown): readonly ComposeVisibility[] {
 	const parentRank = reachRank(parentVisibility);
 	if (parentRank === null) {
 		return COMPOSE_VISIBILITY_ORDER;
 	}
-	return COMPOSE_VISIBILITY_ORDER.filter(
-		(visibility) => REACH_RANK[visibility] >= parentRank
-	);
+	return COMPOSE_VISIBILITY_ORDER.filter((visibility) => REACH_RANK[visibility] >= parentRank);
 }
 
 /**
@@ -180,7 +176,15 @@ function extractErrorCodes(source: unknown): string[] {
 			codes.add('UNPROCESSABLE_ENTITY');
 		}
 
-		for (const key of ['errors', 'graphQLErrors', 'payload', 'result', 'networkError', 'cause', 'body']) {
+		for (const key of [
+			'errors',
+			'graphQLErrors',
+			'payload',
+			'result',
+			'networkError',
+			'cause',
+			'body',
+		]) {
 			walk(record[key], depth + 1);
 		}
 	};

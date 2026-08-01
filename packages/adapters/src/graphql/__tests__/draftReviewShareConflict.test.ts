@@ -190,9 +190,9 @@ describe('shareDraftForReviewIfAbsent (Lesser v1.5.33 conditional grant)', () =>
 			errors: [{ message: 'forbidden', extensions: { code: 'FORBIDDEN' } }],
 		});
 
-		await expect(
-			adapter.shareDraftForReviewIfAbsent('draft-1', 'reviewer')
-		).rejects.toBeInstanceOf(LesserGraphQLAdapterError);
+		await expect(adapter.shareDraftForReviewIfAbsent('draft-1', 'reviewer')).rejects.toBeInstanceOf(
+			LesserGraphQLAdapterError
+		);
 	});
 
 	it('succeeds when a revoked reviewer is deliberately re-shared', async () => {

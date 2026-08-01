@@ -105,7 +105,9 @@ describe('extractServerErrorCodes', () => {
 			'B',
 		]);
 		expect(
-			extractServerErrorCodes({ networkError: { result: { errors: [{ extensions: { code: 'C' } }] } } })
+			extractServerErrorCodes({
+				networkError: { result: { errors: [{ extensions: { code: 'C' } }] } },
+			})
 		).toEqual(['C']);
 	});
 
@@ -128,7 +130,9 @@ describe('extractServerErrorCodes', () => {
 		expect(hasServerErrorCode(tokenExpiredFrame, AUTH_EXPIRED_CODE)).toBe(true);
 		expect(isAuthExpiredError(tokenExpiredFrame)).toBe(true);
 		expect(isAuthExpiredError(new AuthExpiredError('no-refresh-callback'))).toBe(true);
-		expect(isAuthExpiredError({ errors: [{ extensions: { code: 'UNAUTHENTICATED' } }] })).toBe(false);
+		expect(isAuthExpiredError({ errors: [{ extensions: { code: 'UNAUTHENTICATED' } }] })).toBe(
+			false
+		);
 	});
 });
 
