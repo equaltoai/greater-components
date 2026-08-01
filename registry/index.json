@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-01T00:14:48.058Z",
+  "generatedAt": "2026-08-01T13:26:52.094Z",
   "ref": "greater-v0.11.9",
   "version": "0.11.9",
   "checksums": {
@@ -1053,7 +1053,7 @@
     "packages/faces/social/src/patterns/FederationIndicator.svelte": "sha256-Jh/v252VLN8wxarpWI6mRzP26Q38c/fl/5XuGjwWOx0=",
     "packages/faces/social/src/patterns/index.ts": "sha256-cS6dCVI4gIhHS+0gd/lIBHqUbgiJWR2/H2WLPR4JCqs=",
     "packages/faces/social/src/patterns/InstancePicker.svelte": "sha256-1eUgvR3b1ByLk0i1Mu4B4FUaCU18JQyzklPtwBDj1OU=",
-    "packages/faces/social/src/patterns/MediaComposer.svelte": "sha256-+Ul0ipKi6yYWafzpOTqGBP8xYg2VL8+/oyzXc9lia3E=",
+    "packages/faces/social/src/patterns/MediaComposer.svelte": "sha256-dzfMJm7bnHp1RlkGkS7Xzkf4t2D47b+W1DjEolQE1tg=",
     "packages/faces/social/src/patterns/ModerationTools.svelte": "sha256-dsmbk2fx7249qf+PLUrnVXg8zSNkp0W0HcIDMKtJ0xw=",
     "packages/faces/social/src/patterns/PollComposer.svelte": "sha256-r3eCnKt8/KsfDZ+z2nCjzxI5+itWfREJLIdMgU3QRWM=",
     "packages/faces/social/src/patterns/ThreadNodeView.svelte": "sha256-cI/EftbxE/eB0kJoybO2OKYg1/SPOZs9G8lXJttq1MU=",
@@ -6933,8 +6933,8 @@
         },
         {
           "path": "src/patterns/MediaComposer.svelte",
-          "checksum": "sha256-+Ul0ipKi6yYWafzpOTqGBP8xYg2VL8+/oyzXc9lia3E=",
-          "size": 21821
+          "checksum": "sha256-dzfMJm7bnHp1RlkGkS7Xzkf4t2D47b+W1DjEolQE1tg=",
+          "size": 26286
         },
         {
           "path": "src/patterns/ModerationTools.svelte",
