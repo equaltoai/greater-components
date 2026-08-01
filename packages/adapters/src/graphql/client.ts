@@ -375,8 +375,38 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 			return null;
 		}
 
+		/**
+		 * Whether the credential this refresh was started for is still the one in
+		 * force.
+		 *
+		 * A refresh is an answer to a question about a specific credential, and it
+		 * is only installed while that question is still the one being asked.
+		 * `updateToken()` puts an app-supplied credential in force and advances the
+		 * clock, so a refresh claimed under `generation` that resolves afterwards is
+		 * answering for a principal the app has already moved off — during an
+		 * account switch, literally a different one.
+		 *
+		 * Hence a compare-and-swap rather than an unconditional install: the whole
+		 * result is discarded when the clock has moved. It sets no token, advances
+		 * nothing, and terminates no socket — the socket by then belongs to the new
+		 * credential, and terminating it would re-dial the app's replacement with a
+		 * credential fetched before it. After `updateToken()`, nothing obtained
+		 * before it is ever re-applied.
+		 */
+		const superseded = (): boolean => generations.current() !== generation;
+
 		const attempt = refreshAccessToken().then(
 			(freshToken) => {
+				if (superseded()) {
+					// The episode still ends, and ends successfully: the operations
+					// waiting on it re-issue under the credential the app put in force
+					// rather than opening a second cycle for a credential that is gone.
+					logDebug(
+						'[GraphQL] Credential refresh superseded by an app-supplied credential; discarding its result'
+					);
+					return;
+				}
+
 				currentToken = freshToken;
 				// The fresh credential is in force from here: later frames are issued
 				// under the next generation, and refusals still arriving for the last
@@ -390,6 +420,17 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 				}
 			},
 			(error: unknown) => {
+				if (superseded()) {
+					// The app replaced the credential while this refresh was in flight,
+					// so failing to renew the old one is moot — there is nothing left to
+					// re-authenticate. Reporting terminal expiry here would tell an app
+					// that has just signed in that its session is gone.
+					logDebug(
+						'[GraphQL] Credential refresh failed after the app supplied a new credential; ending the episode as superseded'
+					);
+					return;
+				}
+
 				const authError =
 					error instanceof AuthExpiredError
 						? error
@@ -680,6 +721,12 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 		// A credential supplied by the app is a new generation just as much as a
 		// refreshed one: operations issued from here are asking with it, and it
 		// arms a fresh refresh claim for the expiry episodes it may still meet.
+		//
+		// Advancing here is also what makes the app's credential final. A refresh
+		// already in flight claimed the generation this call supersedes, so its
+		// result no longer installs (see `refreshAndRedial`). An account switch is
+		// the case that matters: the credential the app just put in force must be
+		// the one every later request carries.
 		generations.advance();
 
 		// Update HTTP link headers

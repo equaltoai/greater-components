@@ -389,3 +389,246 @@ describe('credential expiry over the graphql-ws protocol', () => {
 		instance.close();
 	});
 });
+
+/**
+ * A refresh answers a question about one specific credential, and the app can
+ * change the answer while it is still in flight.
+ *
+ * `updateToken()` is how an app switches accounts: it puts a credential in
+ * force, rebuilds the transport around it, and expects every later request to
+ * carry it. A refresh started before that call is asking on behalf of the
+ * principal the app has just left. Installing its result afterwards would set
+ * the socket's credential back to one obtained for the old principal — during
+ * an account switch, requests and delivered data for the wrong person.
+ *
+ * These probes pin the invariant at the only place it can be enforced: after
+ * `updateToken(T2)`, nothing fetched before T2 is ever applied. The refusal and
+ * the credentials are real protocol frames, so what is asserted is what the
+ * socket actually presented on the wire.
+ */
+describe('credential expiry racing an app-supplied credential', () => {
+	let restoreWebSocket: () => void;
+
+	beforeEach(() => {
+		vi.useFakeTimers();
+		MockSocket.reset();
+		subscribeFrames.length = 0;
+		seenIds.clear();
+		script = { answer: () => 'idle' };
+
+		const previous = Reflect.get(globalThis, 'WebSocket') as unknown;
+		Reflect.set(globalThis, 'WebSocket', MockSocket);
+		restoreWebSocket = () => {
+			if (previous === undefined) {
+				Reflect.deleteProperty(globalThis, 'WebSocket');
+			} else {
+				Reflect.set(globalThis, 'WebSocket', previous);
+			}
+		};
+	});
+
+	afterEach(() => {
+		restoreWebSocket();
+		vi.useRealTimers();
+	});
+
+	/** A refresh the probe settles by hand, at the instant it chooses. */
+	function deferredRefresh(): {
+		callback: () => Promise<string>;
+		resolve: (token: string) => void;
+		reject: (error: unknown) => void;
+	} {
+		let resolve: (token: string) => void = () => undefined;
+		let reject: (error: unknown) => void = () => undefined;
+		const pending = new Promise<string>((res, rej) => {
+			resolve = res;
+			reject = rej;
+		});
+		return { callback: () => pending, resolve, reject };
+	}
+
+	/** Every credential any socket was initialised with, in creation order. */
+	const socketCredentials = (): (string | undefined)[] =>
+		MockSocket.instances.map((socket) => socket.credential);
+
+	it('discards a refresh that resolves after the app supplied its own credential', async () => {
+		// The account switch, step by step:
+		//   1. A is refused on the expired credential and a refresh starts;
+		//   2. before it resolves the app calls updateToken('manual-token'),
+		//      which puts the new principal in force and rebuilds the transport;
+		//   3. B subscribes on that transport and is delivering happily;
+		//   4. only now does the old refresh resolve.
+		// Its result belongs to the principal the app left, so it is discarded
+		// whole: no token, no re-dial, and above all no socket carrying it.
+		const refresh = deferredRefresh();
+		const onTokenRefresh = vi.fn(refresh.callback);
+		const onAuthExpired = vi.fn();
+		script = { answer: (frame) => (frame.socket === 0 ? 'expired' : 'deliver') };
+
+		const instance = createGraphQLClient({
+			httpEndpoint: 'https://lesser.example/graphql',
+			wsEndpoint: 'wss://lesser.example/subscriptions',
+			token: 'expired-token',
+			maxRetries: 3,
+			onTokenRefresh,
+			onAuthExpired,
+		});
+
+		const a = observe(instance.client.subscribe({ query: NOTE_ADDED, variables: { stream: 'A' } }));
+		await runProtocol(100);
+		expect(onTokenRefresh).toHaveBeenCalledTimes(1);
+
+		instance.updateToken('manual-token');
+		const b = observe(instance.client.subscribe({ query: NOTE_ADDED, variables: { stream: 'B' } }));
+		await runProtocol(100);
+
+		// The new principal's socket is up and delivering before the stale
+		// refresh lands, so there is something for a wrong install to break.
+		expect(socketCredentials()).toEqual(['Bearer expired-token', 'Bearer manual-token']);
+		expect(b.deliveries).toHaveLength(1);
+
+		refresh.resolve('refresh-result');
+		await runProtocol();
+
+		// Nothing the stale refresh produced ever reached the wire. This is the
+		// invariant: after updateToken, no credential fetched before it is applied.
+		expect(socketCredentials()).not.toContain('Bearer refresh-result');
+		expect(subscribeFrames.every((frame) => frame.credential !== 'Bearer refresh-result')).toBe(
+			true
+		);
+
+		// The app's socket was not torn down underneath it either. A stale install
+		// would have re-dialed it — the superseded episode owns no socket here.
+		expect(MockSocket.instances[1]?.readyState).toBe(1);
+		expect(b.failures).toEqual([]);
+		expect(b.deliveries).toHaveLength(1);
+
+		// The episode ends as superseded rather than dying: A re-issues, and it
+		// re-issues under the credential the app put in force — the only one that
+		// exists now. Its old transport reads the live credential when it dials,
+		// so every socket after the refused one carries the manual token.
+		expect(a.failures).toEqual([]);
+		expect(a.deliveries).toHaveLength(1);
+		expect(
+			socketCredentials()
+				.slice(1)
+				.every((credential) => credential === 'Bearer manual-token')
+		).toBe(true);
+		expect(subscribeFrames.filter((frame) => frame.stream === 'A').at(-1)?.credential).toBe(
+			'Bearer manual-token'
+		);
+
+		// One refresh for one expiry condition; the superseded episode does not
+		// start another, and does not report a session the app has already
+		// replaced as terminally expired.
+		expect(onTokenRefresh).toHaveBeenCalledTimes(1);
+		expect(onAuthExpired).not.toHaveBeenCalled();
+
+		instance.close();
+	});
+
+	it('discards a refresh superseded between its resolution and the re-dial', async () => {
+		// The narrower window: the refresh callback has already produced a token
+		// and the client is on its way to installing it when updateToken lands.
+		// One microtask hop is enough to sit inside that gap — the installation
+		// runs on a later turn than the callback's own resolution.
+		const refresh = deferredRefresh();
+		const onTokenRefresh = vi.fn(refresh.callback);
+		script = { answer: (frame) => (frame.socket === 0 ? 'expired' : 'deliver') };
+
+		const instance = createGraphQLClient({
+			httpEndpoint: 'https://lesser.example/graphql',
+			wsEndpoint: 'wss://lesser.example/subscriptions',
+			token: 'expired-token',
+			maxRetries: 3,
+			onTokenRefresh,
+		});
+
+		observe(instance.client.subscribe({ query: NOTE_ADDED, variables: { stream: 'A' } }));
+		await runProtocol(100);
+		expect(onTokenRefresh).toHaveBeenCalledTimes(1);
+
+		refresh.resolve('refresh-result');
+		await Promise.resolve();
+		instance.updateToken('manual-token');
+
+		const b = observe(instance.client.subscribe({ query: NOTE_ADDED, variables: { stream: 'B' } }));
+		await runProtocol();
+
+		expect(socketCredentials()).not.toContain('Bearer refresh-result');
+		expect(subscribeFrames.every((frame) => frame.credential !== 'Bearer refresh-result')).toBe(
+			true
+		);
+		expect(b.failures).toEqual([]);
+		expect(b.deliveries).toHaveLength(1);
+		expect(subscribeFrames.at(-1)?.credential).toBe('Bearer manual-token');
+
+		instance.close();
+	});
+
+	it('does not report terminal expiry when a superseded refresh fails', async () => {
+		// The rejection side of the same race. Failing to renew a credential the
+		// app has already replaced is moot: telling an app that has just signed in
+		// that its session is gone would send it back to a login screen it does
+		// not need.
+		const refresh = deferredRefresh();
+		const onTokenRefresh = vi.fn(refresh.callback);
+		const onAuthExpired = vi.fn();
+		script = { answer: (frame) => (frame.socket === 0 ? 'expired' : 'deliver') };
+
+		const instance = createGraphQLClient({
+			httpEndpoint: 'https://lesser.example/graphql',
+			wsEndpoint: 'wss://lesser.example/subscriptions',
+			token: 'expired-token',
+			maxRetries: 3,
+			onTokenRefresh,
+			onAuthExpired,
+		});
+
+		observe(instance.client.subscribe({ query: NOTE_ADDED, variables: { stream: 'A' } }));
+		await runProtocol(100);
+
+		instance.updateToken('manual-token');
+		refresh.reject(new Error('refresh service unreachable'));
+		await runProtocol();
+
+		expect(onAuthExpired).not.toHaveBeenCalled();
+
+		// The credential the app put in force is still the one in force, and the
+		// transport still works.
+		const b = observe(instance.client.subscribe({ query: NOTE_ADDED, variables: { stream: 'B' } }));
+		await runProtocol();
+		expect(b.failures).toEqual([]);
+		expect(b.deliveries).toHaveLength(1);
+		expect(subscribeFrames.at(-1)?.credential).toBe('Bearer manual-token');
+
+		instance.close();
+	});
+
+	it('still installs a refresh that nothing superseded', async () => {
+		// The regression guard for the compare-and-swap: with no interleaved
+		// updateToken the ordinary episode is untouched — one refresh, one
+		// re-dial, the refreshed credential on the wire, the operation restored.
+		const onTokenRefresh = vi.fn().mockResolvedValue('fresh-token');
+		script = { answer: (frame) => (frame.socket === 0 ? 'expired' : 'deliver') };
+
+		const instance = createGraphQLClient({
+			httpEndpoint: 'https://lesser.example/graphql',
+			wsEndpoint: 'wss://lesser.example/subscriptions',
+			token: 'expired-token',
+			maxRetries: 3,
+			onTokenRefresh,
+		});
+
+		const a = observe(instance.client.subscribe({ query: NOTE_ADDED, variables: { stream: 'A' } }));
+		await runProtocol();
+
+		expect(onTokenRefresh).toHaveBeenCalledTimes(1);
+		expect(MockSocket.instances).toHaveLength(2);
+		expect(socketCredentials()[1]).toBe('Bearer fresh-token');
+		expect(a.failures).toEqual([]);
+		expect(a.deliveries).toHaveLength(1);
+
+		instance.close();
+	});
+});
