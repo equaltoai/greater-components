@@ -298,10 +298,10 @@ importers:
     dependencies:
       '@apollo/client':
         specifier: ^4.1.7
-        version: 4.1.7(graphql-ws@6.0.8(graphql@16.13.2)(ws@8.21.0))(graphql@16.13.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(rxjs@7.8.2)
+        version: 4.1.7(graphql-ws@6.0.8(graphql@16.13.2)(ws@8.21.1))(graphql@16.13.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(rxjs@7.8.2)
       '@apollo/client-react-streaming':
         specifier: ^0.14.5
-        version: 0.14.5(@apollo/client@4.1.7(graphql-ws@6.0.8(graphql@16.13.2)(ws@8.21.0))(graphql@16.13.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(rxjs@7.8.2))(@types/react@19.2.7)(graphql@16.13.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(rxjs@7.8.2)
+        version: 0.14.5(@apollo/client@4.1.7(graphql-ws@6.0.8(graphql@16.13.2)(ws@8.21.1))(graphql@16.13.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(rxjs@7.8.2))(@types/react@19.2.7)(graphql@16.13.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(rxjs@7.8.2)
       '@graphql-typed-document-node/core':
         specifier: ^3.2.0
         version: 3.2.0(graphql@16.13.2)
@@ -310,7 +310,7 @@ importers:
         version: 16.13.2
       graphql-ws:
         specifier: ^6.0.8
-        version: 6.0.8(graphql@16.13.2)(ws@8.21.0)
+        version: 6.0.8(graphql@16.13.2)(ws@8.21.1)
       viem:
         specifier: 2.51.3
         version: 2.51.3(typescript@6.0.2)(zod@4.3.6)
@@ -341,7 +341,7 @@ importers:
         version: 4.1.4(@opentelemetry/api@1.9.0)(@types/node@25.6.0)(@vitest/coverage-v8@4.1.4)(@vitest/ui@4.1.4)(jsdom@29.0.2(@noble/hashes@1.8.0))(vite@8.0.16(@types/node@25.6.0)(esbuild@0.25.12)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
       ws:
         specifier: ^8.21.0
-        version: 8.21.0
+        version: 8.21.1
 
   packages/cli:
     dependencies:
@@ -539,7 +539,7 @@ importers:
     dependencies:
       '@apollo/client':
         specifier: ^4.1.7
-        version: 4.1.7(graphql-ws@6.0.8(graphql@16.13.2)(ws@8.21.0))(graphql@16.13.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(rxjs@7.8.2)
+        version: 4.1.7(graphql-ws@6.0.8(graphql@16.13.2)(ws@8.21.1))(graphql@16.13.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(rxjs@7.8.2)
       '@equaltoai/greater-components-adapters':
         specifier: workspace:*
         version: link:../../adapters
@@ -834,10 +834,10 @@ importers:
     dependencies:
       '@apollo/client':
         specifier: ^4.1.7
-        version: 4.1.7(graphql-ws@6.0.8(graphql@16.13.2)(ws@8.21.0))(graphql@16.13.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(rxjs@7.8.2)
+        version: 4.1.7(graphql-ws@6.0.8(graphql@16.13.2)(ws@8.21.1))(graphql@16.13.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(rxjs@7.8.2)
       '@apollo/client-react-streaming':
         specifier: ^0.14.5
-        version: 0.14.5(@apollo/client@4.1.7(graphql-ws@6.0.8(graphql@16.13.2)(ws@8.21.0))(graphql@16.13.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(rxjs@7.8.2))(@types/react@19.2.7)(graphql@16.13.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(rxjs@7.8.2)
+        version: 0.14.5(@apollo/client@4.1.7(graphql-ws@6.0.8(graphql@16.13.2)(ws@8.21.1))(graphql@16.13.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(rxjs@7.8.2))(@types/react@19.2.7)(graphql@16.13.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(rxjs@7.8.2)
       '@graphql-typed-document-node/core':
         specifier: ^3.2.0
         version: 3.2.0(graphql@16.13.2)
@@ -870,7 +870,7 @@ importers:
         version: 16.13.2
       graphql-ws:
         specifier: ^6.0.8
-        version: 6.0.8(graphql@16.13.2)(ws@8.21.0)
+        version: 6.0.8(graphql@16.13.2)(ws@8.21.1)
       hast-util-sanitize:
         specifier: ^5.0.2
         version: 5.0.2
@@ -6638,8 +6638,8 @@ packages:
     resolution: {integrity: sha512-42AtmgqjV+X1VpdOfyTGOYRi0/zsoLqtXQckTmqTeybT+BDIbM/Guxo7x3pE2vtpr1ok6xRqM9OpBe+Jyoqyww==}
     engines: {node: '>=18'}
 
-  ws@8.21.0:
-    resolution: {integrity: sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g==}
+  ws@8.21.1:
+    resolution: {integrity: sha512-+0NTnW77fFN/DjQi6k/Sq/Yvk4Sgajw7urW8V+asjXnRgDs9gyGkdb7EzgfhA4goXsRIZKE28fzIXBHEzhuiWw==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -6723,9 +6723,9 @@ snapshots:
       jsonpointer: 5.0.1
       leven: 3.1.0
 
-  '@apollo/client-react-streaming@0.14.5(@apollo/client@4.1.7(graphql-ws@6.0.8(graphql@16.13.2)(ws@8.21.0))(graphql@16.13.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(rxjs@7.8.2))(@types/react@19.2.7)(graphql@16.13.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(rxjs@7.8.2)':
+  '@apollo/client-react-streaming@0.14.5(@apollo/client@4.1.7(graphql-ws@6.0.8(graphql@16.13.2)(ws@8.21.1))(graphql@16.13.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(rxjs@7.8.2))(@types/react@19.2.7)(graphql@16.13.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(rxjs@7.8.2)':
     dependencies:
-      '@apollo/client': 4.1.7(graphql-ws@6.0.8(graphql@16.13.2)(ws@8.21.0))(graphql@16.13.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(rxjs@7.8.2)
+      '@apollo/client': 4.1.7(graphql-ws@6.0.8(graphql@16.13.2)(ws@8.21.1))(graphql@16.13.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(rxjs@7.8.2)
       '@types/react-dom': 19.2.3(@types/react@19.2.7)
       '@wry/equality': 0.5.7
       graphql: 16.13.2
@@ -6735,7 +6735,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  '@apollo/client@4.1.7(graphql-ws@6.0.8(graphql@16.13.2)(ws@8.21.0))(graphql@16.13.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(rxjs@7.8.2)':
+  '@apollo/client@4.1.7(graphql-ws@6.0.8(graphql@16.13.2)(ws@8.21.1))(graphql@16.13.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(rxjs@7.8.2)':
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.13.2)
       '@wry/caches': 1.0.1
@@ -6747,7 +6747,7 @@ snapshots:
       rxjs: 7.8.2
       tslib: 2.8.1
     optionalDependencies:
-      graphql-ws: 6.0.8(graphql@16.13.2)(ws@8.21.0)
+      graphql-ws: 6.0.8(graphql@16.13.2)(ws@8.21.1)
       react: 19.2.1
       react-dom: 19.2.1(react@19.2.1)
 
@@ -7948,10 +7948,10 @@ snapshots:
       '@graphql-tools/utils': 11.0.0(graphql@16.13.2)
       '@whatwg-node/disposablestack': 0.0.6
       graphql: 16.13.2
-      graphql-ws: 6.0.8(graphql@16.13.2)(ws@8.21.0)
-      isows: 1.0.7(ws@8.21.0)
+      graphql-ws: 6.0.8(graphql@16.13.2)(ws@8.21.1)
+      isows: 1.0.7(ws@8.21.1)
       tslib: 2.8.1
-      ws: 8.21.0
+      ws: 8.21.1
     transitivePeerDependencies:
       - '@fastify/websocket'
       - bufferutil
@@ -7978,9 +7978,9 @@ snapshots:
       '@graphql-tools/utils': 11.0.0(graphql@16.13.2)
       '@types/ws': 8.18.1
       graphql: 16.13.2
-      isomorphic-ws: 5.0.0(ws@8.21.0)
+      isomorphic-ws: 5.0.0(ws@8.21.1)
       tslib: 2.8.1
-      ws: 8.21.0
+      ws: 8.21.1
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -8102,10 +8102,10 @@ snapshots:
       '@whatwg-node/fetch': 0.10.13
       '@whatwg-node/promise-helpers': 1.3.2
       graphql: 16.13.2
-      isomorphic-ws: 5.0.0(ws@8.21.0)
+      isomorphic-ws: 5.0.0(ws@8.21.1)
       sync-fetch: 0.6.0
       tslib: 2.8.1
-      ws: 8.21.0
+      ws: 8.21.1
     transitivePeerDependencies:
       - '@fastify/websocket'
       - '@types/node'
@@ -9925,11 +9925,11 @@ snapshots:
       graphql: 16.13.2
       tslib: 2.8.1
 
-  graphql-ws@6.0.8(graphql@16.13.2)(ws@8.21.0):
+  graphql-ws@6.0.8(graphql@16.13.2)(ws@8.21.1):
     dependencies:
       graphql: 16.13.2
     optionalDependencies:
-      ws: 8.21.0
+      ws: 8.21.1
 
   graphql@16.13.2: {}
 
@@ -10316,13 +10316,13 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  isomorphic-ws@5.0.0(ws@8.21.0):
+  isomorphic-ws@5.0.0(ws@8.21.1):
     dependencies:
-      ws: 8.21.0
+      ws: 8.21.1
 
-  isows@1.0.7(ws@8.21.0):
+  isows@1.0.7(ws@8.21.1):
     dependencies:
-      ws: 8.21.0
+      ws: 8.21.1
 
   istanbul-lib-coverage@3.2.2: {}
 
@@ -10379,7 +10379,7 @@ snapshots:
       webidl-conversions: 8.0.1
       whatwg-mimetype: 4.0.0
       whatwg-url: 15.1.0
-      ws: 8.21.0
+      ws: 8.21.1
       xml-name-validator: 5.0.0
     transitivePeerDependencies:
       - '@noble/hashes'
@@ -12094,9 +12094,9 @@ snapshots:
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
       abitype: 1.2.3(typescript@6.0.2)(zod@4.3.6)
-      isows: 1.0.7(ws@8.21.0)
+      isows: 1.0.7(ws@8.21.1)
       ox: 0.14.15(typescript@6.0.2)(zod@4.3.6)
-      ws: 8.21.0
+      ws: 8.21.1
     optionalDependencies:
       typescript: 6.0.2
     transitivePeerDependencies:
@@ -12111,9 +12111,9 @@ snapshots:
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
       abitype: 1.2.3(typescript@6.0.2)(zod@4.3.6)
-      isows: 1.0.7(ws@8.21.0)
+      isows: 1.0.7(ws@8.21.1)
       ox: 0.14.25(typescript@6.0.2)(zod@4.3.6)
-      ws: 8.21.0
+      ws: 8.21.1
     optionalDependencies:
       typescript: 6.0.2
     transitivePeerDependencies:
@@ -12401,7 +12401,7 @@ snapshots:
       string-width: 7.2.0
       strip-ansi: 7.2.0
 
-  ws@8.21.0: {}
+  ws@8.21.1: {}
 
   xml-name-validator@5.0.0: {}
 
