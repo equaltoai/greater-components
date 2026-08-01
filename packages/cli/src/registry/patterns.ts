@@ -143,7 +143,8 @@ export const patternRegistry: Record<string, PatternMetadata> = {
 		name: 'media-composer',
 		type: 'pattern',
 		description: 'Advanced media handling with alt text and accessibility controls',
-		useCase: 'Upload and configure media with accessibility features like alt text',
+		useCase:
+			'Upload and configure media with accessibility features like alt text. Files rejected by the client-side type/size/count gate are reported through handlers.onReject; surfacing and announcing them is the consumer’s job, and the built-in limits are a conservative default rather than the instance policy',
 		files: [{ path: 'lib/patterns/MediaComposer.svelte', content: '', type: 'component' }],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
