@@ -12,6 +12,7 @@
 
 import {
 	ApolloClient,
+	ApolloLink,
 	InMemoryCache,
 	HttpLink,
 	split,
@@ -19,7 +20,7 @@ import {
 	type DefaultOptions,
 } from '@apollo/client';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions/index.js';
-import { getMainDefinition } from '@apollo/client/utilities/index.js';
+import { getMainDefinition, Observable } from '@apollo/client/utilities/index.js';
 import { onError } from '@apollo/client/link/error/index.js';
 import { RetryLink } from '@apollo/client/link/retry/index.js';
 import { createClient, type Client } from 'graphql-ws';
@@ -157,7 +158,8 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 
 	let currentToken = token || null;
 	const refreshAccessToken = createSingleFlightRefresh(onTokenRefresh);
-	let authRefreshInFlight = false;
+	/** The in-flight refresh-and-re-dial, shared by every expiring operation. */
+	let authRedial: Promise<void> | null = null;
 
 	const logDebug = (message: string, context?: unknown): void => {
 		if (!debug) {
@@ -313,7 +315,8 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 	};
 
 	/**
-	 * Refreshes the credential and re-dials the existing WebSocket.
+	 * Refreshes the credential and re-dials the existing WebSocket, resolving
+	 * once the socket is ready to carry a fresh `subscribe`.
 	 *
 	 * `terminate()` is used rather than `dispose()` + `createClient()` on
 	 * purpose. The graphql-ws client owns the active subscriptions, so tearing
@@ -324,19 +327,18 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 	 * with code 4429.
 	 *
 	 * Concurrent `TOKEN_EXPIRED` frames (one per in-flight subscription)
-	 * collapse into a single refresh and a single re-dial.
+	 * collapse into a single refresh and a single re-dial: every caller awaits
+	 * the same promise, so every re-issue happens after the same handoff.
 	 */
-	const handleAuthExpired = (): void => {
+	const refreshAndRedial = (): Promise<void> => {
 		// Each in-flight subscription reports its own expiry frame. Latch here
 		// so those collapse into a single re-dial, not one per frame.
-		if (authRefreshInFlight) {
-			return;
+		if (authRedial) {
+			return authRedial;
 		}
-		authRefreshInFlight = true;
 
-		void refreshAccessToken().then(
+		const attempt = refreshAccessToken().then(
 			(freshToken) => {
-				authRefreshInFlight = false;
 				currentToken = freshToken;
 				logDebug('[GraphQL] Credential refreshed; re-dialing WebSocket to resubscribe');
 
@@ -346,15 +348,113 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 				}
 			},
 			(error: unknown) => {
-				authRefreshInFlight = false;
-				failAuthExpiryTerminally(
+				const authError =
 					error instanceof AuthExpiredError
 						? error
-						: new AuthExpiredError('refresh-failed', { cause: error })
-				);
+						: new AuthExpiredError('refresh-failed', { cause: error });
+				failAuthExpiryTerminally(authError);
+				throw authError;
 			}
 		);
+
+		authRedial = attempt;
+		// Release the latch once settled so a later expiry can refresh again,
+		// without a rejected refresh poisoning subsequent attempts.
+		void attempt
+			.catch(() => undefined)
+			.finally(() => {
+				if (authRedial === attempt) {
+					authRedial = null;
+				}
+			});
+
+		return attempt;
 	};
+
+	/** Fire-and-forget re-dial for callers with no operation to re-issue. */
+	const handleAuthExpired = (): void => {
+		void refreshAndRedial().catch(() => undefined);
+	};
+
+	/**
+	 * Re-issues a subscription that Lesser refused for an expired credential.
+	 *
+	 * graphql-ws completes an operation the moment the server sends an Error
+	 * frame for it: the sink is errored, the operation is released, and the
+	 * reconnect that `terminate()` triggers re-establishes every subscription
+	 * *except* the one that just failed. Refreshing alone therefore leaves the
+	 * caller with a dead subscription and a healthy socket.
+	 *
+	 * So this link sits directly in front of the WebSocket link, below
+	 * `RetryLink`, and closes that gap: it catches the expiry on the operation's
+	 * own error path, waits for the shared refresh-and-re-dial, and subscribes
+	 * again. Because the re-issue happens beneath `RetryLink`, it costs nothing
+	 * from the retry budget — an expired credential is not a transport fault,
+	 * and consuming a network retry for it would starve the genuine ones.
+	 *
+	 * Exactly one re-issue per operation. A second expiry on the refreshed
+	 * credential is a server the client cannot satisfy, so it propagates rather
+	 * than looping.
+	 */
+	const authExpiryReissueLink = new ApolloLink((operation, forward) => {
+		return new Observable<ApolloLink.Result>((observer) => {
+			let inner: { unsubscribe: () => void } | null = null;
+			let unsubscribed = false;
+			let reissued = false;
+
+			const attempt = (): void => {
+				inner = forward(operation).subscribe({
+					next: (value) => observer.next(value),
+					complete: () => observer.complete(),
+					error: (error: unknown) => {
+						if (unsubscribed) {
+							return;
+						}
+						if (reissued || !hasServerErrorCode(error, AUTH_EXPIRED_CODE)) {
+							observer.error(error);
+							return;
+						}
+
+						reissued = true;
+						logDebug('[GraphQL] Subscription expired; re-issuing after credential refresh');
+						void refreshAndRedial().then(
+							() => {
+								if (!unsubscribed) {
+									attempt();
+								}
+							},
+							(refreshError: unknown) => {
+								if (!unsubscribed) {
+									observer.error(refreshError);
+								}
+							}
+						);
+					},
+				});
+			};
+
+			attempt();
+
+			return () => {
+				unsubscribed = true;
+				inner?.unsubscribe();
+			};
+		});
+	});
+
+	/**
+	 * Routes subscriptions through the re-issue link before the WebSocket link,
+	 * leaving queries and mutations on HTTP untouched.
+	 */
+	const buildSplitLink = (subscriptionLink: GraphQLWsLink, requestLink: HttpLink): ApolloLink =>
+		split(
+			({ query }) => {
+				const definition = getMainDefinition(query);
+				return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
+			},
+			from([authExpiryReissueLink, subscriptionLink]),
+			requestLink
+		);
 
 	// Error handling link
 	const errorLink = onError(({ error }) => {
@@ -413,18 +513,7 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 
 	// Split link: WebSocket for subscriptions (if available), HTTP for queries/mutations
 	// If wsLink is null, all operations go through HTTP (subscriptions will fail)
-	const splitLink = wsLink
-		? split(
-				({ query }) => {
-					const definition = getMainDefinition(query);
-					return (
-						definition.kind === 'OperationDefinition' && definition.operation === 'subscription'
-					);
-				},
-				wsLink,
-				httpLink
-			)
-		: httpLink; // No WebSocket - route everything through HTTP
+	const splitLink = wsLink ? buildSplitLink(wsLink, httpLink) : httpLink; // No WebSocket - route everything through HTTP
 
 	// Combine all links
 	const link = from([errorLink, retryLink, splitLink]);
@@ -521,16 +610,7 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 			logDebug('[GraphQL] Recreated wsLink with explicit WebSocket endpoint');
 
 			// Recreate split link with new WebSocket link
-			const newSplitLink = split(
-				({ query }) => {
-					const definition = getMainDefinition(query);
-					return (
-						definition.kind === 'OperationDefinition' && definition.operation === 'subscription'
-					);
-				},
-				newWsLink,
-				newHttpLink
-			);
+			const newSplitLink = buildSplitLink(newWsLink, newHttpLink);
 
 			// Recreate combined link
 			const newLink = from([errorLink, retryLink, newSplitLink]);

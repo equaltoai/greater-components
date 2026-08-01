@@ -48,6 +48,11 @@ vi.mock('@apollo/client', () => ({
 			stop: vi.fn(),
 		};
 	}),
+	// The re-issue link's behaviour is covered against the real Apollo chain in
+	// `clientAuthExpiryReissue.test.ts`; here it only has to construct.
+	ApolloLink: vi.fn(function (handler: unknown) {
+		return { __link: 'reissue', handler };
+	}),
 	InMemoryCache: vi.fn(function () {
 		return {};
 	}),
@@ -66,6 +71,9 @@ vi.mock('@apollo/client/link/subscriptions/index.js', () => ({
 
 vi.mock('@apollo/client/utilities/index.js', () => ({
 	getMainDefinition: vi.fn(() => ({ kind: 'OperationDefinition', operation: 'query' })),
+	Observable: vi.fn(function (subscriber: unknown) {
+		return { __observable: true, subscriber };
+	}),
 }));
 
 vi.mock('@apollo/client/link/retry/index.js', () => ({
