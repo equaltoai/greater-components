@@ -377,9 +377,9 @@ export class WebSocketClient implements TransportAdapter<WebSocketClientState> {
 			// answers an expired credential with `extensions.code`
 			// TOKEN_EXPIRED. Refresh and reconnect once; never swallow.
 			//
-			// Checked before anything else so no frame can be read as healthy
-			// traffic and healthy traffic first: a refusal must never clear the
-			// auth-recovery streak it is part of.
+			// Checked before anything else, so that no refusal can be read as
+			// healthy traffic: a refusal must never clear the auth-recovery streak
+			// it is part of.
 			if (hasServerErrorCode(message, AUTH_EXPIRED_CODE)) {
 				this.handleAuthExpired();
 				return;

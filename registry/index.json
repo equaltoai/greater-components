@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-01T22:08:02.510Z",
+  "generatedAt": "2026-08-01T22:11:43.313Z",
   "ref": "greater-v0.11.9",
   "version": "0.11.9",
   "checksums": {
@@ -897,7 +897,7 @@
     "packages/adapters/src/types.d.ts": "sha256-yekZqSPqL3axk9y1kTrw/ul4XzXSy/0uUIaOqQVvhCc=",
     "packages/adapters/src/types.ts": "sha256-1wNT03lpGpffT5helP+woh7Fvo7bQpLExQOCHp/TZD4=",
     "packages/adapters/src/WebSocketClient.d.ts": "sha256-BL+G+MihfyouWCGXaKlbnJe3CxnKaoyqsB5aUu0irWg=",
-    "packages/adapters/src/WebSocketClient.ts": "sha256-Wl1j8opS0MCCv9FfqX0NS9iT9VMNYnwZ4OnzEJHY7AU=",
+    "packages/adapters/src/WebSocketClient.ts": "sha256-sb4EYwL4blJV8Ud0mhKxzep51gDDX8LMchn5K6voNP4=",
     "packages/adapters/src/WebSocketPool.d.ts": "sha256-zEJQkZxMIMeVR4oB77oGbXBYnBoq10zYvBuM2CRGaOE=",
     "packages/adapters/src/WebSocketPool.ts": "sha256-mwnjYAqsl+7arWdkR+2rVff0LpogWKIiOSOxXkB+ri8=",
     "packages/content/src/components/CodeBlock.svelte": "sha256-rOSrHh383dE4rGjCMNq/tRle1/VgHuFohiDo2kECbQ4=",
@@ -6004,8 +6004,8 @@
         },
         {
           "path": "src/WebSocketClient.ts",
-          "checksum": "sha256-Wl1j8opS0MCCv9FfqX0NS9iT9VMNYnwZ4OnzEJHY7AU=",
-          "size": 24797
+          "checksum": "sha256-sb4EYwL4blJV8Ud0mhKxzep51gDDX8LMchn5K6voNP4=",
+          "size": 24779
         },
         {
           "path": "src/WebSocketPool.d.ts",
