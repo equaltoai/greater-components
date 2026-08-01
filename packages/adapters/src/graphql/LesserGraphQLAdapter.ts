@@ -19,6 +19,7 @@ type MutationOptionsFor<
 > = ApolloClientNamespace.MutateOptions<TData, TVariables>;
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import { print } from 'graphql';
+import { extractServerErrorCodes } from '../authExpiry.js';
 
 import {
 	createGraphQLClient,
@@ -113,6 +114,7 @@ import type {
 	UpdateMediaMutationVariables,
 	Actor,
 	SharedDraftReviewsQueryVariables,
+	ShareDraftForReviewMutation,
 	SubmitDraftReviewMutationVariables,
 	DraftReviewVerdict,
 } from './generated/types.js';
@@ -441,15 +443,32 @@ export type UpdateMediaVariables = UpdateMediaMutationVariables;
 export class LesserGraphQLAdapterError extends Error {
 	readonly code: string;
 	readonly debugMessages: readonly string[];
+	/**
+	 * Server-defined `extensions.code` values carried by the failure, e.g.
+	 * `UNPROCESSABLE_ENTITY` or `CONFLICT`.
+	 *
+	 * Lesser's GraphQL error presenter sets `extensions.code` from its
+	 * structured `AppError` codes (cmd/graphql/main.go `graphQLErrorPresenter`).
+	 * The code is contract surface rather than server detail, so it survives
+	 * the user-safe sanitisation that strips messages — callers need it to tell
+	 * an expected condition from a genuine fault.
+	 */
+	readonly serverCodes: readonly string[];
 
 	constructor(
 		message: string,
-		options: { code?: string; debugMessages?: readonly string[]; cause?: unknown } = {}
+		options: {
+			code?: string;
+			debugMessages?: readonly string[];
+			serverCodes?: readonly string[];
+			cause?: unknown;
+		} = {}
 	) {
 		super(message, { cause: options.cause });
 		this.name = 'LesserGraphQLAdapterError';
 		this.code = options.code ?? 'LESSER_GRAPHQL_REQUEST_FAILED';
 		this.debugMessages = options.debugMessages ?? [];
+		this.serverCodes = options.serverCodes ?? [];
 	}
 }
 
@@ -476,7 +495,8 @@ function extractDebugMessages(error: unknown): string[] {
 	}
 
 	if (error && typeof error === 'object') {
-		const { graphQLErrors, networkError, message } = error as {
+		const { errors, graphQLErrors, networkError, message } = error as {
+			errors?: Array<{ message?: string }>;
 			graphQLErrors?: Array<{ message?: string }>;
 			networkError?: {
 				message?: string;
@@ -486,6 +506,15 @@ function extractDebugMessages(error: unknown): string[] {
 		};
 
 		append(message);
+
+		// A raw execution result carries its errors under `errors`. Callers that
+		// already extracted them pass `debugMessages` explicitly, so this only
+		// adds coverage for results handed over unprocessed.
+		if (Array.isArray(errors)) {
+			for (const executionError of errors) {
+				append(executionError?.message);
+			}
+		}
 
 		if (Array.isArray(graphQLErrors)) {
 			for (const graphQLError of graphQLErrors) {
@@ -514,6 +543,7 @@ function createUserSafeAdapterError(
 	return new LesserGraphQLAdapterError(message, {
 		cause: createSanitizedAdapterCause(cause),
 		debugMessages,
+		serverCodes: extractServerErrorCodes(cause),
 	});
 }
 
@@ -566,6 +596,64 @@ function createSanitizedAdapterCause(cause: unknown): Record<string, unknown> {
 
 	sanitized['kind'] = typeof cause;
 	return sanitized;
+}
+
+/** The `DraftReview` payload returned by a successful share. */
+export type SharedDraftReview = ShareDraftForReviewMutation['shareDraftForReview'];
+
+/**
+ * Result of {@link LesserGraphQLAdapter.shareDraftForReviewIfAbsent}.
+ *
+ * `already-invited` deliberately carries no `review`: the share was refused, so
+ * there is no server state to report and nothing for the caller to mistake for
+ * success.
+ */
+export type ShareDraftForReviewOutcome =
+	| { status: 'invited'; review: SharedDraftReview }
+	| { status: 'already-invited'; draftId: string; reviewer: string; cause: unknown };
+
+/**
+ * Server codes that unambiguously mean "this grant already exists".
+ *
+ * Lesser maps a DynamoDB conditional-check failure to `CodeConflict`
+ * (pkg/errors/storage.go `DynamoDBConditionalCheckFailed`), which the GraphQL
+ * error presenter surfaces as `extensions.code`.
+ */
+const DRAFT_REVIEW_CONFLICT_CODES: readonly string[] = ['CONFLICT', 'ALREADY_EXISTS'];
+
+/**
+ * Message shapes a conditional-create failure surfaces when it reaches the
+ * client unwrapped.
+ *
+ * `CreateDraftReviewGrant` returns the storage error directly, so it is not
+ * always an `AppError` by the time Lesser's presenter runs and may arrive with
+ * no `extensions.code` at all. Matching the message is the fallback, not the
+ * primary signal — see `isDraftReviewShareConflict`.
+ */
+const DRAFT_REVIEW_CONFLICT_MESSAGE =
+	/conditional[ _-]?check[ _-]?failed|condition[ _-]?failed|already[ _-]?exists|duplicate/i;
+
+/**
+ * True when a failed share was refused because the grant already exists.
+ *
+ * Deliberately conservative: an unrecognised failure is *not* a conflict, so
+ * the caller rethrows rather than presenting a genuine fault as a benign "already
+ * invited" notice.
+ */
+export function isDraftReviewShareConflict(error: unknown): boolean {
+	const codes =
+		error instanceof LesserGraphQLAdapterError
+			? error.serverCodes
+			: extractServerErrorCodes(error);
+	if (codes.some((code) => DRAFT_REVIEW_CONFLICT_CODES.includes(code))) {
+		return true;
+	}
+
+	const messages =
+		error instanceof LesserGraphQLAdapterError
+			? error.debugMessages
+			: extractDebugMessages(error);
+	return messages.some((message) => DRAFT_REVIEW_CONFLICT_MESSAGE.test(message));
 }
 
 export class LesserGraphQLAdapter {
@@ -1997,10 +2085,51 @@ export class LesserGraphQLAdapter {
 
 	/**
 	 * Invites a reviewer to a draft.
+	 *
+	 * Throws on any failure, including a duplicate share. Callers that want to
+	 * treat "already invited" as an expected condition should use
+	 * {@link shareDraftForReviewIfAbsent}.
 	 */
 	async shareDraftForReview(draftId: string, reviewer: string) {
 		const data = await this.mutate(ShareDraftForReviewDocument, { draftId, reviewer });
 		return data.shareDraftForReview;
+	}
+
+	/**
+	 * Invites a reviewer, reporting an existing grant as an expected condition
+	 * rather than a fault.
+	 *
+	 * Lesser v1.5.33 creates the grant conditionally
+	 * (`attribute_not_exists`, pkg/storage/repositories/draft_repository.go
+	 * `CreateDraftReviewGrant`) and version-conditions the regrant path. A
+	 * duplicate share therefore fails loudly, and that is deliberate: the
+	 * condition is what preserves a concurrent revocation. Two operators acting
+	 * at once must not silently resurrect access one of them just revoked.
+	 *
+	 * So this method does exactly one thing on conflict — it reports it:
+	 *
+	 * - it never re-issues the grant, and never retries;
+	 * - it never fabricates a `DraftReview`, because the share did not happen
+	 *   and the caller must not be told otherwise;
+	 * - it rethrows anything it cannot confidently identify as a duplicate.
+	 *
+	 * `already-invited` means "the server refused because a grant exists" — a
+	 * notice to show, not a success to act on. Re-enabling a revoked reviewer
+	 * is a deliberate re-share, which Lesser's regrant path already accepts.
+	 */
+	async shareDraftForReviewIfAbsent(
+		draftId: string,
+		reviewer: string
+	): Promise<ShareDraftForReviewOutcome> {
+		try {
+			const data = await this.mutate(ShareDraftForReviewDocument, { draftId, reviewer });
+			return { status: 'invited', review: data.shareDraftForReview };
+		} catch (error) {
+			if (isDraftReviewShareConflict(error)) {
+				return { status: 'already-invited', draftId, reviewer, cause: error };
+			}
+			throw error;
+		}
 	}
 
 	/**
