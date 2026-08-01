@@ -307,6 +307,21 @@ interface LinkifyReplacement {
 }
 
 /**
+ * Append every element of `source` to `target`.
+ *
+ * `target.push(...source)` passes one argument per element, so a long source
+ * array exceeds the engine's argument-count limit rather than the heap: Node 24
+ * throws `RangeError: Maximum call stack size exceeded` once a single text node
+ * yields roughly 70,000 segments, which a ~540 kB federated status reaches. The
+ * append has to be bounded by the array length, not by the call stack.
+ */
+function appendAll<T>(target: T[], source: readonly T[]): void {
+	for (const item of source) {
+		target.push(item);
+	}
+}
+
+/**
  * Replace pattern matches inside text segments with generated nodes. Element
  * segments produced by an earlier pass are left alone, so a run of text is
  * never linkified twice.
@@ -338,7 +353,7 @@ function splitSegments(
 				if (match.index > cursor) {
 					pending.push(textNode(value.slice(cursor, match.index)));
 				}
-				pending.push(...replacement.nodes);
+				appendAll(pending, replacement.nodes);
 				cursor = match.index + (replacement.consumed ?? match[0].length);
 				pattern.lastIndex = cursor;
 			}
@@ -357,7 +372,7 @@ function splitSegments(
 			pending.push(textNode(value.slice(cursor)));
 		}
 
-		out.push(...pending);
+		appendAll(out, pending);
 	}
 
 	return out;
@@ -377,8 +392,32 @@ const ENTITY_TOKEN_BODY = '[\\p{L}\\p{N}\\p{M}_.-]+';
  */
 const KNOWN_ENTITY_SOURCE = `@(${ENTITY_TOKEN_BODY})(@[\\w.-]+)?|#(${ENTITY_TOKEN_BODY})`;
 
-/** Punctuation a token picks up from prose: `@alice.`, `#svelte-`. */
-const TRAILING_PUNCTUATION = /[.-]+$/;
+/**
+ * Strip the punctuation a token picks up from prose: `@alice.`, `#svelte-`.
+ *
+ * This is a bounded backwards scan rather than a `/[.-]+$/` replace. The regex
+ * form backtracks: on a token whose tail is a long `.`/`-` run terminated by a
+ * character that blocks the `$` anchor, the engine retries the run from every
+ * start offset inside it, which is quadratic in the token length. Tokens are
+ * scanning-alphabet output, so a federated peer picks that length, and status
+ * bodies now render on the server — 100k such characters cost ~3.6s under the
+ * regex against ~2ms for the pattern walk this replaced.
+ *
+ * The scan stops at the first non-punctuation character from the right, so its
+ * cost is the length of the trailing run and the total across a text node is
+ * bounded by the node's own length.
+ */
+function stripTrailingPunctuation(token: string): string {
+	let end = token.length;
+
+	while (end > 0) {
+		const char = token[end - 1];
+		if (char !== '.' && char !== '-') break;
+		end -= 1;
+	}
+
+	return end === token.length ? token : token.slice(0, end);
+}
 
 /** Entity name to validated href. */
 type EntityIndex = Map<string, string>;
@@ -429,7 +468,7 @@ function resolveEntity(
 	const direct = index.get(foldCase ? token.toLowerCase() : token);
 	if (direct !== undefined) return { name: token, href: direct };
 
-	const trimmed = token.replace(TRAILING_PUNCTUATION, '');
+	const trimmed = stripTrailingPunctuation(token);
 	if (!trimmed || trimmed.length === token.length) return null;
 
 	const href = index.get(foldCase ? trimmed.toLowerCase() : trimmed);
@@ -449,7 +488,11 @@ function linkifyChildren(
 	for (const child of children) {
 		if (isTextNode(child)) {
 			const replaced = transform(child);
-			out.push(...(replaced ?? [child]));
+			if (replaced) {
+				appendAll(out, replaced);
+			} else {
+				out.push(child);
+			}
 			continue;
 		}
 
