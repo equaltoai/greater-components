@@ -24,9 +24,19 @@ const config = {
 		},
 		prerender: {
 			entries: ['*'],
-			handleHttpError: ({ path, message }) => {
+			handleHttpError: ({ status, path, message }) => {
 				// Skip 404 errors for external links like /docs
 				if (path === '/greater-components/docs' || path === '/docs') {
+					return;
+				}
+				// Demo mention and hashtag links. ContentRenderer linkifies mentions
+				// and tags in the demo status bodies to its defaults (`/users/`,
+				// `/tags/`), and the playground has no profile or tag routes for the
+				// crawler to reach. These bodies only became crawlable once status
+				// content started server-rendering (equaltoai/greater-components#926).
+				// Scoped to the missing-route case only: any other prerender failure
+				// under these paths is a real break and must still fail the build.
+				if (status === 404 && /^(\/greater-components)?\/(users|tags)\//.test(path)) {
 					return;
 				}
 				throw new Error(message);
