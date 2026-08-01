@@ -159,6 +159,26 @@ async function settle(times = 12): Promise<void> {
 	}
 }
 
+/**
+ * Lets the whole episode drain, including work scheduled on a macrotask.
+ *
+ * A second expiry that arrives *after* the first refresh-and-re-dial has
+ * settled is the case a microtask-only drain cannot express: by then the
+ * in-flight latch has been released, so nothing but an explicit episode claim
+ * keeps the error link from starting a second cycle.
+ */
+async function settleAcrossTurns(turns = 4): Promise<void> {
+	for (let i = 0; i < turns; i += 1) {
+		await new Promise((resolve) => setTimeout(resolve, 5));
+		await settle();
+	}
+}
+
+/** How many times the socket was torn down across an episode. */
+function terminations(ws: FakeWsClient): number {
+	return ws.events.filter((event) => event === 'terminate').length;
+}
+
 describe('subscribe-time credential expiry through the real link chain', () => {
 	beforeEach(() => {
 		fakeClients.length = 0;
@@ -236,6 +256,81 @@ describe('subscribe-time credential expiry through the real link chain', () => {
 		expect(failures).toHaveLength(1);
 		// Exactly two attempts: the original and one re-issue. No loop.
 		expect(ws.subscribeCalls).toHaveLength(2);
+		// One episode, one refresh, one re-dial. The re-issue link owns this
+		// failure; the error link above it must not recover the same one again.
+		expect(onTokenRefresh).toHaveBeenCalledTimes(1);
+		expect(ws.events).toEqual(['subscribe', 'terminate', 'subscribe']);
+
+		instance.close();
+	});
+
+	it('drives one refresh and one re-dial when the second expiry is delayed', async () => {
+		// The delayed shape is the one that defeats the in-flight latch: the
+		// refresh-and-re-dial has fully settled and released before Lesser
+		// refuses the re-issued subscribe, so the propagated failure reaches the
+		// error link looking exactly like a brand-new expiry.
+		const onTokenRefresh = vi.fn().mockResolvedValue('fresh-token');
+		const instance = build({ onTokenRefresh });
+		const ws = latestWsClient();
+		ws.script = [
+			(sink) => sink.error(expiredFrame),
+			(sink) => {
+				setTimeout(() => sink.error(expiredFrame), 5);
+			},
+		];
+
+		const { deliveries, failures } = observe(instance.client.subscribe({ query: NOTE_ADDED }));
+		await settleAcrossTurns();
+
+		// Still loud: the caller sees the failure rather than a subscription
+		// that quietly stopped delivering.
+		expect(deliveries).toEqual([]);
+		expect(failures).toHaveLength(1);
+
+		// At most one refresh and one termination for the episode.
+		expect(onTokenRefresh).toHaveBeenCalledTimes(1);
+		expect(terminations(ws)).toBe(1);
+		// Still bounded: no third subscribe, so no silent retry loop either.
+		expect(ws.subscribeCalls).toHaveLength(2);
+		expect(ws.events).toEqual(['subscribe', 'terminate', 'subscribe']);
+
+		instance.close();
+	});
+
+	it('still recovers a later, independent expiry', async () => {
+		// Claiming an episode must not deafen the client to the next one. A
+		// different operation expiring later is a new episode and gets its own
+		// single refresh and re-dial.
+		const onTokenRefresh = vi
+			.fn()
+			.mockResolvedValueOnce('fresh-token')
+			.mockResolvedValueOnce('fresher-token');
+		const instance = build({ onTokenRefresh });
+		const ws = latestWsClient();
+		ws.script = [
+			(sink) => sink.error(expiredFrame),
+			(sink) => sink.error(expiredFrame),
+			(sink) => sink.error(expiredFrame),
+			(sink) => sink.next(payload('6', 'recovered')),
+		];
+
+		// Episode one: expires twice and is given up on.
+		const first = observe(instance.client.subscribe({ query: NOTE_ADDED }));
+		await settleAcrossTurns();
+		expect(first.failures).toHaveLength(1);
+		expect(onTokenRefresh).toHaveBeenCalledTimes(1);
+
+		// Episode two: a separate operation, later, expiring once.
+		const second = observe(
+			instance.client.subscribe({ query: NOTE_ADDED, variables: { cursor: 'z' } })
+		);
+		await settleAcrossTurns();
+
+		expect(second.failures).toEqual([]);
+		expect(second.deliveries).toHaveLength(1);
+		expect(onTokenRefresh).toHaveBeenCalledTimes(2);
+		expect(terminations(ws)).toBe(2);
+		expect(ws.subscribeCalls.at(-1)?.credential).toBe('Bearer fresher-token');
 
 		instance.close();
 	});

@@ -3,6 +3,7 @@ import { WebSocketClient } from '../WebSocketClient';
 import {
 	AUTH_EXPIRED_CODE,
 	AuthExpiredError,
+	createAuthExpiryEpisodes,
 	createSingleFlightRefresh,
 	extractServerErrorCodes,
 	hasServerErrorCode,
@@ -132,6 +133,61 @@ describe('extractServerErrorCodes', () => {
 		expect(isAuthExpiredError({ errors: [{ extensions: { code: 'UNAUTHENTICATED' } }] })).toBe(
 			false
 		);
+	});
+});
+
+describe('createAuthExpiryEpisodes', () => {
+	it('reports a claimed signal as already driven, and an unclaimed one as not', () => {
+		const episodes = createAuthExpiryEpisodes();
+		const claimed = { extensions: { code: AUTH_EXPIRED_CODE } };
+		const fresh = { extensions: { code: AUTH_EXPIRED_CODE } };
+
+		episodes.markDriven(claimed);
+
+		expect(episodes.wasDriven(claimed)).toBe(true);
+		// Same shape, different failure: a later episode is never suppressed by
+		// an earlier one.
+		expect(episodes.wasDriven(fresh)).toBe(false);
+	});
+
+	it('finds the claim through the wrappers an error picks up in the link chain', () => {
+		const episodes = createAuthExpiryEpisodes();
+		const signal = { extensions: { code: AUTH_EXPIRED_CODE } };
+		episodes.markDriven(signal);
+
+		expect(episodes.wasDriven({ errors: [signal] })).toBe(true);
+		expect(episodes.wasDriven({ graphQLErrors: [signal] })).toBe(true);
+		expect(episodes.wasDriven({ payload: signal })).toBe(true);
+		expect(episodes.wasDriven({ networkError: { result: { errors: [signal] } } })).toBe(true);
+		expect(episodes.wasDriven({ cause: signal })).toBe(true);
+	});
+
+	it('keeps one client instance from claiming another instance episode', () => {
+		const first = createAuthExpiryEpisodes();
+		const second = createAuthExpiryEpisodes();
+		const signal = { extensions: { code: AUTH_EXPIRED_CODE } };
+
+		first.markDriven(signal);
+
+		expect(first.wasDriven(signal)).toBe(true);
+		expect(second.wasDriven(signal)).toBe(false);
+	});
+
+	it('tolerates cycles and non-objects without throwing', () => {
+		const episodes = createAuthExpiryEpisodes();
+		const signal = { extensions: { code: AUTH_EXPIRED_CODE } };
+		episodes.markDriven(signal);
+
+		const cyclic: Record<string, unknown> = { errors: [signal] };
+		cyclic['cause'] = cyclic;
+		expect(episodes.wasDriven(cyclic)).toBe(true);
+
+		// Nothing to key on: a non-object is never treated as claimed.
+		episodes.markDriven('TOKEN_EXPIRED');
+		episodes.markDriven(null);
+		expect(episodes.wasDriven('TOKEN_EXPIRED')).toBe(false);
+		expect(episodes.wasDriven(null)).toBe(false);
+		expect(episodes.wasDriven(undefined)).toBe(false);
 	});
 });
 

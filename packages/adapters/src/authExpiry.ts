@@ -165,6 +165,81 @@ export function isAuthExpiredError(source: unknown): boolean {
 }
 
 /**
+ * Tracks which credential-expiry signals already have a recovery driven for
+ * them, so two links that both see one failure do not each drive their own.
+ *
+ * A failure episode is one expiry condition and the single recovery attempted
+ * for it: at most one refresh and at most one reconnect. greater reacts to
+ * `TOKEN_EXPIRED` in two places — the re-issue link on the subscription branch,
+ * which owns recovery for the operation it forwards, and the error link at the
+ * top of the chain, which covers every path the re-issue link cannot see. When
+ * a subscription expires a second time on the freshly refreshed credential the
+ * re-issue link is right to give up and propagate loudly, but that propagated
+ * failure then reaches the error link, which reads it as a new condition and
+ * refreshes and terminates the socket all over again. The second re-dial drops
+ * every healthy subscription in service of a credential the server has just
+ * refused.
+ *
+ * The owner marks the signal before propagating it and the error link stands
+ * down. Marks are held weakly and keyed on object identity, so a genuinely new
+ * expiry — a different error object, from a later episode — is never
+ * suppressed, and nothing is retained once the error is collected.
+ */
+export interface AuthExpiryEpisodes {
+	/** Records that recovery has already been driven for this expiry signal. */
+	markDriven(signal: unknown): void;
+	/** True when recovery for this expiry signal has already been driven. */
+	wasDriven(signal: unknown): boolean;
+}
+
+/** Creates an episode ledger scoped to one client instance. */
+export function createAuthExpiryEpisodes(): AuthExpiryEpisodes {
+	const driven = new WeakSet<object>();
+
+	return {
+		markDriven(signal: unknown): void {
+			if (signal && typeof signal === 'object') {
+				driven.add(signal);
+			}
+		},
+
+		wasDriven(signal: unknown): boolean {
+			// A signal marked at one link can reach the next one wrapped — under
+			// `networkError`, `cause`, or an execution result. Walk the same
+			// wrapper keys extractServerErrorCodes reads so the mark survives it.
+			const seen = new Set<unknown>();
+
+			const walk = (value: unknown, depth: number): boolean => {
+				if (!value || typeof value !== 'object' || depth > 4 || seen.has(value)) {
+					return false;
+				}
+				seen.add(value);
+
+				if (driven.has(value)) {
+					return true;
+				}
+
+				if (Array.isArray(value)) {
+					return value.some((entry) => walk(entry, depth + 1));
+				}
+
+				const record = value as Record<string, unknown>;
+				return (
+					walk(record['errors'], depth + 1) ||
+					walk(record['graphQLErrors'], depth + 1) ||
+					walk(record['payload'], depth + 1) ||
+					walk(record['result'], depth + 1) ||
+					walk(record['networkError'], depth + 1) ||
+					walk(record['cause'], depth + 1)
+				);
+			};
+
+			return walk(signal, 0);
+		},
+	};
+}
+
+/**
  * Wraps a refresh callback so concurrent expiry signals collapse into a single
  * in-flight refresh.
  *

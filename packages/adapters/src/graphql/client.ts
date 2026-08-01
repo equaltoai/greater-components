@@ -29,6 +29,7 @@ import { cacheConfig } from './cache.js';
 import {
 	AUTH_EXPIRED_CODE,
 	AuthExpiredError,
+	createAuthExpiryEpisodes,
 	createSingleFlightRefresh,
 	hasServerErrorCode,
 	type AuthExpiredHandler,
@@ -160,6 +161,16 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 	const refreshAccessToken = createSingleFlightRefresh(onTokenRefresh);
 	/** The in-flight refresh-and-re-dial, shared by every expiring operation. */
 	let authRedial: Promise<void> | null = null;
+	/**
+	 * Which expiry signals already have a recovery driven for them.
+	 *
+	 * The re-issue link and the error link can both see the same failure. The
+	 * in-flight latch above collapses the *concurrent* case; this ledger covers
+	 * the sequential one, where the re-issue link has already refreshed, spent
+	 * its one re-issue, and is propagating a second expiry that the error link
+	 * would otherwise mistake for a fresh episode.
+	 */
+	const authExpiryEpisodes = createAuthExpiryEpisodes();
 
 	const logDebug = (message: string, context?: unknown): void => {
 		if (!debug) {
@@ -394,7 +405,9 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 	 *
 	 * Exactly one re-issue per operation. A second expiry on the refreshed
 	 * credential is a server the client cannot satisfy, so it propagates rather
-	 * than looping.
+	 * than looping — and it propagates *claimed*, so the error link above does
+	 * not read it as a new episode and drive a second refresh and a second
+	 * socket termination on top of this one.
 	 */
 	const authExpiryReissueLink = new ApolloLink((operation, forward) => {
 		return new Observable<ApolloLink.Result>((observer) => {
@@ -410,7 +423,19 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 						if (unsubscribed) {
 							return;
 						}
-						if (reissued || !hasServerErrorCode(error, AUTH_EXPIRED_CODE)) {
+						if (!hasServerErrorCode(error, AUTH_EXPIRED_CODE)) {
+							observer.error(error);
+							return;
+						}
+						if (reissued) {
+							// This operation's one recovery is spent. Claim the episode
+							// before propagating, so the failure stays loud to the
+							// caller without the error link refreshing and re-dialing a
+							// second time for the same expiry.
+							authExpiryEpisodes.markDriven(error);
+							logDebugError(
+								'[GraphQL] Subscription expired again on the refreshed credential; not refreshing twice'
+							);
 							observer.error(error);
 							return;
 						}
@@ -425,6 +450,10 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 							},
 							(refreshError: unknown) => {
 								if (!unsubscribed) {
+									// Terminal expiry was already reported through
+									// onAuthExpired; claim it so the error link does not
+									// open a fresh cycle on the way out.
+									authExpiryEpisodes.markDriven(refreshError);
 									observer.error(refreshError);
 								}
 							}
@@ -458,6 +487,14 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 
 	// Error handling link
 	const errorLink = onError(({ error }) => {
+		// The re-issue link owns recovery for the subscription it forwards. When
+		// it has already driven this episode — refreshed once, spent its one
+		// re-issue, and given up — recovering again here would mean a second
+		// refresh and a second `terminate()` for a single failure, dropping every
+		// healthy subscription for a credential the server has already refused on
+		// the refreshed token. One episode, one refresh, one reconnect.
+		const recoveryAlreadyDriven = authExpiryEpisodes.wasDriven(error);
+
 		if (CombinedGraphQLErrors.is(error)) {
 			error.errors.forEach(({ message, locations, path, extensions }) => {
 				const errorMsg = `[GraphQL Error]: Message: ${message}, Location: ${JSON.stringify(locations)}, Path: ${path}`;
@@ -476,7 +513,7 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 				// Lesser v1.5.33 re-checks expiry per subscribe operation.
 				// Refresh and reconnect once; legacy rows without persisted
 				// expiry fail closed exactly once and self-heal on reconnect.
-				if (extensionCode === AUTH_EXPIRED_CODE) {
+				if (extensionCode === AUTH_EXPIRED_CODE && !recoveryAlreadyDriven) {
 					handleAuthExpired();
 				}
 			});
@@ -488,7 +525,9 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 		// GraphQLError list instead. Check that shape too so a subscribe-time
 		// expiry is never missed.
 		if (hasServerErrorCode(error, AUTH_EXPIRED_CODE)) {
-			handleAuthExpired();
+			if (!recoveryAlreadyDriven) {
+				handleAuthExpired();
+			}
 			return;
 		}
 
