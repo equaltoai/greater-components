@@ -32,6 +32,24 @@ interface BoundSocketListeners {
 }
 
 /**
+ * How many consecutive credential refreshes may answer `TOKEN_EXPIRED` before
+ * the condition is terminal.
+ *
+ * Auth recovery deliberately spends no reconnect attempt — a credential the
+ * server asked to renew is not a transport fault — so `maxReconnectAttempts`
+ * cannot bound it and nothing else would. A server that refuses every freshly
+ * minted credential (clock skew, an inconsistent auth node, delayed revocation
+ * state, a refresh service handing out already-expired credentials) would
+ * otherwise drive refresh → redial → refuse without end.
+ *
+ * The budget is consecutive: it counts recoveries since the server last
+ * answered on the credential they produced, so an app that expires normally
+ * once an hour never approaches it, and one caught in a refusal loop stops
+ * after three tries with a typed, loud error.
+ */
+const MAX_AUTH_RECOVERY_ATTEMPTS = 3;
+
+/**
  * WebSocketClient with automatic reconnection, heartbeat, and latency sampling
  */
 export class WebSocketClient implements TransportAdapter<WebSocketClientState> {
@@ -62,10 +80,22 @@ export class WebSocketClient implements TransportAdapter<WebSocketClientState> {
 	private readonly refreshAuthToken: () => Promise<string>;
 	private readonly onAuthExpired: AuthExpiredHandler | undefined;
 	/**
-	 * Suppresses ordinary reconnect scheduling while a credential refresh is
-	 * in flight, so the refreshed reconnect is the only socket that opens.
+	 * Suppresses ordinary reconnect scheduling for the whole auth-recovery
+	 * window — the refresh, the backoff between consecutive attempts, and the
+	 * dial — so the refreshed reconnect is the only socket that opens.
 	 */
-	private isRefreshingAuth = false;
+	private isRecoveringAuth = false;
+	/**
+	 * Consecutive auth recoveries driven since the server last answered on the
+	 * credential one of them produced.
+	 *
+	 * Opening another socket is not evidence of anything: the refusal arrives
+	 * *after* the socket opens, so a fresh connection is exactly what a refusal
+	 * loop keeps producing. Only server traffic on the new credential resets it.
+	 */
+	private authRecoveryAttempts = 0;
+	/** Spacing timer between consecutive auth-recovery dials. */
+	private authRecoveryTimer: ReturnType<typeof setTimeout> | null = null;
 	private authExpiryTerminal = false;
 
 	constructor(config: WebSocketClientConfig) {
@@ -116,6 +146,10 @@ export class WebSocketClient implements TransportAdapter<WebSocketClientState> {
 		// A fresh dial clears the terminal auth-expiry latch: either the app is
 		// retrying deliberately, or a refreshed credential is being presented.
 		this.authExpiryTerminal = false;
+		// Whoever dials now owns the socket, so any auth-recovery dial still
+		// waiting out its backoff is superseded. The streak count deliberately
+		// survives: a new socket is not evidence the credential is accepted.
+		this.cancelAuthRecovery();
 		this.cleanup();
 		this.setState({ status: 'connecting', error: null });
 
@@ -148,6 +182,11 @@ export class WebSocketClient implements TransportAdapter<WebSocketClientState> {
 	 */
 	disconnect(): void {
 		this.isExplicitDisconnect = true;
+		this.cancelAuthRecovery();
+		// An explicit disconnect ends the episode as well as the connection: the
+		// app is deciding what happens next, so the next session starts on a full
+		// auth-recovery budget rather than inheriting a spent one.
+		this.authRecoveryAttempts = 0;
 		this.setState({ status: 'disconnected' });
 		this.cleanup();
 	}
@@ -157,6 +196,7 @@ export class WebSocketClient implements TransportAdapter<WebSocketClientState> {
 	 */
 	destroy(): void {
 		this.isDestroyed = true;
+		this.cancelAuthRecovery();
 		this.setState({ status: 'disconnected' });
 		this.cleanup();
 		this.eventHandlers.clear();
@@ -333,17 +373,27 @@ export class WebSocketClient implements TransportAdapter<WebSocketClientState> {
 		try {
 			const message = JSON.parse(event.data) as WebSocketMessage | HeartbeatMessage;
 
-			// Handle heartbeat messages
-			if ('type' in message && message.type === 'pong') {
-				this.handlePong(message as HeartbeatMessage);
-				return;
-			}
-
 			// Lesser v1.5.33 re-checks credential expiry per operation and
 			// answers an expired credential with `extensions.code`
 			// TOKEN_EXPIRED. Refresh and reconnect once; never swallow.
+			//
+			// Checked before anything else so no frame can be read as healthy
+			// traffic and healthy traffic first: a refusal must never clear the
+			// auth-recovery streak it is part of.
 			if (hasServerErrorCode(message, AUTH_EXPIRED_CODE)) {
 				this.handleAuthExpired();
+				return;
+			}
+
+			// Anything else the server sends — a payload, a heartbeat answer — is
+			// the credential in force being honoured, which is the only thing that
+			// ends an auth-recovery streak. A socket that merely opened proves
+			// nothing; the refusal always arrives after the open.
+			this.authRecoveryAttempts = 0;
+
+			// Handle heartbeat messages
+			if ('type' in message && message.type === 'pong') {
+				this.handlePong(message as HeartbeatMessage);
 				return;
 			}
 
@@ -483,13 +533,38 @@ export class WebSocketClient implements TransportAdapter<WebSocketClientState> {
 	 *
 	 * With no refresh callback configured this is terminal and loud: the client
 	 * stops reconnecting and emits a typed {@link AuthExpiredError}.
+	 *
+	 * Recovery is bounded by its own budget rather than by the reconnect budget.
+	 * Not consuming a reconnect attempt is deliberate — the connection was
+	 * healthy and the server asked for re-authentication — but it also means
+	 * nothing else stops this path, and a server that refuses every newly minted
+	 * credential would otherwise be answered forever. So consecutive recoveries
+	 * are counted, spaced, and capped at {@link MAX_AUTH_RECOVERY_ATTEMPTS};
+	 * exhausting the budget is terminal and typed, never silent.
 	 */
 	private handleAuthExpired(): void {
-		if (this.isDestroyed || this.isExplicitDisconnect || this.isRefreshingAuth) {
+		if (
+			this.isDestroyed ||
+			this.isExplicitDisconnect ||
+			this.isRecoveringAuth ||
+			this.authExpiryTerminal
+		) {
 			return;
 		}
 
-		this.isRefreshingAuth = true;
+		if (this.authRecoveryAttempts >= MAX_AUTH_RECOVERY_ATTEMPTS) {
+			// Every credential this client could obtain has been refused in turn,
+			// with no healthy traffic in between. Another refresh would only be the
+			// same answer to the same question, so the app is told instead.
+			this.failAuthExpiryTerminally(new AuthExpiredError('recovery-exhausted'));
+			return;
+		}
+
+		// The count of recoveries that came *before* this one: the first is
+		// immediate, and each one after it waits longer than the last.
+		const priorRecoveries = this.authRecoveryAttempts;
+		this.authRecoveryAttempts = priorRecoveries + 1;
+		this.isRecoveringAuth = true;
 
 		// Cancel any pending ordinary reconnect so the refreshed connect is the
 		// only socket that opens.
@@ -502,9 +577,8 @@ export class WebSocketClient implements TransportAdapter<WebSocketClientState> {
 
 		void this.refreshAuthToken().then(
 			(token) => {
-				this.isRefreshingAuth = false;
-
 				if (this.isDestroyed || this.isExplicitDisconnect) {
+					this.isRecoveringAuth = false;
 					return;
 				}
 
@@ -512,13 +586,28 @@ export class WebSocketClient implements TransportAdapter<WebSocketClientState> {
 				// Drop the socket the server just refused before dialing again;
 				// `connect()` no-ops on an already-open socket.
 				this.cleanup();
+
 				// Reconnect attempts are intentionally left untouched: a
 				// credential refresh must not erode the transport's budget for
 				// genuine network failures.
-				this.connect();
+				const delay = this.authRecoveryDelay(priorRecoveries);
+				if (delay <= 0) {
+					this.isRecoveringAuth = false;
+					this.connect();
+					return;
+				}
+
+				this.authRecoveryTimer = setTimeout(() => {
+					this.authRecoveryTimer = null;
+					this.isRecoveringAuth = false;
+					if (this.isDestroyed || this.isExplicitDisconnect) {
+						return;
+					}
+					this.connect();
+				}, delay);
 			},
 			(error: unknown) => {
-				this.isRefreshingAuth = false;
+				this.isRecoveringAuth = false;
 				this.failAuthExpiryTerminally(
 					error instanceof AuthExpiredError
 						? error
@@ -529,12 +618,53 @@ export class WebSocketClient implements TransportAdapter<WebSocketClientState> {
 	}
 
 	/**
+	 * How long to wait before the dial that presents a freshly refreshed
+	 * credential.
+	 *
+	 * The first recovery is immediate: one credential expiring and one refresh
+	 * answering it is the ordinary case, and delaying it would delay every
+	 * routine renewal. A second refusal on a credential minted seconds ago is
+	 * not ordinary, so consecutive recoveries back off on the transport's own
+	 * curve — the same exponential-with-jitter shape as
+	 * {@link scheduleReconnect}, kept separate so neither budget spends the
+	 * other's.
+	 */
+	private authRecoveryDelay(priorRecoveries: number): number {
+		if (priorRecoveries <= 0) {
+			return 0;
+		}
+
+		const baseDelay = Math.min(
+			this.config.initialReconnectDelay * Math.pow(2, priorRecoveries - 1),
+			this.config.maxReconnectDelay
+		);
+		const jitter = baseDelay * this.config.jitterFactor * Math.random();
+		return Math.round(baseDelay + jitter);
+	}
+
+	/**
+	 * Ends the auth-recovery window: no dial is pending and ordinary reconnect
+	 * scheduling is free again.
+	 *
+	 * The streak count is deliberately left alone. It is reset only by evidence
+	 * that the credential is accepted, or by the app disconnecting explicitly.
+	 */
+	private cancelAuthRecovery(): void {
+		if (this.authRecoveryTimer) {
+			clearTimeout(this.authRecoveryTimer);
+			this.authRecoveryTimer = null;
+		}
+		this.isRecoveringAuth = false;
+	}
+
+	/**
 	 * Enters the terminal auth-expiry state: stop reconnecting, record the
 	 * typed error, and tell the app. Silence here would look like an ordinary
 	 * disconnect and hide an expired session.
 	 */
 	private failAuthExpiryTerminally(error: AuthExpiredError): void {
 		this.authExpiryTerminal = true;
+		this.cancelAuthRecovery();
 
 		if (this.reconnectTimer) {
 			clearTimeout(this.reconnectTimer);
@@ -562,7 +692,7 @@ export class WebSocketClient implements TransportAdapter<WebSocketClientState> {
 
 		// A refresh-driven reconnect is already pending, or auth expiry is
 		// terminal. Either way, do not open a competing socket.
-		if (this.isRefreshingAuth || this.authExpiryTerminal) {
+		if (this.isRecoveringAuth || this.authExpiryTerminal) {
 			return;
 		}
 

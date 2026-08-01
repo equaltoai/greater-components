@@ -45,7 +45,14 @@ export type AuthExpiredReason =
 	/** The refresh callback threw. */
 	| 'refresh-failed'
 	/** The refresh callback resolved without a usable credential. */
-	| 'refresh-empty';
+	| 'refresh-empty'
+	/**
+	 * Consecutive refreshes each produced a credential the server refused in
+	 * turn, so automatic recovery is spent. Something upstream is handing out
+	 * credentials this server will not accept — clock skew, an inconsistent auth
+	 * node, or a refresh service minting already-expired ones.
+	 */
+	| 'recovery-exhausted';
 
 /**
  * Terminal, typed auth-expiry error.
@@ -75,6 +82,8 @@ function authExpiredMessage(reason: AuthExpiredReason): string {
 			return 'Your session expired and refreshing it failed. Sign in again to continue.';
 		case 'refresh-empty':
 			return 'Your session expired and no new credential was available. Sign in again to continue.';
+		case 'recovery-exhausted':
+			return 'Your session expired repeatedly and could not be renewed. Sign in again to continue.';
 	}
 }
 

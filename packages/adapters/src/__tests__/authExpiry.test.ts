@@ -423,6 +423,144 @@ describe('WebSocketClient credential expiry (Lesser v1.5.33)', () => {
 		}
 	});
 
+	/**
+	 * Serial refusals: a server that answers every newly minted credential with
+	 * TOKEN_EXPIRED.
+	 *
+	 * This needs no malice. Clock skew between the client and the auth node, an
+	 * inconsistent auth node behind a load balancer, delayed revocation state, or
+	 * a refresh service handing out credentials that are already expired all
+	 * produce it. Auth recovery deliberately spends no reconnect attempt, so
+	 * `maxReconnectAttempts` cannot stop the refresh → redial → refuse cycle;
+	 * only its own budget can.
+	 */
+	async function refuseOnce(): Promise<void> {
+		MockWebSocket.latest.emit('open', {});
+		MockWebSocket.latest.deliver(tokenExpiredFrame);
+		await flush(8);
+	}
+
+	it('stops a serial refusal loop at the auth-recovery cap, loudly', async () => {
+		const onTokenRefresh = vi.fn(async () => `minted-${onTokenRefresh.mock.calls.length}`);
+		const onAuthExpired = vi.fn();
+		const client = createClient({ onTokenRefresh, onAuthExpired });
+		const observed: AuthExpiredError[] = [];
+		client.on('authExpired', (event) => observed.push(event.error as AuthExpiredError));
+
+		client.connect();
+
+		// Five scripted refusals, each on the socket the previous recovery
+		// opened. The client must not answer all five.
+		for (let refusal = 0; refusal < 5; refusal += 1) {
+			await refuseOnce();
+			// Let any backoff between consecutive recoveries elapse.
+			await vi.advanceTimersByTimeAsync(60_000);
+		}
+
+		// Three recoveries, then the condition is terminal: the fourth refusal is
+		// answered with a typed error instead of a fourth credential.
+		expect(onTokenRefresh).toHaveBeenCalledTimes(3);
+		expect(MockWebSocket.instances).toHaveLength(4);
+
+		expect(onAuthExpired).toHaveBeenCalledTimes(1);
+		const error = onAuthExpired.mock.calls[0]?.[0] as AuthExpiredError;
+		expect(error).toBeInstanceOf(AuthExpiredError);
+		expect(error.code).toBe(AUTH_EXPIRED_CODE);
+		expect(error.reason).toBe('recovery-exhausted');
+		expect(observed).toEqual([error]);
+
+		// Loud, and stopped: the app is told, and nothing keeps dialing.
+		expect(client.getState().status).toBe('disconnected');
+		expect(client.getState().error).toBe(error);
+		await vi.advanceTimersByTimeAsync(300_000);
+		expect(MockWebSocket.instances).toHaveLength(4);
+
+		// The reconnect budget is still whole — auth recovery never spent it, and
+		// so was never bounded by it.
+		expect(client.getState().reconnectAttempts).toBe(0);
+
+		client.destroy();
+	});
+
+	it('spaces consecutive auth recoveries instead of dialing straight back', async () => {
+		const onTokenRefresh = vi.fn().mockResolvedValue('fresh-token');
+		// Jitter is a fraction of the base delay, so each window below is
+		// [base, base * 1.3] — asserted from both ends rather than assumed.
+		const client = createClient({ onTokenRefresh, initialReconnectDelay: 1000 });
+
+		client.connect();
+
+		// One credential expiring and one refresh answering it is the ordinary
+		// case: it is not delayed, or every routine renewal would be.
+		await refuseOnce();
+		expect(MockWebSocket.instances).toHaveLength(2);
+
+		// A second refusal, on a credential minted moments ago, is not ordinary.
+		await refuseOnce();
+		expect(MockWebSocket.instances).toHaveLength(2);
+		await vi.advanceTimersByTimeAsync(999);
+		expect(MockWebSocket.instances).toHaveLength(2);
+		await vi.advanceTimersByTimeAsync(301);
+		expect(MockWebSocket.instances).toHaveLength(3);
+
+		// And the third waits longer than the second could have: at 1999ms the
+		// previous window has long closed, and this one has not opened.
+		await refuseOnce();
+		await vi.advanceTimersByTimeAsync(1999);
+		expect(MockWebSocket.instances).toHaveLength(3);
+		await vi.advanceTimersByTimeAsync(601);
+		expect(MockWebSocket.instances).toHaveLength(4);
+
+		client.destroy();
+	});
+
+	it('resets the auth-recovery budget when the server answers on the fresh credential', async () => {
+		const onTokenRefresh = vi.fn().mockResolvedValue('fresh-token');
+		const onAuthExpired = vi.fn();
+		const client = createClient({ onTokenRefresh, onAuthExpired });
+
+		client.connect();
+
+		// Five refusals again — more than the cap — but this time the server
+		// delivers real traffic on each refreshed credential before refusing the
+		// next one. None of them are consecutive, so the budget never runs down.
+		for (let refusal = 0; refusal < 5; refusal += 1) {
+			await refuseOnce();
+			await vi.advanceTimersByTimeAsync(60_000);
+			MockWebSocket.latest.emit('open', {});
+			MockWebSocket.latest.deliver({ type: 'note', id: `event-${refusal}`, data: { ok: true } });
+		}
+
+		expect(onTokenRefresh).toHaveBeenCalledTimes(5);
+		expect(onAuthExpired).not.toHaveBeenCalled();
+		expect(client.getState().status).toBe('connected');
+
+		client.destroy();
+	});
+
+	it('does not count another open socket as evidence the credential is accepted', async () => {
+		// The cap would be meaningless if opening the next socket cleared it —
+		// a refusal loop produces a fresh socket every cycle by construction. The
+		// refusal always arrives after the open, so only what the server sends
+		// afterwards can count.
+		const onTokenRefresh = vi.fn().mockResolvedValue('fresh-token');
+		const onAuthExpired = vi.fn();
+		const client = createClient({ onTokenRefresh, onAuthExpired });
+
+		client.connect();
+		for (let refusal = 0; refusal < 4; refusal += 1) {
+			// Each cycle opens a socket, and each socket refuses.
+			await refuseOnce();
+			await vi.advanceTimersByTimeAsync(60_000);
+		}
+
+		expect(MockWebSocket.instances.length).toBeGreaterThan(1);
+		expect(onTokenRefresh).toHaveBeenCalledTimes(3);
+		expect(onAuthExpired).toHaveBeenCalledTimes(1);
+
+		client.destroy();
+	});
+
 	it('never writes the credential to the logger', async () => {
 		const logger = { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() };
 		const client = createClient({ logger, onTokenRefresh: () => 'fresh-token' });
