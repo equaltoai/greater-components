@@ -20,11 +20,29 @@ import type {
 } from './types';
 
 /**
+ * The four listeners this client binds to a socket, held together with the
+ * socket they belong to so the pair can never drift apart.
+ */
+interface BoundSocketListeners {
+	socket: WebSocket;
+	open: (event: Event) => void;
+	close: (event: CloseEvent) => void;
+	error: (event: Event) => void;
+	message: (event: MessageEvent) => void;
+}
+
+/**
  * WebSocketClient with automatic reconnection, heartbeat, and latency sampling
  */
 export class WebSocketClient implements TransportAdapter<WebSocketClientState> {
 	private config: ResolvedWebSocketClientConfig;
 	private socket: WebSocket | null = null;
+	/**
+	 * The listeners bound to {@link socket}, kept so they can actually be
+	 * detached. `handler.bind(this)` allocates a fresh function every call, so
+	 * removing by re-binding removes nothing.
+	 */
+	private socketListeners: BoundSocketListeners | null = null;
 	private state: WebSocketClientState;
 	private eventHandlers: Map<string, Set<WebSocketEventHandler>> = new Map();
 	private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
@@ -202,13 +220,60 @@ export class WebSocketClient implements TransportAdapter<WebSocketClientState> {
 		return Math.round(sum / this.latencySamples.length);
 	}
 
+	/**
+	 * Binds the lifecycle listeners to the socket that is current *right now*.
+	 *
+	 * Two independent defences keep a superseded socket from reaching into the
+	 * live connection — a real hazard on the refresh-and-reconnect path, where
+	 * the refused socket is dropped while its `close` is still in flight and
+	 * would otherwise run {@link handleClose} against its replacement:
+	 *
+	 * 1. The bound functions are retained, so {@link detachSocketListeners}
+	 *    genuinely removes them.
+	 * 2. Every listener re-checks socket identity before doing anything, so an
+	 *    event that was already queued — or that an environment delivers after
+	 *    removal — is dropped instead of acting on the current socket.
+	 */
 	private setupEventListeners(): void {
-		if (!this.socket) return;
+		const socket = this.socket;
+		if (!socket) return;
 
-		this.socket.addEventListener('open', this.handleOpen.bind(this));
-		this.socket.addEventListener('close', this.handleClose.bind(this));
-		this.socket.addEventListener('error', this.handleError.bind(this));
-		this.socket.addEventListener('message', this.handleMessage.bind(this));
+		const forCurrentSocket =
+			<TEvent>(handle: (event: TEvent) => void) =>
+			(event: TEvent): void => {
+				if (this.socket !== socket) {
+					return;
+				}
+				handle(event);
+			};
+
+		const listeners: BoundSocketListeners = {
+			socket,
+			open: forCurrentSocket<Event>(() => this.handleOpen()),
+			close: forCurrentSocket<CloseEvent>((event) => this.handleClose(event)),
+			error: forCurrentSocket<Event>((event) => this.handleError(event)),
+			message: forCurrentSocket<MessageEvent>((event) => this.handleMessage(event)),
+		};
+
+		socket.addEventListener('open', listeners.open);
+		socket.addEventListener('close', listeners.close);
+		socket.addEventListener('error', listeners.error);
+		socket.addEventListener('message', listeners.message);
+
+		this.socketListeners = listeners;
+	}
+
+	/** Detaches the listeners bound by {@link setupEventListeners}, if any. */
+	private detachSocketListeners(): void {
+		const bound = this.socketListeners;
+		if (!bound) return;
+
+		bound.socket.removeEventListener('open', bound.open);
+		bound.socket.removeEventListener('close', bound.close);
+		bound.socket.removeEventListener('error', bound.error);
+		bound.socket.removeEventListener('message', bound.message);
+
+		this.socketListeners = null;
 	}
 
 	private handleOpen(): void {
@@ -528,17 +593,19 @@ export class WebSocketClient implements TransportAdapter<WebSocketClientState> {
 	}
 
 	private cleanup(): void {
-		if (this.socket) {
-			this.socket.removeEventListener('open', this.handleOpen.bind(this));
-			this.socket.removeEventListener('close', this.handleClose.bind(this));
-			this.socket.removeEventListener('error', this.handleError.bind(this));
-			this.socket.removeEventListener('message', this.handleMessage.bind(this));
+		const socket = this.socket;
+		if (socket) {
+			this.detachSocketListeners();
 
-			if (this.socket.readyState === WebSocket.OPEN) {
-				this.socket.close();
-			}
-
+			// Clear the identity *before* closing. `close()` can dispatch
+			// synchronously, and the next dial may begin before the environment
+			// delivers the close: either way the socket is no longer current, so
+			// nothing it emits from here on may touch this client.
 			this.socket = null;
+
+			if (socket.readyState === WebSocket.OPEN) {
+				socket.close();
+			}
 		}
 
 		if (this.reconnectTimer) {

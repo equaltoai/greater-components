@@ -41,9 +41,8 @@ class MockWebSocket {
 		set.add(handler);
 	}
 
-	removeEventListener(): void {
-		// The client rebinds handlers with `.bind(this)`, so removal is a no-op
-		// here; `close()` plus instance tracking is what the assertions use.
+	removeEventListener(type: string, handler: (event: unknown) => void): void {
+		this.listeners.get(type)?.delete(handler);
 	}
 
 	send(data: string): void {
