@@ -25,6 +25,14 @@ import { RetryLink } from '@apollo/client/link/retry/index.js';
 import { createClient, type Client } from 'graphql-ws';
 import { CombinedGraphQLErrors } from '@apollo/client/errors/index.js';
 import { cacheConfig } from './cache.js';
+import {
+	AUTH_EXPIRED_CODE,
+	AuthExpiredError,
+	createSingleFlightRefresh,
+	hasServerErrorCode,
+	type AuthExpiredHandler,
+	type TokenRefreshCallback,
+} from '../authExpiry.js';
 
 export interface GraphQLClientConfig {
 	/**
@@ -72,6 +80,27 @@ export interface GraphQLClientConfig {
 	 * @default 3
 	 */
 	maxRetries?: number;
+
+	/**
+	 * Supplies a fresh access token when Lesser reports the current one expired.
+	 *
+	 * Lesser v1.5.33 re-checks credential expiry as each `subscribe` operation
+	 * starts and answers an expired credential with a graphql-ws Error frame
+	 * carrying `extensions.code = "TOKEN_EXPIRED"`. When this callback is
+	 * configured the client refreshes once, re-dials the existing WebSocket so
+	 * `connectionParams` re-evaluates with the new token, and graphql-ws
+	 * re-establishes the active subscriptions.
+	 *
+	 * When omitted, expiry is terminal and reported through
+	 * {@link GraphQLClientConfig.onAuthExpired} — never retried silently.
+	 */
+	onTokenRefresh?: TokenRefreshCallback;
+
+	/**
+	 * Notified when credential expiry is terminal: no refresh callback is
+	 * configured, or refreshing produced no usable token.
+	 */
+	onAuthExpired?: AuthExpiredHandler;
 }
 
 export interface GraphQLClientInstance {
@@ -122,9 +151,13 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 		connectionTimeout = 10000,
 		enableRetry = true,
 		maxRetries = 3,
+		onTokenRefresh,
+		onAuthExpired,
 	} = config;
 
 	let currentToken = token || null;
+	const refreshAccessToken = createSingleFlightRefresh(onTokenRefresh);
+	let authRefreshInFlight = false;
 
 	const logDebug = (message: string, context?: unknown): void => {
 		if (!debug) {
@@ -263,6 +296,66 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 		);
 	}
 
+	/**
+	 * Reports terminal credential expiry to the app.
+	 *
+	 * Expiry is never swallowed: with no way to recover the credential, the app
+	 * is told explicitly so it can prompt for re-authentication instead of
+	 * watching subscriptions fail silently.
+	 */
+	const failAuthExpiryTerminally = (error: AuthExpiredError): void => {
+		logDebugError(`[GraphQL] Credential expired (${error.reason}); re-authentication required`);
+		try {
+			onAuthExpired?.(error);
+		} catch (handlerError) {
+			logDebugError('[GraphQL] onAuthExpired handler threw', handlerError);
+		}
+	};
+
+	/**
+	 * Refreshes the credential and re-dials the existing WebSocket.
+	 *
+	 * `terminate()` is used rather than `dispose()` + `createClient()` on
+	 * purpose. The graphql-ws client owns the active subscriptions, so tearing
+	 * it down would strand them; terminating drops the socket and lets the same
+	 * client reconnect, re-evaluate `connectionParams` with the fresh token,
+	 * and re-establish its operations. It also keeps a single socket lifecycle,
+	 * so exactly one `connection_init` is sent — Lesser closes a duplicate init
+	 * with code 4429.
+	 *
+	 * Concurrent `TOKEN_EXPIRED` frames (one per in-flight subscription)
+	 * collapse into a single refresh and a single re-dial.
+	 */
+	const handleAuthExpired = (): void => {
+		// Each in-flight subscription reports its own expiry frame. Latch here
+		// so those collapse into a single re-dial, not one per frame.
+		if (authRefreshInFlight) {
+			return;
+		}
+		authRefreshInFlight = true;
+
+		void refreshAccessToken().then(
+			(freshToken) => {
+				authRefreshInFlight = false;
+				currentToken = freshToken;
+				logDebug('[GraphQL] Credential refreshed; re-dialing WebSocket to resubscribe');
+
+				const terminate = (wsClient as { terminate?: () => void } | null)?.terminate;
+				if (typeof terminate === 'function') {
+					terminate.call(wsClient);
+				}
+			},
+			(error: unknown) => {
+				authRefreshInFlight = false;
+				failAuthExpiryTerminally(
+					error instanceof AuthExpiredError
+						? error
+						: new AuthExpiredError('refresh-failed', { cause: error })
+				);
+			}
+		);
+	};
+
 	// Error handling link
 	const errorLink = onError(({ error }) => {
 		if (CombinedGraphQLErrors.is(error)) {
@@ -280,7 +373,22 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 					// Clear token on auth failure
 					currentToken = null;
 				}
+				// Lesser v1.5.33 re-checks expiry per subscribe operation.
+				// Refresh and reconnect once; legacy rows without persisted
+				// expiry fail closed exactly once and self-heal on reconnect.
+				if (extensionCode === AUTH_EXPIRED_CODE) {
+					handleAuthExpired();
+				}
 			});
+			return;
+		}
+
+		// graphql-ws Error frames do not always reach the link as
+		// `CombinedGraphQLErrors` — a subscription can surface the raw
+		// GraphQLError list instead. Check that shape too so a subscribe-time
+		// expiry is never missed.
+		if (hasServerErrorCode(error, AUTH_EXPIRED_CODE)) {
+			handleAuthExpired();
 			return;
 		}
 

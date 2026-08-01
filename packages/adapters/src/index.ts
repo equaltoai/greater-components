@@ -6,6 +6,23 @@ import type { AiAnalysisQuery } from './graphql';
 
 export type AIAnalysis = NonNullable<AiAnalysisQuery['aiAnalysis']>;
 
+// Credential-expiry contract (Lesser v1.5.33 subscribe-time TOKEN_EXPIRED)
+export {
+	AUTH_EXPIRED_CODE,
+	UNAUTHENTICATED_CODE,
+	AuthExpiredError,
+	createSingleFlightRefresh,
+	extractServerErrorCodes,
+	hasServerErrorCode,
+	isAuthExpiredError,
+} from './authExpiry.js';
+
+export type {
+	AuthExpiredHandler,
+	AuthExpiredReason,
+	TokenRefreshCallback,
+} from './authExpiry.js';
+
 // Transport Clients
 export { WebSocketClient } from './WebSocketClient';
 export { SseClient } from './SseClient';
@@ -335,6 +352,7 @@ export type {
 	WebSocketEvent,
 	WebSocketEventType,
 	WebSocketEventHandler,
+	AuthExpiredEventData,
 
 	// SSE types
 	SseClientConfig,

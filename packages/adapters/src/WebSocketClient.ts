@@ -1,4 +1,11 @@
 import { resolveLogger } from './logger.js';
+import {
+	AUTH_EXPIRED_CODE,
+	AuthExpiredError,
+	createSingleFlightRefresh,
+	hasServerErrorCode,
+	type AuthExpiredHandler,
+} from './authExpiry.js';
 import type {
 	WebSocketClientConfig,
 	WebSocketClientState,
@@ -28,9 +35,25 @@ export class WebSocketClient implements TransportAdapter<WebSocketClientState> {
 	private isDestroyed = false;
 	private isExplicitDisconnect = false;
 	private readonly logger: Required<TransportLogger>;
+	/**
+	 * Live credential. Seeded from config and replaced on refresh so a
+	 * reconnect never re-presents a credential the server already rejected.
+	 */
+	private authToken: string;
+	private readonly refreshAuthToken: () => Promise<string>;
+	private readonly onAuthExpired: AuthExpiredHandler | undefined;
+	/**
+	 * Suppresses ordinary reconnect scheduling while a credential refresh is
+	 * in flight, so the refreshed reconnect is the only socket that opens.
+	 */
+	private isRefreshingAuth = false;
+	private authExpiryTerminal = false;
 
 	constructor(config: WebSocketClientConfig) {
 		this.logger = resolveLogger(config.logger);
+		this.authToken = config.authToken || '';
+		this.refreshAuthToken = createSingleFlightRefresh(config.onTokenRefresh);
+		this.onAuthExpired = config.onAuthExpired;
 		this.config = {
 			url: config.url,
 			authToken: config.authToken || '',
@@ -71,15 +94,20 @@ export class WebSocketClient implements TransportAdapter<WebSocketClientState> {
 		}
 
 		this.isExplicitDisconnect = false;
+		// A fresh dial clears the terminal auth-expiry latch: either the app is
+		// retrying deliberately, or a refreshed credential is being presented.
+		this.authExpiryTerminal = false;
 		this.cleanup();
 		this.setState({ status: 'connecting', error: null });
 
 		try {
 			const url = new URL(this.config.url);
 
-			// Add auth token as query parameter if provided
-			if (this.config.authToken) {
-				url.searchParams.set('token', this.config.authToken);
+			// Add auth token as query parameter if provided.
+			// The credential travels in the URL, so this URL must never be
+			// logged or emitted in an event payload.
+			if (this.authToken) {
+				url.searchParams.set('token', this.authToken);
 			}
 
 			// Add last event ID for resumption if available
@@ -245,6 +273,14 @@ export class WebSocketClient implements TransportAdapter<WebSocketClientState> {
 				return;
 			}
 
+			// Lesser v1.5.33 re-checks credential expiry per operation and
+			// answers an expired credential with `extensions.code`
+			// TOKEN_EXPIRED. Refresh and reconnect once; never swallow.
+			if (hasServerErrorCode(message, AUTH_EXPIRED_CODE)) {
+				this.handleAuthExpired();
+				return;
+			}
+
 			// Update lastEventId if present
 			if ('id' in message && message.id) {
 				this.setState({ lastEventId: message.id });
@@ -369,8 +405,98 @@ export class WebSocketClient implements TransportAdapter<WebSocketClientState> {
 		}
 	}
 
+	/**
+	 * Refreshes the credential and reconnects once.
+	 *
+	 * Credential expiry is not a transport fault, so this deliberately does not
+	 * consume a reconnect attempt: the connection was healthy and the server
+	 * asked for re-authentication. Concurrent expiry signals collapse into one
+	 * refresh (see {@link createSingleFlightRefresh}) so only a single socket —
+	 * and therefore a single `connection_init` — is ever opened; Lesser rejects
+	 * a duplicate init with close code 4429.
+	 *
+	 * With no refresh callback configured this is terminal and loud: the client
+	 * stops reconnecting and emits a typed {@link AuthExpiredError}.
+	 */
+	private handleAuthExpired(): void {
+		if (this.isDestroyed || this.isExplicitDisconnect || this.isRefreshingAuth) {
+			return;
+		}
+
+		this.isRefreshingAuth = true;
+
+		// Cancel any pending ordinary reconnect so the refreshed connect is the
+		// only socket that opens.
+		if (this.reconnectTimer) {
+			clearTimeout(this.reconnectTimer);
+			this.reconnectTimer = null;
+		}
+
+		this.setState({ status: 'reconnecting' });
+
+		void this.refreshAuthToken().then(
+			(token) => {
+				this.isRefreshingAuth = false;
+
+				if (this.isDestroyed || this.isExplicitDisconnect) {
+					return;
+				}
+
+				this.authToken = token;
+				// Drop the socket the server just refused before dialing again;
+				// `connect()` no-ops on an already-open socket.
+				this.cleanup();
+				// Reconnect attempts are intentionally left untouched: a
+				// credential refresh must not erode the transport's budget for
+				// genuine network failures.
+				this.connect();
+			},
+			(error: unknown) => {
+				this.isRefreshingAuth = false;
+				this.failAuthExpiryTerminally(
+					error instanceof AuthExpiredError
+						? error
+						: new AuthExpiredError('refresh-failed', { cause: error })
+				);
+			}
+		);
+	}
+
+	/**
+	 * Enters the terminal auth-expiry state: stop reconnecting, record the
+	 * typed error, and tell the app. Silence here would look like an ordinary
+	 * disconnect and hide an expired session.
+	 */
+	private failAuthExpiryTerminally(error: AuthExpiredError): void {
+		this.authExpiryTerminal = true;
+
+		if (this.reconnectTimer) {
+			clearTimeout(this.reconnectTimer);
+			this.reconnectTimer = null;
+		}
+
+		this.cleanup();
+		this.setState({ status: 'disconnected', error });
+		this.logger.error('WebSocket credential expired', { code: error.code, reason: error.reason });
+
+		this.emit('authExpired', { error }, error);
+		this.emit('error', { error }, error);
+
+		try {
+			this.onAuthExpired?.(error);
+		} catch (handlerError) {
+			this.logger.error('Error in onAuthExpired handler', { error: handlerError });
+		}
+	}
+
 	private scheduleReconnect(): void {
 		if (this.reconnectTimer || this.isDestroyed) {
+			return;
+		}
+
+		// A refresh-driven reconnect is already pending, or auth expiry is
+		// terminal. Either way, do not open a competing socket.
+		if (this.isRefreshingAuth || this.authExpiryTerminal) {
 			return;
 		}
 

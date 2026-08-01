@@ -11,6 +11,7 @@ import type {
 	ModerationQueueUpdateSubscription,
 	CostAlertsSubscription,
 } from './graphql/generated/types.js';
+import type { AuthExpiredError, AuthExpiredHandler, TokenRefreshCallback } from './authExpiry.js';
 
 /**
  * Transport types and interfaces for WebSocket, SSE, and HTTP Polling
@@ -44,6 +45,23 @@ export interface BaseTransportConfig {
 
 	/** Optional logger implementation for transport diagnostics */
 	logger?: TransportLogger;
+
+	/**
+	 * Supplies a fresh credential when the server reports the current one
+	 * expired (Lesser v1.5.33 `TOKEN_EXPIRED`).
+	 *
+	 * When configured, the transport refreshes once, reconnects with the new
+	 * credential, and resumes — without consuming a reconnect attempt. When
+	 * omitted, credential expiry is terminal and surfaced as an
+	 * {@link AuthExpiredError} rather than retried silently.
+	 */
+	onTokenRefresh?: TokenRefreshCallback;
+
+	/**
+	 * Notified when credential expiry is terminal for this transport: no
+	 * refresh callback is configured, or refreshing produced no credential.
+	 */
+	onAuthExpired?: AuthExpiredHandler;
 }
 
 export interface WebSocketClientConfig extends BaseTransportConfig {
@@ -98,7 +116,18 @@ export type WebSocketEventType =
 	| 'message'
 	| 'reconnecting'
 	| 'reconnected'
-	| 'latency';
+	| 'latency'
+	| 'authExpired';
+
+/**
+ * Payload of the terminal `authExpired` event.
+ *
+ * Emitted when the server reported credential expiry and the transport could
+ * not recover it. Deliberately carries no credential material.
+ */
+export interface AuthExpiredEventData {
+	error: AuthExpiredError;
+}
 
 export interface WebSocketEvent {
 	type: WebSocketEventType | TransportEventName | string;
