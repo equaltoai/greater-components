@@ -9,12 +9,16 @@ export type { GraphQLClientConfig, GraphQLClientInstance } from './client.js';
 
 export {
 	LesserGraphQLAdapter,
+	LesserGraphQLAdapterError,
 	createLesserGraphQLAdapter,
 	createSubmitDraftReviewHandler,
+	isDraftReviewShareConflict,
 } from './LesserGraphQLAdapter.js';
 export type {
 	LesserGraphQLAdapterConfig,
 	DraftReviewSubmission,
+	ShareDraftForReviewOutcome,
+	SharedDraftReview,
 	TimelineVariables,
 	CreateNoteVariables,
 	ConversationMessagesVariables,
