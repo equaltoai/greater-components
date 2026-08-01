@@ -29,7 +29,7 @@ import { cacheConfig } from './cache.js';
 import {
 	AUTH_EXPIRED_CODE,
 	AuthExpiredError,
-	createAuthExpiryEpisodes,
+	createCredentialGenerations,
 	createSingleFlightRefresh,
 	hasServerErrorCode,
 	type AuthExpiredHandler,
@@ -162,15 +162,32 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 	/** The in-flight refresh-and-re-dial, shared by every expiring operation. */
 	let authRedial: Promise<void> | null = null;
 	/**
-	 * Which expiry signals already have a recovery driven for them.
+	 * Which credential is in force, and which generation has spent its recovery.
 	 *
-	 * The re-issue link and the error link can both see the same failure. The
-	 * in-flight latch above collapses the *concurrent* case; this ledger covers
-	 * the sequential one, where the re-issue link has already refreshed, spent
-	 * its one re-issue, and is propagating a second expiry that the error link
-	 * would otherwise mistake for a fresh episode.
+	 * Every `TOKEN_EXPIRED` this client acts on is arbitrated here: the refusals
+	 * of one credential are one episode, however many operations report them and
+	 * whichever link sees them first. At most one refresh per generation, ever.
 	 */
-	const authExpiryEpisodes = createAuthExpiryEpisodes();
+	const generations = createCredentialGenerations();
+	/**
+	 * The credential generation each operation was issued under.
+	 *
+	 * Recorded once, as the operation enters the chain, and never rewritten: it
+	 * answers "which credential was this asking with", which is what tells a
+	 * first refusal of the credential in force apart from the tail of an episode
+	 * that has already refreshed. Held weakly, keyed on the operation Apollo
+	 * threads through the links, so nothing is retained past the request.
+	 */
+	const operationGenerations = new WeakMap<ApolloLink.Operation, number>();
+
+	/**
+	 * The generation `operation` was issued under, defaulting to the credential
+	 * in force when the operation never passed the stamping link.
+	 */
+	const issuedGeneration = (operation: ApolloLink.Operation | undefined): number => {
+		const stamped = operation ? operationGenerations.get(operation) : undefined;
+		return stamped ?? generations.current();
+	};
 
 	const logDebug = (message: string, context?: unknown): void => {
 		if (!debug) {
@@ -340,17 +357,31 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 	 * Concurrent `TOKEN_EXPIRED` frames (one per in-flight subscription)
 	 * collapse into a single refresh and a single re-dial: every caller awaits
 	 * the same promise, so every re-issue happens after the same handoff.
+	 *
+	 * `generation` is the credential the caller was refused on. Returns `null`
+	 * when that credential's one recovery is already spent and settled — the
+	 * caller must then fail loudly rather than open a second cycle.
 	 */
-	const refreshAndRedial = (): Promise<void> => {
+	const refreshAndRedial = (generation: number): Promise<void> | null => {
 		// Each in-flight subscription reports its own expiry frame. Latch here
 		// so those collapse into a single re-dial, not one per frame.
 		if (authRedial) {
 			return authRedial;
 		}
+		// One refresh per credential, ever. Everything else that Lesser refuses
+		// on this credential rides the recovery that is already running or has
+		// already happened.
+		if (!generations.claimRefresh(generation)) {
+			return null;
+		}
 
 		const attempt = refreshAccessToken().then(
 			(freshToken) => {
 				currentToken = freshToken;
+				// The fresh credential is in force from here: later frames are issued
+				// under the next generation, and refusals still arriving for the last
+				// one are the tail of this episode, not the start of another.
+				generations.advance();
 				logDebug('[GraphQL] Credential refreshed; re-dialing WebSocket to resubscribe');
 
 				const terminate = (wsClient as { terminate?: () => void } | null)?.terminate;
@@ -383,9 +414,16 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 	};
 
 	/** Fire-and-forget re-dial for callers with no operation to re-issue. */
-	const handleAuthExpired = (): void => {
-		void refreshAndRedial().catch(() => undefined);
+	const handleAuthExpired = (generation: number): void => {
+		void refreshAndRedial(generation)?.catch(() => undefined);
 	};
+
+	/**
+	 * Resolves once the socket carrying the credential in force is ready for a
+	 * fresh subscribe: immediately when the re-dial has already happened, or with
+	 * the episode in flight when one is still running.
+	 */
+	const currentSocketReady = (): Promise<void> => authRedial ?? Promise.resolve();
 
 	/**
 	 * Re-issues a subscription that Lesser refused for an expired credential.
@@ -403,19 +441,30 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 	 * from the retry budget — an expired credential is not a transport fault,
 	 * and consuming a network retry for it would starve the genuine ones.
 	 *
-	 * Exactly one re-issue per operation. A second expiry on the refreshed
-	 * credential is a server the client cannot satisfy, so it propagates rather
-	 * than looping — and it propagates *claimed*, so the error link above does
-	 * not read it as a new episode and drive a second refresh and a second
-	 * socket termination on top of this one.
+	 * Recovery is bounded by the credential, not by the error: exactly one
+	 * refresh per generation and one re-issue per operation per generation. A
+	 * second refusal of the credential in force is a server the client cannot
+	 * satisfy, so it propagates loudly rather than looping; a refusal of a
+	 * credential that has already been replaced is the tail of the episode that
+	 * replaced it, so it is re-issued on the current socket and never refreshed
+	 * for again. The second case is the one graphql-ws creates on its own: it
+	 * restores the operations that were still active when the socket dropped,
+	 * and Lesser can refuse one of those once on the fresh socket before the
+	 * connection row self-heals. Refreshing for that would terminate a socket
+	 * that is already carrying a fresh credential and take every healthy
+	 * subscription with it.
 	 */
 	const authExpiryReissueLink = new ApolloLink((operation, forward) => {
 		return new Observable<ApolloLink.Result>((observer) => {
 			let inner: { unsubscribe: () => void } | null = null;
 			let unsubscribed = false;
-			let reissued = false;
+			/** The credential generation this attempt's subscribe was issued under. */
+			let attemptGeneration = generations.current();
+			/** The generation this operation has already spent its re-issue on. */
+			let reissuedUnder: number | null = null;
 
 			const attempt = (): void => {
+				attemptGeneration = generations.current();
 				inner = forward(operation).subscribe({
 					next: (value) => observer.next(value),
 					complete: () => observer.complete(),
@@ -427,12 +476,13 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 							observer.error(error);
 							return;
 						}
-						if (reissued) {
-							// This operation's one recovery is spent. Claim the episode
-							// before propagating, so the failure stays loud to the
-							// caller without the error link refreshing and re-dialing a
-							// second time for the same expiry.
-							authExpiryEpisodes.markDriven(error);
+
+						const generation = generations.current();
+
+						if (reissuedUnder === generation) {
+							// Already re-issued on the credential in force, and refused
+							// again. Loud to the caller, and never a second refresh for a
+							// credential the server has just rejected on its own terms.
 							logDebugError(
 								'[GraphQL] Subscription expired again on the refreshed credential; not refreshing twice'
 							);
@@ -440,26 +490,54 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 							return;
 						}
 
-						reissued = true;
+						if (attemptGeneration < generation) {
+							// Refused on a credential that has since been replaced — the
+							// episode that replaced it is this operation's recovery. Take
+							// the fresh socket rather than opening a second cycle on it.
+							logDebug(
+								'[GraphQL] Subscription expired under a superseded credential; re-issuing on the current socket'
+							);
+							reissueWhenReady(currentSocketReady());
+							return;
+						}
+
+						const recovery = refreshAndRedial(generation);
+						if (!recovery) {
+							// This credential's one recovery is spent and settled: it was
+							// driven and the server is still refusing, or refreshing it
+							// failed and the app has already been told to re-authenticate.
+							logDebugError(
+								'[GraphQL] Subscription expired on a credential whose refresh is already spent'
+							);
+							observer.error(error);
+							return;
+						}
+
 						logDebug('[GraphQL] Subscription expired; re-issuing after credential refresh');
-						void refreshAndRedial().then(
-							() => {
-								if (!unsubscribed) {
-									attempt();
-								}
-							},
-							(refreshError: unknown) => {
-								if (!unsubscribed) {
-									// Terminal expiry was already reported through
-									// onAuthExpired; claim it so the error link does not
-									// open a fresh cycle on the way out.
-									authExpiryEpisodes.markDriven(refreshError);
-									observer.error(refreshError);
-								}
-							}
-						);
+						reissueWhenReady(recovery);
 					},
 				});
+			};
+
+			/** Re-issues this operation once `ready` hands over a usable socket. */
+			const reissueWhenReady = (ready: Promise<void>): void => {
+				void ready.then(
+					() => {
+						if (unsubscribed) {
+							return;
+						}
+						reissuedUnder = generations.current();
+						attempt();
+					},
+					(refreshError: unknown) => {
+						if (!unsubscribed) {
+							// Terminal expiry was already reported through onAuthExpired;
+							// the caller still gets it, rather than a subscription that
+							// quietly stopped delivering.
+							observer.error(refreshError);
+						}
+					}
+				);
 			};
 
 			attempt();
@@ -485,15 +563,31 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 			requestLink
 		);
 
+	/**
+	 * Records the credential generation each operation is issued under.
+	 *
+	 * It sits at the top of the chain so every path is stamped — subscriptions,
+	 * queries and mutations alike — and it stamps once, on the way down, so the
+	 * mark stays with the credential the caller actually asked with.
+	 */
+	const credentialGenerationLink = new ApolloLink((operation, forward) => {
+		operationGenerations.set(operation, generations.current());
+		return forward(operation);
+	});
+
 	// Error handling link
-	const errorLink = onError(({ error }) => {
-		// The re-issue link owns recovery for the subscription it forwards. When
-		// it has already driven this episode — refreshed once, spent its one
-		// re-issue, and given up — recovering again here would mean a second
-		// refresh and a second `terminate()` for a single failure, dropping every
-		// healthy subscription for a credential the server has already refused on
-		// the refreshed token. One episode, one refresh, one reconnect.
-		const recoveryAlreadyDriven = authExpiryEpisodes.wasDriven(error);
+	const errorLink = onError(({ error, operation }) => {
+		// Which credential this operation was asking with. The re-issue link owns
+		// recovery for the subscriptions it forwards; a failure that reaches here
+		// has either already been recovered below or belongs to a path the
+		// re-issue link cannot see. Asking the credential clock answers both:
+		// a first refusal of the credential in force still gets its one refresh,
+		// while a refusal carrying a credential that has since been replaced —
+		// including one the re-issue link gave up on and propagated — is the tail
+		// of an episode that already refreshed and re-dialed once. Recovering it
+		// again would cost a second `terminate()` and every healthy subscription
+		// with it.
+		const generation = issuedGeneration(operation);
 
 		if (CombinedGraphQLErrors.is(error)) {
 			error.errors.forEach(({ message, locations, path, extensions }) => {
@@ -513,8 +607,8 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 				// Lesser v1.5.33 re-checks expiry per subscribe operation.
 				// Refresh and reconnect once; legacy rows without persisted
 				// expiry fail closed exactly once and self-heal on reconnect.
-				if (extensionCode === AUTH_EXPIRED_CODE && !recoveryAlreadyDriven) {
-					handleAuthExpired();
+				if (extensionCode === AUTH_EXPIRED_CODE) {
+					handleAuthExpired(generation);
 				}
 			});
 			return;
@@ -525,9 +619,7 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 		// GraphQLError list instead. Check that shape too so a subscribe-time
 		// expiry is never missed.
 		if (hasServerErrorCode(error, AUTH_EXPIRED_CODE)) {
-			if (!recoveryAlreadyDriven) {
-				handleAuthExpired();
-			}
+			handleAuthExpired(generation);
 			return;
 		}
 
@@ -555,7 +647,7 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 	const splitLink = wsLink ? buildSplitLink(wsLink, httpLink) : httpLink; // No WebSocket - route everything through HTTP
 
 	// Combine all links
-	const link = from([errorLink, retryLink, splitLink]);
+	const link = from([credentialGenerationLink, errorLink, retryLink, splitLink]);
 
 	// Default options for all operations
 	const defaultOptions: DefaultOptions = {
@@ -585,6 +677,10 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 	// Function to update authentication token
 	const updateToken = (newToken: string | null) => {
 		currentToken = newToken;
+		// A credential supplied by the app is a new generation just as much as a
+		// refreshed one: operations issued from here are asking with it, and it
+		// arms a fresh refresh claim for the expiry episodes it may still meet.
+		generations.advance();
 
 		// Update HTTP link headers
 		const newHttpLink = new HttpLink({
@@ -604,7 +700,7 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 			wsClient = null;
 			wsLink = null;
 
-			const newLink = from([errorLink, retryLink, newHttpLink]);
+			const newLink = from([credentialGenerationLink, errorLink, retryLink, newHttpLink]);
 			client.setLink(newLink);
 			logDebug('[GraphQL] Token cleared, WebSocket disabled until token is restored');
 
@@ -652,7 +748,7 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 			const newSplitLink = buildSplitLink(newWsLink, newHttpLink);
 
 			// Recreate combined link
-			const newLink = from([errorLink, retryLink, newSplitLink]);
+			const newLink = from([credentialGenerationLink, errorLink, retryLink, newSplitLink]);
 
 			// Update Apollo Client link
 			client.setLink(newLink);
@@ -660,7 +756,7 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 			logDebug('[GraphQL] Token updated, cache cleared, WebSocket reconnected');
 		} else {
 			// No WebSocket - just update HTTP link
-			const newLink = from([errorLink, retryLink, newHttpLink]);
+			const newLink = from([credentialGenerationLink, errorLink, retryLink, newHttpLink]);
 			client.setLink(newLink);
 			logDebug('[GraphQL] Token updated, cache cleared (no WebSocket to reconnect)');
 		}

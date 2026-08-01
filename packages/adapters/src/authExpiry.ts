@@ -165,76 +165,78 @@ export function isAuthExpiredError(source: unknown): boolean {
 }
 
 /**
- * Tracks which credential-expiry signals already have a recovery driven for
- * them, so two links that both see one failure do not each drive their own.
+ * The credential clock that decides which expiry signals belong to the same
+ * failure episode.
  *
- * A failure episode is one expiry condition and the single recovery attempted
- * for it: at most one refresh and at most one reconnect. greater reacts to
- * `TOKEN_EXPIRED` in two places — the re-issue link on the subscription branch,
- * which owns recovery for the operation it forwards, and the error link at the
- * top of the chain, which covers every path the re-issue link cannot see. When
- * a subscription expires a second time on the freshly refreshed credential the
- * re-issue link is right to give up and propagate loudly, but that propagated
- * failure then reaches the error link, which reads it as a new condition and
- * refreshes and terminates the socket all over again. The second re-dial drops
- * every healthy subscription in service of a credential the server has just
- * refused.
+ * An episode is one expiry condition and the single recovery attempted for it:
+ * at most one refresh and at most one reconnect. The hard part is deciding
+ * which refusals are that one condition, because a single expired credential
+ * produces a burst of them — one per operation the socket was carrying — spread
+ * across the refresh and the reconnect that answer it.
  *
- * The owner marks the signal before propagating it and the error link stands
- * down. Marks are held weakly and keyed on object identity, so a genuinely new
- * expiry — a different error object, from a later episode — is never
- * suppressed, and nothing is retained once the error is collected.
+ * Ownership is therefore scoped to the *credential*, not to an error object and
+ * not to a single operation. Every credential in force has a generation number;
+ * every subscribe frame is issued under the generation current at the time it
+ * was forwarded. A generation may drive exactly one refresh, ever, and a
+ * successful refresh installs the next generation, which arms the next one.
+ * A refusal carrying a superseded generation is the tail of an episode that has
+ * already been recovered, so it is re-issued rather than refreshed for.
+ *
+ * That last rule is what makes a restored sibling safe. graphql-ws re-subscribes
+ * the operations that were still active when the socket dropped, and Lesser can
+ * still refuse one of those on the fresh socket — a connection row persisted
+ * before expiry persistence existed fails closed exactly once and self-heals on
+ * reconnect. Keying on the error object cannot see that: the sibling's refusal
+ * is a brand-new object from a brand-new frame, and treating it as a new
+ * condition costs a second refresh and a second `terminate()` that drops every
+ * healthy subscription. Keying on the generation the operation was issued under
+ * reads it correctly, as the end of the episode that already ran.
  */
-export interface AuthExpiryEpisodes {
-	/** Records that recovery has already been driven for this expiry signal. */
-	markDriven(signal: unknown): void;
-	/** True when recovery for this expiry signal has already been driven. */
-	wasDriven(signal: unknown): boolean;
+export interface CredentialGenerations {
+	/** The generation of the credential currently in force. */
+	current(): number;
+
+	/** Puts a freshly obtained credential in force and returns its generation. */
+	advance(): number;
+
+	/**
+	 * Claims the single refresh `generation` is allowed to drive.
+	 *
+	 * False means no refresh may be driven for it: either the claim is already
+	 * spent, or the generation has been superseded and its recovery has happened.
+	 */
+	claimRefresh(generation: number): boolean;
 }
 
-/** Creates an episode ledger scoped to one client instance. */
-export function createAuthExpiryEpisodes(): AuthExpiryEpisodes {
-	const driven = new WeakSet<object>();
+/** Creates a credential clock scoped to one client instance. */
+export function createCredentialGenerations(): CredentialGenerations {
+	let generation = 0;
+	/** The newest generation whose one refresh has been claimed. */
+	let claimed: number | null = null;
 
 	return {
-		markDriven(signal: unknown): void {
-			if (signal && typeof signal === 'object') {
-				driven.add(signal);
-			}
+		current(): number {
+			return generation;
 		},
 
-		wasDriven(signal: unknown): boolean {
-			// A signal marked at one link can reach the next one wrapped — under
-			// `networkError`, `cause`, or an execution result. Walk the same
-			// wrapper keys extractServerErrorCodes reads so the mark survives it.
-			const seen = new Set<unknown>();
+		advance(): number {
+			generation += 1;
+			return generation;
+		},
 
-			const walk = (value: unknown, depth: number): boolean => {
-				if (!value || typeof value !== 'object' || depth > 4 || seen.has(value)) {
-					return false;
-				}
-				seen.add(value);
-
-				if (driven.has(value)) {
-					return true;
-				}
-
-				if (Array.isArray(value)) {
-					return value.some((entry) => walk(entry, depth + 1));
-				}
-
-				const record = value as Record<string, unknown>;
-				return (
-					walk(record['errors'], depth + 1) ||
-					walk(record['graphQLErrors'], depth + 1) ||
-					walk(record['payload'], depth + 1) ||
-					walk(record['result'], depth + 1) ||
-					walk(record['networkError'], depth + 1) ||
-					walk(record['cause'], depth + 1)
-				);
-			};
-
-			return walk(signal, 0);
+		claimRefresh(target: number): boolean {
+			// Only the credential actually in force may open an episode. An older
+			// generation has already been replaced — the episode that replaced it
+			// is the recovery — and a generation this clock has never issued is not
+			// a credential at all.
+			if (target !== generation) {
+				return false;
+			}
+			if (claimed !== null && claimed >= target) {
+				return false;
+			}
+			claimed = target;
+			return true;
 		},
 	};
 }

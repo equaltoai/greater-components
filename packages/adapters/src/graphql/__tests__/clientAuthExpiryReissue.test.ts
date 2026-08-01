@@ -297,6 +297,84 @@ describe('subscribe-time credential expiry through the real link chain', () => {
 		instance.close();
 	});
 
+	it('re-issues a sibling refused on the superseded credential without refreshing again', async () => {
+		// The sibling shape, at the link chain: two operations subscribe on the
+		// same expiring socket, the first opens the episode, and the second is
+		// refused only *after* that refresh has settled and released the latch.
+		// The second refusal names a credential the client has already replaced,
+		// so it costs a re-issue, not a second refresh and a second teardown.
+		//
+		// Over the real graphql-ws client this is the frame it re-sends itself for
+		// a still-active subscription; `clientAuthExpiryProtocol.test.ts` drives
+		// that path end to end.
+		const onTokenRefresh = vi.fn().mockResolvedValue('fresh-token');
+		const instance = build({ onTokenRefresh });
+		const ws = latestWsClient();
+		ws.script = [
+			(sink) => sink.error(expiredFrame),
+			(sink) => {
+				setTimeout(() => sink.error(expiredFrame), 5);
+			},
+			(sink) => sink.next(payload('7', 'opener')),
+			(sink) => sink.next(payload('8', 'sibling')),
+		];
+
+		const opener = observe(instance.client.subscribe({ query: NOTE_ADDED }));
+		const sibling = observe(
+			instance.client.subscribe({ query: NOTE_ADDED, variables: { cursor: 'c' } })
+		);
+		await settleAcrossTurns();
+
+		// Both are delivering, and the socket was dropped exactly once.
+		expect(opener.failures).toEqual([]);
+		expect(sibling.failures).toEqual([]);
+		expect(opener.deliveries).toHaveLength(1);
+		expect(sibling.deliveries).toHaveLength(1);
+		expect(onTokenRefresh).toHaveBeenCalledTimes(1);
+		expect(terminations(ws)).toBe(1);
+		expect(ws.subscribeCalls).toHaveLength(4);
+		expect(ws.subscribeCalls.slice(2).map((call) => call.credential)).toEqual([
+			'Bearer fresh-token',
+			'Bearer fresh-token',
+		]);
+
+		instance.close();
+	});
+
+	it('keeps the superseded-credential re-issue bounded to one attempt', async () => {
+		// Same shape, but the fresh credential is refused again. The sibling gets
+		// one re-issue on it and then goes loud: a credential the server refuses
+		// on its own terms is never worth a second refresh.
+		const onTokenRefresh = vi.fn().mockResolvedValue('fresh-token');
+		const instance = build({ onTokenRefresh });
+		const ws = latestWsClient();
+		ws.script = [
+			(sink) => sink.error(expiredFrame),
+			(sink) => {
+				setTimeout(() => sink.error(expiredFrame), 5);
+			},
+			(sink) => sink.next(payload('9', 'opener')),
+			(sink) => sink.error(expiredFrame),
+		];
+
+		const opener = observe(instance.client.subscribe({ query: NOTE_ADDED }));
+		const sibling = observe(
+			instance.client.subscribe({ query: NOTE_ADDED, variables: { cursor: 'd' } })
+		);
+		await settleAcrossTurns();
+
+		expect(sibling.failures).toHaveLength(1);
+		expect(sibling.deliveries).toEqual([]);
+		// The opener, which shares the socket, is untouched by that failure.
+		expect(opener.failures).toEqual([]);
+		expect(opener.deliveries).toHaveLength(1);
+		expect(onTokenRefresh).toHaveBeenCalledTimes(1);
+		expect(terminations(ws)).toBe(1);
+		expect(ws.subscribeCalls).toHaveLength(4);
+
+		instance.close();
+	});
+
 	it('still recovers a later, independent expiry', async () => {
 		// Claiming an episode must not deafen the client to the next one. A
 		// different operation expiring later is a new episode and gets its own

@@ -3,7 +3,7 @@ import { WebSocketClient } from '../WebSocketClient';
 import {
 	AUTH_EXPIRED_CODE,
 	AuthExpiredError,
-	createAuthExpiryEpisodes,
+	createCredentialGenerations,
 	createSingleFlightRefresh,
 	extractServerErrorCodes,
 	hasServerErrorCode,
@@ -136,58 +136,68 @@ describe('extractServerErrorCodes', () => {
 	});
 });
 
-describe('createAuthExpiryEpisodes', () => {
-	it('reports a claimed signal as already driven, and an unclaimed one as not', () => {
-		const episodes = createAuthExpiryEpisodes();
-		const claimed = { extensions: { code: AUTH_EXPIRED_CODE } };
-		const fresh = { extensions: { code: AUTH_EXPIRED_CODE } };
+describe('createCredentialGenerations', () => {
+	it('starts in force and advances once per fresh credential', () => {
+		const generations = createCredentialGenerations();
 
-		episodes.markDriven(claimed);
-
-		expect(episodes.wasDriven(claimed)).toBe(true);
-		// Same shape, different failure: a later episode is never suppressed by
-		// an earlier one.
-		expect(episodes.wasDriven(fresh)).toBe(false);
+		expect(generations.current()).toBe(0);
+		expect(generations.advance()).toBe(1);
+		expect(generations.advance()).toBe(2);
+		expect(generations.current()).toBe(2);
 	});
 
-	it('finds the claim through the wrappers an error picks up in the link chain', () => {
-		const episodes = createAuthExpiryEpisodes();
-		const signal = { extensions: { code: AUTH_EXPIRED_CODE } };
-		episodes.markDriven(signal);
+	it('allows exactly one refresh per credential', () => {
+		const generations = createCredentialGenerations();
 
-		expect(episodes.wasDriven({ errors: [signal] })).toBe(true);
-		expect(episodes.wasDriven({ graphQLErrors: [signal] })).toBe(true);
-		expect(episodes.wasDriven({ payload: signal })).toBe(true);
-		expect(episodes.wasDriven({ networkError: { result: { errors: [signal] } } })).toBe(true);
-		expect(episodes.wasDriven({ cause: signal })).toBe(true);
+		// Every operation the socket was carrying reports its own refusal; only
+		// the first one opens the episode.
+		expect(generations.claimRefresh(0)).toBe(true);
+		expect(generations.claimRefresh(0)).toBe(false);
+		expect(generations.claimRefresh(0)).toBe(false);
 	});
 
-	it('keeps one client instance from claiming another instance episode', () => {
-		const first = createAuthExpiryEpisodes();
-		const second = createAuthExpiryEpisodes();
-		const signal = { extensions: { code: AUTH_EXPIRED_CODE } };
+	it('re-arms the claim for the credential the refresh produced', () => {
+		const generations = createCredentialGenerations();
+		generations.claimRefresh(0);
 
-		first.markDriven(signal);
+		generations.advance();
 
-		expect(first.wasDriven(signal)).toBe(true);
-		expect(second.wasDriven(signal)).toBe(false);
+		// A later, genuinely new expiry is a new episode and gets its own single
+		// refresh — the bound is per credential, not per client.
+		expect(generations.claimRefresh(1)).toBe(true);
+		expect(generations.claimRefresh(1)).toBe(false);
 	});
 
-	it('tolerates cycles and non-objects without throwing', () => {
-		const episodes = createAuthExpiryEpisodes();
-		const signal = { extensions: { code: AUTH_EXPIRED_CODE } };
-		episodes.markDriven(signal);
+	it('refuses a claim from a credential that has been superseded', () => {
+		const generations = createCredentialGenerations();
+		generations.advance();
 
-		const cyclic: Record<string, unknown> = { errors: [signal] };
-		cyclic['cause'] = cyclic;
-		expect(episodes.wasDriven(cyclic)).toBe(true);
+		// This is the restored-sibling case: graphql-ws re-subscribes an operation
+		// issued under the old credential, Lesser refuses that frame once, and
+		// refreshing again would terminate a socket already carrying a fresh
+		// credential.
+		expect(generations.claimRefresh(0)).toBe(false);
+		// Nor may a generation this clock has never issued claim anything.
+		expect(generations.claimRefresh(2)).toBe(false);
+		expect(generations.claimRefresh(1)).toBe(true);
+	});
 
-		// Nothing to key on: a non-object is never treated as claimed.
-		episodes.markDriven('TOKEN_EXPIRED');
-		episodes.markDriven(null);
-		expect(episodes.wasDriven('TOKEN_EXPIRED')).toBe(false);
-		expect(episodes.wasDriven(null)).toBe(false);
-		expect(episodes.wasDriven(undefined)).toBe(false);
+	it('never lets a superseded credential re-arm an already spent claim', () => {
+		const generations = createCredentialGenerations();
+		generations.claimRefresh(0);
+		generations.advance();
+		generations.claimRefresh(1);
+
+		expect(generations.claimRefresh(0)).toBe(false);
+		expect(generations.claimRefresh(1)).toBe(false);
+	});
+
+	it('keeps one client instance from spending another instance claim', () => {
+		const first = createCredentialGenerations();
+		const second = createCredentialGenerations();
+
+		expect(first.claimRefresh(0)).toBe(true);
+		expect(second.claimRefresh(0)).toBe(true);
 	});
 });
 
