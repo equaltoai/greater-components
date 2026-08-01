@@ -555,6 +555,15 @@ export interface ComposePoll {
 export interface ComposeBoxProps {
 	initialContent?: string;
 	replyToStatus?: Status;
+	/**
+	 * Status being quoted, when composing a quote post.
+	 *
+	 * Lesser v1.5.33 applies the same reach rule to quotes as to replies: a
+	 * quote may not reach a wider audience than the status it quotes. Supplying
+	 * this constrains the visibility picker accordingly. `replyToStatus` takes
+	 * precedence when both are present.
+	 */
+	quotedStatus?: Status;
 	maxLength?: number;
 	maxCwLength?: number;
 	placeholder?: string;

@@ -4,7 +4,7 @@ Chrome for Lesser's shared-draft review workflow: a queue card, an attribution
 strip, and confirm-guarded verdict actions.
 
 Pinned contract: `docs/lesser/contracts/graphql-schema.graphql` at
-**LESSER_REF v1.5.32**, which introduced `DraftReview`, `DraftReviewGrant`,
+**LESSER_REF v1.5.33**, which introduced `DraftReview`, `DraftReviewGrant`,
 `DraftReviewVerdictRecord`, the `DraftReviewVerdict` enum, and the
 `sharedDraftReviews` / `draftReview` / `shareDraftForReview` /
 `revokeDraftReview` / `submitDraftReview` operations.

@@ -1,0 +1,507 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { parse } from 'graphql';
+
+/**
+ * Subscribe-time credential expiry, end to end through the real Apollo link
+ * chain — only `graphql-ws` is faked.
+ *
+ * The behaviour under test is a property of the *installed* graphql-ws (6.0.8),
+ * not an assumption about it. Its client handles an Error frame as:
+ *
+ * ```js
+ * case MessageType.Error: {
+ *   errored = true, done = true;
+ *   sink.error(message.payload);
+ *   releaser();
+ *   return;
+ * }
+ * ```
+ *
+ * The operation is finished the instant Lesser answers `TOKEN_EXPIRED`
+ * (cmd/graphql-ws/main.go `sendOperationCredentialExpiredError`). Refreshing
+ * the credential and re-dialing therefore restores every subscription except
+ * the one that just failed — the caller is left holding a dead subscription on
+ * a healthy socket. These tests pin the close of that gap: the operation is
+ * re-issued as a fresh subscribe, and it delivers.
+ *
+ * The fake is deliberately thin: it records the credential
+ * `connectionParams()` yields at each subscribe, which is what a re-dial would
+ * present, and scripts one outcome per subscribe.
+ */
+
+interface Sink {
+	next(value: unknown): void;
+	error(error: unknown): void;
+	complete(): void;
+}
+
+type ScriptStep = (sink: Sink) => void;
+
+class FakeWsClient {
+	readonly subscribeCalls: Array<{ credential: string | undefined; at: number }> = [];
+	readonly events: string[] = [];
+	script: ScriptStep[] = [];
+
+	constructor(private readonly connectionParams: () => Record<string, string>) {}
+
+	subscribe(_payload: unknown, sink: Sink): () => void {
+		const index = this.subscribeCalls.length;
+		this.subscribeCalls.push({
+			credential: this.connectionParams()['authorization'],
+			at: this.events.push('subscribe') - 1,
+		});
+		const step = this.script[index];
+		// A socket answers asynchronously; resolving in a microtask keeps the
+		// re-issue path honest about ordering.
+		queueMicrotask(() => step?.(sink));
+		return () => undefined;
+	}
+
+	terminate(): void {
+		this.events.push('terminate');
+	}
+
+	dispose(): void {
+		this.events.push('dispose');
+	}
+}
+
+const fakeClients: FakeWsClient[] = [];
+
+vi.mock('graphql-ws', () => ({
+	createClient: vi.fn((options: { connectionParams: () => Record<string, string> }) => {
+		const client = new FakeWsClient(options.connectionParams);
+		fakeClients.push(client);
+		return client;
+	}),
+}));
+
+const { createGraphQLClient } = await import('../client');
+const { AUTH_EXPIRED_CODE, AuthExpiredError } = await import('../../authExpiry');
+
+const NOTE_ADDED = parse(`
+	subscription NoteAdded {
+		noteAdded {
+			id
+			content
+		}
+	}
+`);
+
+/** The GraphQLError list graphql-ws hands to `sink.error` for an Error frame. */
+const expiredFrame = [
+	{
+		message: 'credential expired; re-authentication required',
+		extensions: { code: AUTH_EXPIRED_CODE },
+	},
+];
+
+const otherFailureFrame = [
+	{ message: 'note stream unavailable', extensions: { code: 'INTERNAL_SERVER_ERROR' } },
+];
+
+function payload(id: string, content: string) {
+	return { data: { noteAdded: { __typename: 'Note', id, content } } };
+}
+
+function build(overrides: Record<string, unknown> = {}) {
+	return createGraphQLClient({
+		httpEndpoint: 'https://lesser.example/graphql',
+		wsEndpoint: 'wss://lesser.example/subscriptions',
+		token: 'expired-token',
+		// A zero retry budget: anything that survives here cannot be leaning on
+		// RetryLink or on graphql-ws reconnect attempts.
+		maxRetries: 0,
+		...overrides,
+	});
+}
+
+/**
+ * Collects what one subscription emits, split the way Apollo Client 4 actually
+ * reports it: a link failure arrives as `next({ data: undefined, error })`
+ * rather than through the observer's `error` channel, so a test that only
+ * watched `error` would read a failure as silence.
+ */
+function observe(subscription: { subscribe: (observer: unknown) => { unsubscribe(): void } }): {
+	deliveries: unknown[];
+	failures: unknown[];
+	handle: { unsubscribe(): void };
+} {
+	const deliveries: unknown[] = [];
+	const failures: unknown[] = [];
+	const handle = subscription.subscribe({
+		next: (value: unknown) => {
+			const emitted = value as { data?: unknown; error?: unknown };
+			if (emitted?.error) {
+				failures.push(emitted.error);
+			} else {
+				deliveries.push(value);
+			}
+		},
+		error: (error: unknown) => failures.push(error),
+		complete: () => undefined,
+	});
+	return { deliveries, failures, handle };
+}
+
+/** The fake graphql-ws client the instance under construction just created. */
+function latestWsClient(): FakeWsClient {
+	const client = fakeClients.at(-1);
+	if (!client) {
+		throw new Error('no graphql-ws client was created');
+	}
+	return client;
+}
+
+async function settle(times = 12): Promise<void> {
+	for (let i = 0; i < times; i += 1) {
+		await Promise.resolve();
+	}
+}
+
+/**
+ * Lets the whole episode drain, including work scheduled on a macrotask.
+ *
+ * A second expiry that arrives *after* the first refresh-and-re-dial has
+ * settled is the case a microtask-only drain cannot express: by then the
+ * in-flight latch has been released, so nothing but an explicit episode claim
+ * keeps the error link from starting a second cycle.
+ */
+async function settleAcrossTurns(turns = 4): Promise<void> {
+	for (let i = 0; i < turns; i += 1) {
+		await new Promise((resolve) => setTimeout(resolve, 5));
+		await settle();
+	}
+}
+
+/** How many times the socket was torn down across an episode. */
+function terminations(ws: FakeWsClient): number {
+	return ws.events.filter((event) => event === 'terminate').length;
+}
+
+describe('subscribe-time credential expiry through the real link chain', () => {
+	beforeEach(() => {
+		fakeClients.length = 0;
+	});
+
+	it('refreshes, re-dials, and re-issues the operation so it delivers data', async () => {
+		const onTokenRefresh = vi.fn().mockResolvedValue('fresh-token');
+		const instance = build({ onTokenRefresh });
+		const ws = latestWsClient();
+		ws.script = [(sink) => sink.error(expiredFrame), (sink) => sink.next(payload('1', 'hello'))];
+
+		const { deliveries, failures } = observe(instance.client.subscribe({ query: NOTE_ADDED }));
+		await settle();
+
+		// The operation that Lesser refused is the one that delivers.
+		expect(failures).toEqual([]);
+		expect(deliveries).toHaveLength(1);
+		expect(deliveries[0]).toMatchObject({ data: { noteAdded: { id: '1', content: 'hello' } } });
+
+		expect(onTokenRefresh).toHaveBeenCalledTimes(1);
+		expect(ws.subscribeCalls).toHaveLength(2);
+		expect(ws.subscribeCalls[0]?.credential).toBe('Bearer expired-token');
+		expect(ws.subscribeCalls[1]?.credential).toBe('Bearer fresh-token');
+
+		// Re-dial before re-issue: the fresh subscribe must not ride the socket
+		// that was already refused.
+		expect(ws.events).toEqual(['subscribe', 'terminate', 'subscribe']);
+
+		instance.close();
+	});
+
+	it('re-issues outside the retry budget', async () => {
+		// `maxRetries: 0` leaves RetryLink with no attempts and graphql-ws with
+		// no reconnect attempts, so a re-issue that consumed either would fail.
+		const instance = build({ onTokenRefresh: () => 'fresh-token', maxRetries: 0 });
+		const ws = latestWsClient();
+		ws.script = [(sink) => sink.error(expiredFrame), (sink) => sink.next(payload('2', 'budget'))];
+
+		const { deliveries, failures } = observe(instance.client.subscribe({ query: NOTE_ADDED }));
+		await settle();
+
+		expect(failures).toEqual([]);
+		expect(deliveries).toHaveLength(1);
+
+		instance.close();
+	});
+
+	it('keeps existing semantics for a non-auth failure', async () => {
+		const onTokenRefresh = vi.fn().mockResolvedValue('fresh-token');
+		const instance = build({ onTokenRefresh });
+		const ws = latestWsClient();
+		ws.script = [(sink) => sink.error(otherFailureFrame)];
+
+		const { deliveries, failures } = observe(instance.client.subscribe({ query: NOTE_ADDED }));
+		await settle();
+
+		expect(deliveries).toEqual([]);
+		expect(failures).toHaveLength(1);
+		expect(onTokenRefresh).not.toHaveBeenCalled();
+		expect(ws.events).toEqual(['subscribe']);
+
+		instance.close();
+	});
+
+	it('re-issues once — a second expiry on the refreshed credential propagates', async () => {
+		const onTokenRefresh = vi.fn().mockResolvedValue('fresh-token');
+		const instance = build({ onTokenRefresh });
+		const ws = latestWsClient();
+		ws.script = [(sink) => sink.error(expiredFrame), (sink) => sink.error(expiredFrame)];
+
+		const { deliveries, failures } = observe(instance.client.subscribe({ query: NOTE_ADDED }));
+		await settle();
+
+		expect(deliveries).toEqual([]);
+		expect(failures).toHaveLength(1);
+		// Exactly two attempts: the original and one re-issue. No loop.
+		expect(ws.subscribeCalls).toHaveLength(2);
+		// One episode, one refresh, one re-dial. The re-issue link owns this
+		// failure; the error link above it must not recover the same one again.
+		expect(onTokenRefresh).toHaveBeenCalledTimes(1);
+		expect(ws.events).toEqual(['subscribe', 'terminate', 'subscribe']);
+
+		instance.close();
+	});
+
+	it('drives one refresh and one re-dial when the second expiry is delayed', async () => {
+		// The delayed shape is the one that defeats the in-flight latch: the
+		// refresh-and-re-dial has fully settled and released before Lesser
+		// refuses the re-issued subscribe, so the propagated failure reaches the
+		// error link looking exactly like a brand-new expiry.
+		const onTokenRefresh = vi.fn().mockResolvedValue('fresh-token');
+		const instance = build({ onTokenRefresh });
+		const ws = latestWsClient();
+		ws.script = [
+			(sink) => sink.error(expiredFrame),
+			(sink) => {
+				setTimeout(() => sink.error(expiredFrame), 5);
+			},
+		];
+
+		const { deliveries, failures } = observe(instance.client.subscribe({ query: NOTE_ADDED }));
+		await settleAcrossTurns();
+
+		// Still loud: the caller sees the failure rather than a subscription
+		// that quietly stopped delivering.
+		expect(deliveries).toEqual([]);
+		expect(failures).toHaveLength(1);
+
+		// At most one refresh and one termination for the episode.
+		expect(onTokenRefresh).toHaveBeenCalledTimes(1);
+		expect(terminations(ws)).toBe(1);
+		// Still bounded: no third subscribe, so no silent retry loop either.
+		expect(ws.subscribeCalls).toHaveLength(2);
+		expect(ws.events).toEqual(['subscribe', 'terminate', 'subscribe']);
+
+		instance.close();
+	});
+
+	it('re-issues a sibling refused on the superseded credential without refreshing again', async () => {
+		// The sibling shape, at the link chain: two operations subscribe on the
+		// same expiring socket, the first opens the episode, and the second is
+		// refused only *after* that refresh has settled and released the latch.
+		// The second refusal names a credential the client has already replaced,
+		// so it costs a re-issue, not a second refresh and a second teardown.
+		//
+		// Over the real graphql-ws client this is the frame it re-sends itself for
+		// a still-active subscription; `clientAuthExpiryProtocol.test.ts` drives
+		// that path end to end.
+		const onTokenRefresh = vi.fn().mockResolvedValue('fresh-token');
+		const instance = build({ onTokenRefresh });
+		const ws = latestWsClient();
+		ws.script = [
+			(sink) => sink.error(expiredFrame),
+			(sink) => {
+				setTimeout(() => sink.error(expiredFrame), 5);
+			},
+			(sink) => sink.next(payload('7', 'opener')),
+			(sink) => sink.next(payload('8', 'sibling')),
+		];
+
+		const opener = observe(instance.client.subscribe({ query: NOTE_ADDED }));
+		const sibling = observe(
+			instance.client.subscribe({ query: NOTE_ADDED, variables: { cursor: 'c' } })
+		);
+		await settleAcrossTurns();
+
+		// Both are delivering, and the socket was dropped exactly once.
+		expect(opener.failures).toEqual([]);
+		expect(sibling.failures).toEqual([]);
+		expect(opener.deliveries).toHaveLength(1);
+		expect(sibling.deliveries).toHaveLength(1);
+		expect(onTokenRefresh).toHaveBeenCalledTimes(1);
+		expect(terminations(ws)).toBe(1);
+		expect(ws.subscribeCalls).toHaveLength(4);
+		expect(ws.subscribeCalls.slice(2).map((call) => call.credential)).toEqual([
+			'Bearer fresh-token',
+			'Bearer fresh-token',
+		]);
+
+		instance.close();
+	});
+
+	it('keeps the superseded-credential re-issue bounded to one attempt', async () => {
+		// Same shape, but the fresh credential is refused again. The sibling gets
+		// one re-issue on it and then goes loud: a credential the server refuses
+		// on its own terms is never worth a second refresh.
+		const onTokenRefresh = vi.fn().mockResolvedValue('fresh-token');
+		const instance = build({ onTokenRefresh });
+		const ws = latestWsClient();
+		ws.script = [
+			(sink) => sink.error(expiredFrame),
+			(sink) => {
+				setTimeout(() => sink.error(expiredFrame), 5);
+			},
+			(sink) => sink.next(payload('9', 'opener')),
+			(sink) => sink.error(expiredFrame),
+		];
+
+		const opener = observe(instance.client.subscribe({ query: NOTE_ADDED }));
+		const sibling = observe(
+			instance.client.subscribe({ query: NOTE_ADDED, variables: { cursor: 'd' } })
+		);
+		await settleAcrossTurns();
+
+		expect(sibling.failures).toHaveLength(1);
+		expect(sibling.deliveries).toEqual([]);
+		// The opener, which shares the socket, is untouched by that failure.
+		expect(opener.failures).toEqual([]);
+		expect(opener.deliveries).toHaveLength(1);
+		expect(onTokenRefresh).toHaveBeenCalledTimes(1);
+		expect(terminations(ws)).toBe(1);
+		expect(ws.subscribeCalls).toHaveLength(4);
+
+		instance.close();
+	});
+
+	it('still recovers a later, independent expiry', async () => {
+		// Claiming an episode must not deafen the client to the next one. A
+		// different operation expiring later is a new episode and gets its own
+		// single refresh and re-dial.
+		const onTokenRefresh = vi
+			.fn()
+			.mockResolvedValueOnce('fresh-token')
+			.mockResolvedValueOnce('fresher-token');
+		const instance = build({ onTokenRefresh });
+		const ws = latestWsClient();
+		ws.script = [
+			(sink) => sink.error(expiredFrame),
+			(sink) => sink.error(expiredFrame),
+			(sink) => sink.error(expiredFrame),
+			(sink) => sink.next(payload('6', 'recovered')),
+		];
+
+		// Episode one: expires twice and is given up on.
+		const first = observe(instance.client.subscribe({ query: NOTE_ADDED }));
+		await settleAcrossTurns();
+		expect(first.failures).toHaveLength(1);
+		expect(onTokenRefresh).toHaveBeenCalledTimes(1);
+
+		// Episode two: a separate operation, later, expiring once.
+		const second = observe(
+			instance.client.subscribe({ query: NOTE_ADDED, variables: { cursor: 'z' } })
+		);
+		await settleAcrossTurns();
+
+		expect(second.failures).toEqual([]);
+		expect(second.deliveries).toHaveLength(1);
+		expect(onTokenRefresh).toHaveBeenCalledTimes(2);
+		expect(terminations(ws)).toBe(2);
+		expect(ws.subscribeCalls.at(-1)?.credential).toBe('Bearer fresher-token');
+
+		instance.close();
+	});
+
+	it('reports terminal expiry and errors the operation when the refresh fails', async () => {
+		const onAuthExpired = vi.fn();
+		const instance = build({
+			onTokenRefresh: vi.fn().mockRejectedValue(new Error('refresh endpoint down')),
+			onAuthExpired,
+		});
+		const ws = latestWsClient();
+		ws.script = [(sink) => sink.error(expiredFrame)];
+
+		const { deliveries, failures } = observe(instance.client.subscribe({ query: NOTE_ADDED }));
+		await settle();
+
+		expect(deliveries).toEqual([]);
+		expect(failures).toHaveLength(1);
+		expect(onAuthExpired).toHaveBeenCalledTimes(1);
+		expect(onAuthExpired.mock.calls[0]?.[0]).toBeInstanceOf(AuthExpiredError);
+		expect((onAuthExpired.mock.calls[0]?.[0] as AuthExpiredError).reason).toBe('refresh-failed');
+		// Nothing was re-dialed on a credential that could not be replaced.
+		expect(ws.events).toEqual(['subscribe']);
+
+		instance.close();
+	});
+
+	it('is terminal, not silent, when no refresh callback is configured', async () => {
+		const onAuthExpired = vi.fn();
+		const instance = build({ onAuthExpired });
+		const ws = latestWsClient();
+		ws.script = [(sink) => sink.error(expiredFrame)];
+
+		const { failures } = observe(instance.client.subscribe({ query: NOTE_ADDED }));
+		await settle();
+
+		expect(failures).toHaveLength(1);
+		expect((onAuthExpired.mock.calls[0]?.[0] as AuthExpiredError).reason).toBe(
+			'no-refresh-callback'
+		);
+		expect(ws.subscribeCalls).toHaveLength(1);
+
+		instance.close();
+	});
+
+	it('collapses concurrent expiries into one refresh and one re-dial, re-issuing both', async () => {
+		const onTokenRefresh = vi.fn().mockResolvedValue('fresh-token');
+		const instance = build({ onTokenRefresh });
+		const ws = latestWsClient();
+		ws.script = [
+			(sink) => sink.error(expiredFrame),
+			(sink) => sink.error(expiredFrame),
+			(sink) => sink.next(payload('3', 'first')),
+			(sink) => sink.next(payload('4', 'second')),
+		];
+
+		const first = observe(instance.client.subscribe({ query: NOTE_ADDED }));
+		const second = observe(
+			instance.client.subscribe({ query: NOTE_ADDED, variables: { cursor: 'b' } })
+		);
+		await settle(20);
+
+		expect(first.failures).toEqual([]);
+		expect(second.failures).toEqual([]);
+		expect(first.deliveries).toHaveLength(1);
+		expect(second.deliveries).toHaveLength(1);
+
+		// One refresh and one terminate for both: Lesser closes a duplicate
+		// connection_init with 4429.
+		expect(onTokenRefresh).toHaveBeenCalledTimes(1);
+		expect(ws.events.filter((event) => event === 'terminate')).toHaveLength(1);
+		expect(ws.subscribeCalls).toHaveLength(4);
+		expect(ws.subscribeCalls.slice(2).map((call) => call.credential)).toEqual([
+			'Bearer fresh-token',
+			'Bearer fresh-token',
+		]);
+
+		instance.close();
+	});
+
+	it('does not re-issue after the caller unsubscribed', async () => {
+		const onTokenRefresh = vi.fn().mockResolvedValue('fresh-token');
+		const instance = build({ onTokenRefresh });
+		const ws = latestWsClient();
+		ws.script = [(sink) => sink.error(expiredFrame), (sink) => sink.next(payload('5', 'late'))];
+
+		const { deliveries, handle } = observe(instance.client.subscribe({ query: NOTE_ADDED }));
+		handle.unsubscribe();
+		await settle();
+
+		expect(deliveries).toEqual([]);
+		expect(ws.subscribeCalls).toHaveLength(1);
+
+		instance.close();
+	});
+});
