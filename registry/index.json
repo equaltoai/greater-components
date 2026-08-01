@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-01T19:46:08.620Z",
+  "generatedAt": "2026-08-01T21:01:08.780Z",
   "ref": "greater-v0.11.9",
   "version": "0.11.9",
   "checksums": {
@@ -817,7 +817,7 @@
     "packages/utils/src/truncateMiddle.ts": "sha256-AVAtw8C6dJPV0rAL1zdOKRP0jaFxfiIAVFQe1BwXYYM=",
     "packages/utils/src/use-stable-id.svelte.d.ts": "sha256-KWGt/iWi44OtZFOYNzc2UhxiO3jUnNtMmsn2MzU5XTk=",
     "packages/utils/src/use-stable-id.svelte.ts": "sha256-6CETa5fah0IrZe6kp2hPOQYEGBVvZSNf2vJqdd2HoMM=",
-    "packages/adapters/src/authExpiry.ts": "sha256-yzn3zrl2wRK+o18xb2w2Ew+5mlxhWHC6zuokYj3WhIA=",
+    "packages/adapters/src/authExpiry.ts": "sha256-6r2gpG5XzlTYugZQvwTQjPxWNY45a895zVekYFb1fns=",
     "packages/adapters/src/examples/TransportManagerExample.ts": "sha256-wQ7sepE4UYE23zTCihyktGomWPmEXvzYfbWPT0Aco2c=",
     "packages/adapters/src/fetch.ts": "sha256-rZeRGln/6oHdH9fnTpk40P/M8Puesx3kgIV3LCyNquA=",
     "packages/adapters/src/fixtures/lesser.ts": "sha256-T8RxdwFIXpkNDa8eokqyDMOoaBeZYHOvv4Ydi8O6Mtw=",
@@ -826,7 +826,7 @@
     "packages/adapters/src/graphql/cache.d.ts": "sha256-3YyrtfDiMSwiqju/cWC+4AprTMRm/ACRKfd46UcRr/E=",
     "packages/adapters/src/graphql/cache.ts": "sha256-l0A4zZ3Qo/gEXWbZLAvpMOK7O/qCwC0mkaF/EsRfW+4=",
     "packages/adapters/src/graphql/client.d.ts": "sha256-pJIC62N40bdFXhryg13X0HezmJFinzT2I9n/6qK1iJo=",
-    "packages/adapters/src/graphql/client.ts": "sha256-zQufcRcInZGIZEeMO8k0NamCBBQ8ZWtRFQZ/OUWYpE0=",
+    "packages/adapters/src/graphql/client.ts": "sha256-E3Z/mo9280/b6pxH1qBRkixXprcO+SWNM9X8V34dGuo=",
     "packages/adapters/src/graphql/generated/types.d.ts": "sha256-06CrbILnoClJ2Egs3gR2tZE271RgSroJXY7QxF46uLI=",
     "packages/adapters/src/graphql/generated/types.ts": "sha256-yCYpsc3Y9cR8DNKexxXjcuWezFg3ORJuSKSmuwP7UaI=",
     "packages/adapters/src/graphql/index.d.ts": "sha256-orLx9yyDGxzzxd5wHeLg/XKql86ntzhZSG6iUj6Tjx8=",
@@ -5604,8 +5604,8 @@
       "files": [
         {
           "path": "src/authExpiry.ts",
-          "checksum": "sha256-yzn3zrl2wRK+o18xb2w2Ew+5mlxhWHC6zuokYj3WhIA=",
-          "size": 6857
+          "checksum": "sha256-6r2gpG5XzlTYugZQvwTQjPxWNY45a895zVekYFb1fns=",
+          "size": 9712
         },
         {
           "path": "src/examples/TransportManagerExample.ts",
@@ -5649,8 +5649,8 @@
         },
         {
           "path": "src/graphql/client.ts",
-          "checksum": "sha256-zQufcRcInZGIZEeMO8k0NamCBBQ8ZWtRFQZ/OUWYpE0=",
-          "size": 19689
+          "checksum": "sha256-E3Z/mo9280/b6pxH1qBRkixXprcO+SWNM9X8V34dGuo=",
+          "size": 21666
         },
         {
           "path": "src/graphql/generated/types.d.ts",
