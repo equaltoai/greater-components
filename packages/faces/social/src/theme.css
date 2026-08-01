@@ -6013,7 +6013,7 @@
 }
 
 .content a {
-	color: var(--color-link, var(--gr-semantic-action-link-default, #2563eb));
+	color: var(--color-link, #2563eb);
 	text-decoration: none;
 }
 
@@ -6022,12 +6022,52 @@
 }
 
 .content .mention {
-	color: var(--color-link, var(--gr-semantic-action-link-default, #2563eb));
+	color: var(--color-link, #2563eb);
 	font-weight: 500;
 }
 
 .content .hashtag {
-	color: var(--color-link, var(--gr-semantic-action-link-default, #2563eb));
+	color: var(--color-link, #2563eb);
+}
+
+/*
+ * Only the light default moves. `#1d9bf0` is 3.0004:1 on `#ffffff`, below the
+ * WCAG 2.1 AA 4.5:1 floor for body text, so light falls back to `#2563eb`
+ * (5.1686:1). Dark and high contrast keep the historical `#1d9bf0`, which
+ * already clears AA there (6.7105:1 on `#030712`, 6.9990:1 on `#000000`), so
+ * existing consumers see no rendered change outside light.
+ *
+ * The scopes mirror the four the token sheet itself switches on — both
+ * `data-theme` spellings plus the two `:root:not([data-theme])` media queries —
+ * so no activation path is left rendering the light default on a dark surface.
+ * The override variable keeps its position at the front of every chain.
+ */
+[data-theme='dark'] .content a,
+[data-theme='dark'] .content .mention,
+[data-theme='dark'] .content .hashtag,
+[data-theme='highContrast'] .content a,
+[data-theme='highContrast'] .content .mention,
+[data-theme='highContrast'] .content .hashtag,
+[data-theme='high-contrast'] .content a,
+[data-theme='high-contrast'] .content .mention,
+[data-theme='high-contrast'] .content .hashtag {
+	color: var(--color-link, #1d9bf0);
+}
+
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme]) .content a,
+	:root:not([data-theme]) .content .mention,
+	:root:not([data-theme]) .content .hashtag {
+		color: var(--color-link, #1d9bf0);
+	}
+}
+
+@media (prefers-contrast: high) {
+	:root:not([data-theme]) .content a,
+	:root:not([data-theme]) .content .mention,
+	:root:not([data-theme]) .content .hashtag {
+		color: var(--color-link, #1d9bf0);
+	}
 }
 
 .content blockquote {
@@ -14765,7 +14805,7 @@
 
 /* Content links styling */
 .status-content a {
-	color: var(--status-link-color, var(--gr-semantic-action-link-default, #2563eb));
+	color: var(--status-link-color, #2563eb);
 	text-decoration: none;
 }
 
@@ -14775,14 +14815,65 @@
 
 /* Mentions styling */
 .status-content .mention {
-	color: var(--status-mention-color, var(--gr-semantic-action-link-default, #2563eb));
+	color: var(--status-mention-color, #2563eb);
 	font-weight: 500;
 }
 
 /* Hashtags styling */
 .status-content .hashtag {
-	color: var(--status-hashtag-color, var(--gr-semantic-action-link-default, #2563eb));
+	color: var(--status-hashtag-color, #2563eb);
 	font-weight: 500;
+}
+
+/*
+ * Dark and high contrast keep the historical `#1d9bf0`; only the light default
+ * moves to `#2563eb` for the AA floor. See the matching note on `.content a`
+ * above for the ratios and for why these scopes mirror the token sheet's.
+ */
+[data-theme='dark'] .status-content a,
+[data-theme='highContrast'] .status-content a,
+[data-theme='high-contrast'] .status-content a {
+	color: var(--status-link-color, #1d9bf0);
+}
+
+[data-theme='dark'] .status-content .mention,
+[data-theme='highContrast'] .status-content .mention,
+[data-theme='high-contrast'] .status-content .mention {
+	color: var(--status-mention-color, #1d9bf0);
+}
+
+[data-theme='dark'] .status-content .hashtag,
+[data-theme='highContrast'] .status-content .hashtag,
+[data-theme='high-contrast'] .status-content .hashtag {
+	color: var(--status-hashtag-color, #1d9bf0);
+}
+
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme]) .status-content a {
+		color: var(--status-link-color, #1d9bf0);
+	}
+
+	:root:not([data-theme]) .status-content .mention {
+		color: var(--status-mention-color, #1d9bf0);
+	}
+
+	:root:not([data-theme]) .status-content .hashtag {
+		color: var(--status-hashtag-color, #1d9bf0);
+	}
+}
+
+@media (prefers-contrast: high) {
+	:root:not([data-theme]) .status-content a {
+		color: var(--status-link-color, #1d9bf0);
+	}
+
+	:root:not([data-theme]) .status-content .mention {
+		color: var(--status-mention-color, #1d9bf0);
+	}
+
+	:root:not([data-theme]) .status-content .hashtag {
+		color: var(--status-hashtag-color, #1d9bf0);
+	}
 }
 
 /* Compact density adjustments */
