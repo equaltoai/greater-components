@@ -135,12 +135,71 @@ async function getFilesRecursively(dir: string): Promise<string[]> {
 	return files;
 }
 
+type StripState = 'normal' | 'line-comment' | 'block-comment' | 'single' | 'double' | 'template';
+
+function isExecutableScriptMatch(content: string, offset: number): boolean {
+	let state: StripState = 'normal';
+	let escaped = false;
+
+	for (let i = 0; i < offset; i++) {
+		const char = content[i] ?? '';
+		const next = content[i + 1] ?? '';
+
+		if (state === 'line-comment') {
+			if (char === '\n') state = 'normal';
+			continue;
+		}
+
+		if (state === 'block-comment') {
+			if (char === '*' && next === '/') {
+				state = 'normal';
+				i++;
+			}
+			continue;
+		}
+
+		if (state === 'single' || state === 'double' || state === 'template') {
+			if (escaped) {
+				escaped = false;
+				continue;
+			}
+			if (char === '\\') {
+				escaped = true;
+				continue;
+			}
+			if (
+				(state === 'single' && char === "'") ||
+				(state === 'double' && char === '"') ||
+				(state === 'template' && char === '`')
+			) {
+				state = 'normal';
+			}
+			continue;
+		}
+
+		if (char === '/' && next === '/') {
+			state = 'line-comment';
+			i++;
+			continue;
+		}
+		if (char === '/' && next === '*') {
+			state = 'block-comment';
+			i++;
+			continue;
+		}
+		if (char === "'") state = 'single';
+		else if (char === '"') state = 'double';
+		else if (char === '`') state = 'template';
+	}
+
+	return state === 'normal';
+}
+
 function importSpecifiers(content: string): string[] {
 	const specifiers: string[] = [];
-	const executableContent = content
-		.replace(/\/\*[\s\S]*?\*\//g, '')
-		.replace(/^\s*\/\/.*$/gm, '')
-		.replace(/<!--[\s\S]*?-->/g, '');
+	const executableContent = content.replace(/<!--[\s\S]*?-->/g, (comment) =>
+		comment.replace(/[^\n]/g, ' ')
+	);
 	for (const pattern of [
 		/(?:^|[;\n\r])\s*import\s+[^'"]+?from\s*(['"])([^'"]+)\1/g,
 		/(?:^|[;\n\r])\s*import\s*(['"])([^'"]+)\1/g,
@@ -150,7 +209,10 @@ function importSpecifiers(content: string): string[] {
 	]) {
 		let match: RegExpExecArray | null;
 		while ((match = pattern.exec(executableContent)) !== null) {
-			if (match[2]) specifiers.push(match[2]);
+			const statementOffset = match.index + match[0].search(/\b(?:import|export)\b|@import\b/);
+			if (match[2] && isExecutableScriptMatch(executableContent, statementOffset)) {
+				specifiers.push(match[2]);
+			}
 		}
 	}
 	return specifiers;
@@ -216,19 +278,37 @@ describe('greater add review (real command)', () => {
 			// added for Greater internals; the stock SvelteKit fixture stays untouched.
 			const unresolved: string[] = [];
 			const bareAliasTargets: string[] = [];
+			const bareGreaterPackageSpecifiers: string[] = [];
+			const bareAliasRoots = [
+				componentsJson.aliases.greater,
+				componentsJson.aliases.components,
+				componentsJson.aliases.utils,
+				componentsJson.aliases.hooks,
+				componentsJson.aliases.lib,
+				'$lib',
+			];
 			for (const file of await getFilesRecursively(libDir)) {
 				if (!/\.(?:svelte|[cm]?[jt]s|css)$/.test(file)) continue;
 				for (const specifier of importSpecifiers(await fs.readFile(file, 'utf8'))) {
 					if (specifier.startsWith('.') && !resolvesOnDisk(file, specifier)) {
 						unresolved.push(`${path.relative(root, file)} → ${specifier}`);
 					}
-					if (/^(?:src\/lib|\$lib)\/(?:greater|components)(?:\/|$)/.test(specifier)) {
+					if (
+						bareAliasRoots.some(
+							(aliasRoot: string) =>
+								specifier === aliasRoot || specifier.startsWith(`${aliasRoot}/`)
+						)
+					) {
 						bareAliasTargets.push(`${path.relative(root, file)} → ${specifier}`);
+					}
+					if (/^@equaltoai\/greater-components(?:-|\/|$)/.test(specifier)) {
+						bareGreaterPackageSpecifiers.push(`${path.relative(root, file)} → ${specifier}`);
 					}
 				}
 			}
 			expect(unresolved).toEqual([]);
 			expect(bareAliasTargets).toEqual([]);
+			expect(bareGreaterPackageSpecifiers).toEqual([]);
 
 			// Every file the catalog claims for `review` has to land, so a catalog
 			// entry that stops installing fails here rather than in a consumer.
