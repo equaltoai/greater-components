@@ -135,6 +135,25 @@ const tests = [
 			}),
 	],
 	[
+		'malformed artifact fails with a legible parse error and no stack trace',
+		() =>
+			withWorktree((cwd) => {
+				const artifact = join(cwd, 'registry', 'index.json');
+				writeFileSync(artifact, '{"schemaVersion":');
+
+				const result = runCheck(cwd);
+				const output = `${result.stdout}\n${result.stderr}`;
+				const parseErrorLines = output
+					.split('\n')
+					.filter((line) => line.includes('Unable to parse registry/index.json'));
+
+				expectFailure(result, 'malformed registry artifact');
+				assert.equal(parseErrorLines.length, 1, `expected one parse error line\n${output}`);
+				assert.match(parseErrorLines[0], /Unable to parse registry\/index\.json: .+/);
+				assert.doesNotMatch(output, /SyntaxError|\n\s+at\s/);
+			}),
+	],
+	[
 		'staged-only drift fails with a diff while the worktree matches generation',
 		() =>
 			withWorktree((cwd) => {

@@ -160,6 +160,19 @@ function isInsideGitWorkTree() {
 	}
 }
 
+function readRegistryIndexForFreshnessCheck() {
+	const content = fs.readFileSync(OUTPUT_PATH, 'utf8');
+
+	try {
+		return JSON.parse(content);
+	} catch (error) {
+		const detail =
+			error instanceof Error ? error.message.replace(/[\r\n]+/g, ' ').trim() : 'invalid JSON';
+		log(`❌ Unable to parse registry/index.json: ${detail}`, colors.red);
+		process.exit(1);
+	}
+}
+
 function printFallbackDiff(existingOutput, generatedOutput) {
 	const existingLines = existingOutput.split('\n');
 	const generatedLines = generatedOutput.split('\n');
@@ -1015,7 +1028,7 @@ async function main() {
 	const ref = refOverride ?? getGitRef(version);
 	const commit = resolveRegistryCommit(ref);
 	const existingGeneratedAt = checkFreshness
-		? JSON.parse(fs.readFileSync(OUTPUT_PATH, 'utf8')).generatedAt
+		? readRegistryIndexForFreshnessCheck().generatedAt
 		: undefined;
 	const generatedAt = existingGeneratedAt ?? new Date().toISOString();
 
