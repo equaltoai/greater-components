@@ -9,10 +9,20 @@ const tokenCss = fs.readFileSync(
 );
 
 function declarations(css: string, selector: string): string {
-	const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-	const match = css.match(new RegExp(`${escaped}\\s*\\{([^}]*)\\}`));
-	if (!match?.[1]) throw new Error(`Missing CSS block for ${selector}`);
-	return match[1];
+	let offset = 0;
+	while (offset < css.length) {
+		const open = css.indexOf('{', offset);
+		if (open < 0) break;
+		const start = Math.max(css.lastIndexOf('}', open - 1), css.lastIndexOf('{', open - 1)) + 1;
+		const candidate = css
+			.slice(start, open)
+			.replace(/\/\*[\s\S]*?\*\//g, '')
+			.trim();
+		const close = css.indexOf('}', open);
+		if (candidate === selector && close >= 0) return css.slice(open + 1, close);
+		offset = open + 1;
+	}
+	throw new Error(`Missing CSS block for ${selector}`);
 }
 
 function readCustomProperties(block: string): Map<string, string> {
@@ -94,20 +104,41 @@ describe('blog reading-surface theme', () => {
 			expect(contrast(foreground, background), name).toBeGreaterThanOrEqual(4.5);
 		}
 
-		expect(declarations(blogCss, '.gr-blog-article__content')).toContain(
+		expect(declarations(blogCss, "[data-theme='dark'] .gr-blog-article__content")).toContain(
 			'color: var(--gr-blog-article-text)'
 		);
-		expect(declarations(blogCss, '.gr-blog-article__title')).toContain(
-			'color: var(--gr-blog-article-heading)'
-		);
-		expect(declarations(blogCss, '.gr-blog-article__subtitle,\n.gr-blog-article__meta')).toContain(
-			'color: var(--gr-blog-article-muted)'
-		);
-		expect(declarations(blogCss, '.gr-blog-article__tags .gr-blog-tag-cloud__tag')).toContain(
-			'color: var(--gr-blog-article-tag-text)'
-		);
-		expect(declarations(blogCss, '.gr-blog-article__content code')).toContain(
+		expect(
+			declarations(
+				blogCss,
+				"[data-theme='dark'] .gr-blog-article__content h1,\n[data-theme='dark'] .gr-blog-article__content h2,\n[data-theme='dark'] .gr-blog-article__content h3,\n[data-theme='dark'] .gr-blog-article__content h4,\n[data-theme='dark'] .gr-blog-article__content h5,\n[data-theme='dark'] .gr-blog-article__content h6,\n[data-theme='dark'] .gr-blog-article__title"
+			)
+		).toContain('color: var(--gr-blog-article-heading)');
+		expect(
+			declarations(
+				blogCss,
+				"[data-theme='dark'] .gr-blog-article__subtitle,\n[data-theme='dark'] .gr-blog-article__meta"
+			)
+		).toContain('color: var(--gr-blog-article-muted)');
+		expect(
+			declarations(blogCss, "[data-theme='dark'] .gr-blog-article__tags .gr-blog-tag-cloud__tag")
+		).toContain('color: var(--gr-blog-article-tag-text)');
+		expect(declarations(blogCss, "[data-theme='dark'] .gr-blog-article__content code")).toContain(
 			'color: var(--gr-blog-code-text)'
 		);
+	});
+
+	it('leaves the light reading surface on its pre-theme cascade', () => {
+		expect(declarations(blogCss, '.gr-blog-article')).not.toMatch(/\b(?:background|color)\s*:/);
+		expect(declarations(blogCss, '.gr-blog-article__content')).toContain(
+			'color: var(--gr-color-neutral-800)'
+		);
+		expect(
+			declarations(
+				blogCss,
+				'.gr-blog-article__content h1,\n.gr-blog-article__content h2,\n.gr-blog-article__content h3,\n.gr-blog-article__content h4'
+			)
+		).toContain('color: var(--gr-color-neutral-900)');
+		expect(() => declarations(blogCss, '.gr-blog-article__content a')).toThrow();
+		expect(declarations(blogCss, '.gr-blog-article__content code')).not.toMatch(/\bcolor\s*:/);
 	});
 });

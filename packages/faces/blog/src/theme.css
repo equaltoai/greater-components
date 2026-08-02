@@ -118,6 +118,51 @@
 	color: var(--gr-color-neutral-200);
 }
 
+[data-theme='dark'] .gr-blog-article {
+	background: var(--gr-blog-article-background);
+	color: var(--gr-blog-article-text);
+}
+
+[data-theme='dark'] .gr-blog-article__content {
+	color: var(--gr-blog-article-text);
+}
+
+[data-theme='dark'] .gr-blog-article__content h1,
+[data-theme='dark'] .gr-blog-article__content h2,
+[data-theme='dark'] .gr-blog-article__content h3,
+[data-theme='dark'] .gr-blog-article__content h4,
+[data-theme='dark'] .gr-blog-article__content h5,
+[data-theme='dark'] .gr-blog-article__content h6,
+[data-theme='dark'] .gr-blog-article__title {
+	color: var(--gr-blog-article-heading);
+}
+
+[data-theme='dark'] .gr-blog-article__content h5,
+[data-theme='dark'] .gr-blog-article__content h6 {
+	font-family: var(--gr-blog-font-family-heading);
+	line-height: var(--gr-blog-line-height-heading);
+	margin-top: var(--gr-blog-heading-spacing-top);
+	margin-bottom: var(--gr-blog-heading-spacing-bottom);
+}
+
+[data-theme='dark'] .gr-blog-article__subtitle,
+[data-theme='dark'] .gr-blog-article__meta {
+	color: var(--gr-blog-article-muted);
+}
+
+[data-theme='dark'] .gr-blog-article__content a {
+	color: var(--gr-blog-article-link);
+}
+
+[data-theme='dark'] .gr-blog-article__tags .gr-blog-tag-cloud__tag {
+	background: var(--gr-blog-article-tag-background);
+	color: var(--gr-blog-article-tag-text);
+}
+
+[data-theme='dark'] .gr-blog-article__content code {
+	color: var(--gr-blog-code-text);
+}
+
 /* ============================================================================
  * Article Layout
  * ============================================================================ */
@@ -126,8 +171,6 @@
 	max-width: var(--gr-blog-content-max-width);
 	margin: 0 auto;
 	padding: var(--gr-spacing-scale-6);
-	background: var(--gr-blog-article-background);
-	color: var(--gr-blog-article-text);
 }
 
 .gr-blog-article--wide {
@@ -142,7 +185,7 @@
 	font-family: var(--gr-blog-font-family-body);
 	font-size: var(--gr-typography-fontSize-lg);
 	line-height: var(--gr-blog-line-height-body);
-	color: var(--gr-blog-article-text);
+	color: var(--gr-color-neutral-800);
 }
 
 .gr-blog-article__content p {
@@ -152,32 +195,12 @@
 .gr-blog-article__content h1,
 .gr-blog-article__content h2,
 .gr-blog-article__content h3,
-.gr-blog-article__content h4,
-.gr-blog-article__content h5,
-.gr-blog-article__content h6 {
+.gr-blog-article__content h4 {
 	font-family: var(--gr-blog-font-family-heading);
 	line-height: var(--gr-blog-line-height-heading);
 	margin-top: var(--gr-blog-heading-spacing-top);
 	margin-bottom: var(--gr-blog-heading-spacing-bottom);
-	color: var(--gr-blog-article-heading);
-}
-
-.gr-blog-article__title {
-	color: var(--gr-blog-article-heading);
-}
-
-.gr-blog-article__subtitle,
-.gr-blog-article__meta {
-	color: var(--gr-blog-article-muted);
-}
-
-.gr-blog-article__content a {
-	color: var(--gr-blog-article-link);
-}
-
-.gr-blog-article__tags .gr-blog-tag-cloud__tag {
-	background: var(--gr-blog-article-tag-background);
-	color: var(--gr-blog-article-tag-text);
+	color: var(--gr-color-neutral-900);
 }
 
 .gr-blog-article__content h1 {
@@ -716,7 +739,6 @@
 	font-family: var(--gr-blog-font-family-code);
 	font-size: 0.9em;
 	line-height: var(--gr-blog-line-height-code);
-	color: var(--gr-blog-code-text);
 }
 
 .gr-blog-article__content :not(pre) > code {
