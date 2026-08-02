@@ -57,6 +57,32 @@ describe('messaging sanitization', () => {
 
 	it.each([
 		[
+			'named target',
+			'<a title="x" href="https://evil.test" target="named">link</a>',
+			'<a title="x" href="https://evil.test" target="named" rel="noopener noreferrer">link</a>',
+		],
+		[
+			'no target',
+			'<a href="https://evil.test">link</a>',
+			'<a href="https://evil.test" rel="noopener noreferrer">link</a>',
+		],
+		[
+			'self target',
+			'<a href="https://evil.test" target="_self">link</a>',
+			'<a href="https://evil.test" target="_self" rel="noopener noreferrer">link</a>',
+		],
+	])('hardens an external link with a %s without changing its target', (_case, dirty, expected) => {
+		expect(sanitizeMessageHtml(dirty)).toBe(expected);
+	});
+
+	it('preserves internal self-target links without adding an external-link rel', () => {
+		expect(sanitizeMessageHtml('<a href="/messages/next" target="_self">next</a>')).toBe(
+			'<a href="/messages/next" target="_self">next</a>'
+		);
+	});
+
+	it.each([
+		[
 			'href-first',
 			'<a href="https://evil.test" title="a > b" target="_blank">intact link text</a>',
 			'<a href="https://evil.test" title="a > b" target="_blank" rel="noopener noreferrer">intact link text</a>',
@@ -98,9 +124,9 @@ describe('messaging sanitization', () => {
 		expectOnlySafeAnchor(dirty);
 	});
 
-	it('keeps normal external-link hardening byte-identical', () => {
+	it('hardens a normal external link without forcing it into a new browsing context', () => {
 		expect(sanitizeMessageHtml('<a href="https://example.test">link</a>')).toBe(
-			'<a href="https://example.test" target="_blank" rel="noopener noreferrer">link</a>'
+			'<a href="https://example.test" rel="noopener noreferrer">link</a>'
 		);
 	});
 
@@ -120,7 +146,7 @@ describe('messaging sanitization', () => {
 			'<a href="https://example.test" title="rel= target=">link</a>'
 		);
 
-		expect(sanitized).toContain('target="_blank"');
+		expect(sanitized).not.toContain('target="_blank"');
 		expect(sanitized).toContain('rel="noopener noreferrer"');
 	});
 

@@ -91,18 +91,12 @@ function setQuotedAttribute(attributes: string, name: string, value: string): st
 	return `${attributes} ${name}="${value}"`;
 }
 
-function secureBlankTargetLinks(html: string): string {
+function secureExternalLinks(html: string): string {
 	return html.replace(/<a\b((?:"[^"]*"|'[^']*'|[^'">])*)>/giu, (_match, rawAttributes: string) => {
 		let attributes = rawAttributes;
 		const href = getQuotedAttribute(attributes, 'href');
-		let target = getQuotedAttribute(attributes, 'target');
 
-		if (/^https?:\/\//iu.test(href ?? '') && target === undefined) {
-			attributes = setQuotedAttribute(attributes, 'target', '_blank');
-			target = '_blank';
-		}
-
-		if (target?.toLowerCase() === '_blank') {
+		if (/^https?:\/\//iu.test(href ?? '')) {
 			const existingRel = getQuotedAttribute(attributes, 'rel') ?? '';
 			const tokens = existingRel.split(/\s+/u).filter(Boolean);
 			const normalizedTokens = new Set(tokens.map((token) => token.toLowerCase()));
@@ -172,7 +166,7 @@ export function stripSerializedMarkup(serialized: string): string {
 
 /** Sanitize server-authored message HTML for the {@html} message-body sink. */
 export function sanitizeMessageHtml(dirty: string): string {
-	return secureBlankTargetLinks(
+	return secureExternalLinks(
 		sanitizeHtml(dropRawTextElements(dirty), {
 			addRelToExternalLinks: false,
 			externalLinksInNewTab: false,

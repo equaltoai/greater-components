@@ -143,7 +143,7 @@ describe('Message', () => {
 		unmount(instance);
 	});
 
-	it('secures blank-target links while preserving existing rel tokens', () => {
+	it('secures external links while preserving existing rel tokens and target intent', () => {
 		const target = document.createElement('div');
 		const message = {
 			id: 'm-link',
@@ -163,7 +163,7 @@ describe('Message', () => {
 			'noopener',
 			'noreferrer',
 		]);
-		expect(links[1]?.getAttribute('target')).toBe('_blank');
+		expect(links[1]?.getAttribute('target')).toBeNull();
 		expect(links[1]?.getAttribute('rel')).toBe('noopener noreferrer');
 
 		unmount(instance);
