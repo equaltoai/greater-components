@@ -116,6 +116,10 @@ describe('generated Registry dependencies', () => {
 		const dependencies = allDependencies();
 		const generatedRanges = generatedDependencyRanges();
 
+		expect(dependencies.filter(({ name }) => name === 'vite')).toEqual([]);
+		expect(dependencies.filter(({ name }) => name === '@types/node')).toEqual([]);
+		expect(dependencies.filter(({ name }) => name === 'typescript')).toEqual([]);
+
 		for (const dependency of dependencies) {
 			expect(
 				dependency.version === 'latest' || validRange(dependency.version),
