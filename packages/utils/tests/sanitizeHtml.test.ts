@@ -33,16 +33,20 @@ const RESOLUTION_EXTERNAL_HREF_CASES = [
 	['protocol-relative sentinel host', '//greater-sanitize.invalid/path', false],
 	['protocol-relative other host', '//other.test/path', true],
 	['absolute HTTPS sentinel host', 'https://greater-sanitize.invalid/x', false],
+	['absolute HTTP sentinel host', 'http://greater-sanitize.invalid/x', false],
 	['absolute HTTPS other host', 'https://other.test/x', true],
 	['absolute HTTP other host', 'http://other.test/x', true],
-	['HTTP sentinel host with a different origin', 'http://greater-sanitize.invalid/x', true],
 	['uppercase other host', 'https://OTHER.TEST/x', true],
 	['uppercase sentinel host', 'https://GREATER-SANITIZE.INVALID/x', false],
 	['relative path', '/local/path', false],
 	['fragment-only href', '#fragment', false],
 	['explicit evil.com authority', '//evil.com', true],
 	['scheme-mismatched HTTP URL', 'http:evil.test', true],
-	['same-scheme HTTPS URL', 'https:evil.test', false],
+	['scheme-mismatched HTTPS URL', 'https:evil.test', true],
+	// Resolving against both scheme variants deliberately over-hardens same-scheme shorthand.
+	// Fediverse servers such as Mastodon emit absolute URLs, so these shapes are vanishingly rare.
+	['same-host HTTPS shorthand (accepted over-hardening)', 'https:local/path', true],
+	['same-host HTTP shorthand (accepted over-hardening)', 'http:local/path', true],
 	['mailto URL', 'mailto:user@example.test', false],
 	['malformed absolute URL', 'https://[invalid', false],
 	['empty href', '', false],
@@ -158,14 +162,24 @@ describe('sanitizeHtml', () => {
 		expect(anchor.getAttribute('rel')?.split(/\s+/u)).toEqual(expectedRel);
 	});
 
-	it('treats https:evil.test as internal when resolved against the https sentinel base', () => {
+	it('hardens https:evil.test when either sentinel base resolves it cross-origin', () => {
 		const anchor = expectOnlySafeAnchor(
 			'<a href="https:evil.test" target="named" rel="opener">x</a>'
 		);
 
 		expect(anchor.getAttribute('href')).toBe('https:evil.test');
 		expect(anchor.getAttribute('target')).toBe('named');
-		expect(anchor.getAttribute('rel')).toBe('opener');
+		expect(anchor.getAttribute('rel')).toBe('noopener noreferrer');
+	});
+
+	it('pins the internal sentinel collision to the RFC 6761-reserved .invalid TLD', () => {
+		const sentinel = new URL('https://greater-sanitize.invalid/');
+
+		// Internal sentinel collisions are safe only while this host can never be delegated.
+		expect(sentinel.hostname).toMatch(/\.invalid$/u);
+		const anchor = expectOnlySafeAnchor(`<a href="${sentinel.href}">x</a>`);
+		expect(anchor.hasAttribute('rel')).toBe(false);
+		expect(anchor.hasAttribute('target')).toBe(false);
 	});
 
 	it.each(RESOLUTION_EXTERNAL_HREF_CASES)(
