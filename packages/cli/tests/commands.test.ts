@@ -52,7 +52,7 @@ const mockWriteComponentFiles = vi.fn().mockResolvedValue({
 });
 
 const mockFetchComponents = vi.fn();
-const mockGetMissingDependencies = vi.fn();
+const mockGetDependencyInstallPlan = vi.fn();
 const mockInstallDependencies = vi.fn();
 const mockDetectPackageManager = vi.fn();
 
@@ -141,7 +141,7 @@ vi.mock(srcPath('utils/fetch.js'), () => ({
 
 vi.mock(srcPath('utils/packages.js'), () => ({
 	installDependencies: mockInstallDependencies,
-	getMissingDependencies: mockGetMissingDependencies,
+	getDependencyInstallPlan: mockGetDependencyInstallPlan,
 	detectPackageManager: mockDetectPackageManager,
 }));
 
@@ -213,7 +213,7 @@ describe('cli commands', () => {
 				],
 			])
 		);
-		mockGetMissingDependencies.mockResolvedValue([]);
+		mockGetDependencyInstallPlan.mockResolvedValue({ missing: [], drift: [] });
 		mockDetectPackageManager.mockResolvedValue('pnpm');
 		mockWriteComponentFiles.mockResolvedValue({
 			writtenFiles: [],
@@ -382,7 +382,10 @@ describe('cli commands', () => {
 				],
 			])
 		);
-		mockGetMissingDependencies.mockResolvedValue([{ name: 'svelte', version: '^5.0.0' }]);
+		mockGetDependencyInstallPlan.mockResolvedValue({
+			missing: [{ name: 'svelte', version: '^5.0.0' }],
+			drift: [],
+		});
 		mockDetectPackageManager.mockResolvedValue('npm');
 		mockWriteComponentFiles.mockResolvedValue({
 			writtenFiles: [],
@@ -456,7 +459,7 @@ describe('cli commands', () => {
 				],
 			])
 		);
-		mockGetMissingDependencies.mockResolvedValue([]);
+		mockGetDependencyInstallPlan.mockResolvedValue({ missing: [], drift: [] });
 		mockDetectPackageManager.mockResolvedValue('pnpm');
 		mockWriteComponentFiles.mockRejectedValue(new Error('Write failed'));
 

@@ -39,6 +39,8 @@ const FIXTURE_TEMPLATE_ROOT = path.resolve(__dirname, '../fixtures/cli-fixture')
 const TMP_ROOT = path.resolve(__dirname, '../.tmp');
 const REPO_ROOT = path.resolve(CLI_ROOT, '../../');
 const TSC_BIN = path.join(REPO_ROOT, 'node_modules/.bin/tsc');
+const SVELTE_KIT_BIN = path.join(CLI_ROOT, 'node_modules/.bin/svelte-kit');
+const VITE_BIN = path.join(CLI_ROOT, 'node_modules/.bin/vite');
 
 /** Runs the CLI against this checkout instead of the network. */
 const CLI_ENV = { ...process.env, GREATER_CLI_LOCAL_REPO_ROOT: REPO_ROOT };
@@ -74,9 +76,8 @@ const REVIEW_TYPE_IMPORTERS = [
 ] as const;
 
 beforeAll(async () => {
-	if (!(await fs.pathExists(CLI_BIN))) {
-		await execa('pnpm', ['build'], { cwd: CLI_ROOT });
-	}
+	// This test executes dist/index.js, so always compile the source under test.
+	await execa('pnpm', ['build'], { cwd: CLI_ROOT });
 }, 300_000);
 
 /** Copies the fixture template, dropping the generated state `init` recreates. */
@@ -123,8 +124,149 @@ async function linkWorkspaceDependencies(root: string): Promise<void> {
 	}
 }
 
+async function getFilesRecursively(dir: string): Promise<string[]> {
+	const entries = await fs.readdir(dir, { withFileTypes: true });
+	const files: string[] = [];
+	for (const entry of entries) {
+		const fullPath = path.join(dir, entry.name);
+		if (entry.isDirectory()) files.push(...(await getFilesRecursively(fullPath)));
+		else files.push(fullPath);
+	}
+	return files;
+}
+
+type StripState = 'normal' | 'line-comment' | 'block-comment' | 'single' | 'double' | 'template';
+
+function isExecutableScriptMatch(content: string, offset: number): boolean {
+	let state: StripState = 'normal';
+	let escaped = false;
+
+	for (let i = 0; i < offset; i++) {
+		const char = content[i] ?? '';
+		const next = content[i + 1] ?? '';
+
+		if (state === 'line-comment') {
+			if (char === '\n') state = 'normal';
+			continue;
+		}
+
+		if (state === 'block-comment') {
+			if (char === '*' && next === '/') {
+				state = 'normal';
+				i++;
+			}
+			continue;
+		}
+
+		if (state === 'single' || state === 'double' || state === 'template') {
+			if (escaped) {
+				escaped = false;
+				continue;
+			}
+			if (char === '\\') {
+				escaped = true;
+				continue;
+			}
+			if (
+				(state === 'single' && char === "'") ||
+				(state === 'double' && char === '"') ||
+				(state === 'template' && char === '`')
+			) {
+				state = 'normal';
+			}
+			continue;
+		}
+
+		if (char === '/' && next === '/') {
+			state = 'line-comment';
+			i++;
+			continue;
+		}
+		if (char === '/' && next === '*') {
+			state = 'block-comment';
+			i++;
+			continue;
+		}
+		if (char === "'") state = 'single';
+		else if (char === '"') state = 'double';
+		else if (char === '`') state = 'template';
+	}
+
+	return state === 'normal';
+}
+
+function maskSvelteMarkup(content: string): string {
+	const masked = Array.from({ length: content.length }, (_, index) => {
+		const char = content[index] ?? '';
+		return char === '\n' || char === '\r' ? char : ' ';
+	});
+	const executableTag = /<(script|style)\b[^>]*>[\s\S]*?<\/\1\s*>/gi;
+
+	let match: RegExpExecArray | null;
+	while ((match = executableTag.exec(content)) !== null) {
+		const openingEnd = match[0].indexOf('>') + 1;
+		const closingStart = match[0].lastIndexOf('</');
+		for (let offset = openingEnd; offset < closingStart; offset++) {
+			masked[match.index + offset] = match[0][offset] ?? '';
+		}
+	}
+
+	return masked.join('');
+}
+
+function importSpecifiers(content: string, filePath?: string): string[] {
+	const specifiers: string[] = [];
+	// Svelte markup is not JavaScript: only script/style bodies may influence
+	// string and comment state for executable import matches.
+	const executableSource = filePath?.endsWith('.svelte') ? maskSvelteMarkup(content) : content;
+	const executableContent = executableSource.replace(/<!--[\s\S]*?-->/g, (comment) =>
+		comment.replace(/[^\n]/g, ' ')
+	);
+	for (const pattern of [
+		/(?:^|[;\n\r])\s*import\s+[^'"]+?from\s*(['"])([^'"]+)\1/g,
+		/(?:^|[;\n\r])\s*import\s*(['"])([^'"]+)\1/g,
+		/(?:^|[;\n\r])\s*export\s+[^'"]+?from\s*(['"])([^'"]+)\1/g,
+		/(?<![\w$])import\s*\(\s*(['"])([^'"]+)\1\s*\)/g,
+		/@import\s+(?:url\s*\(\s*)?(['"])([^'"]+)\1(?:\s*\))?/g,
+	]) {
+		let match: RegExpExecArray | null;
+		while ((match = pattern.exec(executableContent)) !== null) {
+			const statementOffset = match.index + match[0].search(/\b(?:import|export)\b|@import\b/);
+			if (match[2] && isExecutableScriptMatch(executableContent, statementOffset)) {
+				specifiers.push(match[2]);
+			}
+		}
+	}
+	return specifiers;
+}
+
+function resolvesOnDisk(fromFile: string, specifier: string): boolean {
+	const cleanSpecifier = specifier.replace(/[?#].*$/, '');
+	const base = path.resolve(path.dirname(fromFile), cleanSpecifier);
+	const withoutExt = base.replace(/\.(?:[cm]?[jt]s|svelte|css)$/, '');
+	return [
+		base,
+		`${withoutExt}.ts`,
+		`${withoutExt}.js`,
+		`${withoutExt}.svelte`,
+		`${withoutExt}.svelte.ts`,
+		`${withoutExt}.css`,
+		path.join(base, 'index.ts'),
+		path.join(base, 'index.js'),
+		path.join(base, 'index.svelte'),
+	].some((candidate) => fs.existsSync(candidate));
+}
+
 describe('greater add review (real command)', () => {
-	it('installs the dependency closure, rewrites type imports, and type-checks', async () => {
+	it('keeps Svelte markup apostrophes from hiding script imports in the sweep', () => {
+		const source = ["<p>Sam's post</p>", '<script>', "import 'bare-package';", '</script>'].join(
+			'\n'
+		);
+
+		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual(['bare-package']);
+	});
+
+	it('preserves pins and installs a relative-import tree that type-checks and builds', async () => {
 		const root = await createScratchProject();
 
 		try {
@@ -133,12 +275,23 @@ describe('greater add review (real command)', () => {
 				env: CLI_ENV,
 			});
 			expect(await fs.pathExists(path.join(root, 'components.json'))).toBe(true);
+			const packageJsonPath = path.join(root, 'package.json');
+			const manifestBeforeAdd = await fs.readFile(packageJsonPath, 'utf8');
+			expect(JSON.parse(manifestBeforeAdd).devDependencies.viem).toBe('^2.47.14');
 
 			// 2. The command under test. No `--all`: the closure below is what
 			//    `review`'s own registryDependencies must pull in on their own.
-			await execa('node', [CLI_BIN, 'add', '--yes', 'review', '--cwd', root], {
+			const addResult = await execa('node', [CLI_BIN, 'add', '--yes', 'review', '--cwd', root], {
 				env: CLI_ENV,
 			});
+
+			// Consumer-owned declarations are never package-manager rewrite targets.
+			// The adapters core requires viem ^2.55.10, while this fixture intentionally
+			// pins an older range. The complete manifest bytes must survive `add`.
+			expect(await fs.readFile(packageJsonPath, 'utf8')).toBe(manifestBeforeAdd);
+			expect(`${addResult.stdout}\n${addResult.stderr}`).toContain(
+				'viem: manifest ^2.47.14; Greater requires ^2.55.10'
+			);
 
 			// (a) Dependency closure: `blog-types` is not requested on the command
 			//     line, it is reached through `review`'s registryDependencies.
@@ -149,6 +302,43 @@ describe('greater add review (real command)', () => {
 
 			const libDir = path.join(root, 'src/lib');
 			expect(await fs.pathExists(path.join(libDir, 'blog-types.ts'))).toBe(true);
+
+			// Every Greater-internal specifier emitted by the real add pipeline is
+			// relative and resolves in the installed tree. No tsconfig/vite alias is
+			// added for Greater internals; the stock SvelteKit fixture stays untouched.
+			const unresolved: string[] = [];
+			const bareAliasTargets: string[] = [];
+			const bareGreaterPackageSpecifiers: string[] = [];
+			const bareAliasRoots = [
+				componentsJson.aliases.greater,
+				componentsJson.aliases.components,
+				componentsJson.aliases.utils,
+				componentsJson.aliases.hooks,
+				componentsJson.aliases.lib,
+				'$lib',
+			];
+			for (const file of await getFilesRecursively(libDir)) {
+				if (!/\.(?:svelte|[cm]?[jt]s|css)$/.test(file)) continue;
+				for (const specifier of importSpecifiers(await fs.readFile(file, 'utf8'), file)) {
+					if (specifier.startsWith('.') && !resolvesOnDisk(file, specifier)) {
+						unresolved.push(`${path.relative(root, file)} → ${specifier}`);
+					}
+					if (
+						bareAliasRoots.some(
+							(aliasRoot: string) =>
+								specifier === aliasRoot || specifier.startsWith(`${aliasRoot}/`)
+						)
+					) {
+						bareAliasTargets.push(`${path.relative(root, file)} → ${specifier}`);
+					}
+					if (/^@equaltoai\/greater-components(?:-|\/|$)/.test(specifier)) {
+						bareGreaterPackageSpecifiers.push(`${path.relative(root, file)} → ${specifier}`);
+					}
+				}
+			}
+			expect(unresolved).toEqual([]);
+			expect(bareAliasTargets).toEqual([]);
+			expect(bareGreaterPackageSpecifiers).toEqual([]);
 
 			// Every file the catalog claims for `review` has to land, so a catalog
 			// entry that stops installing fails here rather than in a consumer.
@@ -177,6 +367,20 @@ describe('greater add review (real command)', () => {
 			//     Relative `.svelte` specifiers are covered by the directory
 			//     listing above and by `vendored-blog-install.test.ts`.
 			await linkWorkspaceDependencies(root);
+			await fs.writeFile(
+				path.join(root, 'src/routes/+page.svelte'),
+				[
+					'<script lang="ts">',
+					"\timport QueueCard from '$lib/components/Review/QueueCard.svelte';",
+					"\timport * as greaterUtils from '$lib/greater/utils';",
+					'\tconst installedComponent = QueueCard;',
+					"\tconst className = Object.keys(greaterUtils).length ? 'greater-resolution-proof' : '';",
+					'</script>',
+					'',
+					"<p class={className}>{installedComponent ? 'vendored imports resolve' : 'missing'}</p>",
+					'',
+				].join('\n')
+			);
 
 			await fs.writeFile(
 				path.join(libDir, 'review-shims.d.ts'),
@@ -226,6 +430,47 @@ describe('greater add review (real command)', () => {
 
 			expect(unresolvedRelative).toEqual([]);
 			expect(output, 'the installed Review tree failed to type-check').toBe('');
+
+			// Standard SvelteKit + Vite build, using only the configuration `init`
+			// scaffolded in the fresh fixture.
+			await execa(SVELTE_KIT_BIN, ['sync'], { cwd: root });
+			const build = await execa(VITE_BIN, ['build'], { cwd: root, reject: false });
+			expect(build.exitCode, `fresh consumer build failed:\n${build.stdout}\n${build.stderr}`).toBe(
+				0
+			);
+		} finally {
+			await fs.remove(root);
+		}
+	}, 300_000);
+
+	it('preserves a conflicting optional dependency pin byte-for-byte', async () => {
+		const root = await createScratchProject();
+
+		try {
+			const packageJsonPath = path.join(root, 'package.json');
+			const fixtureManifest = await fs.readJson(packageJsonPath);
+			const viemPin = fixtureManifest.devDependencies.viem;
+			delete fixtureManifest.devDependencies.viem;
+			fixtureManifest.optionalDependencies = {
+				...(fixtureManifest.optionalDependencies ?? {}),
+				viem: viemPin,
+			};
+			await fs.writeJson(packageJsonPath, fixtureManifest, { spaces: 2 });
+
+			await execa('node', [CLI_BIN, 'init', '--yes', '--face', 'blog', '--cwd', root], {
+				env: CLI_ENV,
+			});
+			const manifestBeforeAdd = await fs.readFile(packageJsonPath, 'utf8');
+			expect(JSON.parse(manifestBeforeAdd).optionalDependencies.viem).toBe('^2.47.14');
+
+			const addResult = await execa('node', [CLI_BIN, 'add', '--yes', 'review', '--cwd', root], {
+				env: CLI_ENV,
+			});
+
+			expect(await fs.readFile(packageJsonPath, 'utf8')).toBe(manifestBeforeAdd);
+			expect(`${addResult.stdout}\n${addResult.stderr}`).toContain(
+				'viem: manifest ^2.47.14; Greater requires ^2.55.10'
+			);
 		} finally {
 			await fs.remove(root);
 		}

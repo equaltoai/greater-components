@@ -548,7 +548,7 @@ describe('checkNpmDependencies extended', () => {
 		expect(registry.faces.blog.includes.shared).not.toContain('content');
 		expect(readingResults.find((result) => result.name === 'NPM Dependencies')).toMatchObject({
 			passed: true,
-			message: 'All required dependencies are installed',
+			message: 'All required dependencies are declared',
 		});
 		expect(
 			contentExpandedResults.find((result) => result.name === 'NPM Dependencies')
@@ -587,8 +587,8 @@ describe('checkNpmDependencies extended', () => {
 		expect(formatResult(skipped)).toContain('floor check skipped: viem declared as catalog:');
 	});
 
-	it('still fails when a semver declaration is below the security floor', async () => {
-		const { checkNpmDependencies } = await import('../src/commands/doctor.js');
+	it('reports manifest-vs-floor drift without treating the declaration as missing', async () => {
+		const { checkNpmDependencies, formatResult } = await import('../src/commands/doctor.js');
 		const { getComponent } = await import('../src/registry/index.js');
 		vi.mocked(getComponent).mockReturnValue({
 			name: 'adapters',
@@ -605,13 +605,22 @@ describe('checkNpmDependencies extended', () => {
 			installed: [{ name: 'adapters' } as any],
 		});
 
-		expect(results).toHaveLength(1);
+		expect(results).toHaveLength(2);
 		expect(results[0]).toMatchObject({
 			name: 'NPM Dependencies',
-			passed: false,
-			severity: 'error',
+			passed: true,
+			message: 'All required dependencies are declared',
 		});
-		expect(results[0]?.details).toContain('viem@^2.55.10');
+		expect(results[1]).toMatchObject({
+			name: 'Manifest vs Required Floors',
+			passed: false,
+			severity: 'warning',
+			message: 'viem: manifest 2.51.3; Greater requires ^2.55.10',
+		});
+		expect(results[1]?.details).toContain('consumer-owned declaration was preserved');
+		expect(results.map(formatResult).join('\n')).not.toContain(
+			'All required dependencies are installed'
+		);
 	});
 });
 
