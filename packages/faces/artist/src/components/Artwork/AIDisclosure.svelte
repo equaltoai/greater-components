@@ -149,7 +149,7 @@ Consistent iconography.
 		align-items: center;
 		gap: var(--gr-spacing-scale-1);
 		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
-		background: var(--gr-artist-bg-elevated, var(--gr-color-gray-850));
+		background: var(--gr-artist-bg-elevated, var(--gr-color-gray-800));
 		border: 1px solid var(--gr-color-gray-700);
 		border-radius: var(--gr-radii-sm);
 		color: var(--gr-artist-adaptive-muted, var(--gr-color-gray-500));
@@ -199,7 +199,7 @@ Consistent iconography.
 		gap: var(--gr-spacing-scale-2);
 		margin-top: var(--gr-spacing-scale-2);
 		padding: var(--gr-spacing-scale-3);
-		background: var(--gr-artist-bg-elevated, var(--gr-color-gray-850));
+		background: var(--gr-artist-bg-elevated, var(--gr-color-gray-800));
 		border-radius: var(--gr-radii-sm);
 	}
 

@@ -593,7 +593,7 @@ Features:
 		align-items: center;
 		gap: var(--gr-spacing-scale-2);
 		padding: var(--gr-spacing-scale-4);
-		background: var(--gr-color-gray-850);
+		background: var(--gr-color-gray-800);
 		border: 1px solid var(--gr-color-gray-700);
 		border-radius: var(--gr-radii-md);
 		color: var(--gr-color-gray-300);
@@ -635,7 +635,7 @@ Features:
 		align-items: center;
 		justify-content: space-between;
 		padding: var(--gr-spacing-scale-3);
-		background: var(--gr-color-gray-850);
+		background: var(--gr-color-gray-800);
 		border-radius: var(--gr-radii-md);
 	}
 
@@ -728,7 +728,7 @@ Features:
 	.gr-monetization-protection-select {
 		width: 100%;
 		padding: var(--gr-spacing-scale-3);
-		background: var(--gr-color-gray-850);
+		background: var(--gr-color-gray-800);
 		border: 1px solid var(--gr-color-gray-700);
 		border-radius: var(--gr-radii-md);
 		color: var(--gr-color-gray-100);
@@ -760,7 +760,7 @@ Features:
 		align-items: flex-start;
 		gap: var(--gr-spacing-scale-3);
 		padding: var(--gr-spacing-scale-3);
-		background: var(--gr-color-gray-850);
+		background: var(--gr-color-gray-800);
 		border: 1px solid var(--gr-color-gray-700);
 		border-radius: var(--gr-radii-md);
 		cursor: pointer;
@@ -797,7 +797,7 @@ Features:
 	.gr-monetization-protection-toggle {
 		flex: 1;
 		padding: var(--gr-spacing-scale-3);
-		background: var(--gr-color-gray-850);
+		background: var(--gr-color-gray-800);
 		border: 1px solid var(--gr-color-gray-700);
 		border-radius: var(--gr-radii-md);
 		color: var(--gr-color-gray-400);

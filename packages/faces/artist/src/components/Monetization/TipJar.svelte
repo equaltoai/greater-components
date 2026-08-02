@@ -450,7 +450,7 @@ Features:
 		align-items: center;
 		gap: var(--gr-spacing-scale-1);
 		padding: var(--gr-spacing-scale-4);
-		background: var(--gr-color-gray-850);
+		background: var(--gr-color-gray-800);
 		border: 2px solid var(--gr-color-gray-700);
 		border-radius: var(--gr-radii-md);
 		cursor: pointer;
@@ -511,7 +511,7 @@ Features:
 		width: 100%;
 		padding: var(--gr-spacing-scale-3) var(--gr-spacing-scale-3) var(--gr-spacing-scale-3)
 			var(--gr-spacing-scale-8);
-		background: var(--gr-color-gray-850);
+		background: var(--gr-color-gray-800);
 		border: 1px solid var(--gr-color-gray-700);
 		border-radius: var(--gr-radii-md);
 		color: var(--gr-color-gray-100);
@@ -546,7 +546,7 @@ Features:
 	.gr-monetization-tipjar-message-input {
 		width: 100%;
 		padding: var(--gr-spacing-scale-3);
-		background: var(--gr-color-gray-850);
+		background: var(--gr-color-gray-800);
 		border: 1px solid var(--gr-color-gray-700);
 		border-radius: var(--gr-radii-md);
 		color: var(--gr-color-gray-100);

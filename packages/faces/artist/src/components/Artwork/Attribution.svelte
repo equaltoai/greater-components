@@ -139,7 +139,7 @@ REQ-PHIL-003: Prominent but doesn't compete with artwork.
 		border-radius: 50%;
 		overflow: hidden;
 		flex-shrink: 0;
-		background: var(--gr-artist-bg-elevated, var(--gr-color-gray-850));
+		background: var(--gr-artist-bg-elevated, var(--gr-color-gray-800));
 	}
 
 	.gr-artist-artwork-attribution-avatar img {

@@ -3,8 +3,8 @@
  * Audit Tokens Placeholders Script
  *
  * Fails if token reference placeholders like `{color.base.white}` are found in
- * emitted CSS/SCSS output for the tokens package, or if package source treats a
- * selectable gray palette name as an emitted custom-property family.
+ * emitted CSS/SCSS output for the tokens package, or if package source references
+ * a selectable palette token that is absent from the emitted theme sheet.
  */
 
 import fs from 'node:fs';
@@ -47,7 +47,11 @@ function lineNumberAt(content, offset) {
 	return content.slice(0, offset).split('\n').length;
 }
 
-function auditSelectablePaletteReferences() {
+function stripBlockComments(content) {
+	return content.replace(/\/\*[\s\S]*?\*\//g, (comment) => comment.replace(/[^\n]/g, ' '));
+}
+
+function auditTokenReferences() {
 	const emittedThemePath = path.join(rootDir, 'packages', 'tokens', 'dist', 'theme.css');
 	const palettesPath = path.join(rootDir, 'packages', 'tokens', 'src', 'palettes.json');
 	const packagesDir = path.join(rootDir, 'packages');
@@ -56,9 +60,7 @@ function auditSelectablePaletteReferences() {
 	const emittedProperties = new Set(
 		Array.from(emittedTheme.matchAll(/(--gr-[\w-]+)\s*:/g), (match) => match[1])
 	);
-	const paletteNames = Object.keys(JSON.parse(fs.readFileSync(palettesPath, 'utf8'))).filter(
-		(name) => name !== 'gray'
-	);
+	const paletteNames = Object.keys(JSON.parse(fs.readFileSync(palettesPath, 'utf8')));
 	const paletteReference = new RegExp(
 		`var\\(\\s*(--gr-color-(?:${paletteNames.join('|')})-[\\w-]+)`,
 		'g'
@@ -76,7 +78,8 @@ function auditSelectablePaletteReferences() {
 
 	for (const file of sourceFiles) {
 		const content = fs.readFileSync(file, 'utf8');
-		for (const match of content.matchAll(paletteReference)) {
+		const uncommented = stripBlockComments(content);
+		for (const match of uncommented.matchAll(paletteReference)) {
 			const property = match[1];
 			if (property && !emittedProperties.has(property)) {
 				errors.push({
@@ -124,10 +127,10 @@ function main() {
 		}
 	}
 
-	const paletteAudit = auditSelectablePaletteReferences();
+	const tokenReferenceAudit = auditTokenReferences();
 
 	log('\n' + '='.repeat(60));
-	if (errors.length > 0 || paletteAudit.errors.length > 0) {
+	if (errors.length > 0 || tokenReferenceAudit.errors.length > 0) {
 		if (errors.length > 0) {
 			log(`❌ Tokens placeholders audit FAILED (${errors.length} files)`, colors.red);
 			errors.forEach((error) => {
@@ -135,16 +138,16 @@ function main() {
 				log(`     ${error.matches.join(', ')}`, colors.red);
 			});
 		}
-		if (paletteAudit.errors.length > 0) {
+		if (tokenReferenceAudit.errors.length > 0) {
 			log(
-				`❌ Token reference existence audit FAILED (${paletteAudit.errors.length} references)`,
+				`❌ Token reference existence audit FAILED (${tokenReferenceAudit.errors.length} references)`,
 				colors.red
 			);
-			paletteAudit.errors.forEach((error) => {
+			tokenReferenceAudit.errors.forEach((error) => {
 				log(`   - ${error.file}:${error.line} ${error.property}`, colors.red);
 			});
 			log(
-				'   Palette names select the values emitted under --gr-color-gray-*; they are not token paths.',
+				'   Selectable palette references must use properties present in the emitted token sheet.',
 				colors.yellow
 			);
 		}
@@ -153,7 +156,7 @@ function main() {
 
 	log(`✅ Tokens placeholders audit PASSED (${files.length} files checked)`, colors.green);
 	log(
-		`✅ Token reference existence audit PASSED (${paletteAudit.sourceFileCount} source files checked)`,
+		`✅ Token reference existence audit PASSED (${tokenReferenceAudit.sourceFileCount} source files checked)`,
 		colors.green
 	);
 	process.exit(0);

@@ -235,7 +235,7 @@ Event handlers from context.
 
 	.gr-artist-artwork-action:hover:not(:disabled) {
 		color: var(--gr-artist-adaptive-text, var(--gr-color-gray-100));
-		background: var(--gr-artist-bg-elevated, var(--gr-color-gray-850));
+		background: var(--gr-artist-bg-elevated, var(--gr-color-gray-800));
 	}
 
 	.gr-artist-artwork-action:focus-visible {
