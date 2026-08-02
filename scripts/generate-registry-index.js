@@ -128,17 +128,34 @@ function failGitCheck(operation, error) {
 	process.exit(1);
 }
 
+function gitReportedNoRepository(error) {
+	if (error?.status !== 128) return false;
+
+	const stderr =
+		typeof error.stderr === 'string'
+			? error.stderr
+			: Buffer.isBuffer(error.stderr)
+				? error.stderr.toString('utf8')
+				: '';
+	const message = stderr.trimEnd();
+
+	return (
+		message === 'fatal: not a git repository (or any of the parent directories): .git' ||
+		/^fatal: not a git repository: [^\r\n]+$/.test(message)
+	);
+}
+
 function isInsideGitWorkTree() {
 	try {
 		return (
 			execFileSync('git', ['rev-parse', '--is-inside-work-tree'], {
 				cwd: rootDir,
 				encoding: 'utf8',
-				stdio: ['ignore', 'pipe', 'ignore'],
+				stdio: ['ignore', 'pipe', 'pipe'],
 			}).trim() === 'true'
 		);
 	} catch (error) {
-		if (error?.code === 'ENOENT' || error?.status === 128) return false;
+		if (error?.code === 'ENOENT' || gitReportedNoRepository(error)) return false;
 		failGitCheck('determine whether the registry has staged changes', error);
 	}
 }

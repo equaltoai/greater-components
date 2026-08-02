@@ -57,7 +57,7 @@ function withWorktree(fn) {
 	}
 }
 
-function withArchive(fn) {
+function withArchive(fn, { gitAvailable = false } = {}) {
 	const parent = mkdtempSync(join(tmpdir(), 'greater-registry-no-git-'));
 	const cwd = join(parent, 'repo');
 	const binDir = join(parent, 'bin');
@@ -78,9 +78,11 @@ function withArchive(fn) {
 		symlinkSync(rootModules, join(cwd, 'node_modules'), 'dir');
 	}
 
-	const env = { ...process.env, PATH: binDir };
-	const gitProbe = spawnSync('git', ['--version'], { env, encoding: 'utf8' });
-	assert.equal(gitProbe.error?.code, 'ENOENT', 'git must be unavailable in the archive fixture');
+	const env = gitAvailable ? { ...process.env } : { ...process.env, PATH: binDir };
+	if (!gitAvailable) {
+		const gitProbe = spawnSync('git', ['--version'], { env, encoding: 'utf8' });
+		assert.equal(gitProbe.error?.code, 'ENOENT', 'git must be unavailable in the archive fixture');
+	}
 
 	try {
 		return fn(cwd, env);
@@ -152,6 +154,30 @@ const tests = [
 			}),
 	],
 	[
+		'git ownership refusal fails closed instead of skipping staged-only drift',
+		() =>
+			withWorktree((cwd) => {
+				const artifact = join(cwd, 'registry', 'index.json');
+				const clean = readFileSync(artifact, 'utf8');
+				writeFileSync(artifact, perturb(clean, '1.0.1'));
+				git(cwd, ['add', 'registry/index.json']);
+				writeFileSync(artifact, clean);
+
+				const result = runCheck(cwd, {
+					...process.env,
+					GIT_TEST_ASSUME_DIFFERENT_OWNER: '1',
+				});
+				const output = `${result.stdout}\n${result.stderr}`;
+
+				expectFailure(result, 'git ownership refusal');
+				assert.match(
+					output,
+					/Unable to determine whether the registry has staged changes: git failed \(exit 128\)/
+				);
+				assert.doesNotMatch(output, /Registry index is freshly generated|\n\s+at\s/);
+			}),
+	],
+	[
 		'clean artifact passes freshness checking',
 		() =>
 			withWorktree((cwd) => {
@@ -183,6 +209,47 @@ const tests = [
 				assert.match(output, /Registry index is freshly generated/);
 				assert.doesNotMatch(output, /ENOENT|\n\s+at\s/);
 			}),
+	],
+	[
+		"git's no-repository message skips only the staged-drift leg",
+		() =>
+			withArchive(
+				(cwd, env) => {
+					const result = runCheck(cwd, env);
+					const output = `${result.stdout}\n${result.stderr}`;
+
+					assert.equal(
+						result.status,
+						0,
+						`fresh registry outside a work tree should pass\nstdout:\n${result.stdout}\nstderr:\n${result.stderr}`
+					);
+					assert.match(output, /Registry index is freshly generated/);
+					assert.doesNotMatch(output, /Unable to determine|\n\s+at\s/);
+				},
+				{ gitAvailable: true }
+			),
+	],
+	[
+		"git's missing-GIT_DIR message skips only the staged-drift leg",
+		() =>
+			withArchive(
+				(cwd, env) => {
+					const result = runCheck(cwd, {
+						...env,
+						GIT_DIR: join(cwd, 'missing-git-dir'),
+					});
+					const output = `${result.stdout}\n${result.stderr}`;
+
+					assert.equal(
+						result.status,
+						0,
+						`fresh registry with a missing GIT_DIR should pass\nstdout:\n${result.stdout}\nstderr:\n${result.stderr}`
+					);
+					assert.match(output, /Registry index is freshly generated/);
+					assert.doesNotMatch(output, /Unable to determine|\n\s+at\s/);
+				},
+				{ gitAvailable: true }
+			),
 	],
 	[
 		'stale artifact fails with a diff without git or a work tree',
