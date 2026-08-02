@@ -85,7 +85,7 @@ function dropRawTextElements(html: string): string {
 const htmlFragmentProcessor = unified().use(rehypeParse, { fragment: true }).use(rehypeStringify);
 
 function relTokens(element: Element): string[] {
-	const rel = element.properties.rel;
+	const rel = element.properties['rel'];
 	if (Array.isArray(rel)) return rel.map(String).filter(Boolean);
 	if (typeof rel === 'string') return rel.split(/\s+/u).filter(Boolean);
 	return [];
@@ -97,8 +97,8 @@ function hardenExternalAnchors(node: Root | Element): void {
 
 		if (
 			child.tagName === 'a' &&
-			typeof child.properties.href === 'string' &&
-			/^https?:\/\//iu.test(child.properties.href)
+			typeof child.properties['href'] === 'string' &&
+			/^(?:https?:)?\/\//iu.test(child.properties['href'])
 		) {
 			const tokens = relTokens(child);
 			const normalizedTokens = new Set(tokens.map((token) => token.toLowerCase()));
@@ -110,7 +110,7 @@ function hardenExternalAnchors(node: Root | Element): void {
 				}
 			}
 
-			child.properties.rel = tokens;
+			child.properties['rel'] = tokens;
 		}
 
 		hardenExternalAnchors(child);

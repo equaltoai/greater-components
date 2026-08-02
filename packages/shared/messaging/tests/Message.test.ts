@@ -205,6 +205,27 @@ describe('Message', () => {
 		unmount(instance);
 	});
 
+	it('hardens protocol-relative links through the real message render path', () => {
+		const target = document.createElement('div');
+		const message = {
+			id: 'm-protocol-relative',
+			conversationId: 'c1',
+			sender: bob,
+			content: '<a href="//evil.test/messages" target="named">external</a>',
+			createdAt: new Date().toISOString(),
+			read: true,
+		};
+
+		const instance = mount(Message, { target, props: { message, currentUserId: 'u1' } });
+		const anchor = target.querySelector('.message__content a');
+
+		expect(anchor?.getAttribute('href')).toBe('//evil.test/messages');
+		expect(anchor?.getAttribute('target')).toBe('named');
+		expect(anchor?.getAttribute('rel')?.split(/\s+/u)).toEqual(['noopener', 'noreferrer']);
+
+		unmount(instance);
+	});
+
 	it('renders avatar image when available', () => {
 		const target = document.createElement('div');
 		const message = {

@@ -110,6 +110,41 @@ describe('messaging sanitization', () => {
 		);
 	});
 
+	it.each(['_blank', 'named'])(
+		'hardens protocol-relative links with the authored %s target',
+		(target) => {
+			const anchor = expectOnlySafeAnchor(
+				`<a href="//evil.test/messages" target="${target}">external</a>`
+			);
+
+			expect(anchor.getAttribute('href')).toBe('//evil.test/messages');
+			expect(anchor.getAttribute('target')).toBe(target);
+			expect(anchor.getAttribute('rel')?.split(/\s+/u)).toEqual(['noopener', 'noreferrer']);
+		}
+	);
+
+	it('pins the sanitizer contract for an uppercase HTTP scheme', () => {
+		const anchor = expectOnlySafeAnchor(
+			'<a href="HTTPS://evil.test/messages" target="_blank">filtered scheme</a>'
+		);
+
+		// rehype-sanitize currently treats protocol allow-list entries case-sensitively,
+		// so it removes this href before the case-insensitive tree hardener runs.
+		expect(Array.from(anchor.attributes, (attribute) => attribute.name)).toEqual(['target']);
+		expect(anchor.getAttribute('href')).toBeNull();
+		expect(anchor.getAttribute('rel')).toBeNull();
+		expect(anchor.getAttribute('target')).toBe('_blank');
+	});
+
+	it.each(['/messages/next', '../thread', '#reply'])(
+		'leaves the relative or internal link %s untouched',
+		(href) => {
+			expect(sanitizeMessageHtml(`<a href="${href}" target="named">next</a>`)).toBe(
+				`<a href="${href}" target="named">next</a>`
+			);
+		}
+	);
+
 	it.each([
 		[
 			'href-first',
