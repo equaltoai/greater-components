@@ -4,12 +4,12 @@
 high-severity memory-exhaustion denial of service in `ws`. The advisory identifies the
 following patched release in each affected major line:
 
-| Release line | Patched release |
-| ------------ | --------------- |
-| 5.x          | 5.2.5           |
-| 6.x          | 6.2.4           |
-| 7.x          | 7.5.11          |
-| 8.x          | 8.21.0          |
+| Affected range       | Patched release |
+| -------------------- | --------------- |
+| `>= 1.1.0, < 5.2.5`  | 5.2.5           |
+| `>= 6.0.0, < 6.2.4`  | 6.2.4           |
+| `>= 7.0.0, < 7.5.11` | 7.5.11          |
+| `>= 8.0.0, < 8.21.0` | 8.21.0          |
 
 ## Greater-components state
 
