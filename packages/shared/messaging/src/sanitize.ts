@@ -1,6 +1,6 @@
 import { sanitizeHtml } from '@equaltoai/greater-components-utils';
 
-const RAW_TEXT_ELEMENTS_TO_DROP = ['style'] as const;
+const RAW_TEXT_ELEMENTS_TO_DROP = ['style', 'textarea', 'title'] as const;
 const BLOCK_SEPARATOR_TAGS = /<(?:br|\/(?:p|pre|blockquote|li|ul|ol|h[1-6]))\b[^>]*>/giu;
 const HTML_TAG = /<[^>]*>/gu;
 
@@ -29,8 +29,9 @@ function findTagEnd(html: string, start: number): number {
  *
  * The shared sanitizer intentionally preserves the text children of most
  * disallowed elements. Messaging is a less-trusted surface: CSS source inside
- * a style element is neither message content nor a useful preview, so remove
- * the complete element before applying the shared allow-list sanitizer.
+ * style, textarea, and title elements is neither message content nor a useful
+ * preview, so remove the complete element before applying the shared allow-list
+ * sanitizer.
  */
 function dropRawTextElements(html: string): string {
 	let result = html;
@@ -54,7 +55,7 @@ function dropRawTextElements(html: string): string {
 			closingTag.lastIndex = openingEnd + 1;
 			const closingMatch = closingTag.exec(result);
 			if (!closingMatch) {
-				// HTML parsers treat an unclosed style element as consuming the rest
+				// HTML parsers treat an unclosed raw-text element as consuming the rest
 				// of the fragment, so the safe readable result ends here as well.
 				break;
 			}
