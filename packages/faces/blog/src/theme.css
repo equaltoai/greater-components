@@ -55,16 +55,16 @@
 	--gr-blog-code-background: var(--gr-color-neutral-50);
 	--gr-blog-code-border: var(--gr-color-neutral-200);
 	--gr-blog-code-radius: var(--gr-radii-md);
-	--gr-blog-code-text: var(--gr-color-neutral-800);
+	--gr-blog-code-text: var(--gr-color-gray-800, #1f2937);
 
 	/* Reading surface colors */
 	--gr-blog-article-background: var(--gr-color-neutral-0, var(--gr-color-base-white, #ffffff));
-	--gr-blog-article-text: var(--gr-color-neutral-800);
-	--gr-blog-article-heading: var(--gr-color-neutral-900);
-	--gr-blog-article-muted: var(--gr-color-neutral-600);
+	--gr-blog-article-text: var(--gr-color-gray-800, #1f2937);
+	--gr-blog-article-heading: var(--gr-color-gray-900, #111827);
+	--gr-blog-article-muted: var(--gr-color-gray-600, #4b5563);
 	--gr-blog-article-link: var(--gr-color-primary-700);
-	--gr-blog-article-tag-background: var(--gr-color-neutral-100);
-	--gr-blog-article-tag-text: var(--gr-color-neutral-700);
+	--gr-blog-article-tag-background: var(--gr-color-gray-100, #f3f4f6);
+	--gr-blog-article-tag-text: var(--gr-color-gray-700, #374151);
 
 	/* Blockquotes */
 	--gr-blog-blockquote-border-width: 4px;

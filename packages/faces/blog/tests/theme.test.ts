@@ -55,13 +55,20 @@ function resolveValue(
 	throw new Error(`Missing emitted token: ${name}`);
 }
 
-function darkProperties(): Map<string, string> {
-	return new Map([
+function themeProperties(theme: 'light' | 'dark'): Map<string, string> {
+	const properties = new Map([
 		...readCustomProperties(declarations(tokenCss, ':root')),
-		...readCustomProperties(declarations(tokenCss, '[data-theme="dark"]')),
 		...readCustomProperties(declarations(blogCss, ':root')),
-		...readCustomProperties(declarations(blogCss, "[data-theme='dark']")),
 	]);
+	if (theme === 'dark') {
+		for (const [name, value] of [
+			...readCustomProperties(declarations(tokenCss, '[data-theme="dark"]')),
+			...readCustomProperties(declarations(blogCss, "[data-theme='dark']")),
+		]) {
+			properties.set(name, value);
+		}
+	}
+	return properties;
 }
 
 function luminance(hex: string): number {
@@ -87,8 +94,24 @@ function contrast(foreground: string, background: string): number {
 }
 
 describe('blog reading-surface theme', () => {
+	it.each(['light', 'dark'] as const)('resolves all new public reading tokens in %s', (theme) => {
+		const properties = themeProperties(theme);
+		for (const token of [
+			'--gr-blog-code-text',
+			'--gr-blog-article-background',
+			'--gr-blog-article-text',
+			'--gr-blog-article-heading',
+			'--gr-blog-article-muted',
+			'--gr-blog-article-link',
+			'--gr-blog-article-tag-background',
+			'--gr-blog-article-tag-text',
+		]) {
+			expect(resolveValue(`var(${token})`, properties), token).toMatch(/^#[\da-f]{6}$/);
+		}
+	});
+
 	it('resolves dark contrast through the emitted token sheet and each cell background', () => {
-		const properties = darkProperties();
+		const properties = themeProperties('dark');
 		const cells = [
 			['prose', '--gr-blog-article-text', '--gr-blog-article-background'],
 			['headings', '--gr-blog-article-heading', '--gr-blog-article-background'],
