@@ -5,6 +5,7 @@
 import { execa } from 'execa';
 import fs from 'fs-extra';
 import path from 'node:path';
+import { minVersion, satisfies } from 'semver';
 import type { ComponentDependency } from '../registry/index.js';
 
 /**
@@ -80,9 +81,17 @@ export async function installDependencies(
 }
 
 /**
- * Check if dependency is installed
+ * Check if dependency is installed at a compatible version.
+ *
+ * When no required version is provided, preserve the historical name-only check.
+ * Non-semver declarations (for example workspace or git dependencies) also fall
+ * back to name-only because their resolved versions are not available here.
  */
-export async function isDependencyInstalled(packageName: string, cwd: string): Promise<boolean> {
+export async function isDependencyInstalled(
+	packageName: string,
+	cwd: string,
+	requiredVersion?: string
+): Promise<boolean> {
 	const packageJsonPath = path.join(cwd, 'package.json');
 
 	if (!(await fs.pathExists(packageJsonPath))) {
@@ -91,13 +100,25 @@ export async function isDependencyInstalled(packageName: string, cwd: string): P
 
 	try {
 		const content = await fs.readFile(packageJsonPath, 'utf-8');
-		const pkg = JSON.parse(content);
-
-		return !!(
+		const pkg = JSON.parse(content) as {
+			dependencies?: Record<string, string>;
+			devDependencies?: Record<string, string>;
+			peerDependencies?: Record<string, string>;
+		};
+		const installedVersion =
 			pkg.dependencies?.[packageName] ||
 			pkg.devDependencies?.[packageName] ||
-			pkg.peerDependencies?.[packageName]
-		);
+			pkg.peerDependencies?.[packageName];
+
+		if (!installedVersion) return false;
+		if (!requiredVersion) return true;
+
+		const installedFloor = minVersion(installedVersion);
+		const requiredFloor = minVersion(requiredVersion);
+
+		if (!installedFloor || !requiredFloor) return true;
+
+		return satisfies(installedFloor, requiredVersion);
 	} catch {
 		return false;
 	}
@@ -113,7 +134,7 @@ export async function getMissingDependencies(
 	const missing: ComponentDependency[] = [];
 
 	for (const dep of dependencies) {
-		if (!(await isDependencyInstalled(dep.name, cwd))) {
+		if (!(await isDependencyInstalled(dep.name, cwd, dep.version))) {
 			missing.push(dep);
 		}
 	}

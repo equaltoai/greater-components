@@ -293,7 +293,7 @@ export async function checkNpmDependencies(
 		if (!component) continue;
 
 		for (const dep of component.dependencies) {
-			if (!(await isDependencyInstalled(dep.name, cwd))) {
+			if (!(await isDependencyInstalled(dep.name, cwd, dep.version))) {
 				missingDeps.add(`${dep.name}@${dep.version}`);
 			}
 		}

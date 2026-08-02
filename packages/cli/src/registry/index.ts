@@ -185,7 +185,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 			{ name: '@graphql-typed-document-node/core', version: '^3.2.0' },
 			{ name: 'graphql', version: '^16.12.0' },
 			{ name: 'graphql-ws', version: '^6.0.6' },
-			{ name: 'viem', version: '^2.47.14' },
+			{ name: 'viem', version: '^2.55.10' },
 		],
 		devDependencies: [],
 		registryDependencies: [],

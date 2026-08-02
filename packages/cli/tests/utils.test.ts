@@ -190,6 +190,31 @@ describe('package utilities', () => {
 		);
 		expect(missing).toEqual([{ name: 'new', version: '2.0.0' }]);
 	});
+
+	it('treats an installed dependency at the registry floor as satisfied', async () => {
+		const { isDependencyInstalled } = await import('../src/utils/packages.js');
+		fsStore.set('/repo/package.json', JSON.stringify({ dependencies: { viem: '2.55.10' } }));
+
+		expect(await isDependencyInstalled('viem', '/repo', '^2.55.10')).toBe(true);
+	});
+
+	it('marks an installed dependency below the registry floor for upgrade', async () => {
+		const { getMissingDependencies, isDependencyInstalled } =
+			await import('../src/utils/packages.js');
+		fsStore.set('/repo/package.json', JSON.stringify({ dependencies: { viem: '2.51.3' } }));
+
+		expect(await isDependencyInstalled('viem', '/repo', '^2.55.10')).toBe(false);
+		expect(await getMissingDependencies([{ name: 'viem', version: '^2.55.10' }], '/repo')).toEqual([
+			{ name: 'viem', version: '^2.55.10' },
+		]);
+	});
+
+	it('preserves name-only satisfaction when no registry range is provided', async () => {
+		const { isDependencyInstalled } = await import('../src/utils/packages.js');
+		fsStore.set('/repo/package.json', JSON.stringify({ dependencies: { viem: '2.51.3' } }));
+
+		expect(await isDependencyInstalled('viem', '/repo')).toBe(true);
+	});
 });
 
 describe('logger utility', () => {
