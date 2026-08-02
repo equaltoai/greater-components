@@ -259,12 +259,9 @@ function resolvesOnDisk(fromFile: string, specifier: string): boolean {
 
 describe('greater add review (real command)', () => {
 	it('keeps Svelte markup apostrophes from hiding script imports in the sweep', () => {
-		const source = [
-			"<p>Sam's post</p>",
-			'<script>',
-			"import 'bare-package';",
-			'</script>',
-		].join('\n');
+		const source = ["<p>Sam's post</p>", '<script>', "import 'bare-package';", '</script>'].join(
+			'\n'
+		);
 
 		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual(['bare-package']);
 	});
