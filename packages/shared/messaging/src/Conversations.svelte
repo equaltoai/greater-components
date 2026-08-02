@@ -223,12 +223,12 @@
 </div>
 
 <style>
-	:global(.messages-conversations__item--with-actions) {
+	.messages-conversations__item--with-actions {
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) auto;
 	}
 
-	:global(.messages-conversations__item-main) {
+	.messages-conversations__item-main {
 		display: grid;
 		grid-template-columns: auto minmax(0, 1fr) auto;
 		gap: inherit;
@@ -242,7 +242,7 @@
 		cursor: pointer;
 	}
 
-	:global(.messages-conversations__actions) {
+	.messages-conversations__actions {
 		display: flex;
 		align-items: center;
 	}

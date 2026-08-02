@@ -270,6 +270,9 @@ describe('Conversations', () => {
 		const card = target.querySelector('.messages-conversations__item');
 		const selectionButton = card?.querySelector('.messages-conversations__item-main');
 		const action = card?.querySelector('.request-action') as HTMLButtonElement;
+		const lateThemeRule = document.createElement('style');
+		lateThemeRule.textContent = '.messages-conversations__item { display: flex; }';
+		document.head.append(lateThemeRule);
 		expect(card?.tagName).toBe('DIV');
 		expect(selectionButton?.tagName).toBe('BUTTON');
 		expect(action?.dataset.conversationId).toBe('c-request');
@@ -278,11 +281,17 @@ describe('Conversations', () => {
 		expect(card?.querySelector('.messages-conversations__actions')?.hasAttribute('style')).toBe(
 			false
 		);
+		expect(getComputedStyle(card as Element).display).toBe('grid');
+		expect(getComputedStyle(selectionButton as Element).display).toBe('grid');
+		expect(
+			getComputedStyle(card?.querySelector('.messages-conversations__actions') as Element).display
+		).toBe('flex');
 
 		action.click();
 		await flushSync();
 		expect(mockSelectConversation).not.toHaveBeenCalled();
 
+		lateThemeRule.remove();
 		unmount(instance);
 	});
 
@@ -300,9 +309,14 @@ describe('Conversations', () => {
 		await flushSync();
 
 		const card = target.querySelector('.messages-conversations__item');
+		const lateThemeRule = document.createElement('style');
+		lateThemeRule.textContent = '.messages-conversations__item { display: flex; }';
+		document.head.append(lateThemeRule);
 		expect(card?.tagName).toBe('BUTTON');
 		expect(card?.querySelector('.messages-conversations__item-main')).toBeNull();
+		expect(getComputedStyle(card as Element).display).toBe('flex');
 
+		lateThemeRule.remove();
 		unmount(instance);
 	});
 
