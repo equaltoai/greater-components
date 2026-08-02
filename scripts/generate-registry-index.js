@@ -1151,7 +1151,7 @@ async function main() {
 					}
 				}
 
-				if (stagedOutput !== output && stagedOutput !== existingOutput) {
+				if (stagedOutput !== output) {
 					try {
 						execFileSync('git', ['diff', '--cached', '--', 'registry/index.json'], {
 							cwd: rootDir,
