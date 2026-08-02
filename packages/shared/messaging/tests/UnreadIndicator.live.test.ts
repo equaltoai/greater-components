@@ -3,6 +3,7 @@ import { flushSync, mount, unmount } from 'svelte';
 import UnreadIndicatorHarness from './fixtures/UnreadIndicatorHarness.svelte';
 
 const ANNOUNCEMENT_DEBOUNCE_MS = 150;
+const ANNOUNCEMENT_MAX_WAIT_MS = 1_000;
 
 describe('UnreadIndicator live announcements', () => {
 	beforeEach(() => {
@@ -78,5 +79,41 @@ describe('UnreadIndicator live announcements', () => {
 
 		observer.disconnect();
 		unmount(instance);
+	});
+
+	it('announces the current count within the max wait during sustained churn', async () => {
+		const target = document.createElement('div');
+		const instance = mount(UnreadIndicatorHarness, { target });
+		const liveRegion = target.querySelector('[role="status"]') as HTMLElement;
+
+		(target.querySelector('[data-testid="sustained-churn"]') as HTMLButtonElement).click();
+		await flushSync();
+
+		await vi.advanceTimersByTimeAsync(ANNOUNCEMENT_MAX_WAIT_MS - 1);
+		await flushSync();
+		expect(liveRegion.textContent?.trim()).toBe('');
+
+		await vi.advanceTimersByTimeAsync(1);
+		await flushSync();
+		const currentCount = target.querySelector('.unread-indicator')?.textContent?.trim();
+
+		expect(currentCount).toBe('11');
+		expect(liveRegion.textContent?.trim()).toBe(
+			`${currentCount} conversations with unread messages`
+		);
+
+		unmount(instance);
+	});
+
+	it('clears pending debounce and max-wait timers on unmount', async () => {
+		const target = document.createElement('div');
+		const instance = mount(UnreadIndicatorHarness, { target });
+
+		(target.querySelector('[data-testid="set-one"]') as HTMLButtonElement).click();
+		await flushSync();
+		expect(vi.getTimerCount()).toBe(2);
+
+		unmount(instance);
+		expect(vi.getTimerCount()).toBe(0);
 	});
 });

@@ -27,8 +27,18 @@
 		setTimeout(() => setUnreadCount(2), 10);
 		setTimeout(() => setUnreadCount(3), 20);
 	}
+
+	function simulateSustainedChurn() {
+		setUnreadCount(1);
+		for (let count = 2; count <= 12; count += 1) {
+			setTimeout(() => setUnreadCount(count), (count - 1) * 100);
+		}
+	}
 </script>
 
 <button type="button" data-testid="set-one" onclick={() => setUnreadCount(1)}>Set one</button>
 <button type="button" data-testid="burst" onclick={simulateBurst}>Burst</button>
+<button type="button" data-testid="sustained-churn" onclick={simulateSustainedChurn}>
+	Sustained churn
+</button>
 <UnreadIndicator {variant} />

@@ -4,7 +4,11 @@
   Displays the number of conversations with unread activity as a badge.
 -->
 <script lang="ts">
+	import { onDestroy } from 'svelte';
 	import { getMessagesContext } from './context.svelte.js';
+
+	const ANNOUNCEMENT_DEBOUNCE_MS = 150;
+	const ANNOUNCEMENT_MAX_WAIT_MS = 1_000;
 
 	interface Props {
 		/**
@@ -52,15 +56,41 @@
 		`${unreadConversationCount} ${unreadConversationCount === 1 ? 'conversation' : 'conversations'} with unread messages`
 	);
 	let announcedMessage = $state('');
+	let lastAnnouncedMessage = '';
+	let pendingAnnouncement = '';
+	let debounceTimer: ReturnType<typeof setTimeout> | undefined;
+	let maxWaitTimer: ReturnType<typeof setTimeout> | undefined;
+
+	function clearAnnouncementTimers() {
+		if (debounceTimer !== undefined) clearTimeout(debounceTimer);
+		if (maxWaitTimer !== undefined) clearTimeout(maxWaitTimer);
+		debounceTimer = undefined;
+		maxWaitTimer = undefined;
+	}
+
+	function publishPendingAnnouncement() {
+		clearAnnouncementTimers();
+		if (pendingAnnouncement === lastAnnouncedMessage) return;
+
+		lastAnnouncedMessage = pendingAnnouncement;
+		announcedMessage = pendingAnnouncement;
+	}
 
 	$effect(() => {
 		const nextAnnouncement = shouldShow ? announcement : '';
-		const timer = setTimeout(() => {
-			announcedMessage = nextAnnouncement;
-		}, 150);
+		pendingAnnouncement = nextAnnouncement;
 
-		return () => clearTimeout(timer);
+		if (debounceTimer !== undefined) clearTimeout(debounceTimer);
+		if (nextAnnouncement === lastAnnouncedMessage) {
+			clearAnnouncementTimers();
+			return;
+		}
+
+		debounceTimer = setTimeout(publishPendingAnnouncement, ANNOUNCEMENT_DEBOUNCE_MS);
+		maxWaitTimer ??= setTimeout(publishPendingAnnouncement, ANNOUNCEMENT_MAX_WAIT_MS);
 	});
+
+	onDestroy(clearAnnouncementTimers);
 </script>
 
 {#if shouldShow}
