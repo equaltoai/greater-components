@@ -95,11 +95,12 @@ describe('UnreadIndicator', () => {
 		await flushSync();
 
 		const indicator = target.querySelector('.unread-indicator');
+		const liveRegion = target.querySelector('[role="status"]');
 		expect(indicator?.classList.contains('unread-indicator--dot')).toBe(true);
 		expect(indicator?.textContent?.trim()).toBe(''); // Dot has no text
-		expect(indicator?.getAttribute('role')).toBe('status');
-		expect(indicator?.getAttribute('aria-live')).toBe('polite');
-		expect(indicator?.getAttribute('aria-atomic')).toBe('true');
+		expect(indicator?.getAttribute('role')).toBe('img');
+		expect(liveRegion?.getAttribute('aria-live')).toBe('polite');
+		expect(liveRegion?.getAttribute('aria-atomic')).toBe('true');
 		expect(indicator?.getAttribute('aria-label')).toBe('1 conversation with unread messages');
 
 		unmount(instance);

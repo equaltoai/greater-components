@@ -48,15 +48,26 @@
 	const displayCount = $derived(
 		unreadConversationCount > 99 ? '99+' : String(unreadConversationCount)
 	);
+	const announcement = $derived(
+		`${unreadConversationCount} ${unreadConversationCount === 1 ? 'conversation' : 'conversations'} with unread messages`
+	);
+	let announcedMessage = $state('');
+
+	$effect(() => {
+		const nextAnnouncement = shouldShow ? announcement : '';
+		const timer = setTimeout(() => {
+			announcedMessage = nextAnnouncement;
+		}, 150);
+
+		return () => clearTimeout(timer);
+	});
 </script>
 
 {#if shouldShow}
 	<span
 		class={`unread-indicator unread-indicator--${variant} unread-indicator--${size} ${className}`}
-		role="status"
-		aria-live="polite"
-		aria-atomic="true"
-		aria-label={`${unreadConversationCount} ${unreadConversationCount === 1 ? 'conversation' : 'conversations'} with unread messages`}
+		role="img"
+		aria-label={announcement}
 	>
 		{#if variant === 'badge'}
 			{displayCount}
@@ -65,3 +76,9 @@
 		{/if}
 	</span>
 {/if}
+
+<span class="unread-indicator__live-region" role="status" aria-live="polite" aria-atomic="true">
+	{#if announcedMessage}
+		<span class="gr-sr-only">{announcedMessage}</span>
+	{/if}
+</span>
