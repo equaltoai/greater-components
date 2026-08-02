@@ -1700,7 +1700,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 			{ path: 'lib/components/Article/TableOfContents.svelte', content: '', type: 'component' },
 			{ path: 'lib/components/Article/RelatedPosts.svelte', content: '', type: 'component' },
 			{ path: 'lib/components/Article/ShareBar.svelte', content: '', type: 'component' },
-			{ path: 'lib/components/Article/context.ts', content: '', type: 'types' },
+			{ path: 'lib/components/Article/context.svelte.ts', content: '', type: 'types' },
 			{ path: 'lib/components/Article/date.ts', content: '', type: 'utils' },
 			{ path: 'lib/components/Article/index.ts', content: '', type: 'component' },
 			{ path: 'lib/components/Article/normalize.ts', content: '', type: 'utils' },

@@ -5,7 +5,7 @@ Article.Header - Article header with title, metadata, and featured image
 -->
 
 <script lang="ts">
-	import { getArticleContext } from './context.js';
+	import { getArticleContext } from './context.svelte.js';
 	import { formatArticleDateTime } from './date.js';
 
 	const context = getArticleContext();

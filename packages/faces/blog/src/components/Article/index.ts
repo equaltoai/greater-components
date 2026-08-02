@@ -61,7 +61,7 @@ export { default as ArticleIndexCard } from './Card.svelte';
 export { normalizeArticleData } from './normalize.js';
 
 // Export types
-export type { ArticleContext, ArticleConfig, ArticleHandlers } from './context.js';
+export type { ArticleContext, ArticleConfig, ArticleHandlers } from './context.svelte.js';
 
 /**
  * Article compound component

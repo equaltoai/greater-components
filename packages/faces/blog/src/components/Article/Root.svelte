@@ -17,7 +17,7 @@ Provides context for child components and handles root-level layout.
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { ArticleData, ArticleConfig, ArticleHandlers } from '../../types.js';
-	import { createArticleContext } from './context.js';
+	import { createArticleContext } from './context.svelte.js';
 	import { untrack } from 'svelte';
 
 	interface Props {

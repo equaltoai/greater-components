@@ -1,7 +1,7 @@
 <script lang="ts">
 	import TableOfContents from '../../src/components/Article/TableOfContents.svelte';
 	import { setContext } from 'svelte';
-	import { ARTICLE_CONTEXT_KEY } from '../../src/components/Article/context.js';
+	import { ARTICLE_CONTEXT_KEY } from '../../src/components/Article/context.svelte.js';
 	import type {
 		ArticleContext,
 		ArticleData,
