@@ -1,8 +1,9 @@
 import { sanitizeHtml } from '@equaltoai/greater-components-utils';
 
 const RAW_TEXT_ELEMENTS_TO_DROP = ['style', 'textarea', 'title'] as const;
-const BLOCK_SEPARATOR_TAGS = /<(?:br|\/(?:p|pre|blockquote|li|ul|ol|h[1-6]))\b[^>]*>/giu;
-const HTML_TAG = /<[^>]*>/gu;
+const BLOCK_SEPARATOR_TAGS =
+	/<(?:br|\/(?:p|pre|blockquote|li|ul|ol|h[1-6]))\b(?:"[^"]*"|'[^']*'|[^'">])*>/giu;
+const HTML_TAG = /<(?:"[^"]*"|'[^']*'|[^'">])*>/gu;
 
 function findTagEnd(html: string, start: number): number {
 	let quote: '"' | "'" | undefined;
@@ -142,6 +143,24 @@ function decodeSerializedText(text: string): string {
 	);
 }
 
+function stripSerializedMarkup(serialized: string): string {
+	let text = serialized;
+	let previous: string;
+	let iterations = 0;
+	const maxIterations = serialized.length + 1;
+
+	// CodeQL js/incomplete-multi-character-sanitization: removing one tag can expose
+	// another across the joined boundary. Iterate the quote-aware tag-strip chain to
+	// a fixed point; every changing pass shortens the text, so this bound must converge.
+	do {
+		previous = text;
+		text = text.replace(BLOCK_SEPARATOR_TAGS, ' ').replace(HTML_TAG, '');
+		iterations += 1;
+	} while (text !== previous && iterations < maxIterations);
+
+	return text;
+}
+
 /** Sanitize server-authored message HTML for the {@html} message-body sink. */
 export function sanitizeMessageHtml(dirty: string): string {
 	return secureBlankTargetLinks(sanitizeHtml(dropRawTextElements(dirty))).trim();
@@ -152,11 +171,7 @@ export function sanitizeMessagePreview(dirty: string, maxLength = 200): string {
 	if (!dirty || typeof dirty !== 'string') return '';
 
 	const serialized = sanitizeMessageHtml(dirty);
-	const text = decodeSerializedText(
-		serialized.replace(BLOCK_SEPARATOR_TAGS, ' ').replace(HTML_TAG, '')
-	)
-		.replace(/\s+/gu, ' ')
-		.trim();
+	const text = decodeSerializedText(stripSerializedMarkup(serialized)).replace(/\s+/gu, ' ').trim();
 	const characters = Array.from(text);
 
 	if (characters.length <= maxLength) return text;

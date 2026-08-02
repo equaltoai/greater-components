@@ -7,6 +7,10 @@ describe('messaging sanitization', () => {
 		expect(sanitizeMessagePreview('<p>if a &lt; b then ship</p>')).toBe('if a < b then ship');
 	});
 
+	it('does not leave partial-tag residue when an attribute contains a greater-than sign', () => {
+		expect(sanitizeMessagePreview('<p title="a > b">Visible message</p>')).toBe('Visible message');
+	});
+
 	it('drops style elements together with their CSS text from both surfaces', () => {
 		const dirty = '<style>body{display:none}</style><p>Visible message</p>';
 
