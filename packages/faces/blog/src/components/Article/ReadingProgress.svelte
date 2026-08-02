@@ -5,7 +5,7 @@ Article.ReadingProgress - Scroll progress indicator
 -->
 
 <script lang="ts">
-	import { getArticleContext, updateScrollProgress } from './context.js';
+	import { getArticleContext, updateScrollProgress } from './context.svelte.js';
 	import { onMount, onDestroy } from 'svelte';
 
 	interface Props {

@@ -5,7 +5,7 @@ Article.TableOfContents - Auto-generated navigation from article headings
 -->
 
 <script lang="ts">
-	import { getArticleContext } from './context.js';
+	import { getArticleContext } from './context.svelte.js';
 
 	interface Props {
 		/**

@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import path from 'node:path';
+import { readFileSync } from 'node:fs';
 
 const fsStore = new Map<string, string>();
 const fsMock = {
@@ -522,6 +523,40 @@ describe('checkNpmDependencies extended', () => {
 		expect(results.length).toBe(1);
 		expect(results[0]?.passed).toBe(true);
 		expect(results[0]?.message).toContain('All required dependencies');
+	});
+
+	it('distinguishes a reading-only blog install from the legacy content-expanded shape', async () => {
+		const { checkNpmDependencies } = await import('../src/commands/doctor.js');
+		const registry = JSON.parse(
+			readFileSync(new URL('../../../registry/index.json', import.meta.url), 'utf8')
+		) as { faces: { blog: { includes: { shared: string[] } } } };
+
+		fsStore.set(
+			path.join('/project', 'package.json'),
+			JSON.stringify({ dependencies: { svelte: '^5.55.1' } })
+		);
+
+		const readingResults = await checkNpmDependencies('/project', {
+			...BASE_COMPONENT_CONFIG,
+			installed: [{ name: 'faces/blog' } as any],
+		});
+		const contentExpandedResults = await checkNpmDependencies('/project', {
+			...BASE_COMPONENT_CONFIG,
+			installed: [{ name: 'faces/blog' } as any, { name: 'content' } as any],
+		});
+
+		expect(registry.faces.blog.includes.shared).not.toContain('content');
+		expect(readingResults.find((result) => result.name === 'NPM Dependencies')).toMatchObject({
+			passed: true,
+			message: 'All required dependencies are installed',
+		});
+		expect(
+			contentExpandedResults.find((result) => result.name === 'NPM Dependencies')
+		).toMatchObject({
+			passed: false,
+			message: '8 missing dependencies',
+			details: expect.stringContaining('remark-parse'),
+		});
 	});
 
 	it('surfaces a name-only security-floor skip for a non-semver declaration', async () => {

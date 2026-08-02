@@ -5,7 +5,7 @@ Article.Footer - Article footer with author card and tags
 -->
 
 <script lang="ts">
-	import { getArticleContext } from './context.js';
+	import { getArticleContext } from './context.svelte.js';
 
 	const context = getArticleContext();
 	const article = $derived(context.article);

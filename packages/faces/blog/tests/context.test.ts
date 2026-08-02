@@ -25,7 +25,7 @@ import {
 	updateHeadings,
 	updateActiveHeading,
 	updateScrollProgress,
-} from '../src/components/Article/context';
+} from '../src/components/Article/context.svelte';
 
 // Test data factories
 const makeArticle = (id: string = '1', overrides: Partial<ArticleData> = {}): ArticleData => ({

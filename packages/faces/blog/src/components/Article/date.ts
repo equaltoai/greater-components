@@ -1,4 +1,4 @@
-import { formatDateTime } from '@equaltoai/greater-components-utils';
+import { formatDateTime } from '@equaltoai/greater-components-utils/relativeTime';
 
 export interface ArticleFormattedDateTime {
 	label: string;

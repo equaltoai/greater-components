@@ -11,7 +11,7 @@
   "author": "Equal To AI",
   "type": "module",
   "scripts": {
-    "build": "pnpm -r build && pnpm format:types",
+    "build": "pnpm -r build && node scripts/assert-face-runes-compiled.mjs && pnpm format:types",
     "build:agent-face-example": "pnpm exec vite build --config examples/agent-face-svelte/vite.config.ts",
     "build:facetheory-example": "pnpm exec vite build --config examples/facetheory-svelte/vite.config.ts",
     "build:registry": "pnpm build && node scripts/generate-registry-index.js",

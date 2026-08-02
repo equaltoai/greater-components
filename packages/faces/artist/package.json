@@ -102,7 +102,7 @@
     "src"
   ],
   "scripts": {
-    "build": "vite build && tsc -b tsconfig.build.json --force --emitDeclarationOnly && node ../../../scripts/copy-svelte-to-dist.js && cp src/theme.css dist/greater-components-artist.css",
+    "build": "vite build && tsc -b tsconfig.build.json --force --emitDeclarationOnly && node ../../../scripts/copy-svelte-to-dist.js && cp src/theme.css dist/greater-components-artist.css && node ../../../scripts/assert-face-runes-compiled.mjs artist",
     "clean": "rm -rf dist",
     "dev": "vite build --watch",
     "test": "vitest run",

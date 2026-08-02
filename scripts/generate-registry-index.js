@@ -666,8 +666,8 @@ function readManifest(manifestPath) {
 /**
  * Resolve dependency version from package.json
  */
-function resolveDependencyVersion(depName, packageJson, workspaceVersions) {
-	if (!packageJson) return 'latest';
+function resolveDependencyVersion(depName, packageJson, workspaceVersions, declaredVersion) {
+	if (!packageJson) return declaredVersion || 'latest';
 
 	const allDeps = {
 		...packageJson.dependencies,
@@ -675,7 +675,7 @@ function resolveDependencyVersion(depName, packageJson, workspaceVersions) {
 		...packageJson.devDependencies,
 	};
 
-	let version = allDeps[depName] || 'latest';
+	let version = allDeps[depName] || declaredVersion || 'latest';
 
 	if (version.startsWith('workspace:')) {
 		if (workspaceVersions && workspaceVersions[depName]) {
@@ -689,13 +689,33 @@ function resolveDependencyVersion(depName, packageJson, workspaceVersions) {
 }
 
 /**
- * Map dependency names to objects with versions
+ * Split an npm dependency specifier at its final `@`, preserving a scoped package's
+ * leading `@`. Bare names retain the generator's existing package.json lookup behavior.
  */
-function mapDependencies(depNames, packageJson, workspaceVersions) {
-	return depNames.map((name) => ({
-		name,
-		version: resolveDependencyVersion(name, packageJson, workspaceVersions),
-	}));
+function parseDependencySpecifier(specifier) {
+	const rangeSeparator = specifier.lastIndexOf('@');
+	if (rangeSeparator <= 0) return { name: specifier };
+
+	return {
+		name: specifier.slice(0, rangeSeparator),
+		version: specifier.slice(rangeSeparator + 1) || undefined,
+	};
+}
+
+/**
+ * Map dependency names/specifiers to unique objects with versions. package.json is
+ * installable truth when it declares the dependency; manifest ranges are the fallback.
+ */
+function mapDependencies(depSpecifiers, packageJson, workspaceVersions) {
+	const dependencies = new Map();
+
+	for (const specifier of depSpecifiers) {
+		const { name, version } = parseDependencySpecifier(specifier);
+		if (dependencies.has(name)) continue;
+		dependencies.set(name, resolveDependencyVersion(name, packageJson, workspaceVersions, version));
+	}
+
+	return Array.from(dependencies, ([name, version]) => ({ name, version }));
 }
 
 function getWorkspaceInternalDependencies(depNames, packageJson, workspaceVersions) {
@@ -795,6 +815,7 @@ function processFace(faceName, verbose, workspaceVersions) {
 	// Combine declared and detected external deps
 	const externalDeps = new Set([
 		...declaredDeps,
+		...(manifest.dependencies?.optional || []),
 		...detectedDeps.filter((dep) => !dep.startsWith('@equaltoai/greater-components')),
 	]);
 
@@ -809,7 +830,14 @@ function processFace(faceName, verbose, workspaceVersions) {
 	);
 
 	// Filter self-dependency if packageJson has name
-	const filteredInternalDeps = Array.from(internalDeps);
+	const optionalInternalDeps = new Set(
+		(manifest.dependencies?.optional || [])
+			.map((dep) => parseDependencySpecifier(dep).name)
+			.filter((dep) => dep.startsWith('@equaltoai/greater-components'))
+	);
+	const filteredInternalDeps = Array.from(internalDeps).filter(
+		(dep) => !optionalInternalDeps.has(dep)
+	);
 	const exportedMembers = getManifestExports(manifest);
 
 	return {

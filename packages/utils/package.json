@@ -18,6 +18,14 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./relativeTime": {
+      "types": "./dist/relativeTime.d.ts",
+      "import": "./dist/relativeTime.js"
+    },
+    "./sanitizeHtml": {
+      "types": "./dist/sanitizeHtml.d.ts",
+      "import": "./dist/sanitizeHtml.js"
     }
   },
   "files": [

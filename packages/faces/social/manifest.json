@@ -293,7 +293,7 @@
       "@equaltoai/greater-components-messaging"
     ],
     "peer": ["svelte@^5.43.6"],
-    "optional": ["@tanstack/svelte-virtual@^3.13.13", "@graphql-typed-document-node/core@^3.2.0"]
+    "optional": ["@tanstack/svelte-virtual@^3.13.23", "@graphql-typed-document-node/core@^3.2.0"]
   },
   "lesserSchema": {
     "mutations": [
