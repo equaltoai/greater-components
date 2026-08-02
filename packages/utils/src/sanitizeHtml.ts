@@ -161,24 +161,24 @@ function rehypeExternalLinkProperties(options: ExternalLinkOptions) {
 					const isExternal = /^(?:https?:)?[\\/]{2}/iu.test(urlParserNormalized(href));
 					const hasTarget = 'target' in child.properties;
 
-					if (isExternal && options.addRelToExternalLinks && !('rel' in child.properties)) {
-						child.properties['rel'] = [...SECURITY_TOKENS];
+					if (isExternal && options.addRelToExternalLinks) {
+						const tokens = relTokens(child.properties['rel']).filter(
+							(token) => token.toLowerCase() !== 'opener'
+						);
+						const normalizedTokens = new Set(tokens.map((token) => token.toLowerCase()));
+
+						for (const token of SECURITY_TOKENS) {
+							if (!normalizedTokens.has(token)) {
+								tokens.push(token);
+								normalizedTokens.add(token);
+							}
+						}
+
+						child.properties['rel'] = tokens;
 					}
 
 					if (isExternal && options.externalLinksInNewTab && !hasTarget) {
 						child.properties['target'] = '_blank';
-
-						if (options.addRelToExternalLinks) {
-							const tokens = relTokens(child.properties['rel']).filter(
-								(token) => token !== 'opener'
-							);
-
-							for (const token of SECURITY_TOKENS) {
-								if (!tokens.includes(token)) tokens.push(token);
-							}
-
-							child.properties['rel'] = tokens;
-						}
 					}
 				}
 

@@ -124,7 +124,7 @@ function hardenExternalAnchors(node: SanitizedParent): void {
 			typeof child.properties['href'] === 'string' &&
 			/^(?:https?:)?[\\/]{2}/iu.test(urlParserNormalized(child.properties['href']))
 		) {
-			const tokens = relTokens(child);
+			const tokens = relTokens(child).filter((token) => token.toLowerCase() !== 'opener');
 			const normalizedTokens = new Set(tokens.map((token) => token.toLowerCase()));
 
 			for (const requiredToken of ['noopener', 'noreferrer']) {
