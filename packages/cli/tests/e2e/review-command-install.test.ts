@@ -216,12 +216,14 @@ function maskSvelteMarkup(content: string): string {
 
 function importSpecifiers(content: string, filePath?: string): string[] {
 	const specifiers: string[] = [];
-	// Svelte markup is not JavaScript: only script/style bodies may influence
-	// string and comment state for executable import matches.
-	const executableSource = filePath?.endsWith('.svelte') ? maskSvelteMarkup(content) : content;
-	const executableContent = executableSource.replace(/<!--[\s\S]*?-->/g, (comment) =>
+	const commentStripped = content.replace(/<!--[\s\S]*?-->/g, (comment) =>
 		comment.replace(/[^\n]/g, ' ')
 	);
+	// Svelte markup is not JavaScript: only script/style bodies may influence
+	// string and comment state for executable import matches.
+	const executableContent = filePath?.endsWith('.svelte')
+		? maskSvelteMarkup(commentStripped)
+		: commentStripped;
 	for (const pattern of [
 		/(?:^|[;\n\r])\s*import\s+[^'"]+?from\s*(['"])([^'"]+)\1/g,
 		/(?:^|[;\n\r])\s*import\s*(['"])([^'"]+)\1/g,
@@ -264,6 +266,21 @@ describe('greater add review (real command)', () => {
 		);
 
 		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual(['bare-package']);
+	});
+
+	it('ignores imports inside commented-out Svelte script blocks', () => {
+		const source = [
+			'<!--',
+			'<script>',
+			"import 'decoy';",
+			'</script>',
+			'-->',
+			'<script>',
+			"import 'pkg-real';",
+			'</script>',
+		].join('\n');
+
+		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual(['pkg-real']);
 	});
 
 	it('preserves pins and installs a relative-import tree that type-checks and builds', async () => {

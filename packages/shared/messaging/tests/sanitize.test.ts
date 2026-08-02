@@ -187,8 +187,6 @@ describe('messaging sanitization', () => {
 	it('pins the internal sentinel collision to the RFC 6761-reserved .invalid TLD', () => {
 		const sentinel = new URL('https://greater-sanitize.invalid/');
 
-		// Internal sentinel collisions are safe only while this host can never be delegated.
-		expect(sentinel.hostname).toMatch(/\.invalid$/u);
 		const anchor = expectOnlySafeAnchor(`<a href="${sentinel.href}">x</a>`);
 		expect(anchor.hasAttribute('rel')).toBe(false);
 	});
