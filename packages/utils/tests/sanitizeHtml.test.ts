@@ -29,6 +29,25 @@ function expectOnlySafeAnchor(input: string, options?: SanitizeOptions): HTMLAnc
 	return anchor as HTMLAnchorElement;
 }
 
+const RESOLUTION_EXTERNAL_HREF_CASES = [
+	['protocol-relative sentinel host', '//greater-sanitize.invalid/path', false],
+	['protocol-relative other host', '//other.test/path', true],
+	['absolute HTTPS sentinel host', 'https://greater-sanitize.invalid/x', false],
+	['absolute HTTPS other host', 'https://other.test/x', true],
+	['absolute HTTP other host', 'http://other.test/x', true],
+	['HTTP sentinel host with a different origin', 'http://greater-sanitize.invalid/x', true],
+	['uppercase other host', 'https://OTHER.TEST/x', true],
+	['uppercase sentinel host', 'https://GREATER-SANITIZE.INVALID/x', false],
+	['relative path', '/local/path', false],
+	['fragment-only href', '#fragment', false],
+	['explicit evil.com authority', '//evil.com', true],
+	['scheme-mismatched HTTP URL', 'http:evil.test', true],
+	['same-scheme HTTPS URL', 'https:evil.test', false],
+	['mailto URL', 'mailto:user@example.test', false],
+	['malformed absolute URL', 'https://[invalid', false],
+	['empty href', '', false],
+] as const;
+
 describe('sanitizeHtml', () => {
 	it('should allow safe HTML tags', () => {
 		const input = '<p>Hello <strong>world</strong>!</p>';
@@ -94,13 +113,28 @@ describe('sanitizeHtml', () => {
 		}
 	);
 
-	it('leaves authored rel verbatim when library rel intervention is disabled', () => {
-		const anchor = expectOnlySafeAnchor('<a href="https://evil.test" rel="me opener">x</a>', {
-			addRelToExternalLinks: false,
-		});
+	it.each(['Opener', 'OPENER'])(
+		'drops authored rel=%s without adding tokens when only new-tab attachment is enabled',
+		(rel) => {
+			const anchor = expectOnlySafeAnchor(`<a href="https://evil.test" rel="me ${rel}">x</a>`, {
+				addRelToExternalLinks: false,
+			});
+
+			// Attaching _blank must not preserve an explicit opener relationship, even when
+			// the caller opted out of adding external-link rel tokens.
+			expect(anchor.getAttribute('rel')?.split(/\s+/u)).toEqual(['me']);
+			expect(anchor.getAttribute('target')).toBe('_blank');
+		}
+	);
+
+	it('leaves authored rel and target verbatim when both link interventions are disabled', () => {
+		const anchor = expectOnlySafeAnchor(
+			'<a href="https://evil.test" target="named" rel="me opener">x</a>',
+			{ addRelToExternalLinks: false, externalLinksInNewTab: false }
+		);
 
 		expect(anchor.getAttribute('rel')).toBe('me opener');
-		expect(anchor.getAttribute('target')).toBe('_blank');
+		expect(anchor.getAttribute('target')).toBe('named');
 	});
 
 	it('leaves an authored target verbatim when library new-tab attachment is disabled', () => {
@@ -124,7 +158,7 @@ describe('sanitizeHtml', () => {
 		expect(anchor.getAttribute('rel')?.split(/\s+/u)).toEqual(expectedRel);
 	});
 
-	it('treats https:evil.test as a non-authority href under the shared predicate', () => {
+	it('treats https:evil.test as internal when resolved against the https sentinel base', () => {
 		const anchor = expectOnlySafeAnchor(
 			'<a href="https:evil.test" target="named" rel="opener">x</a>'
 		);
@@ -133,6 +167,16 @@ describe('sanitizeHtml', () => {
 		expect(anchor.getAttribute('target')).toBe('named');
 		expect(anchor.getAttribute('rel')).toBe('opener');
 	});
+
+	it.each(RESOLUTION_EXTERNAL_HREF_CASES)(
+		'classifies %s by its resolved http(s) origin',
+		(_case, href, isExternal) => {
+			const anchor = expectOnlySafeAnchor(`<a href="${href}">x</a>`);
+
+			expect(anchor.hasAttribute('rel')).toBe(isExternal);
+			expect(anchor.hasAttribute('target')).toBe(isExternal);
+		}
+	);
 
 	it.each([
 		['double-quoted attributes', '<a href="https://x.test" title="a > b">Link</a>'],

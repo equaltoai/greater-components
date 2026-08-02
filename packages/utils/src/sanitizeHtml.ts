@@ -129,11 +129,18 @@ interface HastElement extends HastNode {
 }
 
 const SECURITY_TOKENS = ['noopener', 'noreferrer'];
+// This fixed sentinel is classification-only, never a real outbound origin. Relative URLs need
+// an absolute base, and HTTPS avoids downgrade quirks when resolving special-scheme shorthand.
+const SANITIZER_BASE_URL = new URL('https://greater-sanitize.invalid/');
 
 function relTokens(value: unknown): string[] {
-	if (Array.isArray(value)) return value.map(String);
+	if (Array.isArray(value)) return value.map(String).filter(Boolean);
 	if (typeof value === 'string') return value.split(/\s+/u).filter(Boolean);
 	return [];
+}
+
+function relTokensWithoutOpener(value: unknown): string[] {
+	return relTokens(value).filter((token) => token.toLowerCase() !== 'opener');
 }
 
 function isHastElement(node: HastNode): node is HastElement {
@@ -147,6 +154,18 @@ function urlParserNormalized(href: string): string {
 	return href.replace(/^[\x00-\x20]+/u, '').replace(/[\t\n\r]/gu, '');
 }
 
+function isExternalHttpUrl(href: string): boolean {
+	try {
+		const resolved = new URL(urlParserNormalized(href), SANITIZER_BASE_URL);
+		return (
+			(resolved.protocol === 'http:' || resolved.protocol === 'https:') &&
+			resolved.origin !== SANITIZER_BASE_URL.origin
+		);
+	} catch {
+		return false;
+	}
+}
+
 /** Add external-link protections before the sanitized tree is serialized. */
 function rehypeExternalLinkProperties(options: ExternalLinkOptions) {
 	return (tree: HastNode): void => {
@@ -158,13 +177,12 @@ function rehypeExternalLinkProperties(options: ExternalLinkOptions) {
 
 				const href = child.properties['href'];
 				if (child.tagName === 'a' && typeof href === 'string') {
-					const isExternal = /^(?:https?:)?[\\/]{2}/iu.test(urlParserNormalized(href));
+					const isExternal = isExternalHttpUrl(href);
 					const hasTarget = 'target' in child.properties;
+					const attachesBlankTarget = isExternal && options.externalLinksInNewTab && !hasTarget;
 
 					if (isExternal && options.addRelToExternalLinks) {
-						const tokens = relTokens(child.properties['rel']).filter(
-							(token) => token.toLowerCase() !== 'opener'
-						);
+						const tokens = relTokensWithoutOpener(child.properties['rel']);
 						const normalizedTokens = new Set(tokens.map((token) => token.toLowerCase()));
 
 						for (const token of SECURITY_TOKENS) {
@@ -177,7 +195,12 @@ function rehypeExternalLinkProperties(options: ExternalLinkOptions) {
 						child.properties['rel'] = tokens;
 					}
 
-					if (isExternal && options.externalLinksInNewTab && !hasTarget) {
+					if (attachesBlankTarget) {
+						if (!options.addRelToExternalLinks && 'rel' in child.properties) {
+							const tokens = relTokensWithoutOpener(child.properties['rel']);
+							if (tokens.length > 0) child.properties['rel'] = tokens;
+							else delete child.properties['rel'];
+						}
 						child.properties['target'] = '_blank';
 					}
 				}
