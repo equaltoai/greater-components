@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-02T17:24:52.248Z",
+  "generatedAt": "2026-08-02T17:26:55.993Z",
   "ref": "greater-v0.11.9",
   "version": "0.11.9",
   "checksums": {
@@ -1062,7 +1062,7 @@
     "packages/faces/social/src/patterns/ThreadView.svelte": "sha256-aBLxcKZgbRmyE/ryjmaIIfer5sB9GwjISTN9uldUdDQ=",
     "packages/faces/social/src/patterns/ThreadView.types.ts": "sha256-ujiFoiGKR4V2AOnsfgVHoBcdJDas4iAR2q6hzcWiGts=",
     "packages/faces/social/src/patterns/VisibilitySelector.svelte": "sha256-u0lxPUqzx59glvkW1CH+oZSEO/hOj3uOruK9w69yIvM=",
-    "packages/faces/social/src/theme.css": "sha256-8fL/eMwr4WexisHHvy+qfKn3JZkAbDhhz/INPkz2Pyo=",
+    "packages/faces/social/src/theme.css": "sha256-8gGmom1g7QQj6WjrRGBJq/KATMPI2RitzgtO37iNE1c=",
     "packages/faces/social/src/types.ts": "sha256-X2ckLsPz5i67/bAPPu8rY+hjpFmhFenn8CkrXlfhVtY=",
     "packages/faces/social/src/utils/notificationGrouping.ts": "sha256-h/6xwSoua5lvEsXzV66EhlKfxdH5VySXQs3hs7uuN5M=",
     "packages/faces/social/src/utils/reach.ts": "sha256-a1yhABVw6Z6IeNwUcIcjhQPbmACQcT5WEb6JnJeUORY=",
@@ -6982,8 +6982,8 @@
         },
         {
           "path": "src/theme.css",
-          "checksum": "sha256-8fL/eMwr4WexisHHvy+qfKn3JZkAbDhhz/INPkz2Pyo=",
-          "size": 314753
+          "checksum": "sha256-8gGmom1g7QQj6WjrRGBJq/KATMPI2RitzgtO37iNE1c=",
+          "size": 315572
         },
         {
           "path": "src/types.ts",
