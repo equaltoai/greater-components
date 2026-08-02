@@ -94,33 +94,33 @@ export interface MessagesHandlers {
 }
 
 export interface LesserMessagesAdapter {
-	query<
+	query: <
 		TData extends Record<string, unknown>,
 		TVariables extends Record<string, unknown> = Record<string, unknown>,
 	>(
 		document: MessagesDocumentNode<TData, TVariables>,
 		variables?: TVariables
-	): Promise<TData>;
-	mutate<
+	) => Promise<TData>;
+	mutate: <
 		TData extends Record<string, unknown>,
 		TVariables extends Record<string, unknown> = Record<string, unknown>,
 	>(
 		document: MessagesDocumentNode<TData, TVariables>,
 		variables?: TVariables
-	): Promise<TData>;
-	getConversations(variables: {
+	) => Promise<TData>;
+	getConversations: (variables: {
 		folder?: ConversationFolder;
 		first?: number;
 		after?: string;
-	}): Promise<ReadonlyArray<LesserMessageConversation>>;
-	getConversation(id: string): Promise<LesserMessageConversation | null | undefined>;
-	markConversationAsRead(id: string): Promise<unknown>;
-	search(variables: {
+	}) => Promise<ReadonlyArray<LesserMessageConversation>>;
+	getConversation: (id: string) => Promise<LesserMessageConversation | null | undefined>;
+	markConversationAsRead: (id: string) => Promise<unknown>;
+	search: (variables: {
 		query: string;
 		type: 'accounts';
 		first?: number;
-	}): Promise<{ accounts: ReadonlyArray<LesserMessageActor> }>;
-	subscribeToConversationUpdates(): {
+	}) => Promise<{ accounts: ReadonlyArray<LesserMessageActor> }>;
+	subscribeToConversationUpdates: () => {
 		subscribe(observer: {
 			next: (value: { data?: { conversationUpdates?: { id: string } | null } | null }) => void;
 			error: (error: unknown) => void;
