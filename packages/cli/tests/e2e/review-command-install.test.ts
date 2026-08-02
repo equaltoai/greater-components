@@ -39,6 +39,8 @@ const FIXTURE_TEMPLATE_ROOT = path.resolve(__dirname, '../fixtures/cli-fixture')
 const TMP_ROOT = path.resolve(__dirname, '../.tmp');
 const REPO_ROOT = path.resolve(CLI_ROOT, '../../');
 const TSC_BIN = path.join(REPO_ROOT, 'node_modules/.bin/tsc');
+const SVELTE_KIT_BIN = path.join(CLI_ROOT, 'node_modules/.bin/svelte-kit');
+const VITE_BIN = path.join(CLI_ROOT, 'node_modules/.bin/vite');
 
 /** Runs the CLI against this checkout instead of the network. */
 const CLI_ENV = { ...process.env, GREATER_CLI_LOCAL_REPO_ROOT: REPO_ROOT };
@@ -122,8 +124,57 @@ async function linkWorkspaceDependencies(root: string): Promise<void> {
 	}
 }
 
+async function getFilesRecursively(dir: string): Promise<string[]> {
+	const entries = await fs.readdir(dir, { withFileTypes: true });
+	const files: string[] = [];
+	for (const entry of entries) {
+		const fullPath = path.join(dir, entry.name);
+		if (entry.isDirectory()) files.push(...(await getFilesRecursively(fullPath)));
+		else files.push(fullPath);
+	}
+	return files;
+}
+
+function importSpecifiers(content: string): string[] {
+	const specifiers: string[] = [];
+	const executableContent = content
+		.replace(/\/\*[\s\S]*?\*\//g, '')
+		.replace(/^\s*\/\/.*$/gm, '')
+		.replace(/<!--[\s\S]*?-->/g, '');
+	for (const pattern of [
+		/(?:^|[;\n\r])\s*import\s+[^'"]+?from\s*(['"])([^'"]+)\1/g,
+		/(?:^|[;\n\r])\s*import\s*(['"])([^'"]+)\1/g,
+		/(?:^|[;\n\r])\s*export\s+[^'"]+?from\s*(['"])([^'"]+)\1/g,
+		/(?<![\w$])import\s*\(\s*(['"])([^'"]+)\1\s*\)/g,
+		/@import\s+(?:url\s*\(\s*)?(['"])([^'"]+)\1(?:\s*\))?/g,
+	]) {
+		let match: RegExpExecArray | null;
+		while ((match = pattern.exec(executableContent)) !== null) {
+			if (match[2]) specifiers.push(match[2]);
+		}
+	}
+	return specifiers;
+}
+
+function resolvesOnDisk(fromFile: string, specifier: string): boolean {
+	const cleanSpecifier = specifier.replace(/[?#].*$/, '');
+	const base = path.resolve(path.dirname(fromFile), cleanSpecifier);
+	const withoutExt = base.replace(/\.(?:[cm]?[jt]s|svelte|css)$/, '');
+	return [
+		base,
+		`${withoutExt}.ts`,
+		`${withoutExt}.js`,
+		`${withoutExt}.svelte`,
+		`${withoutExt}.svelte.ts`,
+		`${withoutExt}.css`,
+		path.join(base, 'index.ts'),
+		path.join(base, 'index.js'),
+		path.join(base, 'index.svelte'),
+	].some((candidate) => fs.existsSync(candidate));
+}
+
 describe('greater add review (real command)', () => {
-	it('installs the dependency closure, rewrites type imports, and type-checks', async () => {
+	it('preserves pins and installs a relative-import tree that type-checks and builds', async () => {
 		const root = await createScratchProject();
 
 		try {
@@ -160,6 +211,25 @@ describe('greater add review (real command)', () => {
 			const libDir = path.join(root, 'src/lib');
 			expect(await fs.pathExists(path.join(libDir, 'blog-types.ts'))).toBe(true);
 
+			// Every Greater-internal specifier emitted by the real add pipeline is
+			// relative and resolves in the installed tree. No tsconfig/vite alias is
+			// added for Greater internals; the stock SvelteKit fixture stays untouched.
+			const unresolved: string[] = [];
+			const bareAliasTargets: string[] = [];
+			for (const file of await getFilesRecursively(libDir)) {
+				if (!/\.(?:svelte|[cm]?[jt]s|css)$/.test(file)) continue;
+				for (const specifier of importSpecifiers(await fs.readFile(file, 'utf8'))) {
+					if (specifier.startsWith('.') && !resolvesOnDisk(file, specifier)) {
+						unresolved.push(`${path.relative(root, file)} → ${specifier}`);
+					}
+					if (/^(?:src\/lib|\$lib)\/(?:greater|components)(?:\/|$)/.test(specifier)) {
+						bareAliasTargets.push(`${path.relative(root, file)} → ${specifier}`);
+					}
+				}
+			}
+			expect(unresolved).toEqual([]);
+			expect(bareAliasTargets).toEqual([]);
+
 			// Every file the catalog claims for `review` has to land, so a catalog
 			// entry that stops installing fails here rather than in a consumer.
 			const reviewDir = path.join(libDir, 'components/Review');
@@ -187,6 +257,20 @@ describe('greater add review (real command)', () => {
 			//     Relative `.svelte` specifiers are covered by the directory
 			//     listing above and by `vendored-blog-install.test.ts`.
 			await linkWorkspaceDependencies(root);
+			await fs.writeFile(
+				path.join(root, 'src/routes/+page.svelte'),
+				[
+					'<script lang="ts">',
+					"\timport QueueCard from '$lib/components/Review/QueueCard.svelte';",
+					"\timport * as greaterUtils from '$lib/greater/utils';",
+					'\tconst installedComponent = QueueCard;',
+					"\tconst className = Object.keys(greaterUtils).length ? 'greater-resolution-proof' : '';",
+					'</script>',
+					'',
+					"<p class={className}>{installedComponent ? 'vendored imports resolve' : 'missing'}</p>",
+					'',
+				].join('\n')
+			);
 
 			await fs.writeFile(
 				path.join(libDir, 'review-shims.d.ts'),
@@ -236,6 +320,14 @@ describe('greater add review (real command)', () => {
 
 			expect(unresolvedRelative).toEqual([]);
 			expect(output, 'the installed Review tree failed to type-check').toBe('');
+
+			// Standard SvelteKit + Vite build, using only the configuration `init`
+			// scaffolded in the fresh fixture.
+			await execa(SVELTE_KIT_BIN, ['sync'], { cwd: root });
+			const build = await execa(VITE_BIN, ['build'], { cwd: root, reject: false });
+			expect(build.exitCode, `fresh consumer build failed:\n${build.stdout}\n${build.stderr}`).toBe(
+				0
+			);
 		} finally {
 			await fs.remove(root);
 		}

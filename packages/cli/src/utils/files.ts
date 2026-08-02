@@ -84,7 +84,8 @@ export async function writeComponentFiles(
 export async function writeComponentFilesWithTransform(
 	files: ComponentFile[],
 	targetDir: string,
-	config: ComponentConfig
+	config: ComponentConfig,
+	consumerRoot?: string
 ): Promise<WriteResult> {
 	const writtenFiles: string[] = [];
 	const transformResults: TransformResult[] = [];
@@ -106,7 +107,12 @@ export async function writeComponentFilesWithTransform(
 		}
 
 		// Transform imports based on file type
-		const result = transformImports(file.content, config, file.path);
+		const result = transformImports(
+			file.content,
+			config,
+			file.path,
+			consumerRoot ? { sourceFilePath: filePath, consumerRoot } : undefined
+		);
 		transformResults.push(result);
 
 		// Write the transformed content

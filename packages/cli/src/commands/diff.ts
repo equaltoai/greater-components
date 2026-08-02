@@ -170,7 +170,10 @@ async function diffComponent(
 		const remoteFile = remoteFiles.get(file.path);
 		const remoteContent =
 			remoteFile && remoteFile.transform !== false
-				? transformImports(remoteFile.content, config, file.path).content
+				? transformImports(remoteFile.content, config, file.path, {
+						sourceFilePath: localPath,
+						consumerRoot: cwd,
+					}).content
 				: (remoteFile?.content ?? '');
 
 		const result: FileDiffResult = {

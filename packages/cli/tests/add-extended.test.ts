@@ -348,7 +348,8 @@ describe('Add Command Extended', () => {
 			expect(files.writeComponentFilesWithTransform).toHaveBeenCalledWith(
 				[expect.objectContaining({ path: 'button.ts' })],
 				'/src/lib/foo',
-				expect.any(Object)
+				expect.any(Object),
+				'/'
 			);
 
 			const notes = vi.mocked(logger.note).mock.calls.map(([message]) => String(message));
@@ -370,7 +371,8 @@ describe('Add Command Extended', () => {
 			expect(files.writeComponentFilesWithTransform).toHaveBeenCalledWith(
 				[expect.objectContaining({ path: 'button.ts' })],
 				'/src/lib/primitives',
-				expect.any(Object)
+				expect.any(Object),
+				'/'
 			);
 
 			const notes = vi.mocked(logger.note).mock.calls.map(([message]) => String(message));

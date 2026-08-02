@@ -513,7 +513,7 @@ export const addAction = async (
 			}
 
 			for (const [targetDir, groupFiles] of byTargetDir) {
-				const result = await writeComponentFilesWithTransform(groupFiles, targetDir, config);
+				const result = await writeComponentFilesWithTransform(groupFiles, targetDir, config, cwd);
 				totalFiles += result.writtenFiles.length;
 				totalTransformed += result.transformResults.reduce((sum, r) => sum + r.transformedCount, 0);
 
