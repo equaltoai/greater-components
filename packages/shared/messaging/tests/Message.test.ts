@@ -226,6 +226,36 @@ describe('Message', () => {
 		unmount(instance);
 	});
 
+	it.each([
+		['backslash pair', String.raw`\\evil.test/messages`],
+		['slash-backslash pair', String.raw`/\evil.test/messages`],
+		['backslash-slash pair', String.raw`\/evil.test/messages`],
+	])(
+		'hardens browser-normalized protocol-relative links using a %s through the real message render path',
+		(_case, href) => {
+			for (const linkTarget of ['named', '_blank']) {
+				const target = document.createElement('div');
+				const message = {
+					id: `m-backslash-${linkTarget}`,
+					conversationId: 'c1',
+					sender: bob,
+					content: `<a href="${href}" target="${linkTarget}">external</a>`,
+					createdAt: new Date().toISOString(),
+					read: true,
+				};
+
+				const instance = mount(Message, { target, props: { message, currentUserId: 'u1' } });
+				const anchor = target.querySelector('.message__content a');
+
+				expect(anchor?.getAttribute('href')).toBe(href);
+				expect(anchor?.getAttribute('target')).toBe(linkTarget);
+				expect(anchor?.getAttribute('rel')?.split(/\s+/u)).toEqual(['noopener', 'noreferrer']);
+
+				unmount(instance);
+			}
+		}
+	);
+
 	it('renders avatar image when available', () => {
 		const target = document.createElement('div');
 		const message = {

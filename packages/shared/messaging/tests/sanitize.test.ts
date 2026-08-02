@@ -123,6 +123,40 @@ describe('messaging sanitization', () => {
 		}
 	);
 
+	it.each([
+		['backslash pair', String.raw`\\evil.test/messages`],
+		['slash-backslash pair', String.raw`/\evil.test/messages`],
+		['backslash-slash pair', String.raw`\/evil.test/messages`],
+	])('hardens browser-normalized protocol-relative links using a %s', (_case, href) => {
+		for (const target of ['named', '_blank']) {
+			const anchor = expectOnlySafeAnchor(`<a href="${href}" target="${target}">external</a>`);
+
+			expect(anchor.getAttribute('href')).toBe(href);
+			expect(anchor.getAttribute('target')).toBe(target);
+			expect(anchor.getAttribute('rel')?.split(/\s+/u)).toEqual(['noopener', 'noreferrer']);
+		}
+	});
+
+	it('pins the browser authority boundary for backslashes in relative-looking links', () => {
+		const authorityShape = String.raw`/\foo/bar`;
+		const internalPath = String.raw`/foo\bar`;
+
+		// For special schemes, WHATWG URL parsing turns the first shape into //foo/bar,
+		// whose host is `foo`; it is not a same-origin path and must be hardened.
+		expect(new URL(authorityShape, 'https://messages.test/base').origin).toBe('https://foo');
+		expect(sanitizeMessageHtml(`<a href="${authorityShape}" target="named">authority</a>`)).toBe(
+			`<a href="${authorityShape}" target="named" rel="noopener noreferrer">authority</a>`
+		);
+
+		// A backslash after a non-separator path segment remains on the current host.
+		expect(new URL(internalPath, 'https://messages.test/base').origin).toBe(
+			'https://messages.test'
+		);
+		expect(sanitizeMessageHtml(`<a href="${internalPath}" target="named">internal</a>`)).toBe(
+			`<a href="${internalPath}" target="named">internal</a>`
+		);
+	});
+
 	it('pins the sanitizer contract for an uppercase HTTP scheme', () => {
 		const anchor = expectOnlySafeAnchor(
 			'<a href="HTTPS://evil.test/messages" target="_blank">filtered scheme</a>'

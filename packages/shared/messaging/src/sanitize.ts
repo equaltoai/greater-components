@@ -98,7 +98,7 @@ function hardenExternalAnchors(node: Root | Element): void {
 		if (
 			child.tagName === 'a' &&
 			typeof child.properties['href'] === 'string' &&
-			/^(?:https?:)?\/\//iu.test(child.properties['href'])
+			/^(?:https?:)?[\\/]{2}/iu.test(child.properties['href'])
 		) {
 			const tokens = relTokens(child);
 			const normalizedTokens = new Set(tokens.map((token) => token.toLowerCase()));
