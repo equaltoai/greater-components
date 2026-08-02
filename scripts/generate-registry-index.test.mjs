@@ -89,6 +89,18 @@ process.exit(result.status ?? 1);
 	}
 }
 
+function withoutGitConfigOverrides(env) {
+	return Object.fromEntries(
+		Object.entries(env).filter(
+			([name]) =>
+				name !== 'GIT_CONFIG_PARAMETERS' &&
+				name !== 'GIT_CONFIG_COUNT' &&
+				!name.startsWith('GIT_CONFIG_KEY_') &&
+				!name.startsWith('GIT_CONFIG_VALUE_')
+		)
+	);
+}
+
 function perturb(content, version) {
 	assert.match(content, /"schemaVersion": "1\.0\.0"/);
 	return content.replace('"schemaVersion": "1.0.0"', `"schemaVersion": "${version}"`);
@@ -252,7 +264,7 @@ const tests = [
 				writeFileSync(artifact, clean);
 
 				const result = runCheckWithOwnershipRefusal(cwd, {
-					...process.env,
+					...withoutGitConfigOverrides(process.env),
 					GIT_CONFIG_COUNT: '1',
 					GIT_CONFIG_KEY_0: 'safe.directory',
 					GIT_CONFIG_VALUE_0: '',
