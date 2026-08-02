@@ -5,6 +5,34 @@ import {
 	stripSerializedMarkup,
 } from '../src/sanitize.js';
 
+const WHATWG_PREPARSE_EXTERNAL_HREF_CASES = [
+	{ name: 'leading space', predicateHref: ' //evil.test/messages' },
+	{ name: 'leading tab', predicateHref: '\t//evil.test/messages' },
+	{ name: 'leading line breaks', predicateHref: '\n\r//evil.test/messages' },
+	{ name: 'leading C0 control', predicateHref: '\x01//evil.test/messages' },
+	{ name: 'tab between slashes', predicateHref: '/\t/evil.test/messages' },
+	{ name: 'line feed between slashes', predicateHref: '/\n/evil.test/messages' },
+	{ name: 'tab before backslash separator', predicateHref: '/\t\\evil.test/messages' },
+	{
+		name: 'entity-encoded tab',
+		predicateHref: '\t//evil.test/messages',
+		authoredHref: '&#9;//evil.test/messages',
+	},
+] as const;
+
+const WHATWG_PREPARSE_EXTERNAL_HREF_MATRIX = WHATWG_PREPARSE_EXTERNAL_HREF_CASES.flatMap(
+	({ name, predicateHref, ...hrefCase }) =>
+		(['named', '_blank'] as const).map(
+			(target) =>
+				[
+					name,
+					predicateHref,
+					'authoredHref' in hrefCase ? hrefCase.authoredHref : predicateHref,
+					target,
+				] as const
+		)
+);
+
 function expectOnlySafeAnchor(dirty: string): HTMLAnchorElement {
 	const sanitized = sanitizeMessageHtml(dirty);
 	const parsed = new DOMParser().parseFromString(sanitized, 'text/html');
@@ -136,6 +164,40 @@ describe('messaging sanitization', () => {
 			expect(anchor.getAttribute('rel')?.split(/\s+/u)).toEqual(['noopener', 'noreferrer']);
 		}
 	});
+
+	it.each(WHATWG_PREPARSE_EXTERNAL_HREF_MATRIX)(
+		'hardens a %s external href %j authored as %j after WHATWG pre-parse normalization with target %s',
+		(_case, predicateHref, authoredHref, target) => {
+			const anchor = expectOnlySafeAnchor(
+				`<a href="${authoredHref}" target="${target}">external</a>`
+			);
+
+			// Numeric entities are decoded by the HTML parser before the predicate sees href.
+			if (authoredHref.startsWith('&#9;')) {
+				expect(anchor.getAttribute('href')).toBe(predicateHref);
+			}
+			expect(new URL(anchor.getAttribute('href') ?? '', 'https://messages.test').origin).toBe(
+				'https://evil.test'
+			);
+			expect(anchor.getAttribute('target')).toBe(target);
+			expect(anchor.getAttribute('rel')?.split(/\s+/u)).toEqual(['noopener', 'noreferrer']);
+		}
+	);
+
+	it.each([' /local/path', '\t#frag', ' ../up'])(
+		'keeps the parser-normalized internal href %j unhardened',
+		(href) => {
+			const anchor = expectOnlySafeAnchor(`<a href="${href}" target="named">internal</a>`);
+
+			// Contract: classify the parser-trimmed value, but preserve the authored href. Leading
+			// whitespace that still resolves internally must not receive external-link hardening.
+			expect(new URL(anchor.getAttribute('href') ?? '', 'https://messages.test/base/').origin).toBe(
+				'https://messages.test'
+			);
+			expect(anchor.getAttribute('target')).toBe('named');
+			expect(anchor.getAttribute('rel')).toBeNull();
+		}
+	);
 
 	it('pins the browser authority boundary for backslashes in relative-looking links', () => {
 		const authorityShape = String.raw`/\foo/bar`;

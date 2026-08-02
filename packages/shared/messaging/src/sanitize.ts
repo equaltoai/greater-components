@@ -109,6 +109,12 @@ function relTokens(element: SanitizedElement): string[] {
 	return [];
 }
 
+// Mirror the WHATWG URL parser's pre-parse normalization.
+function urlParserNormalized(href: string): string {
+	// eslint-disable-next-line no-control-regex -- WHATWG strips the full leading C0 range.
+	return href.replace(/^[\x00-\x20]+/u, '').replace(/[\t\n\r]/gu, '');
+}
+
 function hardenExternalAnchors(node: SanitizedParent): void {
 	for (const child of node.children) {
 		if (!isSanitizedElement(child)) continue;
@@ -116,7 +122,7 @@ function hardenExternalAnchors(node: SanitizedParent): void {
 		if (
 			child.tagName === 'a' &&
 			typeof child.properties['href'] === 'string' &&
-			/^(?:https?:)?[\\/]{2}/iu.test(child.properties['href'])
+			/^(?:https?:)?[\\/]{2}/iu.test(urlParserNormalized(child.properties['href']))
 		) {
 			const tokens = relTokens(child);
 			const normalizedTokens = new Set(tokens.map((token) => token.toLowerCase()));

@@ -3,6 +3,34 @@ import { mount, unmount } from 'svelte';
 import { flushSync } from 'svelte';
 import Message from '../src/Message.svelte';
 
+const WHATWG_PREPARSE_EXTERNAL_HREF_CASES = [
+	{ name: 'leading space', predicateHref: ' //evil.test/messages' },
+	{ name: 'leading tab', predicateHref: '\t//evil.test/messages' },
+	{ name: 'leading line breaks', predicateHref: '\n\r//evil.test/messages' },
+	{ name: 'leading C0 control', predicateHref: '\x01//evil.test/messages' },
+	{ name: 'tab between slashes', predicateHref: '/\t/evil.test/messages' },
+	{ name: 'line feed between slashes', predicateHref: '/\n/evil.test/messages' },
+	{ name: 'tab before backslash separator', predicateHref: '/\t\\evil.test/messages' },
+	{
+		name: 'entity-encoded tab',
+		predicateHref: '\t//evil.test/messages',
+		authoredHref: '&#9;//evil.test/messages',
+	},
+] as const;
+
+const WHATWG_PREPARSE_EXTERNAL_HREF_MATRIX = WHATWG_PREPARSE_EXTERNAL_HREF_CASES.flatMap(
+	({ name, predicateHref, ...hrefCase }) =>
+		(['named', '_blank'] as const).map(
+			(target) =>
+				[
+					name,
+					predicateHref,
+					'authoredHref' in hrefCase ? hrefCase.authoredHref : predicateHref,
+					target,
+				] as const
+		)
+);
+
 // Mock context helpers
 vi.mock('../src/utils.js', async () => {
 	const actual = await vi.importActual('../src/utils.js');
@@ -253,6 +281,62 @@ describe('Message', () => {
 
 				unmount(instance);
 			}
+		}
+	);
+
+	it.each(WHATWG_PREPARSE_EXTERNAL_HREF_MATRIX)(
+		'hardens a %s external href %j authored as %j after WHATWG pre-parse normalization with target %s through the real message render path',
+		(_case, predicateHref, authoredHref, linkTarget) => {
+			const target = document.createElement('div');
+			const message = {
+				id: `m-preparse-${linkTarget}`,
+				conversationId: 'c1',
+				sender: bob,
+				content: `<a href="${authoredHref}" target="${linkTarget}">external</a>`,
+				createdAt: new Date().toISOString(),
+				read: true,
+			};
+
+			const instance = mount(Message, { target, props: { message, currentUserId: 'u1' } });
+			const anchor = target.querySelector('.message__content a');
+
+			// Exercise the raw entity end-to-end while pinning the decoded predicate input.
+			if (authoredHref.startsWith('&#9;')) {
+				expect(anchor?.getAttribute('href')).toBe(predicateHref);
+			}
+			expect(new URL(anchor?.getAttribute('href') ?? '', 'https://messages.test').origin).toBe(
+				'https://evil.test'
+			);
+			expect(anchor?.getAttribute('target')).toBe(linkTarget);
+			expect(anchor?.getAttribute('rel')?.split(/\s+/u)).toEqual(['noopener', 'noreferrer']);
+
+			unmount(instance);
+		}
+	);
+
+	it.each([' /local/path', '\t#frag', ' ../up'])(
+		'keeps the parser-normalized internal href %j unhardened through the real message render path',
+		(href) => {
+			const target = document.createElement('div');
+			const message = {
+				id: 'm-preparse-internal',
+				conversationId: 'c1',
+				sender: bob,
+				content: `<a href="${href}" target="named">internal</a>`,
+				createdAt: new Date().toISOString(),
+				read: true,
+			};
+
+			const instance = mount(Message, { target, props: { message, currentUserId: 'u1' } });
+			const anchor = target.querySelector('.message__content a');
+
+			expect(
+				new URL(anchor?.getAttribute('href') ?? '', 'https://messages.test/base/').origin
+			).toBe('https://messages.test');
+			expect(anchor?.getAttribute('target')).toBe('named');
+			expect(anchor?.getAttribute('rel')).toBeNull();
+
+			unmount(instance);
 		}
 	);
 
