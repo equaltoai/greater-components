@@ -44,6 +44,7 @@
     "test:scripts": "node scripts/run-script-tests.mjs",
     "test:scripts:dco": "node scripts/check-dco.test.mjs",
     "test:scripts:csp": "vitest run scripts/audit-csp.test.mjs",
+    "test:scripts:registry": "node scripts/generate-registry-index.test.mjs",
     "test:a11y": "pnpm --filter @equaltoai/greater-components-testing run test:a11y",
     "test:a11y:ci": "node scripts/run-a11y-ci.js",
     "smoke:agent-face": "pnpm --filter @equaltoai/greater-components-agent-face... build && pnpm build:agent-face-example && pnpm exec tsc --noEmit -p examples/agent-face-svelte/tsconfig.json && pnpm --filter @equaltoai/playground build && pnpm --filter @equaltoai/greater-components exec vitest run tests/agent-face.smoke.test.ts",

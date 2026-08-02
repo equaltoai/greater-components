@@ -1,6 +1,6 @@
 import { spawnSync } from 'node:child_process';
 
-const scripts = ['test:scripts:dco', 'test:scripts:csp'];
+const scripts = ['test:scripts:dco', 'test:scripts:csp', 'test:scripts:registry'];
 let failed = false;
 
 for (const script of scripts) {
