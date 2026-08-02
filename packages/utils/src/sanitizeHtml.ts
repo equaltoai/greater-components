@@ -111,6 +111,85 @@ function buildSchema(options: SanitizeOptions): Schema {
 	};
 }
 
+interface ExternalLinkOptions {
+	addRelToExternalLinks: boolean;
+	externalLinksInNewTab: boolean;
+}
+
+interface HastNode {
+	type: string;
+	children?: HastNode[];
+}
+
+interface HastElement extends HastNode {
+	type: 'element';
+	tagName: string;
+	properties: Record<string, unknown>;
+	children: HastNode[];
+}
+
+const SECURITY_TOKENS = ['noopener', 'noreferrer'];
+
+function relTokens(value: unknown): string[] {
+	if (Array.isArray(value)) return value.map(String);
+	if (typeof value === 'string') return value.split(/\s+/u).filter(Boolean);
+	return [];
+}
+
+function isHastElement(node: HastNode): node is HastElement {
+	return node.type === 'element';
+}
+
+// Mirrors packages/shared/messaging/src/sanitize.ts; keep external-link classification aligned.
+// Mirror the WHATWG URL parser's pre-parse normalization.
+function urlParserNormalized(href: string): string {
+	// eslint-disable-next-line no-control-regex -- WHATWG strips the full leading C0 range.
+	return href.replace(/^[\x00-\x20]+/u, '').replace(/[\t\n\r]/gu, '');
+}
+
+/** Add external-link protections before the sanitized tree is serialized. */
+function rehypeExternalLinkProperties(options: ExternalLinkOptions) {
+	return (tree: HastNode): void => {
+		function visit(node: HastNode): void {
+			if (!node.children) return;
+
+			for (const child of node.children) {
+				if (!isHastElement(child)) continue;
+
+				const href = child.properties['href'];
+				if (child.tagName === 'a' && typeof href === 'string') {
+					const isExternal = /^(?:https?:)?[\\/]{2}/iu.test(urlParserNormalized(href));
+					const hasTarget = 'target' in child.properties;
+
+					if (isExternal && options.addRelToExternalLinks && !('rel' in child.properties)) {
+						child.properties['rel'] = [...SECURITY_TOKENS];
+					}
+
+					if (isExternal && options.externalLinksInNewTab && !hasTarget) {
+						child.properties['target'] = '_blank';
+
+						if (options.addRelToExternalLinks) {
+							const tokens = relTokens(child.properties['rel']).filter(
+								(token) => token !== 'opener'
+							);
+
+							for (const token of SECURITY_TOKENS) {
+								if (!tokens.includes(token)) tokens.push(token);
+							}
+
+							child.properties['rel'] = tokens;
+						}
+					}
+				}
+
+				visit(child);
+			}
+		}
+
+		visit(tree);
+	};
+}
+
 /**
  * Sanitize HTML content using rehype-sanitize with an allow-list approach.
  * Fully ESM-compatible implementation.
@@ -131,28 +210,13 @@ export function sanitizeHtml(dirty: string, options: SanitizeOptions = {}): stri
 	const processor = unified()
 		.use(rehypeParse, { fragment: true })
 		.use(rehypeSanitize, schema)
+		.use(rehypeExternalLinkProperties, {
+			addRelToExternalLinks,
+			externalLinksInNewTab,
+		})
 		.use(rehypeStringify);
 
-	let result = String(processor.processSync(dirty));
-
-	// Post-process to add rel and target to external links
-	if (addRelToExternalLinks || externalLinksInNewTab) {
-		result = result.replace(/<a\s+href="(https?:\/\/[^"]+)"([^>]*)>/g, (_match, href, rest) => {
-			let attributes = rest || '';
-
-			if (addRelToExternalLinks && !attributes.includes('rel=')) {
-				attributes += ' rel="noopener noreferrer"';
-			}
-
-			if (externalLinksInNewTab && !attributes.includes('target=')) {
-				attributes += ' target="_blank"';
-			}
-
-			return `<a href="${href}"${attributes}>`;
-		});
-	}
-
-	return result;
+	return String(processor.processSync(dirty));
 }
 
 /**
