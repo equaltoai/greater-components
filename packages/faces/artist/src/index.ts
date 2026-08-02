@@ -66,7 +66,7 @@ export {
 	type CommissionEventType,
 	type FederationEvent,
 	type FederationEventType,
-} from './subscriptions';
+} from './subscriptions/index.svelte.js';
 
 // ============================================================================
 // UI Components

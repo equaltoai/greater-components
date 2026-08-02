@@ -59,7 +59,7 @@
     "src"
   ],
   "scripts": {
-    "build": "vite build && tsc -b --force --emitDeclarationOnly && node ../../../scripts/copy-svelte-to-dist.js && cp src/theme.css dist/greater-components-blog.css && node scripts/assert-article-context-runes-compiled.mjs",
+    "build": "vite build && tsc -b --force --emitDeclarationOnly && node ../../../scripts/copy-svelte-to-dist.js && cp src/theme.css dist/greater-components-blog.css && node ../../../scripts/assert-face-runes-compiled.mjs blog",
     "clean": "rm -rf dist",
     "dev": "vite build --watch",
     "test": "vitest run",
