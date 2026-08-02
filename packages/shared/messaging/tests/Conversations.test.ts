@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mount, unmount, flushSync } from 'svelte';
 import Conversations from '../src/Conversations.svelte';
+import ConversationsActionsHarness from './fixtures/ConversationsActionsHarness.svelte';
 
 // Mock context
 const { mockHandlers, mockState, mockSelectConversation, mockFetchConversations } = vi.hoisted(
@@ -89,6 +90,16 @@ describe('Conversations', () => {
 			'.messages-conversations__tab'
 		)[1] as HTMLButtonElement;
 		requestsTab.click();
+		await flushSync();
+
+		expect(mockFetchConversations).toHaveBeenCalledWith('REQUESTS');
+
+		unmount(instance);
+	});
+
+	it('selects an externally controlled initial folder', async () => {
+		const target = document.createElement('div');
+		const instance = mount(Conversations, { target, props: { folder: 'REQUESTS' } });
 		await flushSync();
 
 		expect(mockFetchConversations).toHaveBeenCalledWith('REQUESTS');
@@ -210,6 +221,56 @@ describe('Conversations', () => {
 		expect(mockHandlers.onConversationClick).toHaveBeenCalledWith(
 			expect.objectContaining({ id: 'c1' })
 		);
+
+		unmount(instance);
+	});
+
+	it('renders request actions beside the card selection button', async () => {
+		mockState.conversations = [
+			{
+				id: 'c-request',
+				participants: [{ id: 'u1', displayName: 'Alice', avatar: '' }],
+				unreadCount: 0,
+			},
+		];
+
+		const target = document.createElement('div');
+		const instance = mount(ConversationsActionsHarness, {
+			target,
+			props: { folder: 'REQUESTS' },
+		});
+		await flushSync();
+
+		const card = target.querySelector('.messages-conversations__item');
+		const selectionButton = card?.querySelector('.messages-conversations__item-main');
+		const action = card?.querySelector('.request-action') as HTMLButtonElement;
+		expect(card?.tagName).toBe('DIV');
+		expect(selectionButton?.tagName).toBe('BUTTON');
+		expect(action?.dataset.conversationId).toBe('c-request');
+
+		action.click();
+		await flushSync();
+		expect(mockSelectConversation).not.toHaveBeenCalled();
+
+		unmount(instance);
+	});
+
+	it('keeps the legacy single-button card when no actions snippet is supplied', async () => {
+		mockState.conversations = [
+			{
+				id: 'c-default',
+				participants: [{ id: 'u1', displayName: 'Alice', avatar: '' }],
+				unreadCount: 0,
+			},
+		];
+
+		const target = document.createElement('div');
+		const instance = mount(Conversations, { target });
+		await flushSync();
+
+		const card = target.querySelector('.messages-conversations__item');
+		expect(card?.tagName).toBe('BUTTON');
+		expect(card?.querySelector('.messages-conversations__item-main')).toBeNull();
 
 		unmount(instance);
 	});

@@ -20,6 +20,31 @@ Message `content` is treated as server-rendered HTML and passed through Greater'
 sanitizer before rendering. Conversation cards intentionally show a sanitized plain-text excerpt so
 the single-line preview cannot introduce nested block or interactive markup.
 
+### Folder routing and request actions
+
+`Conversations` exposes a bindable `folder` prop instead of a mount-only initial value so URL state
+and tab changes can stay synchronized. Omitting it preserves the existing context-owned Inbox
+behavior and single-button card markup.
+
+```svelte
+<script lang="ts">
+	import * as Messaging from '@equaltoai/greater-components/shared/messaging';
+
+	let folder: Messaging.ConversationFolder = $state('REQUESTS');
+</script>
+
+<Messaging.Conversations bind:folder>
+	{#snippet actions(conversation)}
+		<button type="button" onclick={() => acceptRequest(conversation.id)}>Accept</button>
+		<button type="button" onclick={() => declineRequest(conversation.id)}>Decline</button>
+	{/snippet}
+</Messaging.Conversations>
+```
+
+When `actions` is supplied, the card selection button and action controls are siblings, avoiding
+nested interactive elements while keeping the entire default card as the selection button when the
+snippet is omitted.
+
 ## Standalone package
 
 ```ts
