@@ -200,14 +200,42 @@ const tests = [
 				const result = runCheck(cwd, {
 					...process.env,
 					GIT_TEST_ASSUME_DIFFERENT_OWNER: '1',
+					GIT_CONFIG_COUNT: '1',
+					GIT_CONFIG_KEY_0: 'safe.directory',
+					GIT_CONFIG_VALUE_0: '',
 				});
 				const output = `${result.stdout}\n${result.stderr}`;
 
-				expectFailure(result, 'git ownership refusal');
+				assert.equal(result.status, 1, `git ownership refusal should exit 1\n${output}`);
 				assert.match(
 					output,
 					/Unable to determine whether the registry has staged changes: git failed \(exit 128\)/
 				);
+				assert.doesNotMatch(output, /Registry index is freshly generated|\n\s+at\s/);
+			}),
+	],
+	[
+		'permissive safe.directory still catches staged-only drift',
+		() =>
+			withWorktree((cwd) => {
+				const artifact = join(cwd, 'registry', 'index.json');
+				const clean = readFileSync(artifact, 'utf8');
+				writeFileSync(artifact, perturb(clean, '1.0.1'));
+				git(cwd, ['add', 'registry/index.json']);
+				writeFileSync(artifact, clean);
+
+				const result = runCheck(cwd, {
+					...process.env,
+					GIT_TEST_ASSUME_DIFFERENT_OWNER: '1',
+					GIT_CONFIG_COUNT: '1',
+					GIT_CONFIG_KEY_0: 'safe.directory',
+					GIT_CONFIG_VALUE_0: '*',
+				});
+				const output = `${result.stdout}\n${result.stderr}`;
+
+				assert.equal(result.status, 1, `staged registry drift should exit 1\n${output}`);
+				assert.match(output, /Staged registry index is stale/);
+				assert.match(output, /diff --git a\/registry\/index\.json b\/registry\/index\.json/);
 				assert.doesNotMatch(output, /Registry index is freshly generated|\n\s+at\s/);
 			}),
 	],
