@@ -151,8 +151,7 @@ function rehypeExternalLinkProperties(options: ExternalLinkOptions) {
 
 				const href = child.properties['href'];
 				if (child.tagName === 'a' && typeof href === 'string') {
-					const isHttpExternal =
-						href.startsWith('http://') || href.startsWith('https://');
+					const isHttpExternal = href.startsWith('http://') || href.startsWith('https://');
 					const isProtocolRelative = href.startsWith('//');
 					const isBackslashExternal = href.startsWith('\\');
 					const isExternal = isHttpExternal || isProtocolRelative || isBackslashExternal;

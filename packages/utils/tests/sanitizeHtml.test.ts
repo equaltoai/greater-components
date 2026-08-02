@@ -105,11 +105,7 @@ describe('sanitizeHtml', () => {
 	it('preserves the Fediverse rel=me token while hardening an external link', () => {
 		const anchor = expectOnlySafeAnchor('<a href="https://evil.test" rel="me">x</a>');
 
-		expect(anchor.getAttribute('rel')?.split(/\s+/u)).toEqual([
-			'me',
-			'noopener',
-			'noreferrer',
-		]);
+		expect(anchor.getAttribute('rel')?.split(/\s+/u)).toEqual(['me', 'noopener', 'noreferrer']);
 		expect(anchor.getAttribute('target')).toBe('_blank');
 	});
 
