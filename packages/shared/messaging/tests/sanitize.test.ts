@@ -5,6 +5,29 @@ import {
 	stripSerializedMarkup,
 } from '../src/sanitize.js';
 
+function expectOnlySafeAnchor(dirty: string): HTMLAnchorElement {
+	const sanitized = sanitizeMessageHtml(dirty);
+	const parsed = new DOMParser().parseFromString(sanitized, 'text/html');
+	const elements = Array.from(parsed.body.querySelectorAll('*'));
+
+	expect(elements.map((element) => element.localName)).toEqual(['a']);
+	expect(parsed.body.querySelector('img, form, input')).toBeNull();
+	for (const element of elements) {
+		expect(Array.from(element.attributes).map((attribute) => attribute.name)).not.toContainEqual(
+			expect.stringMatching(/^on/iu)
+		);
+	}
+
+	const anchor = elements[0];
+	expect(anchor).toBeInstanceOf(HTMLAnchorElement);
+	const href = anchor.getAttribute('href');
+	if (href !== null) {
+		expect(['http:', 'https:']).toContain(new URL(href, 'https://messages.test').protocol);
+	}
+
+	return anchor as HTMLAnchorElement;
+}
+
 describe('messaging sanitization', () => {
 	it('extracts decoded plain text without rendering markup', () => {
 		expect(sanitizeMessagePreview('<p>Tom &amp; <strong>Jerry</strong></p>')).toBe('Tom & Jerry');
@@ -32,17 +55,52 @@ describe('messaging sanitization', () => {
 		expect(sanitized).toContain('target="_blank"');
 	});
 
-	it('secures blank-target links when an earlier quoted attribute contains >', () => {
-		const dirty = '<a title="a > b" href="https://evil.test" target="_blank">intact link text</a>';
+	it.each([
+		[
+			'href-first',
+			'<a href="https://evil.test" title="a > b" target="_blank">intact link text</a>',
+			'<a href="https://evil.test" title="a > b" target="_blank" rel="noopener noreferrer">intact link text</a>',
+		],
+		[
+			'title-first',
+			'<a title="a > b" href="https://evil.test" target="_blank">intact link text</a>',
+			'<a title="a > b" href="https://evil.test" target="_blank" rel="noopener noreferrer">intact link text</a>',
+		],
+	])(
+		'secures %s blank-target links when a quoted attribute contains >',
+		(_order, dirty, expected) => {
+			expect(sanitizeMessageHtml(dirty)).toBe(expected);
+		}
+	);
 
-		expect(sanitizeMessageHtml(dirty)).toBe(
-			'<a title="a > b" href="https://evil.test" target="_blank" rel="noopener noreferrer">intact link text</a>'
-		);
+	it.each([
+		[
+			'img event-handler title breakout',
+			'<a href="https://x.test" title="q><img src=z onerror=alert(1)>">click</a>',
+		],
+		[
+			'javascript protocol title breakout',
+			'<a href="https://x.test" title="q><a href=javascript:alert(1)>">click</a>',
+		],
+		[
+			'credential-form title breakout',
+			'<a href="https://x.test" title="q><form><input type=password>">click</a>',
+		],
+		[
+			'rel attribute breakout',
+			'<a href="https://x.test" rel="q><img src=z onerror=alert(1)>">click</a>',
+		],
+		[
+			'target attribute breakout',
+			'<a href="https://x.test" target="q><img src=z onerror=alert(1)>">click</a>',
+		],
+	])('keeps the sanitized output structurally safe after an %s attempt', (_attack, dirty) => {
+		expectOnlySafeAnchor(dirty);
 	});
 
 	it('keeps normal external-link hardening byte-identical', () => {
 		expect(sanitizeMessageHtml('<a href="https://example.test">link</a>')).toBe(
-			'<a href="https://example.test" rel="noopener noreferrer" target="_blank">link</a>'
+			'<a href="https://example.test" target="_blank" rel="noopener noreferrer">link</a>'
 		);
 	});
 

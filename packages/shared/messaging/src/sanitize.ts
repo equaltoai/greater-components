@@ -172,7 +172,12 @@ export function stripSerializedMarkup(serialized: string): string {
 
 /** Sanitize server-authored message HTML for the {@html} message-body sink. */
 export function sanitizeMessageHtml(dirty: string): string {
-	return secureBlankTargetLinks(sanitizeHtml(dropRawTextElements(dirty))).trim();
+	return secureBlankTargetLinks(
+		sanitizeHtml(dropRawTextElements(dirty), {
+			addRelToExternalLinks: false,
+			externalLinksInNewTab: false,
+		})
+	).trim();
 }
 
 /** Extract a decoded, markup-free and Unicode-safe message-list preview. */
