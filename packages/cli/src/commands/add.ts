@@ -27,7 +27,7 @@ import { writeComponentFilesWithTransform, fileExists } from '../utils/files.js'
 import { getInstallTarget } from '../utils/install-path.js';
 import {
 	installDependencies,
-	getMissingDependencies,
+	getDependencyInstallPlan,
 	detectPackageManager,
 } from '../utils/packages.js';
 import { logger } from '../utils/logger.js';
@@ -618,8 +618,23 @@ export const addAction = async (
 	});
 
 	// Check which dependencies are missing
-	const missingDeps = await getMissingDependencies(allDeps, cwd);
-	const missingDevDeps = await getMissingDependencies(allDevDeps, cwd);
+	const dependencyPlan = await getDependencyInstallPlan(allDeps, cwd);
+	const devDependencyPlan = await getDependencyInstallPlan(allDevDeps, cwd);
+	const missingDeps = dependencyPlan.missing;
+	const missingDevDeps = devDependencyPlan.missing;
+	const manifestDrift = [...dependencyPlan.drift, ...devDependencyPlan.drift];
+
+	if (manifestDrift.length > 0) {
+		logger.warn(chalk.yellow('\n⚠ Manifest vs required floors drift (consumer pins preserved):'));
+		for (const { dependency, declaration } of manifestDrift) {
+			logger.warn(
+				`  ${dependency.name}: manifest ${declaration}; Greater requires ${dependency.version}`
+			);
+		}
+		logger.note(
+			chalk.dim('  Review these declarations manually; greater add will not rewrite them.')
+		);
+	}
 
 	if (missingDeps.length > 0 || missingDevDeps.length > 0) {
 		logger.info(chalk.bold('\n📦 Installing dependencies:\n'));

@@ -9,9 +9,20 @@ import { minVersion, satisfies } from 'semver';
 import type { ComponentDependency } from '../registry/index.js';
 
 export interface DependencyDeclarationStatus {
+	present: boolean;
 	installed: boolean;
 	declaration?: string;
 	floorCheckSkipped: boolean;
+}
+
+export interface DependencyManifestDrift {
+	dependency: ComponentDependency;
+	declaration: string;
+}
+
+export interface DependencyInstallPlan {
+	missing: ComponentDependency[];
+	drift: DependencyManifestDrift[];
 }
 
 /**
@@ -101,7 +112,7 @@ export async function getDependencyDeclarationStatus(
 	const packageJsonPath = path.join(cwd, 'package.json');
 
 	if (!(await fs.pathExists(packageJsonPath))) {
-		return { installed: false, floorCheckSkipped: false };
+		return { present: false, installed: false, floorCheckSkipped: false };
 	}
 
 	try {
@@ -116,29 +127,47 @@ export async function getDependencyDeclarationStatus(
 			pkg.devDependencies?.[packageName] ||
 			pkg.peerDependencies?.[packageName];
 
-		if (!installedVersion) return { installed: false, floorCheckSkipped: false };
+		if (!installedVersion) {
+			return { present: false, installed: false, floorCheckSkipped: false };
+		}
 		if (!requiredVersion) {
-			return { installed: true, declaration: installedVersion, floorCheckSkipped: false };
+			return {
+				present: true,
+				installed: true,
+				declaration: installedVersion,
+				floorCheckSkipped: false,
+			};
 		}
 
 		let installedFloor;
 		try {
 			installedFloor = minVersion(installedVersion);
 		} catch {
-			return { installed: true, declaration: installedVersion, floorCheckSkipped: true };
+			return {
+				present: true,
+				installed: true,
+				declaration: installedVersion,
+				floorCheckSkipped: true,
+			};
 		}
 
 		if (!installedFloor) {
-			return { installed: true, declaration: installedVersion, floorCheckSkipped: true };
+			return {
+				present: true,
+				installed: true,
+				declaration: installedVersion,
+				floorCheckSkipped: true,
+			};
 		}
 
 		return {
+			present: true,
 			installed: satisfies(installedFloor, requiredVersion),
 			declaration: installedVersion,
 			floorCheckSkipped: false,
 		};
 	} catch {
-		return { installed: false, floorCheckSkipped: false };
+		return { present: false, installed: false, floorCheckSkipped: false };
 	}
 }
 
@@ -157,13 +186,28 @@ export async function getMissingDependencies(
 	dependencies: ComponentDependency[],
 	cwd: string
 ): Promise<ComponentDependency[]> {
-	const missing: ComponentDependency[] = [];
+	return (await getDependencyInstallPlan(dependencies, cwd)).missing;
+}
+
+/**
+ * Separate dependencies absent from package.json from consumer-owned declarations
+ * that do not satisfy Greater's required floor. Only absent dependencies are safe
+ * for the CLI to install; package managers would otherwise rewrite the declaration.
+ */
+export async function getDependencyInstallPlan(
+	dependencies: ComponentDependency[],
+	cwd: string
+): Promise<DependencyInstallPlan> {
+	const plan: DependencyInstallPlan = { missing: [], drift: [] };
 
 	for (const dep of dependencies) {
-		if (!(await isDependencyInstalled(dep.name, cwd, dep.version))) {
-			missing.push(dep);
+		const status = await getDependencyDeclarationStatus(dep.name, cwd, dep.version);
+		if (!status.present) {
+			plan.missing.push(dep);
+		} else if (!status.installed && status.declaration) {
+			plan.drift.push({ dependency: dep, declaration: status.declaration });
 		}
 	}
 
-	return missing;
+	return plan;
 }

@@ -287,6 +287,7 @@ export async function checkNpmDependencies(
 	const installedComponents = getInstalledComponentNames(config);
 	const missingDeps: Set<string> = new Set();
 	const skippedFloorChecks = new Map<string, string>();
+	const manifestFloorDrift = new Map<string, { declaration: string; floor: string }>();
 	const pm = await detectPackageManager(cwd);
 
 	for (const componentName of installedComponents) {
@@ -295,8 +296,13 @@ export async function checkNpmDependencies(
 
 		for (const dep of component.dependencies) {
 			const status = await getDependencyDeclarationStatus(dep.name, cwd, dep.version);
-			if (!status.installed) {
+			if (!status.present) {
 				missingDeps.add(`${dep.name}@${dep.version}`);
+			} else if (!status.installed && status.declaration) {
+				manifestFloorDrift.set(dep.name, {
+					declaration: status.declaration,
+					floor: dep.version,
+				});
 			} else if (status.floorCheckSkipped && status.declaration) {
 				skippedFloorChecks.set(dep.name, status.declaration);
 			}
@@ -333,6 +339,18 @@ export async function checkNpmDependencies(
 			message: `floor check skipped: ${name} declared as ${declaration}`,
 			details:
 				'Dependency presence was verified by name only because its declaration is not semver.',
+		});
+	}
+
+	for (const [name, { declaration, floor }] of manifestFloorDrift) {
+		results.push({
+			name: 'Manifest vs Required Floors',
+			passed: false,
+			severity: 'warning',
+			message: `${name}: manifest ${declaration}; Greater requires ${floor}`,
+			details: 'The consumer-owned declaration was preserved.',
+			fix: `Review ${name} in package.json and upgrade manually if appropriate.`,
+			autoFixable: false,
 		});
 	}
 

@@ -74,9 +74,8 @@ const REVIEW_TYPE_IMPORTERS = [
 ] as const;
 
 beforeAll(async () => {
-	if (!(await fs.pathExists(CLI_BIN))) {
-		await execa('pnpm', ['build'], { cwd: CLI_ROOT });
-	}
+	// This test executes dist/index.js, so always compile the source under test.
+	await execa('pnpm', ['build'], { cwd: CLI_ROOT });
 }, 300_000);
 
 /** Copies the fixture template, dropping the generated state `init` recreates. */
@@ -133,12 +132,23 @@ describe('greater add review (real command)', () => {
 				env: CLI_ENV,
 			});
 			expect(await fs.pathExists(path.join(root, 'components.json'))).toBe(true);
+			const packageJsonPath = path.join(root, 'package.json');
+			const manifestBeforeAdd = await fs.readFile(packageJsonPath, 'utf8');
+			expect(JSON.parse(manifestBeforeAdd).devDependencies.viem).toBe('^2.47.14');
 
 			// 2. The command under test. No `--all`: the closure below is what
 			//    `review`'s own registryDependencies must pull in on their own.
-			await execa('node', [CLI_BIN, 'add', '--yes', 'review', '--cwd', root], {
+			const addResult = await execa('node', [CLI_BIN, 'add', '--yes', 'review', '--cwd', root], {
 				env: CLI_ENV,
 			});
+
+			// Consumer-owned declarations are never package-manager rewrite targets.
+			// The adapters core requires viem ^2.55.10, while this fixture intentionally
+			// pins an older range. The complete manifest bytes must survive `add`.
+			expect(await fs.readFile(packageJsonPath, 'utf8')).toBe(manifestBeforeAdd);
+			expect(`${addResult.stdout}\n${addResult.stderr}`).toContain(
+				'viem: manifest ^2.47.14; Greater requires ^2.55.10'
+			);
 
 			// (a) Dependency closure: `blog-types` is not requested on the command
 			//     line, it is reached through `review`'s registryDependencies.

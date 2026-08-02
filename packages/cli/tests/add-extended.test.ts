@@ -127,7 +127,7 @@ vi.mock('../src/registry/patterns.js', () => ({
 }));
 
 vi.mock('../src/utils/packages.js', () => ({
-	getMissingDependencies: vi.fn().mockResolvedValue([]),
+	getDependencyInstallPlan: vi.fn().mockResolvedValue({ missing: [], drift: [] }),
 	detectPackageManager: vi.fn().mockResolvedValue('pnpm'),
 	installDependencies: vi.fn(),
 }));
@@ -313,9 +313,10 @@ describe('Add Command Extended', () => {
 			const { getComponent } = await import('../src/registry/index.js');
 
 			(getComponent as any).mockReturnValue(MOCK_BUTTON_COMPONENT);
-			vi.mocked(packages.getMissingDependencies).mockResolvedValue([
-				{ name: 'foo', version: '1.0.0' },
-			]);
+			vi.mocked(packages.getDependencyInstallPlan).mockResolvedValue({
+				missing: [{ name: 'foo', version: '1.0.0' }],
+				drift: [],
+			});
 			vi.mocked(packages.installDependencies).mockRejectedValue(new Error('Install Error'));
 
 			const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => {
@@ -381,9 +382,10 @@ describe('Add Command Extended', () => {
 			const { getComponent } = await import('../src/registry/index.js');
 
 			(getComponent as any).mockReturnValue(MOCK_BUTTON_COMPONENT);
-			vi.mocked(packages.getMissingDependencies).mockResolvedValue([
-				{ name: 'foo', version: '1.0.0' },
-			]);
+			vi.mocked(packages.getDependencyInstallPlan).mockResolvedValue({
+				missing: [{ name: 'foo', version: '1.0.0' }],
+				drift: [],
+			});
 			vi.mocked(packages.installDependencies).mockResolvedValue(undefined);
 
 			await addAction(['button'], { cwd: '/' });
@@ -418,13 +420,13 @@ describe('Add Command Extended', () => {
 			// So even if our mock returns empty npmDependencies, addAction should add it.
 			// But we need to verify it.
 			// How? The resolution object is modified in place.
-			// We can spy on packages.getMissingDependencies call to see if it includes greater-components?
+			// We can spy on packages.getDependencyInstallPlan to see if it includes greater-components?
 			// Or check installDependencies?
 
 			// But wait, addAction modifies `resolution.npmDependencies`.
-			// Then `getMissingDependencies` is called with it.
+			// Then `getDependencyInstallPlan` is called with it.
 
-			expect(packages.getMissingDependencies).toHaveBeenCalledWith(
+			expect(packages.getDependencyInstallPlan).toHaveBeenCalledWith(
 				expect.arrayContaining([
 					expect.objectContaining({ name: '@equaltoai/greater-components' }),
 				]),

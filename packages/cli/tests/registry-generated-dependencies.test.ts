@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { validRange } from 'semver';
 import { describe, expect, it } from 'vitest';
 
 interface RegistryDependency {
@@ -46,5 +47,23 @@ describe('generated Registry dependencies', () => {
 		expect(
 			allDependencies().filter((dependency) => dependency.name.slice(1).includes('@'))
 		).toEqual([]);
+	});
+
+	it('contains only parseable registry ranges and none of the historical fabricated versions', () => {
+		const dependencies = allDependencies();
+		const fabricated = new Set(['vite@^10.0.1', '@types/node@^3.1.0', 'typescript@^6.0.0']);
+
+		for (const dependency of dependencies) {
+			expect(
+				dependency.version === 'latest' || validRange(dependency.version),
+				`${dependency.name} has an invalid registry range: ${dependency.version}`
+			).toBeTruthy();
+			const specifier = `${dependency.name}@${dependency.version}`;
+			expect(fabricated.has(specifier), `registry retained fabricated ${specifier}`).toBe(false);
+		}
+
+		expect(dependencies.filter(({ name }) => name === 'vite')).toEqual([]);
+		expect(dependencies.filter(({ name }) => name === '@types/node')).toEqual([]);
+		expect(dependencies.filter(({ name }) => name === 'typescript')).toEqual([]);
 	});
 });

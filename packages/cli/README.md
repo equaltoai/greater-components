@@ -176,3 +176,8 @@ greater add
 # Add with dependencies
 greater add timeline
 ```
+
+`greater add` installs dependency declarations that are absent from `package.json`. If your
+manifest already declares a dependency below Greater's required floor, the CLI preserves the
+consumer-owned declaration and prints a `manifest vs required floors` warning. Run `greater doctor`
+to review the same drift and decide whether to upgrade manually.

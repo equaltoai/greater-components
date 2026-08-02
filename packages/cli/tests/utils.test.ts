@@ -198,15 +198,32 @@ describe('package utilities', () => {
 		expect(await isDependencyInstalled('viem', '/repo', '^2.55.10')).toBe(true);
 	});
 
-	it('marks an installed dependency below the registry floor for upgrade', async () => {
-		const { getMissingDependencies, isDependencyInstalled } =
+	it('separates a consumer pin below the registry floor from absent dependencies', async () => {
+		const { getDependencyInstallPlan, getMissingDependencies, isDependencyInstalled } =
 			await import('../src/utils/packages.js');
 		fsStore.set('/repo/package.json', JSON.stringify({ dependencies: { viem: '2.51.3' } }));
 
 		expect(await isDependencyInstalled('viem', '/repo', '^2.55.10')).toBe(false);
-		expect(await getMissingDependencies([{ name: 'viem', version: '^2.55.10' }], '/repo')).toEqual([
-			{ name: 'viem', version: '^2.55.10' },
-		]);
+		expect(await getMissingDependencies([{ name: 'viem', version: '^2.55.10' }], '/repo')).toEqual(
+			[]
+		);
+		expect(
+			await getDependencyInstallPlan(
+				[
+					{ name: 'viem', version: '^2.55.10' },
+					{ name: 'new-package', version: '^1.2.3' },
+				],
+				'/repo'
+			)
+		).toEqual({
+			missing: [{ name: 'new-package', version: '^1.2.3' }],
+			drift: [
+				{
+					dependency: { name: 'viem', version: '^2.55.10' },
+					declaration: '2.51.3',
+				},
+			],
+		});
 	});
 
 	it('treats non-semver declarations as present without installing', async () => {
