@@ -121,11 +121,13 @@ export async function getDependencyDeclarationStatus(
 			dependencies?: Record<string, string>;
 			devDependencies?: Record<string, string>;
 			peerDependencies?: Record<string, string>;
+			optionalDependencies?: Record<string, string>;
 		};
 		const installedVersion =
 			pkg.dependencies?.[packageName] ||
 			pkg.devDependencies?.[packageName] ||
-			pkg.peerDependencies?.[packageName];
+			pkg.peerDependencies?.[packageName] ||
+			pkg.optionalDependencies?.[packageName];
 
 		if (!installedVersion) {
 			return { present: false, installed: false, floorCheckSkipped: false };

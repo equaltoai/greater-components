@@ -332,4 +332,37 @@ describe('greater add review (real command)', () => {
 			await fs.remove(root);
 		}
 	}, 300_000);
+
+	it('preserves a conflicting optional dependency pin byte-for-byte', async () => {
+		const root = await createScratchProject();
+
+		try {
+			const packageJsonPath = path.join(root, 'package.json');
+			const fixtureManifest = await fs.readJson(packageJsonPath);
+			const viemPin = fixtureManifest.devDependencies.viem;
+			delete fixtureManifest.devDependencies.viem;
+			fixtureManifest.optionalDependencies = {
+				...(fixtureManifest.optionalDependencies ?? {}),
+				viem: viemPin,
+			};
+			await fs.writeJson(packageJsonPath, fixtureManifest, { spaces: 2 });
+
+			await execa('node', [CLI_BIN, 'init', '--yes', '--face', 'blog', '--cwd', root], {
+				env: CLI_ENV,
+			});
+			const manifestBeforeAdd = await fs.readFile(packageJsonPath, 'utf8');
+			expect(JSON.parse(manifestBeforeAdd).optionalDependencies.viem).toBe('^2.47.14');
+
+			const addResult = await execa('node', [CLI_BIN, 'add', '--yes', 'review', '--cwd', root], {
+				env: CLI_ENV,
+			});
+
+			expect(await fs.readFile(packageJsonPath, 'utf8')).toBe(manifestBeforeAdd);
+			expect(`${addResult.stdout}\n${addResult.stderr}`).toContain(
+				'viem: manifest ^2.47.14; Greater requires ^2.55.10'
+			);
+		} finally {
+			await fs.remove(root);
+		}
+	}, 300_000);
 });
