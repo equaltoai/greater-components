@@ -898,10 +898,7 @@ async function main() {
 	log('='.repeat(60) + '\n');
 
 	if (checkFreshness && !fs.existsSync(OUTPUT_PATH)) {
-		log(
-			'❌ registry/index.json is missing; run `pnpm generate-registry` to create it',
-			colors.red
-		);
+		log('❌ registry/index.json is missing; run `pnpm generate-registry` to create it', colors.red);
 		process.exit(1);
 	}
 
@@ -1050,6 +1047,46 @@ async function main() {
 				}
 				log('❌ Registry index is stale; run `pnpm generate-registry` and commit it', colors.red);
 				process.exit(1);
+			}
+
+			let hasStagedArtifactChange = false;
+			try {
+				execFileSync('git', ['diff', '--cached', '--quiet', '--', 'registry/index.json'], {
+					cwd: rootDir,
+					stdio: 'ignore',
+				});
+			} catch (error) {
+				if (error?.status !== 1) throw error;
+				hasStagedArtifactChange = true;
+			}
+
+			if (hasStagedArtifactChange) {
+				let stagedOutput = null;
+				try {
+					stagedOutput = execFileSync('git', ['show', ':registry/index.json'], {
+						cwd: rootDir,
+						encoding: 'utf8',
+						maxBuffer: 64 * 1024 * 1024,
+					});
+				} catch (error) {
+					if (error?.status !== 128) throw error;
+				}
+
+				if (stagedOutput !== output && stagedOutput !== existingOutput) {
+					try {
+						execFileSync('git', ['diff', '--cached', '--', 'registry/index.json'], {
+							cwd: rootDir,
+							stdio: 'inherit',
+						});
+					} catch (error) {
+						if (error?.status !== 1) throw error;
+					}
+					log(
+						'❌ Staged registry index is stale; run `pnpm generate-registry` and stage it',
+						colors.red
+					);
+					process.exit(1);
+				}
 			}
 
 			log('✅ Registry index is freshly generated', colors.green);
