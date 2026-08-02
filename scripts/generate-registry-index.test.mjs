@@ -262,6 +262,28 @@ const tests = [
 			}),
 	],
 	[
+		'GIT_OBJECT_DIRECTORY override cannot bypass real staged registry drift',
+		() =>
+			withWorktree((cwd) => {
+				const artifact = join(cwd, 'registry', 'index.json');
+				const clean = readFileSync(artifact, 'utf8');
+				writeFileSync(artifact, perturb(clean, '1.0.1'));
+				git(cwd, ['add', 'registry/index.json']);
+				writeFileSync(artifact, clean);
+
+				const result = runCheck(cwd, {
+					...process.env,
+					GIT_OBJECT_DIRECTORY: '/nonexistent',
+				});
+				const output = `${result.stdout}\n${result.stderr}`;
+
+				assert.equal(result.status, 1, `staged registry drift should exit 1\n${output}`);
+				assert.match(output, /Staged registry index is stale/);
+				assert.match(output, /diff --git a\/registry\/index\.json b\/registry\/index\.json/);
+				assert.doesNotMatch(output, /Registry index is freshly generated|\n\s+at\s/);
+			}),
+	],
+	[
 		'clean artifact passes freshness checking',
 		() =>
 			withWorktree((cwd) => {

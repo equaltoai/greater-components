@@ -143,6 +143,7 @@ function getSanitizedGitEnvironment() {
 	delete env.GIT_DIR;
 	delete env.GIT_WORK_TREE;
 	delete env.GIT_COMMON_DIR;
+	delete env.GIT_OBJECT_DIRECTORY;
 	return env;
 }
 
