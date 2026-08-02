@@ -33,8 +33,11 @@ Consumers on the adapters release containing this fix get `ws >=8.21.0` by defau
 pinned to an older greater-components release should update when possible. Until then, refresh the
 lockfile and use an override for both affected dependency paths.
 
-The pnpm and npm examples below have the same blast radius: they override `ws` only when it is a
-child of `graphql-ws` or `viem`.
+The pnpm and npm forms do not have the same blast radius. `graphql-ws` declares `ws` as an optional
+peer, not a child dependency, so pnpm's parent-scoped `graphql-ws>ws` selector is a no-op for that
+peer. If another `ws` version already exists in the tree, `graphql-ws` can continue using it instead
+of the patched range. The pnpm override must therefore target every 8.x `ws` resolution in the
+consumer tree. This is intentionally broader than npm's parent-scoped form.
 
 For pnpm, add this to `package.json` and reinstall:
 
@@ -42,14 +45,14 @@ For pnpm, add this to `package.json` and reinstall:
 {
 	"pnpm": {
 		"overrides": {
-			"graphql-ws>ws": "^8.21.0",
-			"viem>ws": "^8.21.0"
+			"ws@^8.0.0": "^8.21.0"
 		}
 	}
 }
 ```
 
-For npm, add this to `package.json` and reinstall:
+For npm, the nested override applies to the `graphql-ws` optional peer as well as viem's child
+dependency. Add this to `package.json` and reinstall:
 
 ```json
 {
