@@ -80,14 +80,46 @@ describe('sanitizeHtml', () => {
 		expect(anchor.textContent).toBe('Classed link');
 	});
 
-	it('preserves existing rel and target attributes without duplicating them', () => {
-		const input = '<a href="https://x.test" rel="author" target="named-frame">Authored link</a>';
+	it('preserves authored rel tokens while hardening an external link', () => {
+		const input = '<a href="https://x.test" rel="author">Authored link</a>';
 		const { output, anchor } = parseSanitized(input);
 
-		expect(anchor?.getAttribute('rel')).toBe('author');
-		expect(anchor?.getAttribute('target')).toBe('named-frame');
+		expect(anchor?.getAttribute('rel')).toBe('author noopener noreferrer');
+		expect(anchor?.getAttribute('target')).toBe('_blank');
 		expect(output.match(/\srel=/gu)).toHaveLength(1);
 		expect(output.match(/\starget=/gu)).toHaveLength(1);
+	});
+
+	it.each([
+		['href-first', '<a href="https://evil.test" rel="opener">x</a>'],
+		['rel-first', '<a rel="opener" href="https://evil.test">x</a>'],
+	])('drops rel=opener when hardening an external link with %s attributes', (_order, input) => {
+		const anchor = expectOnlySafeAnchor(input);
+		const tokens = anchor.getAttribute('rel')?.split(/\s+/u) ?? [];
+
+		expect(new Set(tokens)).toEqual(new Set(['noopener', 'noreferrer']));
+		expect(tokens).not.toContain('opener');
+		expect(anchor.getAttribute('target')).toBe('_blank');
+	});
+
+	it('preserves the Fediverse rel=me token while hardening an external link', () => {
+		const anchor = expectOnlySafeAnchor('<a href="https://evil.test" rel="me">x</a>');
+
+		expect(anchor.getAttribute('rel')?.split(/\s+/u)).toEqual([
+			'me',
+			'noopener',
+			'noreferrer',
+		]);
+		expect(anchor.getAttribute('target')).toBe('_blank');
+	});
+
+	it('does not duplicate an existing rel=noopener token', () => {
+		const anchor = expectOnlySafeAnchor('<a href="https://evil.test" rel="noopener">x</a>');
+		const tokens = anchor.getAttribute('rel')?.split(/\s+/u) ?? [];
+
+		expect(tokens).toEqual(['noopener', 'noreferrer']);
+		expect(tokens.filter((token) => token === 'noopener')).toHaveLength(1);
+		expect(anchor.getAttribute('target')).toBe('_blank');
 	});
 
 	it.each([
@@ -163,7 +195,7 @@ describe('sanitizeHtml', () => {
 		[
 			'rel',
 			'<a href="https://x.test" rel="q><img src=z onerror=alert(1)>">click</a>',
-			'q><img src=z onerror=alert(1)>',
+			'q><img src=z onerror=alert(1)> noopener noreferrer',
 		],
 		[
 			'target',

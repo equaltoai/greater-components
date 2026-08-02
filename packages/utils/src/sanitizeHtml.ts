@@ -128,6 +128,14 @@ interface HastElement extends HastNode {
 	children: HastNode[];
 }
 
+const SECURITY_TOKENS = ['noopener', 'noreferrer'];
+
+function relTokens(value: unknown): string[] {
+	if (Array.isArray(value)) return value.map(String);
+	if (typeof value === 'string') return value.split(/\s+/u).filter(Boolean);
+	return [];
+}
+
 function isHastElement(node: HastNode): node is HastElement {
 	return node.type === 'element';
 }
@@ -148,11 +156,23 @@ function rehypeExternalLinkProperties(options: ExternalLinkOptions) {
 					(href.startsWith('http://') || href.startsWith('https://'))
 				) {
 					if (options.addRelToExternalLinks && !('rel' in child.properties)) {
-						child.properties['rel'] = 'noopener noreferrer';
+						child.properties['rel'] = [...SECURITY_TOKENS];
 					}
 
 					if (options.externalLinksInNewTab && !('target' in child.properties)) {
 						child.properties['target'] = '_blank';
+
+						if (options.addRelToExternalLinks) {
+							const tokens = relTokens(child.properties['rel']).filter(
+								(token) => token !== 'opener'
+							);
+
+							for (const token of SECURITY_TOKENS) {
+								if (!tokens.includes(token)) tokens.push(token);
+							}
+
+							child.properties['rel'] = tokens;
+						}
 					}
 				}
 
