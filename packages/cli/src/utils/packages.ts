@@ -8,6 +8,12 @@ import path from 'node:path';
 import { minVersion, satisfies } from 'semver';
 import type { ComponentDependency } from '../registry/index.js';
 
+export interface DependencyDeclarationStatus {
+	installed: boolean;
+	declaration?: string;
+	floorCheckSkipped: boolean;
+}
+
 /**
  * Detect package manager
  */
@@ -87,15 +93,15 @@ export async function installDependencies(
  * Non-semver declarations (for example workspace or git dependencies) also fall
  * back to name-only because their resolved versions are not available here.
  */
-export async function isDependencyInstalled(
+export async function getDependencyDeclarationStatus(
 	packageName: string,
 	cwd: string,
 	requiredVersion?: string
-): Promise<boolean> {
+): Promise<DependencyDeclarationStatus> {
 	const packageJsonPath = path.join(cwd, 'package.json');
 
 	if (!(await fs.pathExists(packageJsonPath))) {
-		return false;
+		return { installed: false, floorCheckSkipped: false };
 	}
 
 	try {
@@ -110,22 +116,38 @@ export async function isDependencyInstalled(
 			pkg.devDependencies?.[packageName] ||
 			pkg.peerDependencies?.[packageName];
 
-		if (!installedVersion) return false;
-		if (!requiredVersion) return true;
+		if (!installedVersion) return { installed: false, floorCheckSkipped: false };
+		if (!requiredVersion) {
+			return { installed: true, declaration: installedVersion, floorCheckSkipped: false };
+		}
 
 		let installedFloor;
 		try {
 			installedFloor = minVersion(installedVersion);
 		} catch {
-			return true;
+			return { installed: true, declaration: installedVersion, floorCheckSkipped: true };
 		}
 
-		if (!installedFloor) return true;
+		if (!installedFloor) {
+			return { installed: true, declaration: installedVersion, floorCheckSkipped: true };
+		}
 
-		return satisfies(installedFloor, requiredVersion);
+		return {
+			installed: satisfies(installedFloor, requiredVersion),
+			declaration: installedVersion,
+			floorCheckSkipped: false,
+		};
 	} catch {
-		return false;
+		return { installed: false, floorCheckSkipped: false };
 	}
+}
+
+export async function isDependencyInstalled(
+	packageName: string,
+	cwd: string,
+	requiredVersion?: string
+): Promise<boolean> {
+	return (await getDependencyDeclarationStatus(packageName, cwd, requiredVersion)).installed;
 }
 
 /**

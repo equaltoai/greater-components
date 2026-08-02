@@ -523,6 +523,61 @@ describe('checkNpmDependencies extended', () => {
 		expect(results[0]?.passed).toBe(true);
 		expect(results[0]?.message).toContain('All required dependencies');
 	});
+
+	it('surfaces a name-only security-floor skip for a non-semver declaration', async () => {
+		const { checkNpmDependencies, formatResult } = await import('../src/commands/doctor.js');
+		const { getComponent } = await import('../src/registry/index.js');
+		vi.mocked(getComponent).mockReturnValue({
+			name: 'adapters',
+			files: [],
+			dependencies: [{ name: 'viem', version: '^2.55.10' }],
+		} as any);
+		fsStore.set(
+			path.join('/project', 'package.json'),
+			JSON.stringify({ dependencies: { viem: 'catalog:' } })
+		);
+
+		const results = await checkNpmDependencies('/project', {
+			...BASE_COMPONENT_CONFIG,
+			installed: [{ name: 'adapters' } as any],
+		});
+		const skipped = results.find((result) => result.name === 'NPM Dependency Security Floor');
+
+		expect(results.find((result) => result.name === 'NPM Dependencies')?.passed).toBe(true);
+		expect(skipped).toMatchObject({
+			passed: true,
+			message: 'floor check skipped: viem declared as catalog:',
+		});
+		if (!skipped) throw new Error('expected a security-floor skip diagnostic');
+		expect(formatResult(skipped)).toContain('floor check skipped: viem declared as catalog:');
+	});
+
+	it('still fails when a semver declaration is below the security floor', async () => {
+		const { checkNpmDependencies } = await import('../src/commands/doctor.js');
+		const { getComponent } = await import('../src/registry/index.js');
+		vi.mocked(getComponent).mockReturnValue({
+			name: 'adapters',
+			files: [],
+			dependencies: [{ name: 'viem', version: '^2.55.10' }],
+		} as any);
+		fsStore.set(
+			path.join('/project', 'package.json'),
+			JSON.stringify({ dependencies: { viem: '2.51.3' } })
+		);
+
+		const results = await checkNpmDependencies('/project', {
+			...BASE_COMPONENT_CONFIG,
+			installed: [{ name: 'adapters' } as any],
+		});
+
+		expect(results).toHaveLength(1);
+		expect(results[0]).toMatchObject({
+			name: 'NPM Dependencies',
+			passed: false,
+			severity: 'error',
+		});
+		expect(results[0]?.details).toContain('viem@^2.55.10');
+	});
 });
 
 describe('checkOrphanedFiles extended', () => {
