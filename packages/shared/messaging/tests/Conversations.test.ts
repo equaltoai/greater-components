@@ -162,6 +162,33 @@ describe('Conversations', () => {
 		unmount(instance);
 	});
 
+	it('renders a safe plain-text excerpt for server HTML previews', async () => {
+		mockState.conversations = [
+			{
+				id: 'c-html-preview',
+				participants: [{ id: 'u1', displayName: 'Alice', avatar: '' }],
+				unreadCount: 0,
+				lastMessage: {
+					content:
+						'<p>Hello <strong>world</strong></p><img src="x" onerror="alert(1)"><script>alert(2)</script>',
+					createdAt: '',
+				},
+			},
+		];
+
+		const target = document.createElement('div');
+		const instance = mount(Conversations, { target });
+		await flushSync();
+
+		const preview = target.querySelector('.messages-conversations__preview');
+		expect(preview?.textContent).toBe('Hello world');
+		expect(preview?.querySelector('strong')).toBeNull();
+		expect(preview?.querySelector('img')).toBeNull();
+		expect(preview?.innerHTML).not.toContain('onerror');
+
+		unmount(instance);
+	});
+
 	it('handles selection', async () => {
 		mockState.conversations = [
 			{

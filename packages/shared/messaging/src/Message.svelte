@@ -4,6 +4,7 @@
 <script lang="ts">
 	import { Menu } from '@equaltoai/greater-components-primitives';
 	import { MoreVerticalIcon, TrashIcon } from '@equaltoai/greater-components-icons';
+	import { sanitizeHtml } from '@equaltoai/greater-components-utils';
 	import { formatMessageTime, isParticipantId } from './utils.js';
 	import { getMessagesContext } from './context.svelte.js';
 	import type { DirectMessage, MessagesContext } from './context.svelte.js';
@@ -24,6 +25,7 @@
 	const isSensitive = $derived(message.sensitive === true);
 	const isContentVisible = $derived(!isSensitive || sensitiveContentRevealed);
 	const messageContentId = $derived(`message-content-${message.id.replace(/[^\w-]/g, '-')}`);
+	const sanitizedMessageContent = $derived(sanitizeHtml(message.content).trim());
 
 	const context = (() => {
 		try {
@@ -120,7 +122,10 @@
 			</div>
 		{/if}
 		{#if isContentVisible}
-			<div class="message__content" id={messageContentId}>{message.content}</div>
+			<div class="message__content" id={messageContentId}>
+				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+				{@html sanitizedMessageContent}
+			</div>
 		{/if}
 		{#if message.workflowMoments?.length}
 			<div class="message__workflow">

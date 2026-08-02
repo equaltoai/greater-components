@@ -2,6 +2,7 @@
   Messages.Conversations - Conversations List
 -->
 <script lang="ts">
+	import { sanitizeForPreview } from '@equaltoai/greater-components-utils';
 	import { getMessagesContext } from './context.svelte.js';
 	import { getConversationName, formatMessageTime } from './utils.js';
 	import type { Conversation } from './context.svelte.js';
@@ -33,7 +34,7 @@
 		if (message.sensitive) {
 			return message.spoilerText?.trim() || 'Sensitive message';
 		}
-		return message.content;
+		return sanitizeForPreview(message.content, 200);
 	}
 </script>
 

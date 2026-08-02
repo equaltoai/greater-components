@@ -98,6 +98,30 @@ describe('Message', () => {
 		unmount(instance);
 	});
 
+	it('renders server HTML while neutralizing executable markup', () => {
+		const target = document.createElement('div');
+		const message = {
+			id: 'm-html',
+			conversationId: 'c1',
+			sender: bob,
+			content:
+				'<p>Hello <strong>world</strong></p><img src="x" onerror="alert(1)"><script>alert(2)</script>',
+			createdAt: new Date().toISOString(),
+			read: true,
+		};
+
+		const instance = mount(Message, { target, props: { message, currentUserId: 'u1' } });
+
+		const content = target.querySelector('.message__content');
+		expect(content?.querySelector('strong')?.textContent).toBe('world');
+		expect(content?.textContent).toBe('Hello world');
+		expect(content?.querySelector('img')).toBeNull();
+		expect(content?.querySelector('script')).toBeNull();
+		expect(content?.innerHTML).not.toContain('onerror');
+
+		unmount(instance);
+	});
+
 	it('renders avatar image when available', () => {
 		const target = document.createElement('div');
 		const message = {
