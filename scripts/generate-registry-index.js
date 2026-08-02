@@ -1018,12 +1018,6 @@ async function main() {
 		log('\nGenerated index:\n');
 		console.log(JSON.stringify(registryIndex, null, 2));
 	} else {
-		// Ensure registry directory exists
-		const registryDir = path.dirname(OUTPUT_PATH);
-		if (!fs.existsSync(registryDir)) {
-			fs.mkdirSync(registryDir, { recursive: true });
-		}
-
 		let output = JSON.stringify(registryIndex);
 		try {
 			const prettier = await import('prettier');
@@ -1034,20 +1028,32 @@ async function main() {
 			output = JSON.stringify(registryIndex, null, 2) + '\n';
 		}
 
-		fs.writeFileSync(OUTPUT_PATH, output);
-		log(`✅ Registry index written to ${OUTPUT_PATH}`, colors.green);
-
 		if (checkFreshness) {
-			try {
-				execFileSync('git', ['diff', '--exit-code', '--', 'registry/index.json'], {
-					cwd: rootDir,
-					stdio: 'inherit',
-				});
-				log('✅ Registry index is freshly generated', colors.green);
-			} catch {
+			const existingOutput = fs.readFileSync(OUTPUT_PATH, 'utf8');
+			if (existingOutput !== output) {
+				try {
+					execFileSync('git', ['diff', '--no-index', '--', 'registry/index.json', '-'], {
+						cwd: rootDir,
+						input: output,
+						stdio: ['pipe', 'inherit', 'inherit'],
+					});
+				} catch (error) {
+					if (error?.status !== 1) throw error;
+				}
 				log('❌ Registry index is stale; run `pnpm generate-registry` and commit it', colors.red);
 				process.exit(1);
 			}
+
+			log('✅ Registry index is freshly generated', colors.green);
+		} else {
+			// Ensure registry directory exists
+			const registryDir = path.dirname(OUTPUT_PATH);
+			if (!fs.existsSync(registryDir)) {
+				fs.mkdirSync(registryDir, { recursive: true });
+			}
+
+			fs.writeFileSync(OUTPUT_PATH, output);
+			log(`✅ Registry index written to ${OUTPUT_PATH}`, colors.green);
 		}
 	}
 }
