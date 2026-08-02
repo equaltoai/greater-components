@@ -122,6 +122,29 @@ describe('messaging sanitization', () => {
 	});
 
 	it.each([
+		['opener noopener noreferrer', ['noopener', 'noreferrer']],
+		['OPENER', ['noopener', 'noreferrer']],
+		['Me Opener', ['Me', 'noopener', 'noreferrer']],
+	] as const)('drops authored rel=%s case-insensitively', (rel, expectedRel) => {
+		const anchor = expectOnlySafeAnchor(
+			`<a href="https://evil.test" target="named" rel="${rel}">x</a>`
+		);
+
+		expect(anchor.getAttribute('target')).toBe('named');
+		expect(anchor.getAttribute('rel')?.split(/\s+/u)).toEqual(expectedRel);
+	});
+
+	it('treats https:evil.test as a non-authority href under the shared predicate', () => {
+		const anchor = expectOnlySafeAnchor(
+			'<a href="https:evil.test" target="named" rel="opener">x</a>'
+		);
+
+		expect(anchor.getAttribute('href')).toBe('https:evil.test');
+		expect(anchor.getAttribute('target')).toBe('named');
+		expect(anchor.getAttribute('rel')).toBe('opener');
+	});
+
+	it.each([
 		[
 			'named target',
 			'<a title="x" href="https://evil.test" target="named">link</a>',

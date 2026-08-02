@@ -56,6 +56,85 @@ describe('sanitizeHtml', () => {
 	});
 
 	it.each([
+		[
+			'rel absent and new-tab enabled',
+			'<a href="https://evil.test">x</a>',
+			{},
+			['noopener', 'noreferrer'],
+			'_blank',
+		],
+		[
+			'rel present and new-tab enabled',
+			'<a href="https://evil.test" target="named" rel="me opener">x</a>',
+			{},
+			['me', 'noopener', 'noreferrer'],
+			'named',
+		],
+		[
+			'rel absent and new-tab disabled',
+			'<a href="https://evil.test">x</a>',
+			{ externalLinksInNewTab: false },
+			['noopener', 'noreferrer'],
+			null,
+		],
+		[
+			'rel present and new-tab disabled',
+			'<a href="https://evil.test" target="_blank" rel="me opener">x</a>',
+			{ externalLinksInNewTab: false },
+			['me', 'noopener', 'noreferrer'],
+			'_blank',
+		],
+	] as const)(
+		'unions external-link rel protections with defaults when %s',
+		(_case, input, options, expectedRel, expectedTarget) => {
+			const anchor = expectOnlySafeAnchor(input, options);
+
+			expect(anchor.getAttribute('rel')?.split(/\s+/u)).toEqual(expectedRel);
+			expect(anchor.getAttribute('target')).toBe(expectedTarget);
+		}
+	);
+
+	it('leaves authored rel verbatim when library rel intervention is disabled', () => {
+		const anchor = expectOnlySafeAnchor('<a href="https://evil.test" rel="me opener">x</a>', {
+			addRelToExternalLinks: false,
+		});
+
+		expect(anchor.getAttribute('rel')).toBe('me opener');
+		expect(anchor.getAttribute('target')).toBe('_blank');
+	});
+
+	it('leaves an authored target verbatim when library new-tab attachment is disabled', () => {
+		const anchor = expectOnlySafeAnchor(
+			'<a href="https://evil.test" target="named" rel="author">x</a>',
+			{ externalLinksInNewTab: false }
+		);
+
+		expect(anchor.getAttribute('target')).toBe('named');
+		expect(anchor.getAttribute('rel')).toBe('author noopener noreferrer');
+	});
+
+	it.each([
+		['OPENER', ['noopener', 'noreferrer']],
+		['Me Opener', ['Me', 'noopener', 'noreferrer']],
+	] as const)('drops authored rel=%s case-insensitively', (rel, expectedRel) => {
+		const anchor = expectOnlySafeAnchor(`<a href="https://evil.test" rel="${rel}">x</a>`, {
+			externalLinksInNewTab: false,
+		});
+
+		expect(anchor.getAttribute('rel')?.split(/\s+/u)).toEqual(expectedRel);
+	});
+
+	it('treats https:evil.test as a non-authority href under the shared predicate', () => {
+		const anchor = expectOnlySafeAnchor(
+			'<a href="https:evil.test" target="named" rel="opener">x</a>'
+		);
+
+		expect(anchor.getAttribute('href')).toBe('https:evil.test');
+		expect(anchor.getAttribute('target')).toBe('named');
+		expect(anchor.getAttribute('rel')).toBe('opener');
+	});
+
+	it.each([
 		['double-quoted attributes', '<a href="https://x.test" title="a > b">Link</a>'],
 		['single-quoted attributes', "<a href='https://x.test' title='a > b'>Link</a>"],
 		['unquoted attributes', '<a href=https://x.test title=a&#32;&#62;&#32;b>Link</a>'],
