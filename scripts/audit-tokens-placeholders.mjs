@@ -3,7 +3,8 @@
  * Audit Tokens Placeholders Script
  *
  * Fails if token reference placeholders like `{color.base.white}` are found in
- * emitted CSS/SCSS output for the tokens package.
+ * emitted CSS/SCSS output for the tokens package, or if package source treats a
+ * selectable gray palette name as an emitted custom-property family.
  */
 
 import fs from 'node:fs';
@@ -42,9 +43,57 @@ function listFilesRecursive(dir) {
 	return results;
 }
 
+function lineNumberAt(content, offset) {
+	return content.slice(0, offset).split('\n').length;
+}
+
+function auditSelectablePaletteReferences() {
+	const emittedThemePath = path.join(rootDir, 'packages', 'tokens', 'dist', 'theme.css');
+	const palettesPath = path.join(rootDir, 'packages', 'tokens', 'src', 'palettes.json');
+	const packagesDir = path.join(rootDir, 'packages');
+
+	const emittedTheme = fs.readFileSync(emittedThemePath, 'utf8');
+	const emittedProperties = new Set(
+		Array.from(emittedTheme.matchAll(/(--gr-[\w-]+)\s*:/g), (match) => match[1])
+	);
+	const paletteNames = Object.keys(JSON.parse(fs.readFileSync(palettesPath, 'utf8'))).filter(
+		(name) => name !== 'gray'
+	);
+	const paletteReference = new RegExp(
+		`var\\(\\s*(--gr-color-(?:${paletteNames.join('|')})-[\\w-]+)`,
+		'g'
+	);
+	const sourceFiles = listFilesRecursive(packagesDir).filter((file) => {
+		const relative = path.relative(packagesDir, file);
+		if (
+			relative.split(path.sep).some((part) => ['coverage', 'dist', 'node_modules'].includes(part))
+		) {
+			return false;
+		}
+		return file.endsWith('.css') || file.endsWith('.scss') || file.endsWith('.svelte');
+	});
+	const errors = [];
+
+	for (const file of sourceFiles) {
+		const content = fs.readFileSync(file, 'utf8');
+		for (const match of content.matchAll(paletteReference)) {
+			const property = match[1];
+			if (property && !emittedProperties.has(property)) {
+				errors.push({
+					file: path.relative(rootDir, file),
+					line: lineNumberAt(content, match.index ?? 0),
+					property,
+				});
+			}
+		}
+	}
+
+	return { errors, sourceFileCount: sourceFiles.length };
+}
+
 function main() {
 	log('\n' + '='.repeat(60), colors.bold);
-	log('🪙 Audit Tokens Placeholders', colors.bold);
+	log('🪙 Audit Tokens Output & References', colors.bold);
 	log('='.repeat(60) + '\n');
 
 	const distDir = path.join(rootDir, 'packages', 'tokens', 'dist');
@@ -75,17 +124,38 @@ function main() {
 		}
 	}
 
+	const paletteAudit = auditSelectablePaletteReferences();
+
 	log('\n' + '='.repeat(60));
-	if (errors.length > 0) {
-		log(`❌ Tokens placeholders audit FAILED (${errors.length} files)`, colors.red);
-		errors.forEach((error) => {
-			log(`   - ${error.file}`, colors.red);
-			log(`     ${error.matches.join(', ')}`, colors.red);
-		});
+	if (errors.length > 0 || paletteAudit.errors.length > 0) {
+		if (errors.length > 0) {
+			log(`❌ Tokens placeholders audit FAILED (${errors.length} files)`, colors.red);
+			errors.forEach((error) => {
+				log(`   - ${error.file}`, colors.red);
+				log(`     ${error.matches.join(', ')}`, colors.red);
+			});
+		}
+		if (paletteAudit.errors.length > 0) {
+			log(
+				`❌ Token reference existence audit FAILED (${paletteAudit.errors.length} references)`,
+				colors.red
+			);
+			paletteAudit.errors.forEach((error) => {
+				log(`   - ${error.file}:${error.line} ${error.property}`, colors.red);
+			});
+			log(
+				'   Palette names select the values emitted under --gr-color-gray-*; they are not token paths.',
+				colors.yellow
+			);
+		}
 		process.exit(1);
 	}
 
 	log(`✅ Tokens placeholders audit PASSED (${files.length} files checked)`, colors.green);
+	log(
+		`✅ Token reference existence audit PASSED (${paletteAudit.sourceFileCount} source files checked)`,
+		colors.green
+	);
 	process.exit(0);
 }
 

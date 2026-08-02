@@ -10,6 +10,7 @@ const tokenCss = fs.readFileSync(
 
 function declarations(css: string, selector: string): string {
 	let offset = 0;
+	const blocks: string[] = [];
 	while (offset < css.length) {
 		const open = css.indexOf('{', offset);
 		if (open < 0) break;
@@ -19,9 +20,10 @@ function declarations(css: string, selector: string): string {
 			.replace(/\/\*[\s\S]*?\*\//g, '')
 			.trim();
 		const close = css.indexOf('}', open);
-		if (candidate === selector && close >= 0) return css.slice(open + 1, close);
+		if (candidate === selector && close >= 0) blocks.push(css.slice(open + 1, close));
 		offset = open + 1;
 	}
+	if (blocks.length > 0) return blocks.join('\n');
 	throw new Error(`Missing CSS block for ${selector}`);
 }
 
@@ -60,9 +62,13 @@ function themeProperties(theme: 'light' | 'dark'): Map<string, string> {
 		...readCustomProperties(declarations(tokenCss, ':root')),
 		...readCustomProperties(declarations(blogCss, ':root')),
 	]);
+	for (const [name, value] of readCustomProperties(
+		declarations(tokenCss, `[data-theme="${theme}"]`)
+	)) {
+		properties.set(name, value);
+	}
 	if (theme === 'dark') {
 		for (const [name, value] of [
-			...readCustomProperties(declarations(tokenCss, '[data-theme="dark"]')),
 			...readCustomProperties(declarations(blogCss, "[data-theme='dark']")),
 		]) {
 			properties.set(name, value);
@@ -94,6 +100,21 @@ function contrast(foreground: string, background: string): number {
 }
 
 describe('blog reading-surface theme', () => {
+	it('references selectable palettes only through emitted token paths', () => {
+		const emittedTokens = new Set(
+			Array.from(tokenCss.matchAll(/(--gr-[\w-]+)\s*:/g), (match) => match[1])
+		);
+		const paletteReferences = Array.from(
+			blogCss.matchAll(/var\(\s*(--gr-color-(?:gray|neutral|slate|stone|zinc)-[\w-]+)/g),
+			(match) => match[1]
+		);
+
+		expect(
+			paletteReferences.filter((token) => !emittedTokens.has(token)),
+			'palette names select --gr-color-gray-* values and are not token paths'
+		).toEqual([]);
+	});
+
 	it.each(['light', 'dark'] as const)('resolves all new public reading tokens in %s', (theme) => {
 		const properties = themeProperties(theme);
 		for (const token of [
@@ -150,17 +171,83 @@ describe('blog reading-surface theme', () => {
 		);
 	});
 
+	it.each(['light', 'dark'] as const)(
+		'holds contrast for every neutral-mapping text cell in %s',
+		(theme) => {
+			const properties = themeProperties(theme);
+			const pageBackground = '--gr-semantic-background-primary';
+			const cells =
+				theme === 'light'
+					? [
+							['article prose', '--gr-color-gray-800', '--gr-color-base-white'],
+							['article heading', '--gr-color-gray-900', '--gr-color-base-white'],
+							['card meta', '--gr-color-gray-600', '--gr-color-base-white'],
+							['card subtitle', '--gr-color-gray-700', '--gr-color-base-white'],
+							['card tag', '--gr-color-gray-700', '--gr-color-gray-100'],
+							['toc title', '--gr-color-gray-500', pageBackground],
+							['toc link', '--gr-color-gray-600', pageBackground],
+							['author name', '--gr-color-gray-900', '--gr-color-gray-50'],
+							['author bio', '--gr-color-gray-600', '--gr-color-gray-50'],
+							['publication', '--gr-color-gray-100', '--gr-color-gray-900'],
+							['newsletter title', '--gr-color-gray-900', '--gr-color-primary-50'],
+							['newsletter description', '--gr-color-gray-600', '--gr-color-primary-50'],
+							['archive year', '--gr-color-gray-900', pageBackground],
+							['archive month', '--gr-color-gray-700', pageBackground],
+							['tag cloud', '--gr-color-gray-700', '--gr-color-gray-100'],
+							['toolbar button', '--gr-color-gray-600', '--gr-color-gray-50'],
+							['toolbar button hover', '--gr-color-gray-900', '--gr-color-gray-200'],
+							['editor meta', '--gr-color-gray-600', pageBackground],
+							['caption gradient', '--gr-color-gray-100', '#4d4d4d'],
+						]
+					: [
+							['article prose', '--gr-color-gray-200', '--gr-color-gray-900'],
+							['article heading', '--gr-color-gray-100', '--gr-color-gray-900'],
+							['article meta', '--gr-color-gray-300', '--gr-color-gray-900'],
+							['article link', '--gr-color-primary-400', '--gr-color-gray-900'],
+							['article tag', '--gr-color-gray-200', '--gr-color-gray-800'],
+							['code', '--gr-color-gray-100', '--gr-color-gray-800'],
+							['card meta', '--gr-color-gray-400', '--gr-color-gray-900'],
+							['card title', '--gr-color-gray-100', '--gr-color-gray-900'],
+							['card subtitle', '--gr-color-gray-300', '--gr-color-gray-900'],
+							['card tag', '--gr-color-gray-200', '--gr-color-gray-800'],
+							['toc title', '--gr-color-gray-300', pageBackground],
+							['toc link', '--gr-color-gray-400', pageBackground],
+							['author name', '--gr-color-gray-900', '--gr-color-gray-50'],
+							['author bio', '--gr-color-gray-600', '--gr-color-gray-50'],
+							['publication', '--gr-color-gray-100', '--gr-color-gray-900'],
+							['newsletter title', '--gr-color-gray-100', '--gr-color-gray-800'],
+							['newsletter description', '--gr-color-gray-300', '--gr-color-gray-800'],
+							['archive year', '--gr-color-gray-100', pageBackground],
+							['archive month', '--gr-color-gray-300', pageBackground],
+							['tag cloud', '--gr-color-gray-700', '--gr-color-gray-100'],
+							['toolbar button', '--gr-color-gray-600', '--gr-color-gray-50'],
+							['toolbar button hover', '--gr-color-gray-900', '--gr-color-gray-200'],
+							['editor preview', '--gr-color-gray-100', '--gr-color-gray-900'],
+							['editor meta', '--gr-color-gray-300', pageBackground],
+							['caption gradient', '--gr-color-gray-100', '#4d4d4d'],
+						];
+
+			for (const [name, foregroundToken, backgroundToken] of cells) {
+				const foreground = resolveValue(`var(${foregroundToken})`, properties);
+				const background = backgroundToken.startsWith('#')
+					? backgroundToken
+					: resolveValue(`var(${backgroundToken})`, properties);
+				expect(contrast(foreground, background), name).toBeGreaterThanOrEqual(4.5);
+			}
+		}
+	);
+
 	it('leaves the light reading surface on its pre-theme cascade', () => {
 		expect(declarations(blogCss, '.gr-blog-article')).not.toMatch(/\b(?:background|color)\s*:/);
 		expect(declarations(blogCss, '.gr-blog-article__content')).toContain(
-			'color: var(--gr-color-neutral-800)'
+			'color: var(--gr-color-gray-800)'
 		);
 		expect(
 			declarations(
 				blogCss,
 				'.gr-blog-article__content h1,\n.gr-blog-article__content h2,\n.gr-blog-article__content h3,\n.gr-blog-article__content h4'
 			)
-		).toContain('color: var(--gr-color-neutral-900)');
+		).toContain('color: var(--gr-color-gray-900)');
 		expect(() => declarations(blogCss, '.gr-blog-article__content a')).toThrow();
 		expect(declarations(blogCss, '.gr-blog-article__content code')).not.toMatch(/\bcolor\s*:/);
 	});
