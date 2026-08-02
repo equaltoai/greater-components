@@ -139,12 +139,9 @@ function failGitCheck(operation, error) {
 }
 
 function getSanitizedGitEnvironment() {
-	const env = { ...process.env };
-	delete env.GIT_DIR;
-	delete env.GIT_WORK_TREE;
-	delete env.GIT_COMMON_DIR;
-	delete env.GIT_OBJECT_DIRECTORY;
-	return env;
+	return Object.fromEntries(
+		Object.entries(process.env).filter(([name]) => !name.startsWith('GIT_'))
+	);
 }
 
 function gitReportedNoRepository(error) {

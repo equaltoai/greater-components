@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
 import {
 	chmodSync,
+	copyFileSync,
 	existsSync,
 	mkdirSync,
 	mkdtempSync,
@@ -33,6 +34,59 @@ function runCheck(cwd, env = process.env) {
 		encoding: 'utf8',
 		env,
 	});
+}
+
+function runCheckWithOwnershipRefusal(cwd, env) {
+	const parent = mkdtempSync(join(tmpdir(), 'greater-registry-owner-shim-'));
+	const gitShim = join(parent, 'git');
+	const realGit = execFileSync('sh', ['-c', 'command -v git'], { encoding: 'utf8' }).trim();
+	const forwardedPrefix = 'GREATER_REGISTRY_TEST_FORWARD_';
+	const shimEnv = {
+		...env,
+		GREATER_REGISTRY_TEST_REAL_GIT: realGit,
+		PATH: `${parent}:${env.PATH}`,
+	};
+
+	for (const [name, value] of Object.entries(env)) {
+		if (name === 'GIT_CONFIG_PARAMETERS' || name === 'GIT_CONFIG_COUNT') {
+			shimEnv[`${forwardedPrefix}${name}`] = value;
+		} else if (name.startsWith('GIT_CONFIG_KEY_') || name.startsWith('GIT_CONFIG_VALUE_')) {
+			shimEnv[`${forwardedPrefix}${name}`] = value;
+		}
+	}
+
+	writeFileSync(
+		gitShim,
+		`#!/usr/bin/env node
+const { spawnSync } = require('node:child_process');
+
+const forwardedPrefix = '${forwardedPrefix}';
+const env = { ...process.env, GIT_TEST_ASSUME_DIFFERENT_OWNER: '1' };
+for (const [name, value] of Object.entries(process.env)) {
+	if (name.startsWith(forwardedPrefix)) {
+		env[name.slice(forwardedPrefix.length)] = value;
+		delete env[name];
+	}
+}
+
+const result = spawnSync(process.env.GREATER_REGISTRY_TEST_REAL_GIT, process.argv.slice(2), {
+	env,
+	stdio: 'inherit',
+});
+if (result.error) {
+	console.error(result.error.message);
+	process.exit(1);
+}
+process.exit(result.status ?? 1);
+`
+	);
+	chmodSync(gitShim, 0o755);
+
+	try {
+		return runCheck(cwd, shimEnv);
+	} finally {
+		rmSync(parent, { force: true, recursive: true });
+	}
 }
 
 function perturb(content, version) {
@@ -197,9 +251,8 @@ const tests = [
 				git(cwd, ['add', 'registry/index.json']);
 				writeFileSync(artifact, clean);
 
-				const result = runCheck(cwd, {
+				const result = runCheckWithOwnershipRefusal(cwd, {
 					...process.env,
-					GIT_TEST_ASSUME_DIFFERENT_OWNER: '1',
 					GIT_CONFIG_COUNT: '1',
 					GIT_CONFIG_KEY_0: 'safe.directory',
 					GIT_CONFIG_VALUE_0: '',
@@ -256,6 +309,53 @@ const tests = [
 				const output = `${result.stdout}\n${result.stderr}`;
 
 				expectFailure(result, 'GIT_DIR override with staged registry drift');
+				assert.match(output, /Staged registry index is stale/);
+				assert.match(output, /diff --git a\/registry\/index\.json b\/registry\/index\.json/);
+				assert.doesNotMatch(output, /Registry index is freshly generated|\n\s+at\s/);
+			}),
+	],
+	[
+		'GIT_INDEX_FILE cannot hide real staged registry drift behind a clean index snapshot',
+		() =>
+			withWorktree((cwd) => {
+				const artifact = join(cwd, 'registry', 'index.json');
+				const clean = readFileSync(artifact, 'utf8');
+				const indexPath = resolve(cwd, git(cwd, ['rev-parse', '--git-path', 'index']));
+				const cleanIndexSnapshot = join(cwd, '.clean-index-snapshot');
+				copyFileSync(indexPath, cleanIndexSnapshot);
+				writeFileSync(artifact, perturb(clean, '1.0.1'));
+				git(cwd, ['add', 'registry/index.json']);
+				writeFileSync(artifact, clean);
+
+				const result = runCheck(cwd, {
+					...process.env,
+					GIT_INDEX_FILE: cleanIndexSnapshot,
+				});
+				const output = `${result.stdout}\n${result.stderr}`;
+
+				expectFailure(result, 'GIT_INDEX_FILE override with staged registry drift');
+				assert.match(output, /Staged registry index is stale/);
+				assert.match(output, /diff --git a\/registry\/index\.json b\/registry\/index\.json/);
+				assert.doesNotMatch(output, /Registry index is freshly generated|\n\s+at\s/);
+			}),
+	],
+	[
+		'unknown GIT_ override leaves the real staged registry state authoritative',
+		() =>
+			withWorktree((cwd) => {
+				const artifact = join(cwd, 'registry', 'index.json');
+				const clean = readFileSync(artifact, 'utf8');
+				writeFileSync(artifact, perturb(clean, '1.0.1'));
+				git(cwd, ['add', 'registry/index.json']);
+				writeFileSync(artifact, clean);
+
+				const result = runCheck(cwd, {
+					...process.env,
+					GIT_FUTURE_REDIRECT: '/tmp/x',
+				});
+				const output = `${result.stdout}\n${result.stderr}`;
+
+				expectFailure(result, 'unknown GIT_ override with staged registry drift');
 				assert.match(output, /Staged registry index is stale/);
 				assert.match(output, /diff --git a\/registry\/index\.json b\/registry\/index\.json/);
 				assert.doesNotMatch(output, /Registry index is freshly generated|\n\s+at\s/);
