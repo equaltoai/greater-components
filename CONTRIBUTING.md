@@ -103,13 +103,20 @@ By making a contribution to this project, I certify that:
 
 ### Project MCP informed consent
 
-The root `.mcp.json` is intentionally committed so MCP-enabled developer clients
-can discover the `greater_lab` steward endpoint:
-`https://lab.theorymcp.ai/equaltoai/agents/greater/mcp`. `lab.theorymcp.ai` is
-first-party EqualToAI/TheoryMCP infrastructure used for routed steward-agent
-sessions. It is the preferred GitHub path for Greater steward work because it
-preserves agent provenance and scopes GitHub/email/memory/knowledge tools through
-server-side policy.
+MCP integration testing uses local agent-surface installs rendered from the
+published `equaltoai` namespace record through `agent_local_install_plan`.
+Regenerate the install with the namespace installer and verify its
+host-specific `install-marker.json` before testing. `.mcp.json`, `GEMINI.md`, and
+the host configuration directories are git-ignored and must never be committed;
+personal overrides stay local and are replaced by regeneration when needed.
+
+The canonical namespace route is `https://theorymcp.ai/equaltoai/mcp`, and the
+rendered Greater steward route is exposed as `theorymcp` at
+`https://theorymcp.ai/equaltoai/agents/greater/mcp`. `theorymcp.ai` is first-party
+EqualToAI/TheoryMCP infrastructure used for routed steward-agent sessions. The
+steward route is preferred for supported GitHub work because it preserves agent
+provenance and scopes GitHub/email/memory/knowledge tools through server-side
+policy.
 
 If you accept or enable this project MCP configuration, your IDE agent connects
 to an external server that controls the exposed MCP tool descriptions, resources,
@@ -118,10 +125,10 @@ wallet keys, seed phrases, private customer data, or unrelated repository conten
 through MCP tools. If you do not want that remote-tool trust posture, leave
 project MCP disabled and contribute using the normal local Git and GitHub flow.
 
-Recommended network control: pin or allowlist the exact HTTPS endpoint above in
-any non-interactive MCP client, proxy, firewall, or enterprise policy that
-supports it. Prefer certificate/SPKI pinning where available. The repository does
-not add approval prompts around `greater_lab`; non-interactive steward operation
+Recommended network control: pin or allowlist the exact HTTPS origin and routes
+above in any non-interactive MCP client, proxy, firewall, or enterprise policy
+that supports it. Prefer certificate/SPKI pinning where available. Do not add
+approval prompts around the rendered routes; non-interactive steward operation
 is an accepted governance requirement.
 
 ### Code Style
