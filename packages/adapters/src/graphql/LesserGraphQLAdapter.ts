@@ -20,6 +20,7 @@ type MutationOptionsFor<
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import { print } from 'graphql';
 import { extractServerErrorCodes } from '../authExpiry.js';
+import type { LesserMessagesAdapter } from '../messaging/createLesserMessagesHandlers.js';
 
 import {
 	createGraphQLClient,
@@ -647,7 +648,7 @@ export function isDraftReviewShareConflict(error: unknown): boolean {
 	return codes.some((code) => DRAFT_REVIEW_CONFLICT_CODES.includes(code));
 }
 
-export class LesserGraphQLAdapter {
+export class LesserGraphQLAdapter implements LesserMessagesAdapter {
 	private readonly client: GraphQLClientInstance;
 	private readonly httpEndpoint: string;
 	private readonly baseHeaders: Record<string, string>;

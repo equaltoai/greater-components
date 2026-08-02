@@ -2,6 +2,17 @@
 
 Transport adapters and state management for Greater Components.
 
+## Messaging binding
+
+`createLesserMessagesHandlers` accepts the exported structural `LesserMessagesAdapter` interface.
+`LesserGraphQLAdapter` implements that interface for existing Apollo consumers, while source-installed
+consumers may supply another implementation without installing Apollo, GraphQL, or
+`@graphql-typed-document-node/core` merely to typecheck the binding.
+
+The binding's dependency-free operation documents select only the messaging fields it consumes and
+remain aligned with the pinned Lesser v1.5.33 contract. This is an adapter-only compatibility fix;
+the pinned snapshots do not change.
+
 ## Installation
 
 ```bash
