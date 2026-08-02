@@ -97,6 +97,9 @@ function dropRawTextElements(html: string): string {
 }
 
 const htmlFragmentProcessor = unified().use(rehypeParse, { fragment: true }).use(rehypeStringify);
+// This fixed sentinel is classification-only, never a real outbound origin. Relative URLs need
+// an absolute base, and HTTPS avoids downgrade quirks when resolving special-scheme shorthand.
+const SANITIZER_BASE_URL = new URL('https://greater-sanitize.invalid/');
 
 function isSanitizedElement(node: SanitizedNode): node is SanitizedElement {
 	return node.type === 'element';
@@ -115,6 +118,18 @@ function urlParserNormalized(href: string): string {
 	return href.replace(/^[\x00-\x20]+/u, '').replace(/[\t\n\r]/gu, '');
 }
 
+function isExternalHttpUrl(href: string): boolean {
+	try {
+		const resolved = new URL(urlParserNormalized(href), SANITIZER_BASE_URL);
+		return (
+			(resolved.protocol === 'http:' || resolved.protocol === 'https:') &&
+			resolved.origin !== SANITIZER_BASE_URL.origin
+		);
+	} catch {
+		return false;
+	}
+}
+
 function hardenExternalAnchors(node: SanitizedParent): void {
 	for (const child of node.children) {
 		if (!isSanitizedElement(child)) continue;
@@ -122,7 +137,7 @@ function hardenExternalAnchors(node: SanitizedParent): void {
 		if (
 			child.tagName === 'a' &&
 			typeof child.properties['href'] === 'string' &&
-			/^(?:https?:)?[\\/]{2}/iu.test(urlParserNormalized(child.properties['href']))
+			isExternalHttpUrl(child.properties['href'])
 		) {
 			const tokens = relTokens(child).filter((token) => token.toLowerCase() !== 'opener');
 			const normalizedTokens = new Set(tokens.map((token) => token.toLowerCase()));

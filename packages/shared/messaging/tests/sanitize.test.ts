@@ -50,7 +50,13 @@ function expectOnlySafeAnchor(dirty: string): HTMLAnchorElement {
 	expect(anchor).toBeInstanceOf(HTMLAnchorElement);
 	const href = anchor.getAttribute('href');
 	if (href !== null) {
-		expect(['http:', 'https:']).toContain(new URL(href, 'https://messages.test').protocol);
+		let protocol: string | undefined;
+		try {
+			protocol = new URL(href, 'https://messages.test').protocol;
+		} catch {
+			// Malformed-but-inert hrefs are permitted by the protocol allow-list.
+		}
+		expect([undefined, 'http:', 'https:', 'mailto:']).toContain(protocol);
 	}
 
 	return anchor as HTMLAnchorElement;
@@ -84,6 +90,25 @@ function expectHardenedAnchor(
 
 	return anchor;
 }
+
+const RESOLUTION_EXTERNAL_HREF_CASES = [
+	['protocol-relative sentinel host', '//greater-sanitize.invalid/path', false],
+	['protocol-relative other host', '//other.test/path', true],
+	['absolute HTTPS sentinel host', 'https://greater-sanitize.invalid/x', false],
+	['absolute HTTPS other host', 'https://other.test/x', true],
+	['absolute HTTP other host', 'http://other.test/x', true],
+	['HTTP sentinel host with a different origin', 'http://greater-sanitize.invalid/x', true],
+	['uppercase other host', 'https://OTHER.TEST/x', true],
+	['uppercase sentinel host', 'https://GREATER-SANITIZE.INVALID/x', false],
+	['relative path', '/local/path', false],
+	['fragment-only href', '#fragment', false],
+	['explicit evil.com authority', '//evil.com', true],
+	['scheme-mismatched HTTP URL', 'http:evil.test', true],
+	['same-scheme HTTPS URL', 'https:evil.test', false],
+	['mailto URL', 'mailto:user@example.test', false],
+	['malformed absolute URL', 'https://[invalid', false],
+	['empty href', '', false],
+] as const;
 
 describe('messaging sanitization', () => {
 	it.each([
@@ -134,7 +159,7 @@ describe('messaging sanitization', () => {
 		expect(anchor.getAttribute('rel')?.split(/\s+/u)).toEqual(expectedRel);
 	});
 
-	it('treats https:evil.test as a non-authority href under the shared predicate', () => {
+	it('treats https:evil.test as internal when resolved against the https sentinel base', () => {
 		const anchor = expectOnlySafeAnchor(
 			'<a href="https:evil.test" target="named" rel="opener">x</a>'
 		);
@@ -143,6 +168,15 @@ describe('messaging sanitization', () => {
 		expect(anchor.getAttribute('target')).toBe('named');
 		expect(anchor.getAttribute('rel')).toBe('opener');
 	});
+
+	it.each(RESOLUTION_EXTERNAL_HREF_CASES)(
+		'classifies %s by its resolved http(s) origin',
+		(_case, href, isExternal) => {
+			const anchor = expectOnlySafeAnchor(`<a href="${href}" target="named">x</a>`);
+
+			expect(anchor.hasAttribute('rel')).toBe(isExternal);
+		}
+	);
 
 	it.each([
 		[
