@@ -64,6 +64,8 @@ function readPackageManifests(dir: string): PackageManifest[] {
 function generatedDependencyRanges(): Map<string, Set<string>> {
 	const manifests = readPackageManifests(PACKAGES_ROOT);
 	const workspaceVersions = new Map(manifests.map(({ name, version }) => [name, version]));
+	// Deliberately pool the union of declared ranges by dependency name across
+	// every workspace manifest; package ownership is not encoded in Registry entries.
 	const ranges = new Map<string, Set<string>>();
 	const add = (name: string, version: string): void => {
 		const versions = ranges.get(name) ?? new Set<string>();
