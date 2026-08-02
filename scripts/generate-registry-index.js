@@ -11,6 +11,7 @@
  * Options:
  *   --dry-run     Print output without writing file
  *   --validate    Validate existing registry index
+ *   --check       Regenerate with stable metadata and fail if the tracked index changes
  *   --verbose     Enable verbose logging
  */
 
@@ -871,6 +872,7 @@ async function main() {
 	const args = process.argv.slice(2);
 	const dryRun = args.includes('--dry-run');
 	const validateOnly = args.includes('--validate');
+	const checkFreshness = args.includes('--check');
 	const verbose = args.includes('--verbose');
 	const refOverride = (() => {
 		const direct = args.find((arg) => arg.startsWith('--ref='));
@@ -921,7 +923,10 @@ async function main() {
 	const version = getVersion();
 	const ref = refOverride ?? getGitRef(version);
 	const commit = resolveRegistryCommit(ref);
-	const generatedAt = new Date().toISOString();
+	const existingGeneratedAt = checkFreshness
+		? JSON.parse(fs.readFileSync(OUTPUT_PATH, 'utf8')).generatedAt
+		: undefined;
+	const generatedAt = existingGeneratedAt ?? new Date().toISOString();
 
 	// Get workspace versions
 	const workspaceVersions = getPackageVersions();
@@ -1031,6 +1036,19 @@ async function main() {
 
 		fs.writeFileSync(OUTPUT_PATH, output);
 		log(`✅ Registry index written to ${OUTPUT_PATH}`, colors.green);
+
+		if (checkFreshness) {
+			try {
+				execFileSync('git', ['diff', '--exit-code', '--', 'registry/index.json'], {
+					cwd: rootDir,
+					stdio: 'inherit',
+				});
+				log('✅ Registry index is freshly generated', colors.green);
+			} catch {
+				log('❌ Registry index is stale; run `pnpm generate-registry` and commit it', colors.red);
+				process.exit(1);
+			}
+		}
 	}
 }
 

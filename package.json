@@ -59,7 +59,7 @@
     "validate:ids": "node scripts/validate-ids.js",
     "validate:versions": "node scripts/validate-release-versions.js",
     "validate:package": "pnpm validate:exports && pnpm validate:dist && pnpm validate:deps && pnpm validate:cli && pnpm validate:check-parity && pnpm validate:tokens && pnpm validate:ids && pnpm validate:csp && pnpm validate:versions && pnpm check:openapi-auth",
-    "validate:registry": "node scripts/validate-registry-index.js --strict && pnpm validate:versions",
+    "validate:registry": "node scripts/validate-registry-index.js --strict && node scripts/generate-registry-index.js --check && pnpm validate:versions",
     "validate:tokens": "node scripts/audit-tokens-placeholders.mjs",
     "check:openapi-auth": "node scripts/check-openapi-auth.mjs",
     "check:openapi-auth:strict": "node scripts/check-openapi-auth.mjs --strict",
