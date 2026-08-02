@@ -30,6 +30,16 @@ const rootDir = path.join(__dirname, '..');
 const SCHEMA_VERSION = '1.0.0';
 const OUTPUT_PATH = path.join(rootDir, 'registry', 'index.json');
 const PACKAGES_DIR = path.join(rootDir, 'packages');
+const REGISTRY_REQUIRED_FIELDS = [
+	'schemaVersion',
+	'generatedAt',
+	'ref',
+	'version',
+	'checksums',
+	'components',
+	'faces',
+	'shared',
+];
 
 // Package directories to scan (matching actual project structure)
 const PACKAGE_CONFIGS = {
@@ -162,15 +172,35 @@ function isInsideGitWorkTree() {
 
 function readRegistryIndexForFreshnessCheck() {
 	const content = fs.readFileSync(OUTPUT_PATH, 'utf8');
+	let index;
 
 	try {
-		return JSON.parse(content);
+		index = JSON.parse(content);
 	} catch (error) {
 		const detail =
 			error instanceof Error ? error.message.replace(/[\r\n]+/g, ' ').trim() : 'invalid JSON';
 		log(`❌ Unable to parse registry/index.json: ${detail}`, colors.red);
 		process.exit(1);
 	}
+
+	if (typeof index !== 'object' || index === null || Array.isArray(index)) {
+		log(
+			'❌ Unable to parse registry/index.json: expected a non-null object with required top-level keys',
+			colors.red
+		);
+		process.exit(1);
+	}
+
+	const missingFields = REGISTRY_REQUIRED_FIELDS.filter((field) => !(field in index));
+	if (missingFields.length > 0) {
+		log(
+			`❌ Unable to parse registry/index.json: missing required top-level keys: ${missingFields.join(', ')}`,
+			colors.red
+		);
+		process.exit(1);
+	}
+
+	return index;
 }
 
 function printFallbackDiff(existingOutput, generatedOutput) {
@@ -919,17 +949,7 @@ function validateRegistryIndex(index) {
 	const errors = [];
 
 	// Check required fields
-	const requiredFields = [
-		'schemaVersion',
-		'generatedAt',
-		'ref',
-		'version',
-		'checksums',
-		'components',
-		'faces',
-		'shared',
-	];
-	for (const field of requiredFields) {
+	for (const field of REGISTRY_REQUIRED_FIELDS) {
 		if (!(field in index)) {
 			errors.push(`Missing required field: ${field}`);
 		}

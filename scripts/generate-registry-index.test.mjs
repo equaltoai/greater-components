@@ -99,6 +99,26 @@ function expectFailure(result, context) {
 	);
 }
 
+function expectLegibleArtifactParseFailure(cwd, content, context) {
+	const artifact = join(cwd, 'registry', 'index.json');
+	writeFileSync(artifact, content);
+
+	const result = runCheck(cwd);
+	const output = `${result.stdout}\n${result.stderr}`;
+	const parseErrorLines = output
+		.split('\n')
+		.filter((line) => line.includes('Unable to parse registry/index.json'));
+
+	assert.equal(
+		result.status,
+		1,
+		`${context} should exit 1\nstdout:\n${result.stdout}\nstderr:\n${result.stderr}`
+	);
+	assert.equal(parseErrorLines.length, 1, `expected one parse error line\n${output}`);
+	assert.match(parseErrorLines[0], /Unable to parse registry\/index\.json: .+/);
+	assert.doesNotMatch(output, /TypeError|SyntaxError|\n\s+at\s/);
+}
+
 const tests = [
 	[
 		'unstaged drift fails without changing the artifact bytes',
@@ -134,25 +154,19 @@ const tests = [
 				assert.doesNotMatch(output, /ENOENT|\n\s+at\s/);
 			}),
 	],
-	[
-		'malformed artifact fails with a legible parse error and no stack trace',
-		() =>
-			withWorktree((cwd) => {
-				const artifact = join(cwd, 'registry', 'index.json');
-				writeFileSync(artifact, '{"schemaVersion":');
-
-				const result = runCheck(cwd);
-				const output = `${result.stdout}\n${result.stderr}`;
-				const parseErrorLines = output
-					.split('\n')
-					.filter((line) => line.includes('Unable to parse registry/index.json'));
-
-				expectFailure(result, 'malformed registry artifact');
-				assert.equal(parseErrorLines.length, 1, `expected one parse error line\n${output}`);
-				assert.match(parseErrorLines[0], /Unable to parse registry\/index\.json: .+/);
-				assert.doesNotMatch(output, /SyntaxError|\n\s+at\s/);
-			}),
-	],
+	...[
+		['null artifact', 'null'],
+		['string artifact', '"str"'],
+		['number artifact', '42'],
+		['array artifact', '[]'],
+		['object missing required top-level keys', '{}'],
+		['truncated JSON artifact', '{"schemaVersion":'],
+		['empty artifact', ''],
+		['artifact with trailing garbage', '{"schemaVersion":"1.0.0"} trailing'],
+	].map(([name, content]) => [
+		`${name} fails with a legible parse error and no stack trace`,
+		() => withWorktree((cwd) => expectLegibleArtifactParseFailure(cwd, content, name)),
+	]),
 	[
 		'staged-only drift fails with a diff while the worktree matches generation',
 		() =>
