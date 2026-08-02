@@ -190,6 +190,57 @@ describe('package utilities', () => {
 		);
 		expect(missing).toEqual([{ name: 'new', version: '2.0.0' }]);
 	});
+
+	it('treats an installed dependency at the registry floor as satisfied', async () => {
+		const { isDependencyInstalled } = await import('../src/utils/packages.js');
+		fsStore.set('/repo/package.json', JSON.stringify({ dependencies: { viem: '2.55.10' } }));
+
+		expect(await isDependencyInstalled('viem', '/repo', '^2.55.10')).toBe(true);
+	});
+
+	it('marks an installed dependency below the registry floor for upgrade', async () => {
+		const { getMissingDependencies, isDependencyInstalled } =
+			await import('../src/utils/packages.js');
+		fsStore.set('/repo/package.json', JSON.stringify({ dependencies: { viem: '2.51.3' } }));
+
+		expect(await isDependencyInstalled('viem', '/repo', '^2.55.10')).toBe(false);
+		expect(await getMissingDependencies([{ name: 'viem', version: '^2.55.10' }], '/repo')).toEqual([
+			{ name: 'viem', version: '^2.55.10' },
+		]);
+	});
+
+	it('treats non-semver declarations as present without installing', async () => {
+		const { getMissingDependencies, isDependencyInstalled } =
+			await import('../src/utils/packages.js');
+		const { execa } = await import('execa');
+		const declarations = {
+			'catalog-dependency': 'catalog:',
+			'workspace-dependency': 'workspace:*',
+			'aliased-dependency': 'npm:alias@^1.0.0',
+			'file-dependency': 'file:../local-package',
+			'link-dependency': 'link:../local-package',
+			'git-dependency': 'git+https://github.com/example/package.git#v1.0.0',
+		};
+		fsStore.set('/repo/package.json', JSON.stringify({ dependencies: declarations }));
+
+		const requiredDependencies = Object.keys(declarations).map((name) => ({
+			name,
+			version: '^2.55.10',
+		}));
+
+		for (const dependency of requiredDependencies) {
+			expect(await isDependencyInstalled(dependency.name, '/repo', dependency.version)).toBe(true);
+		}
+		expect(await getMissingDependencies(requiredDependencies, '/repo')).toEqual([]);
+		expect(execa).not.toHaveBeenCalled();
+	});
+
+	it('preserves name-only satisfaction when no registry range is provided', async () => {
+		const { isDependencyInstalled } = await import('../src/utils/packages.js');
+		fsStore.set('/repo/package.json', JSON.stringify({ dependencies: { viem: '2.51.3' } }));
+
+		expect(await isDependencyInstalled('viem', '/repo')).toBe(true);
+	});
 });
 
 describe('logger utility', () => {

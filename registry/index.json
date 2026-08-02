@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-01T22:11:43.313Z",
+  "generatedAt": "2026-08-02T00:07:57.709Z",
   "ref": "greater-v0.11.9",
   "version": "0.11.9",
   "checksums": {
@@ -6025,7 +6025,7 @@
         { "name": "@graphql-typed-document-node/core", "version": "^3.2.0" },
         { "name": "graphql", "version": "^16.13.2" },
         { "name": "graphql-ws", "version": "^6.0.8" },
-        { "name": "viem", "version": "2.51.3" },
+        { "name": "viem", "version": "^2.55.10" },
         { "name": "svelte", "version": "^5.55.1" }
       ],
       "tags": []

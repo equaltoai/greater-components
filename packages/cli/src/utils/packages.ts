@@ -5,7 +5,14 @@
 import { execa } from 'execa';
 import fs from 'fs-extra';
 import path from 'node:path';
+import { minVersion, satisfies } from 'semver';
 import type { ComponentDependency } from '../registry/index.js';
+
+export interface DependencyDeclarationStatus {
+	installed: boolean;
+	declaration?: string;
+	floorCheckSkipped: boolean;
+}
 
 /**
  * Detect package manager
@@ -80,27 +87,67 @@ export async function installDependencies(
 }
 
 /**
- * Check if dependency is installed
+ * Check if dependency is installed at a compatible version.
+ *
+ * When no required version is provided, preserve the historical name-only check.
+ * Non-semver declarations (for example workspace or git dependencies) also fall
+ * back to name-only because their resolved versions are not available here.
  */
-export async function isDependencyInstalled(packageName: string, cwd: string): Promise<boolean> {
+export async function getDependencyDeclarationStatus(
+	packageName: string,
+	cwd: string,
+	requiredVersion?: string
+): Promise<DependencyDeclarationStatus> {
 	const packageJsonPath = path.join(cwd, 'package.json');
 
 	if (!(await fs.pathExists(packageJsonPath))) {
-		return false;
+		return { installed: false, floorCheckSkipped: false };
 	}
 
 	try {
 		const content = await fs.readFile(packageJsonPath, 'utf-8');
-		const pkg = JSON.parse(content);
-
-		return !!(
+		const pkg = JSON.parse(content) as {
+			dependencies?: Record<string, string>;
+			devDependencies?: Record<string, string>;
+			peerDependencies?: Record<string, string>;
+		};
+		const installedVersion =
 			pkg.dependencies?.[packageName] ||
 			pkg.devDependencies?.[packageName] ||
-			pkg.peerDependencies?.[packageName]
-		);
+			pkg.peerDependencies?.[packageName];
+
+		if (!installedVersion) return { installed: false, floorCheckSkipped: false };
+		if (!requiredVersion) {
+			return { installed: true, declaration: installedVersion, floorCheckSkipped: false };
+		}
+
+		let installedFloor;
+		try {
+			installedFloor = minVersion(installedVersion);
+		} catch {
+			return { installed: true, declaration: installedVersion, floorCheckSkipped: true };
+		}
+
+		if (!installedFloor) {
+			return { installed: true, declaration: installedVersion, floorCheckSkipped: true };
+		}
+
+		return {
+			installed: satisfies(installedFloor, requiredVersion),
+			declaration: installedVersion,
+			floorCheckSkipped: false,
+		};
 	} catch {
-		return false;
+		return { installed: false, floorCheckSkipped: false };
 	}
+}
+
+export async function isDependencyInstalled(
+	packageName: string,
+	cwd: string,
+	requiredVersion?: string
+): Promise<boolean> {
+	return (await getDependencyDeclarationStatus(packageName, cwd, requiredVersion)).installed;
 }
 
 /**
@@ -113,7 +160,7 @@ export async function getMissingDependencies(
 	const missing: ComponentDependency[] = [];
 
 	for (const dep of dependencies) {
-		if (!(await isDependencyInstalled(dep.name, cwd))) {
+		if (!(await isDependencyInstalled(dep.name, cwd, dep.version))) {
 			missing.push(dep);
 		}
 	}
