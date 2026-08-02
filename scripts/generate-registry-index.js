@@ -138,6 +138,14 @@ function failGitCheck(operation, error) {
 	process.exit(1);
 }
 
+function getSanitizedGitEnvironment() {
+	const env = { ...process.env };
+	delete env.GIT_DIR;
+	delete env.GIT_WORK_TREE;
+	delete env.GIT_COMMON_DIR;
+	return env;
+}
+
 function gitReportedNoRepository(error) {
 	if (error?.status !== 128) return false;
 
@@ -147,23 +155,18 @@ function gitReportedNoRepository(error) {
 			: Buffer.isBuffer(error.stderr)
 				? error.stderr.toString('utf8')
 				: '';
-	const message = stderr.trimEnd();
-
-	return (
-		message === 'fatal: not a git repository (or any of the parent directories): .git' ||
-		/^fatal: not a git repository: [^\r\n]+$/.test(message)
-	);
+	return stderr.startsWith('fatal: not a git repository');
 }
 
 function isInsideGitWorkTree() {
 	try {
-		return (
-			execFileSync('git', ['rev-parse', '--is-inside-work-tree'], {
-				cwd: rootDir,
-				encoding: 'utf8',
-				stdio: ['ignore', 'pipe', 'pipe'],
-			}).trim() === 'true'
-		);
+		execFileSync('git', ['rev-parse', '--is-inside-work-tree'], {
+			cwd: rootDir,
+			encoding: 'utf8',
+			env: getSanitizedGitEnvironment(),
+			stdio: ['ignore', 'pipe', 'pipe'],
+		});
+		return true;
 	} catch (error) {
 		if (error?.code === 'ENOENT' || gitReportedNoRepository(error)) return false;
 		failGitCheck('determine whether the registry has staged changes', error);
@@ -524,6 +527,7 @@ function resolveGitCommit(ref) {
 			['-C', rootDir, 'rev-parse', '--verify', `${ref}^{commit}`],
 			{
 				encoding: 'utf8',
+				env: getSanitizedGitEnvironment(),
 				stdio: ['ignore', 'pipe', 'ignore'],
 			}
 		).trim();
@@ -1158,6 +1162,7 @@ async function main() {
 				try {
 					execFileSync('git', ['diff', '--no-index', '--', 'registry/index.json', '-'], {
 						cwd: rootDir,
+						env: getSanitizedGitEnvironment(),
 						input: output,
 						stdio: ['pipe', 'inherit', 'inherit'],
 					});
@@ -1177,6 +1182,7 @@ async function main() {
 				try {
 					execFileSync('git', ['diff', '--cached', '--quiet', '--', 'registry/index.json'], {
 						cwd: rootDir,
+						env: getSanitizedGitEnvironment(),
 						stdio: 'ignore',
 					});
 				} catch (error) {
@@ -1193,6 +1199,7 @@ async function main() {
 					stagedOutput = execFileSync('git', ['show', ':registry/index.json'], {
 						cwd: rootDir,
 						encoding: 'utf8',
+						env: getSanitizedGitEnvironment(),
 						maxBuffer: 64 * 1024 * 1024,
 					});
 				} catch (error) {
@@ -1205,6 +1212,7 @@ async function main() {
 					try {
 						execFileSync('git', ['diff', '--cached', '--', 'registry/index.json'], {
 							cwd: rootDir,
+							env: getSanitizedGitEnvironment(),
 							stdio: 'inherit',
 						});
 					} catch (error) {

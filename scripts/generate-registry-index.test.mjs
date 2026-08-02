@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
 import {
+	chmodSync,
 	existsSync,
 	mkdirSync,
 	mkdtempSync,
@@ -211,6 +212,28 @@ const tests = [
 			}),
 	],
 	[
+		'GIT_DIR override cannot bypass real staged registry drift',
+		() =>
+			withWorktree((cwd) => {
+				const artifact = join(cwd, 'registry', 'index.json');
+				const clean = readFileSync(artifact, 'utf8');
+				writeFileSync(artifact, perturb(clean, '1.0.1'));
+				git(cwd, ['add', 'registry/index.json']);
+				writeFileSync(artifact, clean);
+
+				const result = runCheck(cwd, {
+					...process.env,
+					GIT_DIR: join(cwd, 'missing-git-dir'),
+				});
+				const output = `${result.stdout}\n${result.stderr}`;
+
+				expectFailure(result, 'GIT_DIR override with staged registry drift');
+				assert.match(output, /Staged registry index is stale/);
+				assert.match(output, /diff --git a\/registry\/index\.json b\/registry\/index\.json/);
+				assert.doesNotMatch(output, /Registry index is freshly generated|\n\s+at\s/);
+			}),
+	],
+	[
 		'clean artifact passes freshness checking',
 		() =>
 			withWorktree((cwd) => {
@@ -263,13 +286,15 @@ const tests = [
 			),
 	],
 	[
-		"git's missing-GIT_DIR message skips only the staged-drift leg",
+		'Git directory overrides do not confuse the no-repository probe',
 		() =>
 			withArchive(
 				(cwd, env) => {
 					const result = runCheck(cwd, {
 						...env,
 						GIT_DIR: join(cwd, 'missing-git-dir'),
+						GIT_WORK_TREE: join(cwd, 'missing-work-tree'),
+						GIT_COMMON_DIR: join(cwd, 'missing-common-dir'),
 					});
 					const output = `${result.stdout}\n${result.stderr}`;
 
@@ -277,6 +302,40 @@ const tests = [
 						result.status,
 						0,
 						`fresh registry with a missing GIT_DIR should pass\nstdout:\n${result.stdout}\nstderr:\n${result.stderr}`
+					);
+					assert.match(output, /Registry index is freshly generated/);
+					assert.doesNotMatch(output, /Unable to determine|\n\s+at\s/);
+				},
+				{ gitAvailable: true }
+			),
+	],
+	[
+		"git's mount-boundary no-repository message skips only the staged-drift leg",
+		() =>
+			withArchive(
+				(cwd, env) => {
+					const binDir = join(cwd, '.git-shim-bin');
+					const gitShim = join(binDir, 'git');
+					mkdirSync(binDir);
+					writeFileSync(
+						gitShim,
+						`#!/bin/bash
+if [[ "$*" == "rev-parse --is-inside-work-tree" ]]; then
+	printf '%s\\n' 'fatal: not a git repository (or any parent up to mount point /mnt)' 'Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).' >&2
+	exit 128
+fi
+exit 128
+`
+					);
+					chmodSync(gitShim, 0o755);
+
+					const result = runCheck(cwd, { ...env, PATH: `${binDir}:${env.PATH}` });
+					const output = `${result.stdout}\n${result.stderr}`;
+
+					assert.equal(
+						result.status,
+						0,
+						`fresh registry with a mount-boundary response should pass\nstdout:\n${result.stdout}\nstderr:\n${result.stderr}`
 					);
 					assert.match(output, /Registry index is freshly generated/);
 					assert.doesNotMatch(output, /Unable to determine|\n\s+at\s/);
