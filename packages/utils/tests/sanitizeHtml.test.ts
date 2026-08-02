@@ -120,7 +120,7 @@ describe('sanitizeHtml', () => {
 
 	it.each([
 		['protocol-relative', '<a href="//evil.test" target="_blank">x</a>'],
-		['leading backslash', '<a href="\\evil.test" target="_blank">x</a>'],
+		['two leading backslashes', `<a href="${String.raw`\\evil.test`}" target="_blank">x</a>`],
 	])('hardens an authored blank target for a %s href', (_case, input) => {
 		const anchor = expectOnlySafeAnchor(input);
 		const tokens = anchor.getAttribute('rel')?.split(/\s+/u) ?? [];
@@ -129,10 +129,26 @@ describe('sanitizeHtml', () => {
 		expect(anchor.getAttribute('target')).toBe('_blank');
 	});
 
-	it('opens and hardens a protocol-relative external link without an authored target', () => {
-		const anchor = expectOnlySafeAnchor('<a href="//evil.test">x</a>');
+	it.each([
+		['protocol-relative', '//evil.test'],
+		['two leading backslashes', String.raw`\\evil.test`],
+		['slash-backslash', String.raw`/\evil.test`],
+		['backslash-slash', String.raw`\/evil.test`],
+		['leading space', ' //evil.test'],
+		['leading tab', '\t//evil.test'],
+	])('opens and hardens a normalized external %s href', (_case, href) => {
+		const anchor = expectOnlySafeAnchor(`<a href="${href}">x</a>`);
 
 		expect(anchor.getAttribute('rel')?.split(/\s+/u)).toEqual(['noopener', 'noreferrer']);
+		expect(anchor.getAttribute('target')).toBe('_blank');
+	});
+
+	it('preserves an authored target on a same-origin single-backslash href without adding rel', () => {
+		const anchor = expectOnlySafeAnchor(
+			`<a href="${String.raw`\evil.test`}" target="_blank">x</a>`
+		);
+
+		expect(anchor.hasAttribute('rel')).toBe(false);
 		expect(anchor.getAttribute('target')).toBe('_blank');
 	});
 
@@ -141,6 +157,7 @@ describe('sanitizeHtml', () => {
 		['relative path with an interior backslash', '/foo\\bar'],
 		['fragment', '#fragment'],
 		['mailto link', 'mailto:x@y.z'],
+		['relative path', 'relative.html'],
 	])('does not harden a %s', (_case, href) => {
 		const anchor = expectOnlySafeAnchor(`<a href="${href}">x</a>`);
 

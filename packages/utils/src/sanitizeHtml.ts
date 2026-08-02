@@ -140,6 +140,13 @@ function isHastElement(node: HastNode): node is HastElement {
 	return node.type === 'element';
 }
 
+// Mirrors packages/shared/messaging/src/sanitize.ts; keep external-link classification aligned.
+// Mirror the WHATWG URL parser's pre-parse normalization.
+function urlParserNormalized(href: string): string {
+	// eslint-disable-next-line no-control-regex -- WHATWG strips the full leading C0 range.
+	return href.replace(/^[\x00-\x20]+/u, '').replace(/[\t\n\r]/gu, '');
+}
+
 /** Add external-link protections before the sanitized tree is serialized. */
 function rehypeExternalLinkProperties(options: ExternalLinkOptions) {
 	return (tree: HastNode): void => {
@@ -151,26 +158,14 @@ function rehypeExternalLinkProperties(options: ExternalLinkOptions) {
 
 				const href = child.properties['href'];
 				if (child.tagName === 'a' && typeof href === 'string') {
-					const isHttpExternal = href.startsWith('http://') || href.startsWith('https://');
-					const isProtocolRelative = href.startsWith('//');
-					const isBackslashExternal = href.startsWith('\\');
-					const isExternal = isHttpExternal || isProtocolRelative || isBackslashExternal;
+					const isExternal = /^(?:https?:)?[\\/]{2}/iu.test(urlParserNormalized(href));
 					const hasTarget = 'target' in child.properties;
 
-					if (
-						isExternal &&
-						options.addRelToExternalLinks &&
-						(!isBackslashExternal || hasTarget) &&
-						!('rel' in child.properties)
-					) {
+					if (isExternal && options.addRelToExternalLinks && !('rel' in child.properties)) {
 						child.properties['rel'] = [...SECURITY_TOKENS];
 					}
 
-					if (
-						(isHttpExternal || isProtocolRelative) &&
-						options.externalLinksInNewTab &&
-						!hasTarget
-					) {
+					if (isExternal && options.externalLinksInNewTab && !hasTarget) {
 						child.properties['target'] = '_blank';
 
 						if (options.addRelToExternalLinks) {
