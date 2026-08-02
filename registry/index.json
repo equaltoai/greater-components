@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-02T04:32:46.693Z",
+  "generatedAt": "2026-08-02T04:52:56.504Z",
   "ref": "greater-v0.11.9",
   "version": "0.11.9",
   "checksums": {
@@ -832,13 +832,13 @@
     "packages/adapters/src/graphql/index.d.ts": "sha256-orLx9yyDGxzzxd5wHeLg/XKql86ntzhZSG6iUj6Tjx8=",
     "packages/adapters/src/graphql/index.ts": "sha256-330bRj505ZOWM5XTbOpFZW1n8sy2/SCbzCu9XXYvrOA=",
     "packages/adapters/src/graphql/LesserGraphQLAdapter.d.ts": "sha256-tS4MSxFQSiPlKqIotIdGyDRMyfu7BjJ3dpPBXfjVqtU=",
-    "packages/adapters/src/graphql/LesserGraphQLAdapter.ts": "sha256-8EbsCoSKJzc1CpJa+oR4DuWQxjHtICJl+YUxlrjXJls=",
+    "packages/adapters/src/graphql/LesserGraphQLAdapter.ts": "sha256-TS7qFQl5mbyf1o13DtsHn/uNX38rgyquMfwFzwOkeNk=",
     "packages/adapters/src/graphql/optimistic.d.ts": "sha256-DO9Yg7q9e9k3+suvhBSBWMn+8+pVGydTpC7e70EPO1w=",
     "packages/adapters/src/graphql/optimistic.ts": "sha256-4U/b1aHeGBfl+YC+R+XaeY0Ts8hY8Er+3XfqUhSpqWY=",
     "packages/adapters/src/HttpPollingClient.d.ts": "sha256-6UbsJSk+ur6Rth93w5bnSj3HOl2teXThMIBozc0TQqI=",
     "packages/adapters/src/HttpPollingClient.ts": "sha256-3VvR+Q3A9QuT9IKrT2s2OP48Ir5wDbDiL3NFp6fhO0w=",
     "packages/adapters/src/index.d.ts": "sha256-N9rD+C+FY2TCOW91GXIb5Cqm9lMS5na3I8MoSewctBE=",
-    "packages/adapters/src/index.ts": "sha256-KoxVjknH5lCuvaphIgDk4LfgActPn5ja3ZGVudLSklM=",
+    "packages/adapters/src/index.ts": "sha256-xkBiSjdXZzk/ba8Cfax6AAgkIJFKn9kaI51ABAvTzZE=",
     "packages/adapters/src/lesser/client.ts": "sha256-1zz1lpu6roGoTtOC/LIwXsT8oLHXkFV4TA8OblQ2Zhs=",
     "packages/adapters/src/lesser/index.ts": "sha256-/G5V2Tcie3s4/bPAszGUu+RGRRiz6nhnEXbge7XGxTw=",
     "packages/adapters/src/logger.d.ts": "sha256-EWrIRS5/xIIlNv5OLPY+Rf37HgYqrYhXxGlfPX8oNgc=",
@@ -855,8 +855,9 @@
     "packages/adapters/src/mappers/mastodon/mappers.ts": "sha256-azySwXrEAWqu3nuiQkR3IFQ84Z9Pr0boYFgzpqXYJtE=",
     "packages/adapters/src/mappers/mastodon/types.d.ts": "sha256-LLN8HNltLV9QnLl0tY3zOF4ovD0+sYN0UvGJIx7MH70=",
     "packages/adapters/src/mappers/mastodon/types.ts": "sha256-54WrBVIzEH/QIxzBUL6OOjfsanvpM8WNkpJjKSVFSlA=",
-    "packages/adapters/src/messaging/createLesserMessagesHandlers.ts": "sha256-QGXz+0mFl0V4NM3JeTFag+9jLk61CIBUlf8kR6mXPZk=",
-    "packages/adapters/src/messaging/index.ts": "sha256-2P3bCyR2sBhuV0GrrVnAaqGSq8dMVhA95dIJZ2s+eKw=",
+    "packages/adapters/src/messaging/createLesserMessagesHandlers.ts": "sha256-qu9tdupn585B8Ynn8CbDcESBWZdUKT21+QAMHrLCAHA=",
+    "packages/adapters/src/messaging/index.ts": "sha256-hIJPyGpRY8EhsYDn/PnzPbahiYpTH9sgPKS5VV9H0cc=",
+    "packages/adapters/src/messaging/messagingOperations.ts": "sha256-KlymQ8y2PhLoIRqvOZldwtuK+A7bJ/BSXv0WCeQrEK8=",
     "packages/adapters/src/models/unified.d.ts": "sha256-8Z2SFddm7Cszpe6EoB85lJVH0xW16xjo68PhJGuvmeQ=",
     "packages/adapters/src/models/unified.ts": "sha256-KRILzc/F51pCxnEX9cvc2IG7lns7IO48k/UK489J/Vs=",
     "packages/adapters/src/rest/generated/lesser-api.ts": "sha256-8YKhh1BeBVfU+NwuP1QvpQGcuTxXlvQkbTUkYj0I5xQ=",
@@ -5679,8 +5680,8 @@
         },
         {
           "path": "src/graphql/LesserGraphQLAdapter.ts",
-          "checksum": "sha256-8EbsCoSKJzc1CpJa+oR4DuWQxjHtICJl+YUxlrjXJls=",
-          "size": 65150
+          "checksum": "sha256-TS7qFQl5mbyf1o13DtsHn/uNX38rgyquMfwFzwOkeNk=",
+          "size": 65274
         },
         {
           "path": "src/graphql/optimistic.d.ts",
@@ -5709,8 +5710,8 @@
         },
         {
           "path": "src/index.ts",
-          "checksum": "sha256-KoxVjknH5lCuvaphIgDk4LfgActPn5ja3ZGVudLSklM=",
-          "size": 13689
+          "checksum": "sha256-xkBiSjdXZzk/ba8Cfax6AAgkIJFKn9kaI51ABAvTzZE=",
+          "size": 13712
         },
         {
           "path": "src/lesser/client.ts",
@@ -5794,13 +5795,18 @@
         },
         {
           "path": "src/messaging/createLesserMessagesHandlers.ts",
-          "checksum": "sha256-QGXz+0mFl0V4NM3JeTFag+9jLk61CIBUlf8kR6mXPZk=",
-          "size": 9856
+          "checksum": "sha256-qu9tdupn585B8Ynn8CbDcESBWZdUKT21+QAMHrLCAHA=",
+          "size": 10668
         },
         {
           "path": "src/messaging/index.ts",
-          "checksum": "sha256-2P3bCyR2sBhuV0GrrVnAaqGSq8dMVhA95dIJZ2s+eKw=",
-          "size": 169
+          "checksum": "sha256-hIJPyGpRY8EhsYDn/PnzPbahiYpTH9sgPKS5VV9H0cc=",
+          "size": 195
+        },
+        {
+          "path": "src/messaging/messagingOperations.ts",
+          "checksum": "sha256-KlymQ8y2PhLoIRqvOZldwtuK+A7bJ/BSXv0WCeQrEK8=",
+          "size": 8924
         },
         {
           "path": "src/models/unified.d.ts",

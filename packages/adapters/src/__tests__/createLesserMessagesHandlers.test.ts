@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { print } from 'graphql';
 import { createLesserMessagesHandlers } from '../messaging/createLesserMessagesHandlers.js';
 import {
 	AcceptMessageRequestDocument,
@@ -8,7 +9,7 @@ import {
 	DeleteConversationDocument,
 	DeleteMessageDocument,
 	SendMessageDocument,
-} from '../graphql/generated/types.js';
+} from '../messaging/messagingOperations.js';
 
 describe('createLesserMessagesHandlers', () => {
 	const adapter = {
@@ -23,6 +24,20 @@ describe('createLesserMessagesHandlers', () => {
 
 	beforeEach(() => {
 		vi.clearAllMocks();
+	});
+
+	it('uses valid dependency-free GraphQL operation documents', () => {
+		for (const document of [
+			ConversationMessagesDocument,
+			CreateConversationDocument,
+			SendMessageDocument,
+			AcceptMessageRequestDocument,
+			DeclineMessageRequestDocument,
+			DeleteConversationDocument,
+			DeleteMessageDocument,
+		]) {
+			expect(print(document)).toMatch(/^(query|mutation) /);
+		}
 	});
 
 	it('fetches conversations by folder', async () => {
