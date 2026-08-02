@@ -123,6 +123,36 @@ describe('sanitizeHtml', () => {
 	});
 
 	it.each([
+		['protocol-relative', '<a href="//evil.test" target="_blank">x</a>'],
+		['leading backslash', '<a href="\\evil.test" target="_blank">x</a>'],
+	])('hardens an authored blank target for a %s href', (_case, input) => {
+		const anchor = expectOnlySafeAnchor(input);
+		const tokens = anchor.getAttribute('rel')?.split(/\s+/u) ?? [];
+
+		expect(new Set(tokens)).toEqual(new Set(['noopener', 'noreferrer']));
+		expect(anchor.getAttribute('target')).toBe('_blank');
+	});
+
+	it('opens and hardens a protocol-relative external link without an authored target', () => {
+		const anchor = expectOnlySafeAnchor('<a href="//evil.test">x</a>');
+
+		expect(anchor.getAttribute('rel')?.split(/\s+/u)).toEqual(['noopener', 'noreferrer']);
+		expect(anchor.getAttribute('target')).toBe('_blank');
+	});
+
+	it.each([
+		['local path', '/local/path'],
+		['relative path with an interior backslash', '/foo\\bar'],
+		['fragment', '#fragment'],
+		['mailto link', 'mailto:x@y.z'],
+	])('does not harden a %s', (_case, href) => {
+		const anchor = expectOnlySafeAnchor(`<a href="${href}">x</a>`);
+
+		expect(anchor.hasAttribute('rel')).toBe(false);
+		expect(anchor.hasAttribute('target')).toBe(false);
+	});
+
+	it.each([
 		['href-first', '<a href="https://x.test" title="a > b">intact link text</a>'],
 		['title-first', '<a title="a > b" href="https://x.test">intact link text</a>'],
 	])('preserves the effective DOM for %s attacker-controlled attribute order', (_order, input) => {

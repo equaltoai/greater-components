@@ -150,16 +150,28 @@ function rehypeExternalLinkProperties(options: ExternalLinkOptions) {
 				if (!isHastElement(child)) continue;
 
 				const href = child.properties['href'];
-				if (
-					child.tagName === 'a' &&
-					typeof href === 'string' &&
-					(href.startsWith('http://') || href.startsWith('https://'))
-				) {
-					if (options.addRelToExternalLinks && !('rel' in child.properties)) {
+				if (child.tagName === 'a' && typeof href === 'string') {
+					const isHttpExternal =
+						href.startsWith('http://') || href.startsWith('https://');
+					const isProtocolRelative = href.startsWith('//');
+					const isBackslashExternal = href.startsWith('\\');
+					const isExternal = isHttpExternal || isProtocolRelative || isBackslashExternal;
+					const hasTarget = 'target' in child.properties;
+
+					if (
+						isExternal &&
+						options.addRelToExternalLinks &&
+						(!isBackslashExternal || hasTarget) &&
+						!('rel' in child.properties)
+					) {
 						child.properties['rel'] = [...SECURITY_TOKENS];
 					}
 
-					if (options.externalLinksInNewTab && !('target' in child.properties)) {
+					if (
+						(isHttpExternal || isProtocolRelative) &&
+						options.externalLinksInNewTab &&
+						!hasTarget
+					) {
 						child.properties['target'] = '_blank';
 
 						if (options.addRelToExternalLinks) {
