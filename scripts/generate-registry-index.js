@@ -897,6 +897,14 @@ async function main() {
 	log('📦 Greater Components Registry Index Generator', colors.bold);
 	log('='.repeat(60) + '\n');
 
+	if (checkFreshness && !fs.existsSync(OUTPUT_PATH)) {
+		log(
+			'❌ registry/index.json is missing; run `pnpm generate-registry` to create it',
+			colors.red
+		);
+		process.exit(1);
+	}
+
 	// Validate existing index if requested
 	if (validateOnly) {
 		log('🔍 Validating existing registry index...', colors.blue);
