@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-02T18:17:51.178Z",
+  "generatedAt": "2026-08-02T18:20:30.645Z",
   "ref": "greater-v0.11.9",
   "version": "0.11.9",
   "checksums": {
@@ -1252,7 +1252,7 @@
     "packages/faces/artist/src/components/Transparency/EthicalSourcingBadge.svelte": "sha256-nsyVlNo4GVsbJcJSqwgaeAYgxZTpgOP3TWPiWK1A3Ok=",
     "packages/faces/artist/src/components/Transparency/index.ts": "sha256-8ZrN45E4iiVNIYHPwZ7QIe+MbkF5KnPJUwhRt+jmr84=",
     "packages/faces/artist/src/components/Transparency/ProcessDocumentation.svelte": "sha256-wdmeVWpN9Bz4uM0RQmYPcNU9pmB0bCZToXmEnBlrZQE=",
-    "packages/faces/artist/src/index.ts": "sha256-Shz4a6ue182siqnPFyZQbVPn2yDpsYOMKQwWLwPzkas=",
+    "packages/faces/artist/src/index.ts": "sha256-/0ZhuioYTEf7cIFGwhXmQVYnxyxbu9dn7IEDgF93/uE=",
     "packages/faces/artist/src/patterns/commission.ts": "sha256-W4uqIqDNrZG0LP0bdJuO4FBdPBQQ9yi1J1ulB8k/YQ0=",
     "packages/faces/artist/src/patterns/critique.ts": "sha256-23BJkElNZtHAuW0OM1tc6xPM9tAW/HSqB9fL0gR8V9s=",
     "packages/faces/artist/src/patterns/discovery.ts": "sha256-ZeCHZ4ss2jiiB1ynb+ngvszKCq+kRhsmsv1XGrGKymo=",
@@ -1276,7 +1276,7 @@
     "packages/faces/artist/src/styles/_performance.css": "sha256-9XsyR0986G83LGliMuOu3/TxMczIvqB2ZVlkAKrpAZE=",
     "packages/faces/artist/src/styles/_reduced-motion.css": "sha256-17rBtaCyQXfHE6m/3hSzMyMHoTrOnWAfN/kewvWfRTw=",
     "packages/faces/artist/src/styles/index.css": "sha256-8KiG6c5rEq1fvbrTXphWrQuHV4VlL+pkwQY9sVBAAXs=",
-    "packages/faces/artist/src/subscriptions/index.ts": "sha256-EJ53g8RCsC3gqnL6HC3xLysDOtrrtXVRkkfhZMooikM=",
+    "packages/faces/artist/src/subscriptions/index.svelte.ts": "sha256-EJ53g8RCsC3gqnL6HC3xLysDOtrrtXVRkkfhZMooikM=",
     "packages/faces/artist/src/theme.css": "sha256-V8BN09El7jnzXMS8YPfaCWpdT4CMB4yiYokAQJkEw+A=",
     "packages/faces/artist/src/types/artist.ts": "sha256-U+FG7wDcMqNCSQuoHIM1qTn5rUn9lmblAsQOz/xn5Vo=",
     "packages/faces/artist/src/types/artwork.ts": "sha256-zl5/8g3JdxD0ideYKA4sRyqtVBXjkVk6JICmWSdmcfA=",
@@ -8317,8 +8317,8 @@
         },
         {
           "path": "src/index.ts",
-          "checksum": "sha256-Shz4a6ue182siqnPFyZQbVPn2yDpsYOMKQwWLwPzkas=",
-          "size": 5410
+          "checksum": "sha256-/0ZhuioYTEf7cIFGwhXmQVYnxyxbu9dn7IEDgF93/uE=",
+          "size": 5426
         },
         {
           "path": "src/patterns/commission.ts",
@@ -8436,7 +8436,7 @@
           "size": 413
         },
         {
-          "path": "src/subscriptions/index.ts",
+          "path": "src/subscriptions/index.svelte.ts",
           "checksum": "sha256-EJ53g8RCsC3gqnL6HC3xLysDOtrrtXVRkkfhZMooikM=",
           "size": 10036
         },
