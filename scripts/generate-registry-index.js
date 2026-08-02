@@ -795,6 +795,7 @@ function processFace(faceName, verbose, workspaceVersions) {
 	// Combine declared and detected external deps
 	const externalDeps = new Set([
 		...declaredDeps,
+		...(manifest.dependencies?.optional || []),
 		...detectedDeps.filter((dep) => !dep.startsWith('@equaltoai/greater-components')),
 	]);
 
@@ -809,7 +810,14 @@ function processFace(faceName, verbose, workspaceVersions) {
 	);
 
 	// Filter self-dependency if packageJson has name
-	const filteredInternalDeps = Array.from(internalDeps);
+	const optionalInternalDeps = new Set(
+		(manifest.dependencies?.optional || []).filter((dep) =>
+			dep.startsWith('@equaltoai/greater-components')
+		)
+	);
+	const filteredInternalDeps = Array.from(internalDeps).filter(
+		(dep) => !optionalInternalDeps.has(dep)
+	);
 	const exportedMembers = getManifestExports(manifest);
 
 	return {

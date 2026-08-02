@@ -1785,7 +1785,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
-		registryDependencies: ['button', 'blog-types'],
+		registryDependencies: ['button', 'blog-types', 'content'],
 		tags: ['compound', 'blog', 'editor', 'markdown'],
 		version: '1.0.0',
 		domain: 'blog',

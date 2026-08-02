@@ -70,7 +70,6 @@
   },
   "dependencies": {
     "@equaltoai/greater-components-auth": "workspace:*",
-    "@equaltoai/greater-components-content": "workspace:*",
     "@equaltoai/greater-components-headless": "workspace:^",
     "@equaltoai/greater-components-icons": "workspace:*",
     "@equaltoai/greater-components-primitives": "workspace:*",
@@ -94,6 +93,12 @@
     "vitest": "^4.1.4"
   },
   "peerDependencies": {
+    "@equaltoai/greater-components-content": "workspace:*",
     "svelte": "^5.43.6"
+  },
+  "peerDependenciesMeta": {
+    "@equaltoai/greater-components-content": {
+      "optional": true
+    }
   }
 }

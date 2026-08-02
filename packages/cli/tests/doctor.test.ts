@@ -524,6 +524,26 @@ describe('checkNpmDependencies extended', () => {
 		expect(results[0]?.message).toContain('All required dependencies');
 	});
 
+	it('keeps a blog reading-surface install green without the optional content chain', async () => {
+		const { checkNpmDependencies } = await import('../src/commands/doctor.js');
+
+		fsStore.set(
+			path.join('/project', 'package.json'),
+			JSON.stringify({ dependencies: { svelte: '^5.55.1' } })
+		);
+
+		const results = await checkNpmDependencies('/project', {
+			...BASE_COMPONENT_CONFIG,
+			installed: [{ name: 'faces/blog' } as any],
+		});
+
+		expect(results.find((result) => result.name === 'NPM Dependencies')).toMatchObject({
+			passed: true,
+			message: 'All required dependencies are installed',
+		});
+		expect(results.map((result) => result.details ?? '').join('\n')).not.toContain('content');
+	});
+
 	it('surfaces a name-only security-floor skip for a non-semver declaration', async () => {
 		const { checkNpmDependencies, formatResult } = await import('../src/commands/doctor.js');
 		const { getComponent } = await import('../src/registry/index.js');
