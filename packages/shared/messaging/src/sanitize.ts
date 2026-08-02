@@ -198,6 +198,8 @@ export function stripSerializedMarkup(serialized: string): string {
 
 /** Sanitize server-authored message HTML for the {@html} message-body sink. */
 export function sanitizeMessageHtml(dirty: string): string {
+	if (!dirty || typeof dirty !== 'string') return '';
+
 	return secureExternalLinks(
 		sanitizeHtml(dropRawTextElements(dirty), {
 			addRelToExternalLinks: false,

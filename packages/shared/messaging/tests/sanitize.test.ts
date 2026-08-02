@@ -86,6 +86,15 @@ function expectHardenedAnchor(
 }
 
 describe('messaging sanitization', () => {
+	it.each([
+		['null', null],
+		['undefined', undefined],
+		['number', 42],
+	])('returns empty output for a %s runtime value', (_case, dirty) => {
+		expect(sanitizeMessageHtml(dirty as unknown as string)).toBe('');
+		expect(sanitizeMessagePreview(dirty as unknown as string)).toBe('');
+	});
+
 	it('extracts decoded plain text without rendering markup', () => {
 		expect(sanitizeMessagePreview('<p>Tom &amp; <strong>Jerry</strong></p>')).toBe('Tom & Jerry');
 		expect(sanitizeMessagePreview('<p>if a &lt; b then ship</p>')).toBe('if a < b then ship');
