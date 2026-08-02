@@ -5,17 +5,79 @@ import path from 'node:path';
 import { Flair } from '../../src/components/Flair/index.js';
 import { Voting } from '../../src/components/Voting/index.js';
 
+const communityCss = fs.readFileSync(path.resolve(process.cwd(), 'src/theme.css'), 'utf8');
 const tokenCss = fs.readFileSync(
 	path.resolve(process.cwd(), '../../tokens/dist/theme.css'),
 	'utf8'
 );
 
-function tokenColor(name: string): string {
-	const match = tokenCss.match(
-		new RegExp(`${name.replaceAll('-', '\\-')}\\s*:\\s*(#[\\da-f]{6})`, 'i')
+function declarations(css: string, selector: string): string {
+	let offset = 0;
+	const blocks: string[] = [];
+	while (offset < css.length) {
+		const open = css.indexOf('{', offset);
+		if (open < 0) break;
+		const start = Math.max(css.lastIndexOf('}', open - 1), css.lastIndexOf('{', open - 1)) + 1;
+		const candidate = css
+			.slice(start, open)
+			.replace(/\/\*[\s\S]*?\*\//g, '')
+			.trim();
+		const close = css.indexOf('}', open);
+		if (candidate === selector && close >= 0) blocks.push(css.slice(open + 1, close));
+		offset = open + 1;
+	}
+	if (blocks.length > 0) return blocks.join('\n');
+	throw new Error(`Missing CSS block for ${selector}`);
+}
+
+function readCustomProperties(block: string): Map<string, string> {
+	return new Map(
+		Array.from(block.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g), (match) => [
+			match[1] as string,
+			match[2]?.trim() as string,
+		])
 	);
-	if (!match?.[1]) throw new Error(`Missing emitted token: ${name}`);
-	return match[1];
+}
+
+function resolveValue(
+	value: string,
+	properties: Map<string, string>,
+	seen = new Set<string>()
+): string {
+	const trimmed = value.trim();
+	if (/^#[\da-f]{6}$/i.test(trimmed)) return trimmed.toLowerCase();
+
+	const variable = trimmed.match(/^var\(\s*(--[\w-]+)\s*(?:,\s*(.+))?\)$/s);
+	if (!variable?.[1]) throw new Error(`Unresolved CSS value: ${value}`);
+
+	const name = variable[1];
+	if (seen.has(name)) throw new Error(`Circular CSS variable: ${name}`);
+
+	const nextSeen = new Set(seen).add(name);
+	const declared = properties.get(name);
+	if (declared) return resolveValue(declared, properties, nextSeen);
+	if (variable[2]) return resolveValue(variable[2], properties, nextSeen);
+	throw new Error(`Missing emitted token: ${name}`);
+}
+
+function themeProperties(theme: 'light' | 'dark'): Map<string, string> {
+	const properties = new Map([
+		...readCustomProperties(declarations(tokenCss, ':root')),
+		...readCustomProperties(declarations(communityCss, ':root')),
+	]);
+	for (const [name, value] of readCustomProperties(
+		declarations(tokenCss, `[data-theme="${theme}"]`)
+	)) {
+		properties.set(name, value);
+	}
+	if (theme === 'dark') {
+		for (const [name, value] of readCustomProperties(
+			declarations(communityCss, "[data-theme='dark']")
+		)) {
+			properties.set(name, value);
+		}
+	}
+	return properties;
 }
 
 function luminance(hex: string): number {
@@ -40,16 +102,32 @@ function contrast(foreground: string, background: string): number {
 }
 
 describe('A11y: Contrast & Visuals', () => {
-	it.each([
-		['light neutral vote icon', '--gr-color-gray-500', '--gr-color-base-white', 3],
-		['dark neutral vote icon', '--gr-color-gray-400', '--gr-color-gray-900', 3],
-		['light neutral surface text', '--gr-color-gray-900', '--gr-color-gray-100', 4.5],
-		['dark neutral surface text', '--gr-color-gray-50', '--gr-color-gray-800', 4.5],
-		['dark moderation preview text', '--gr-color-gray-50', '--gr-color-gray-900', 4.5],
-	] as const)('holds %s contrast', (_name, foregroundToken, backgroundToken, floor) => {
-		expect(
-			contrast(tokenColor(foregroundToken), tokenColor(backgroundToken))
-		).toBeGreaterThanOrEqual(floor);
+	it.each(['light', 'dark'] as const)(
+		'holds neutral vote icon contrast from the %s face declaration',
+		(theme) => {
+			const properties = themeProperties(theme);
+			const foreground = resolveValue('var(--gr-community-vote-neutral-color)', properties);
+			const background = resolveValue(
+				theme === 'light'
+					? 'var(--gr-semantic-background-primary)'
+					: 'var(--gr-community-card-background)',
+				properties
+			);
+
+			expect(contrast(foreground, background)).toBeGreaterThanOrEqual(3);
+		}
+	);
+
+	it('keeps header placeholders on dark emitted surfaces', () => {
+		const banner = declarations(
+			communityCss,
+			"[data-theme='dark'] .gr-community-header__banner--placeholder"
+		);
+		const icon = declarations(communityCss, "[data-theme='dark'] .gr-community-header__icon");
+
+		expect(banner).toContain('var(--gr-color-gray-800)');
+		expect(banner).toContain('var(--gr-color-gray-700)');
+		expect(icon).toContain('background: var(--gr-color-gray-700)');
 	});
 
 	describe('Flair Badge', () => {
