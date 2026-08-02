@@ -15,6 +15,7 @@ const faceNames =
 const runePattern = /(?<![$\w])\$(?:state|derived|effect|props|bindable|inspect)\b/;
 const offenders = [];
 let scanned = 0;
+let svelteModulesScanned = 0;
 
 function javascriptFiles(directory) {
 	return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -34,7 +35,7 @@ for (const faceName of faceNames) {
 	for (const file of javascriptFiles(distDir)) {
 		scanned++;
 		const relative = path.relative(distDir, file).replaceAll(path.sep, '/');
-		if (relative.includes('.svelte.')) continue;
+		if (relative.endsWith('.svelte.js')) svelteModulesScanned++;
 		if (runePattern.test(fs.readFileSync(file, 'utf8'))) {
 			offenders.push(`${faceName}/${relative}`);
 		}
@@ -42,12 +43,10 @@ for (const faceName of faceNames) {
 }
 
 if (offenders.length > 0) {
-	console.error(
-		`Uncompiled Svelte rune found in shipped face module without a .svelte. infix: ${offenders.join(', ')}`
-	);
+	console.error(`Uncompiled Svelte rune found in shipped face module: ${offenders.join(', ')}`);
 	process.exit(1);
 }
 
 console.log(
-	`Scanned ${scanned} shipped JavaScript modules across ${faceNames.length} face(s); no uncompiled runes found outside .svelte. modules.`
+	`Scanned ${scanned} shipped JavaScript modules across ${faceNames.length} face(s), including ${svelteModulesScanned} .svelte.js module(s); no uncompiled runes found.`
 );
