@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-02T17:12:54.496Z",
+  "generatedAt": "2026-08-02T17:20:39.116Z",
   "ref": "greater-v0.11.9",
   "version": "0.11.9",
   "checksums": {
@@ -7033,7 +7033,9 @@
         { "name": "@equaltoai/greater-components-tokens", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-utils", "version": "0.11.9" },
         { "name": "@graphql-typed-document-node/core", "version": "^3.2.0" },
+        { "name": "@graphql-typed-document-node/core@^3.2.0", "version": "latest" },
         { "name": "@tanstack/svelte-virtual", "version": "^3.13.23" },
+        { "name": "@tanstack/svelte-virtual@^3.13.13", "version": "latest" },
         { "name": "svelte", "version": "^5.55.1" }
       ],
       "types": [
@@ -7147,7 +7149,7 @@
       ],
       "includes": {
         "primitives": [],
-        "shared": ["primitives", "icons", "content", "utils", "headless"],
+        "shared": ["primitives", "icons", "utils", "headless"],
         "patterns": [],
         "components": []
       },
@@ -7368,7 +7370,6 @@
         "tokens": "@equaltoai/greater-components/tokens/theme.css"
       },
       "dependencies": [
-        { "name": "content", "version": "0.11.9" },
         { "name": "headless", "version": "0.11.9" },
         { "name": "icons", "version": "0.11.9" },
         { "name": "primitives", "version": "0.11.9" },
