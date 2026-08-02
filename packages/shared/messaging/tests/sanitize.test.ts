@@ -28,6 +28,35 @@ function expectOnlySafeAnchor(dirty: string): HTMLAnchorElement {
 	return anchor as HTMLAnchorElement;
 }
 
+function expectHardenedAnchor(
+	dirty: string,
+	expected: {
+		attributes: string[];
+		text: string;
+		title?: string;
+		target?: string;
+		authorRelTokens?: string[];
+	}
+): HTMLAnchorElement {
+	const anchor = expectOnlySafeAnchor(dirty);
+
+	expect(Array.from(anchor.attributes, (attribute) => attribute.name).sort()).toEqual(
+		[...expected.attributes].sort()
+	);
+	expect(anchor.textContent).toBe(expected.text);
+	expect(anchor.getAttribute('title')).toBe(expected.title ?? null);
+	expect(anchor.getAttribute('target')).toBe(expected.target ?? null);
+
+	const relTokens = anchor.getAttribute('rel')?.split(/\s+/u).filter(Boolean) ?? [];
+	for (const token of expected.authorRelTokens ?? []) {
+		expect(relTokens).toContain(token);
+	}
+	expect(relTokens.filter((token) => token.toLowerCase() === 'noopener')).toHaveLength(1);
+	expect(relTokens.filter((token) => token.toLowerCase() === 'noreferrer')).toHaveLength(1);
+
+	return anchor;
+}
+
 describe('messaging sanitization', () => {
 	it('extracts decoded plain text without rendering markup', () => {
 		expect(sanitizeMessagePreview('<p>Tom &amp; <strong>Jerry</strong></p>')).toBe('Tom & Jerry');
@@ -122,6 +151,96 @@ describe('messaging sanitization', () => {
 		],
 	])('keeps the sanitized output structurally safe after an %s attempt', (_attack, dirty) => {
 		expectOnlySafeAnchor(dirty);
+	});
+
+	it.each([
+		[
+			'NEW-20 quote-parity payload',
+			'<a href="https://evil.test" title=" rel=" target="a><img src=x onerror=alert(1)>">click me</a>',
+			{
+				attributes: ['href', 'title', 'target', 'rel'],
+				text: 'click me',
+				title: ' rel=',
+				target: 'a><img src=x onerror=alert(1)>',
+			},
+		],
+		[
+			'latent authored-rel payload',
+			'<a href="https://evil.test" rel="a><img src=x onerror=alert(1)>" target="_blank">click me</a>',
+			{
+				attributes: ['href', 'rel', 'target'],
+				text: 'click me',
+				target: '_blank',
+				authorRelTokens: ['a><img', 'src=x', 'onerror=alert(1)>'],
+			},
+		],
+	])('keeps %s inside the parsed anchor attribute set', (_case, dirty, expected) => {
+		expectHardenedAnchor(dirty, expected);
+	});
+
+	it.each([
+		[
+			'double-quoted delimiter permutations inside a single-quoted title',
+			'<a href="https://evil.test" title=\'rel=" target=a> marker\' target="named">double</a>',
+			{
+				attributes: ['href', 'title', 'target', 'rel'],
+				text: 'double',
+				title: 'rel=" target=a> marker',
+				target: 'named',
+			},
+		],
+		[
+			'equals, quote, and greater-than permutations inside rel',
+			'<a href="https://evil.test" rel=\'author = " > marker\' target="_blank">rel</a>',
+			{
+				attributes: ['href', 'rel', 'target'],
+				text: 'rel',
+				target: '_blank',
+				authorRelTokens: ['author', '=', '"', '>', 'marker'],
+			},
+		],
+		[
+			'equals, quote, and greater-than permutations inside target',
+			'<a href="https://evil.test" target=\'named=>"\'>target</a>',
+			{
+				attributes: ['href', 'target', 'rel'],
+				text: 'target',
+				target: 'named=>"',
+			},
+		],
+		[
+			'single-quoted attributes',
+			"<a href='https://evil.test' title='single' target='named'>single</a>",
+			{
+				attributes: ['href', 'title', 'target', 'rel'],
+				text: 'single',
+				title: 'single',
+				target: 'named',
+			},
+		],
+		[
+			'unquoted attributes',
+			'<a href=https://evil.test title=unquoted target=named>unquoted</a>',
+			{
+				attributes: ['href', 'title', 'target', 'rel'],
+				text: 'unquoted',
+				title: 'unquoted',
+				target: 'named',
+			},
+		],
+		[
+			'mixed-case tag and attribute names',
+			'<A HrEf="https://evil.test" ReL="author" TaRgEt="named" TiTlE="mixed">mixed</A>',
+			{
+				attributes: ['href', 'rel', 'target', 'title'],
+				text: 'mixed',
+				title: 'mixed',
+				target: 'named',
+				authorRelTokens: ['author'],
+			},
+		],
+	])('keeps the quote-parity battery safe for %s', (_case, dirty, expected) => {
+		expectHardenedAnchor(dirty, expected);
 	});
 
 	it('hardens a normal external link without forcing it into a new browsing context', () => {

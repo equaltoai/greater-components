@@ -169,6 +169,42 @@ describe('Message', () => {
 		unmount(instance);
 	});
 
+	it.each([
+		[
+			'NEW-20 quote-parity payload',
+			'<a href="https://evil.test" title=" rel=" target="a><img src=x onerror=alert(1)>">click me</a>',
+		],
+		[
+			'latent authored-rel payload',
+			'<a href="https://evil.test" rel="a><img src=x onerror=alert(1)>" target="_blank">click me</a>',
+		],
+	])('keeps the %s inert through the real message render path', (_case, dirty) => {
+		const target = document.createElement('div');
+		const message = {
+			id: 'm-link-parity',
+			conversationId: 'c1',
+			sender: bob,
+			content: dirty,
+			createdAt: new Date().toISOString(),
+			read: true,
+		};
+
+		const instance = mount(Message, { target, props: { message, currentUserId: 'u1' } });
+		const content = target.querySelector('.message__content');
+		const elements = Array.from(content?.querySelectorAll('*') ?? []);
+		const anchor = content?.querySelector('a');
+
+		expect(elements.map((element) => element.localName)).toEqual(['a']);
+		expect(content?.querySelector('img, form, input')).toBeNull();
+		expect(content?.querySelector('[onerror], [onclick], [onload]')).toBeNull();
+		expect(anchor?.textContent).toBe('click me');
+		expect(anchor?.getAttribute('rel')?.split(/\s+/u)).toEqual(
+			expect.arrayContaining(['noopener', 'noreferrer'])
+		);
+
+		unmount(instance);
+	});
+
 	it('renders avatar image when available', () => {
 		const target = document.createElement('div');
 		const message = {

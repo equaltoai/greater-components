@@ -37,11 +37,15 @@
     "@equaltoai/greater-components-headless": "workspace:*",
     "@equaltoai/greater-components-icons": "workspace:*",
     "@equaltoai/greater-components-primitives": "workspace:*",
-    "@equaltoai/greater-components-utils": "workspace:*"
+    "@equaltoai/greater-components-utils": "workspace:*",
+    "rehype-parse": "^9.0.1",
+    "rehype-stringify": "^10.0.1",
+    "unified": "^11.0.5"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^7.0.0",
     "@testing-library/svelte": "^5.3.1",
+    "@types/hast": "^3.0.4",
     "@types/node": "^25.6.0",
     "@vitest/coverage-v8": "^4.1.4",
     "jsdom": "^29.0.2",

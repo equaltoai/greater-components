@@ -1,4 +1,8 @@
 import { sanitizeHtml } from '@equaltoai/greater-components-utils';
+import rehypeParse from 'rehype-parse';
+import rehypeStringify from 'rehype-stringify';
+import { unified } from 'unified';
+import type { Element, Root } from 'hast';
 
 const RAW_TEXT_ELEMENTS_TO_DROP = [
 	'style',
@@ -78,27 +82,25 @@ function dropRawTextElements(html: string): string {
 	return result;
 }
 
-function getQuotedAttribute(attributes: string, name: string): string | undefined {
-	const match = new RegExp(`(?:^|\\s)${name}="([^"]*)"`, 'iu').exec(attributes);
-	return match?.[1];
+const htmlFragmentProcessor = unified().use(rehypeParse, { fragment: true }).use(rehypeStringify);
+
+function relTokens(element: Element): string[] {
+	const rel = element.properties.rel;
+	if (Array.isArray(rel)) return rel.map(String).filter(Boolean);
+	if (typeof rel === 'string') return rel.split(/\s+/u).filter(Boolean);
+	return [];
 }
 
-function setQuotedAttribute(attributes: string, name: string, value: string): string {
-	const matcher = new RegExp(`((?:^|\\s)${name}=")[^"]*(")`, 'iu');
-	if (matcher.test(attributes)) {
-		return attributes.replace(matcher, `$1${value}$2`);
-	}
-	return `${attributes} ${name}="${value}"`;
-}
+function hardenExternalAnchors(node: Root | Element): void {
+	for (const child of node.children) {
+		if (child.type !== 'element') continue;
 
-function secureExternalLinks(html: string): string {
-	return html.replace(/<a\b((?:"[^"]*"|'[^']*'|[^'">])*)>/giu, (_match, rawAttributes: string) => {
-		let attributes = rawAttributes;
-		const href = getQuotedAttribute(attributes, 'href');
-
-		if (/^https?:\/\//iu.test(href ?? '')) {
-			const existingRel = getQuotedAttribute(attributes, 'rel') ?? '';
-			const tokens = existingRel.split(/\s+/u).filter(Boolean);
+		if (
+			child.tagName === 'a' &&
+			typeof child.properties.href === 'string' &&
+			/^https?:\/\//iu.test(child.properties.href)
+		) {
+			const tokens = relTokens(child);
 			const normalizedTokens = new Set(tokens.map((token) => token.toLowerCase()));
 
 			for (const requiredToken of ['noopener', 'noreferrer']) {
@@ -108,11 +110,17 @@ function secureExternalLinks(html: string): string {
 				}
 			}
 
-			attributes = setQuotedAttribute(attributes, 'rel', tokens.join(' '));
+			child.properties.rel = tokens;
 		}
 
-		return `<a${attributes}>`;
-	});
+		hardenExternalAnchors(child);
+	}
+}
+
+function secureExternalLinks(html: string): string {
+	const tree = htmlFragmentProcessor.parse(html) as Root;
+	hardenExternalAnchors(tree);
+	return htmlFragmentProcessor.stringify(tree);
 }
 
 function decodeSerializedText(text: string): string {
