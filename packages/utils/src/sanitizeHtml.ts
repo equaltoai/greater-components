@@ -111,6 +111,59 @@ function buildSchema(options: SanitizeOptions): Schema {
 	};
 }
 
+interface ExternalLinkOptions {
+	addRelToExternalLinks: boolean;
+	externalLinksInNewTab: boolean;
+}
+
+interface HastNode {
+	type: string;
+	children?: HastNode[];
+}
+
+interface HastElement extends HastNode {
+	type: 'element';
+	tagName: string;
+	properties: Record<string, unknown>;
+	children: HastNode[];
+}
+
+function isHastElement(node: HastNode): node is HastElement {
+	return node.type === 'element';
+}
+
+/** Add external-link protections before the sanitized tree is serialized. */
+function rehypeExternalLinkProperties(options: ExternalLinkOptions) {
+	return (tree: HastNode): void => {
+		function visit(node: HastNode): void {
+			if (!node.children) return;
+
+			for (const child of node.children) {
+				if (!isHastElement(child)) continue;
+
+				const href = child.properties['href'];
+				if (
+					child.tagName === 'a' &&
+					typeof href === 'string' &&
+					(href.startsWith('http://') || href.startsWith('https://'))
+				) {
+					if (options.addRelToExternalLinks && !('rel' in child.properties)) {
+						child.properties['rel'] = 'noopener noreferrer';
+					}
+
+					if (options.externalLinksInNewTab && !('target' in child.properties)) {
+						child.properties['target'] = '_blank';
+					}
+				}
+
+				visit(child);
+			}
+		}
+
+		visit(tree);
+	};
+}
+
 /**
  * Sanitize HTML content using rehype-sanitize with an allow-list approach.
  * Fully ESM-compatible implementation.
@@ -131,28 +184,13 @@ export function sanitizeHtml(dirty: string, options: SanitizeOptions = {}): stri
 	const processor = unified()
 		.use(rehypeParse, { fragment: true })
 		.use(rehypeSanitize, schema)
+		.use(rehypeExternalLinkProperties, {
+			addRelToExternalLinks,
+			externalLinksInNewTab,
+		})
 		.use(rehypeStringify);
 
-	let result = String(processor.processSync(dirty));
-
-	// Post-process to add rel and target to external links
-	if (addRelToExternalLinks || externalLinksInNewTab) {
-		result = result.replace(/<a\s+href="(https?:\/\/[^"]+)"([^>]*)>/g, (_match, href, rest) => {
-			let attributes = rest || '';
-
-			if (addRelToExternalLinks && !attributes.includes('rel=')) {
-				attributes += ' rel="noopener noreferrer"';
-			}
-
-			if (externalLinksInNewTab && !attributes.includes('target=')) {
-				attributes += ' target="_blank"';
-			}
-
-			return `<a href="${href}"${attributes}>`;
-		});
-	}
-
-	return result;
+	return String(processor.processSync(dirty));
 }
 
 /**
