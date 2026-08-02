@@ -195,9 +195,31 @@ function isExecutableScriptMatch(content: string, offset: number): boolean {
 	return state === 'normal';
 }
 
-function importSpecifiers(content: string): string[] {
+function maskSvelteMarkup(content: string): string {
+	const masked = Array.from({ length: content.length }, (_, index) => {
+		const char = content[index] ?? '';
+		return char === '\n' || char === '\r' ? char : ' ';
+	});
+	const executableTag = /<(script|style)\b[^>]*>[\s\S]*?<\/\1\s*>/gi;
+
+	let match: RegExpExecArray | null;
+	while ((match = executableTag.exec(content)) !== null) {
+		const openingEnd = match[0].indexOf('>') + 1;
+		const closingStart = match[0].lastIndexOf('</');
+		for (let offset = openingEnd; offset < closingStart; offset++) {
+			masked[match.index + offset] = match[0][offset] ?? '';
+		}
+	}
+
+	return masked.join('');
+}
+
+function importSpecifiers(content: string, filePath?: string): string[] {
 	const specifiers: string[] = [];
-	const executableContent = content.replace(/<!--[\s\S]*?-->/g, (comment) =>
+	// Svelte markup is not JavaScript: only script/style bodies may influence
+	// string and comment state for executable import matches.
+	const executableSource = filePath?.endsWith('.svelte') ? maskSvelteMarkup(content) : content;
+	const executableContent = executableSource.replace(/<!--[\s\S]*?-->/g, (comment) =>
 		comment.replace(/[^\n]/g, ' ')
 	);
 	for (const pattern of [
@@ -236,6 +258,17 @@ function resolvesOnDisk(fromFile: string, specifier: string): boolean {
 }
 
 describe('greater add review (real command)', () => {
+	it('keeps Svelte markup apostrophes from hiding script imports in the sweep', () => {
+		const source = [
+			"<p>Sam's post</p>",
+			'<script>',
+			"import 'bare-package';",
+			'</script>',
+		].join('\n');
+
+		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual(['bare-package']);
+	});
+
 	it('preserves pins and installs a relative-import tree that type-checks and builds', async () => {
 		const root = await createScratchProject();
 
@@ -289,7 +322,7 @@ describe('greater add review (real command)', () => {
 			];
 			for (const file of await getFilesRecursively(libDir)) {
 				if (!/\.(?:svelte|[cm]?[jt]s|css)$/.test(file)) continue;
-				for (const specifier of importSpecifiers(await fs.readFile(file, 'utf8'))) {
+				for (const specifier of importSpecifiers(await fs.readFile(file, 'utf8'), file)) {
 					if (specifier.startsWith('.') && !resolvesOnDisk(file, specifier)) {
 						unresolved.push(`${path.relative(root, file)} → ${specifier}`);
 					}
