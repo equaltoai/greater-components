@@ -113,10 +113,14 @@ export async function isDependencyInstalled(
 		if (!installedVersion) return false;
 		if (!requiredVersion) return true;
 
-		const installedFloor = minVersion(installedVersion);
-		const requiredFloor = minVersion(requiredVersion);
+		let installedFloor;
+		try {
+			installedFloor = minVersion(installedVersion);
+		} catch {
+			return true;
+		}
 
-		if (!installedFloor || !requiredFloor) return true;
+		if (!installedFloor) return true;
 
 		return satisfies(installedFloor, requiredVersion);
 	} catch {
