@@ -34,7 +34,7 @@ describe('UnreadIndicator', () => {
 		unmount(instance);
 	});
 
-	it('renders count when has unread messages', async () => {
+	it('renders the number of conversations with unread messages', async () => {
 		mockState.conversations = [{ unreadCount: 5 }, { unreadCount: 2 }];
 
 		const target = document.createElement('div');
@@ -43,8 +43,22 @@ describe('UnreadIndicator', () => {
 
 		const indicator = target.querySelector('.unread-indicator');
 		expect(indicator).toBeTruthy();
-		expect(indicator?.textContent).toBe('7');
-		expect(indicator?.getAttribute('aria-label')).toBe('7 unread messages');
+		expect(indicator?.textContent).toBe('2');
+		expect(indicator?.getAttribute('aria-label')).toBe('2 conversations with unread messages');
+
+		unmount(instance);
+	});
+
+	it('announces the number of conversations with unread activity', async () => {
+		mockState.conversations = [{ unreadCount: 1 }, { unreadCount: 0 }, { unreadCount: 1 }];
+
+		const target = document.createElement('div');
+		const instance = mount(UnreadIndicator, { target });
+		await flushSync();
+
+		const indicator = target.querySelector('.unread-indicator');
+		expect(indicator?.textContent).toBe('2');
+		expect(indicator?.getAttribute('aria-label')).toBe('2 conversations with unread messages');
 
 		unmount(instance);
 	});
@@ -62,7 +76,7 @@ describe('UnreadIndicator', () => {
 	});
 
 	it('formats counts over 99', async () => {
-		mockState.conversations = [{ unreadCount: 100 }];
+		mockState.conversations = Array.from({ length: 100 }, () => ({ unreadCount: 1 }));
 
 		const target = document.createElement('div');
 		const instance = mount(UnreadIndicator, { target });

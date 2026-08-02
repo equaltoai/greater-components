@@ -1,7 +1,7 @@
 <!--
-  Messages.UnreadIndicator - Unread Message Count Badge
+  Messages.UnreadIndicator - Unread Conversation Count Badge
   
-  Displays unread message count as a badge.
+  Displays the number of conversations with unread activity as a badge.
 -->
 <script lang="ts">
 	import { getMessagesContext } from './context.svelte.js';
@@ -37,19 +37,23 @@
 
 	const { state: messagesState } = getMessagesContext();
 
-	const unreadCount = $derived(
-		messagesState.conversations.reduce((sum, conv) => sum + conv.unreadCount, 0)
+	const unreadConversationCount = $derived(
+		messagesState.conversations.reduce((sum, conversation) => {
+			return sum + (conversation.unreadCount > 0 ? 1 : 0);
+		}, 0)
 	);
 
-	const shouldShow = $derived(unreadCount > 0 || showZero);
+	const shouldShow = $derived(unreadConversationCount > 0 || showZero);
 
-	const displayCount = $derived(unreadCount > 99 ? '99+' : String(unreadCount));
+	const displayCount = $derived(
+		unreadConversationCount > 99 ? '99+' : String(unreadConversationCount)
+	);
 </script>
 
 {#if shouldShow}
 	<span
 		class={`unread-indicator unread-indicator--${variant} unread-indicator--${size} ${className}`}
-		aria-label={`${unreadCount} unread message${unreadCount === 1 ? '' : 's'}`}
+		aria-label={`${unreadConversationCount} ${unreadConversationCount === 1 ? 'conversation' : 'conversations'} with unread messages`}
 	>
 		{#if variant === 'badge'}
 			{displayCount}

@@ -45,6 +45,10 @@ When `actions` is supplied, the card selection button and action controls are si
 nested interactive elements while keeping the entire default card as the selection button when the
 snippet is omitted.
 
+`UnreadIndicator` counts conversations whose `unreadCount` is positive. Its accessible label names
+that unit explicitly (for example, “2 conversations with unread messages”); Lesser's pinned contract
+exposes unread activity per conversation rather than a per-message unread total.
+
 ## Standalone package
 
 ```ts
