@@ -916,6 +916,9 @@ importers:
       remark-rehype:
         specifier: ^11.1.2
         version: 11.1.2
+      semver:
+        specifier: ^7.7.4
+        version: 7.7.4
       shiki:
         specifier: ^4.0.2
         version: 4.0.2
