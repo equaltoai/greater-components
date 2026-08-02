@@ -121,18 +121,10 @@ function relTokens(element: SanitizedElement): string[] {
 	return [];
 }
 
-// Mirror the WHATWG URL parser's pre-parse normalization.
-function urlParserNormalized(href: string): string {
-	// eslint-disable-next-line no-control-regex -- WHATWG strips the full leading C0 range.
-	return href.replace(/^[\x00-\x20]+/u, '').replace(/[\t\n\r]/gu, '');
-}
-
 function isExternalHttpUrl(href: string): boolean {
-	const normalizedHref = urlParserNormalized(href);
-
 	return SANITIZER_BASE_URLS.some((baseUrl) => {
 		try {
-			const resolved = new URL(normalizedHref, baseUrl);
+			const resolved = new URL(href, baseUrl);
 			// Unioning both bases deliberately over-hardens same-scheme shorthand such as
 			// https:foo. Mastodon/federation emits absolute URLs, so that cost is vanishingly rare.
 			return (
