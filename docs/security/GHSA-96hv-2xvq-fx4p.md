@@ -67,4 +67,9 @@ dependency. Add this to `package.json` and reinstall:
 }
 ```
 
+On mixed dependency trees, npm can hard-fail this override with `ERESOLVE`. In that case, the pnpm
+override form above is the reliable path. Do **not** use `--force` or `--legacy-peer-deps` to push the
+npm override through: either option can re-admit the vulnerable `ws` version that the override is
+intended to exclude.
+
 This guidance addresses [issue #922](https://github.com/equaltoai/greater-components/issues/922).
