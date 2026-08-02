@@ -1,10 +1,14 @@
 <!--
-  Messages.UnreadIndicator - Unread Message Count Badge
+  Messages.UnreadIndicator - Unread Conversation Count Badge
   
-  Displays unread message count as a badge.
+  Displays the number of conversations with unread activity as a badge.
 -->
 <script lang="ts">
+	import { onDestroy } from 'svelte';
 	import { getMessagesContext } from './context.svelte.js';
+
+	const ANNOUNCEMENT_DEBOUNCE_MS = 150;
+	const ANNOUNCEMENT_MAX_WAIT_MS = 1_000;
 
 	interface Props {
 		/**
@@ -37,19 +41,63 @@
 
 	const { state: messagesState } = getMessagesContext();
 
-	const unreadCount = $derived(
-		messagesState.conversations.reduce((sum, conv) => sum + conv.unreadCount, 0)
+	const unreadConversationCount = $derived(
+		messagesState.conversations.reduce((sum, conversation) => {
+			return sum + (conversation.unreadCount > 0 ? 1 : 0);
+		}, 0)
 	);
 
-	const shouldShow = $derived(unreadCount > 0 || showZero);
+	const shouldShow = $derived(unreadConversationCount > 0 || showZero);
 
-	const displayCount = $derived(unreadCount > 99 ? '99+' : String(unreadCount));
+	const displayCount = $derived(
+		unreadConversationCount > 99 ? '99+' : String(unreadConversationCount)
+	);
+	const announcement = $derived(
+		`${unreadConversationCount} ${unreadConversationCount === 1 ? 'conversation' : 'conversations'} with unread messages`
+	);
+	let announcedMessage = $state('');
+	let lastAnnouncedMessage = '';
+	let pendingAnnouncement = '';
+	let debounceTimer: ReturnType<typeof setTimeout> | undefined;
+	let maxWaitTimer: ReturnType<typeof setTimeout> | undefined;
+
+	function clearAnnouncementTimers() {
+		if (debounceTimer !== undefined) clearTimeout(debounceTimer);
+		if (maxWaitTimer !== undefined) clearTimeout(maxWaitTimer);
+		debounceTimer = undefined;
+		maxWaitTimer = undefined;
+	}
+
+	function publishPendingAnnouncement() {
+		clearAnnouncementTimers();
+		if (pendingAnnouncement === lastAnnouncedMessage) return;
+
+		lastAnnouncedMessage = pendingAnnouncement;
+		announcedMessage = pendingAnnouncement;
+	}
+
+	$effect(() => {
+		const nextAnnouncement = shouldShow ? announcement : '';
+		pendingAnnouncement = nextAnnouncement;
+
+		if (debounceTimer !== undefined) clearTimeout(debounceTimer);
+		if (nextAnnouncement === lastAnnouncedMessage) {
+			clearAnnouncementTimers();
+			return;
+		}
+
+		debounceTimer = setTimeout(publishPendingAnnouncement, ANNOUNCEMENT_DEBOUNCE_MS);
+		maxWaitTimer ??= setTimeout(publishPendingAnnouncement, ANNOUNCEMENT_MAX_WAIT_MS);
+	});
+
+	onDestroy(clearAnnouncementTimers);
 </script>
 
 {#if shouldShow}
 	<span
 		class={`unread-indicator unread-indicator--${variant} unread-indicator--${size} ${className}`}
-		aria-label={`${unreadCount} unread message${unreadCount === 1 ? '' : 's'}`}
+		role="img"
+		aria-label={announcement}
 	>
 		{#if variant === 'badge'}
 			{displayCount}
@@ -58,3 +106,9 @@
 		{/if}
 	</span>
 {/if}
+
+<span class="unread-indicator__live-region" role="status" aria-live="polite" aria-atomic="true">
+	{#if announcedMessage}
+		<span class="gr-sr-only">{announcedMessage}</span>
+	{/if}
+</span>

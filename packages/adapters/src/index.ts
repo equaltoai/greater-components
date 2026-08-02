@@ -245,7 +245,7 @@ export type {
 
 // Messaging handlers (Lesser → shared/messaging)
 export { createLesserMessagesHandlers } from './messaging/index.js';
-export type { LesserMessagesHandlersConfig } from './messaging/index.js';
+export type { LesserMessagesAdapter, LesserMessagesHandlersConfig } from './messaging/index.js';
 
 // Reactive Stores (Svelte 5 Runes)
 export {
