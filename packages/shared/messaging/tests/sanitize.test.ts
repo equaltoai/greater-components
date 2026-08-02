@@ -463,7 +463,7 @@ describe('messaging sanitization', () => {
 	it('iterates serialized markup stripping until a second-pass tag is gone', () => {
 		const serialized = `<'<"'">'>`;
 
-		expect(serialized.replace(/<(?:(?:"[^"]*")|(?:'[^']*')|[^'">])*>/gu, '')).toBe(`<''>`);
+		// A single pass leaves the residue `<''>`; the fixpoint must remove that second-pass tag.
 		expect(stripSerializedMarkup(serialized)).toBe('');
 	});
 });
