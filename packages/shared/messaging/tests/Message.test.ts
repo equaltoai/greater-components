@@ -122,6 +122,53 @@ describe('Message', () => {
 		unmount(instance);
 	});
 
+	it('drops style elements with their text from the sanitized message body', () => {
+		const target = document.createElement('div');
+		const message = {
+			id: 'm-style',
+			conversationId: 'c1',
+			sender: bob,
+			content: '<style>body{display:none}</style><p>Visible message</p>',
+			createdAt: new Date().toISOString(),
+			read: true,
+		};
+
+		const instance = mount(Message, { target, props: { message, currentUserId: 'u1' } });
+		const content = target.querySelector('.message__content');
+
+		expect(content?.textContent).toBe('Visible message');
+		expect(content?.textContent).not.toContain('display:none');
+		expect(content?.querySelector('style')).toBeNull();
+
+		unmount(instance);
+	});
+
+	it('secures blank-target links while preserving existing rel tokens', () => {
+		const target = document.createElement('div');
+		const message = {
+			id: 'm-link',
+			conversationId: 'c1',
+			sender: bob,
+			content:
+				'<a href="https://example.test" rel="nofollow" target="_blank">first</a> <a href="https://example.test/second" title="rel= target=">second</a>',
+			createdAt: new Date().toISOString(),
+			read: true,
+		};
+
+		const instance = mount(Message, { target, props: { message, currentUserId: 'u1' } });
+		const links = target.querySelectorAll('.message__content a');
+
+		expect(links[0]?.getAttribute('rel')?.split(/\s+/u)).toEqual([
+			'nofollow',
+			'noopener',
+			'noreferrer',
+		]);
+		expect(links[1]?.getAttribute('target')).toBe('_blank');
+		expect(links[1]?.getAttribute('rel')).toBe('noopener noreferrer');
+
+		unmount(instance);
+	});
+
 	it('renders avatar image when available', () => {
 		const target = document.createElement('div');
 		const message = {

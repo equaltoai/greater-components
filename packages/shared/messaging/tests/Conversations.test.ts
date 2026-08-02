@@ -200,6 +200,32 @@ describe('Conversations', () => {
 		unmount(instance);
 	});
 
+	it('decodes entities and drops style text from server HTML previews', async () => {
+		mockState.conversations = [
+			{
+				id: 'c-encoded-preview',
+				participants: [{ id: 'u1', displayName: 'Alice', avatar: '' }],
+				unreadCount: 0,
+				lastMessage: {
+					content:
+						'<style>.messages-conversations{display:none}</style><p>Tom &amp; <strong>Jerry</strong></p>',
+					createdAt: '',
+				},
+			},
+		];
+
+		const target = document.createElement('div');
+		const instance = mount(Conversations, { target });
+		await flushSync();
+
+		const preview = target.querySelector('.messages-conversations__preview');
+		expect(preview?.textContent).toBe('Tom & Jerry');
+		expect(preview?.textContent).not.toContain('display:none');
+		expect(preview?.children).toHaveLength(0);
+
+		unmount(instance);
+	});
+
 	it('handles selection', async () => {
 		mockState.conversations = [
 			{
@@ -247,6 +273,11 @@ describe('Conversations', () => {
 		expect(card?.tagName).toBe('DIV');
 		expect(selectionButton?.tagName).toBe('BUTTON');
 		expect(action?.dataset.conversationId).toBe('c-request');
+		expect(card?.hasAttribute('style')).toBe(false);
+		expect(selectionButton?.hasAttribute('style')).toBe(false);
+		expect(card?.querySelector('.messages-conversations__actions')?.hasAttribute('style')).toBe(
+			false
+		);
 
 		action.click();
 		await flushSync();

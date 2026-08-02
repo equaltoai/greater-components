@@ -4,8 +4,8 @@
 <script lang="ts">
 	import { Menu } from '@equaltoai/greater-components-primitives';
 	import { MoreVerticalIcon, TrashIcon } from '@equaltoai/greater-components-icons';
-	import { sanitizeHtml } from '@equaltoai/greater-components-utils';
 	import { formatMessageTime, isParticipantId } from './utils.js';
+	import { sanitizeMessageHtml } from './sanitize.js';
 	import { getMessagesContext } from './context.svelte.js';
 	import type { DirectMessage, MessagesContext } from './context.svelte.js';
 	import WorkflowThreadMoment from './WorkflowThreadMoment.svelte';
@@ -25,7 +25,7 @@
 	const isSensitive = $derived(message.sensitive === true);
 	const isContentVisible = $derived(!isSensitive || sensitiveContentRevealed);
 	const messageContentId = $derived(`message-content-${message.id.replace(/[^\w-]/g, '-')}`);
-	const sanitizedMessageContent = $derived(sanitizeHtml(message.content).trim());
+	const sanitizedMessageContent = $derived(sanitizeMessageHtml(message.content));
 
 	const context = (() => {
 		try {

@@ -53,6 +53,9 @@
 {#if shouldShow}
 	<span
 		class={`unread-indicator unread-indicator--${variant} unread-indicator--${size} ${className}`}
+		role="status"
+		aria-live="polite"
+		aria-atomic="true"
 		aria-label={`${unreadConversationCount} ${unreadConversationCount === 1 ? 'conversation' : 'conversations'} with unread messages`}
 	>
 		{#if variant === 'badge'}
