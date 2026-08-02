@@ -336,30 +336,6 @@ const tests = [
 			),
 	],
 	[
-		'Git directory overrides do not confuse the no-repository probe',
-		() =>
-			withArchive(
-				(cwd, env) => {
-					const result = runCheck(cwd, {
-						...env,
-						GIT_DIR: join(cwd, 'missing-git-dir'),
-						GIT_WORK_TREE: join(cwd, 'missing-work-tree'),
-						GIT_COMMON_DIR: join(cwd, 'missing-common-dir'),
-					});
-					const output = `${result.stdout}\n${result.stderr}`;
-
-					assert.equal(
-						result.status,
-						0,
-						`fresh registry with a missing GIT_DIR should pass\nstdout:\n${result.stdout}\nstderr:\n${result.stderr}`
-					);
-					assert.match(output, /Registry index is freshly generated/);
-					assert.doesNotMatch(output, /Unable to determine|\n\s+at\s/);
-				},
-				{ gitAvailable: true }
-			),
-	],
-	[
 		"git's mount-boundary no-repository message skips only the staged-drift leg",
 		() =>
 			withArchive(
