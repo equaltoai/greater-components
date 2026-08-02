@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { sanitizeMessageHtml, sanitizeMessagePreview } from '../src/sanitize.js';
+import {
+	sanitizeMessageHtml,
+	sanitizeMessagePreview,
+	stripSerializedMarkup,
+} from '../src/sanitize.js';
 
 describe('messaging sanitization', () => {
 	it('extracts decoded plain text without rendering markup', () => {
@@ -26,6 +30,20 @@ describe('messaging sanitization', () => {
 
 		expect(sanitized).toContain('rel="nofollow noopener noreferrer"');
 		expect(sanitized).toContain('target="_blank"');
+	});
+
+	it('secures blank-target links when an earlier quoted attribute contains >', () => {
+		const dirty = '<a title="a > b" href="https://evil.test" target="_blank">intact link text</a>';
+
+		expect(sanitizeMessageHtml(dirty)).toBe(
+			'<a title="a > b" href="https://evil.test" target="_blank" rel="noopener noreferrer">intact link text</a>'
+		);
+	});
+
+	it('keeps normal external-link hardening byte-identical', () => {
+		expect(sanitizeMessageHtml('<a href="https://example.test">link</a>')).toBe(
+			'<a href="https://example.test" rel="noopener noreferrer" target="_blank">link</a>'
+		);
 	});
 
 	it.each([
@@ -56,13 +74,37 @@ describe('messaging sanitization', () => {
 	});
 
 	it.each([
-		['textarea', '<textarea><img src=x onerror=alert(1)></textarea><p>a</p>', '<img'],
-		['title', '<title>SECRET</title><p>a</p>', 'SECRET'],
-	])('drops %s raw text from message previews', (_element, dirty, leakedText) => {
+		['textarea', '<textarea>LEAK_<img src=x onerror=alert(1)></textarea><p>Visible</p>'],
+		['title', '<title>LEAK_<img src=x onerror=alert(1)></title><p>Visible</p>'],
+		['iframe', '<iframe>LEAK_<img src=x onerror=alert(1)></iframe><p>Visible</p>'],
+		['noembed', '<noembed>LEAK_<img src=x onerror=alert(1)></noembed><p>Visible</p>'],
+		['noframes', '<noframes>LEAK_<img src=x onerror=alert(1)></noframes><p>Visible</p>'],
+		['xmp', '<xmp>LEAK_<img src=x onerror=alert(1)></xmp><p>Visible</p>'],
+	])('drops %s raw text and markup from message bodies and previews', (element, dirty) => {
+		const body = sanitizeMessageHtml(dirty);
 		const preview = sanitizeMessagePreview(dirty);
 
-		expect(preview).toBe('a');
-		expect(preview).not.toContain(leakedText);
+		expect(body).toBe('<p>Visible</p>');
+		expect(preview).toBe('Visible');
+		expect(body).not.toContain(`<${element}`);
+		expect(body).not.toContain('LEAK_');
+		expect(body).not.toContain('onerror');
+		expect(preview).not.toContain('LEAK_');
+		expect(preview).not.toContain('<img');
+	});
+
+	it('drops plaintext and everything it consumes from message bodies and previews', () => {
+		const dirty = '<p>Visible</p><plaintext>LEAK_<img src=x onerror=alert(1)>';
+		const body = sanitizeMessageHtml(dirty);
+		const preview = sanitizeMessagePreview(dirty);
+
+		expect(body).toBe('<p>Visible</p>');
+		expect(preview).toBe('Visible');
+		expect(body).not.toContain('<plaintext');
+		expect(body).not.toContain('LEAK_');
+		expect(body).not.toContain('onerror');
+		expect(preview).not.toContain('LEAK_');
+		expect(preview).not.toContain('<img');
 	});
 
 	it('continues to drop script and style contents from previews', () => {
@@ -73,5 +115,12 @@ describe('messaging sanitization', () => {
 		expect(preview).toBe('Visible');
 		expect(preview).not.toContain('SECRET_SCRIPT');
 		expect(preview).not.toContain('SECRET_STYLE');
+	});
+
+	it('iterates serialized markup stripping until a second-pass tag is gone', () => {
+		const serialized = `<'<"'">'>`;
+
+		expect(serialized.replace(/<(?:(?:"[^"]*")|(?:'[^']*')|[^'">])*>/gu, '')).toBe(`<''>`);
+		expect(stripSerializedMarkup(serialized)).toBe('');
 	});
 });

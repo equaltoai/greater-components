@@ -1,6 +1,15 @@
 import { sanitizeHtml } from '@equaltoai/greater-components-utils';
 
-const RAW_TEXT_ELEMENTS_TO_DROP = ['style', 'textarea', 'title'] as const;
+const RAW_TEXT_ELEMENTS_TO_DROP = [
+	'style',
+	'textarea',
+	'title',
+	'iframe',
+	'noembed',
+	'noframes',
+	'xmp',
+	'plaintext',
+] as const;
 const BLOCK_SEPARATOR_TAGS =
 	/<(?:br|\/(?:p|pre|blockquote|li|ul|ol|h[1-6]))\b(?:"[^"]*"|'[^']*'|[^'">])*>/giu;
 const HTML_TAG = /<(?:"[^"]*"|'[^']*'|[^'">])*>/gu;
@@ -30,9 +39,8 @@ function findTagEnd(html: string, start: number): number {
  *
  * The shared sanitizer intentionally preserves the text children of most
  * disallowed elements. Messaging is a less-trusted surface: CSS source inside
- * style, textarea, and title elements is neither message content nor a useful
- * preview, so remove the complete element before applying the shared allow-list
- * sanitizer.
+ * raw-text elements is neither message content nor a useful preview, so remove
+ * the complete element before applying the shared allow-list sanitizer.
  */
 function dropRawTextElements(html: string): string {
 	let result = html;
@@ -84,7 +92,7 @@ function setQuotedAttribute(attributes: string, name: string, value: string): st
 }
 
 function secureBlankTargetLinks(html: string): string {
-	return html.replace(/<a\b([^>]*)>/giu, (_match, rawAttributes: string) => {
+	return html.replace(/<a\b((?:"[^"]*"|'[^']*'|[^'">])*)>/giu, (_match, rawAttributes: string) => {
 		let attributes = rawAttributes;
 		const href = getQuotedAttribute(attributes, 'href');
 		let target = getQuotedAttribute(attributes, 'target');
@@ -143,7 +151,8 @@ function decodeSerializedText(text: string): string {
 	);
 }
 
-function stripSerializedMarkup(serialized: string): string {
+/** @internal Exported only for direct fixed-point regression coverage. */
+export function stripSerializedMarkup(serialized: string): string {
 	let text = serialized;
 	let previous: string;
 	let iterations = 0;
