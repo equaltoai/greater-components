@@ -122,6 +122,75 @@ function logVerbose(message, verbose) {
 	}
 }
 
+function failGitCheck(operation, error) {
+	const detail = error?.status == null ? error?.code || 'unknown error' : `exit ${error.status}`;
+	log(`❌ Unable to ${operation}: git failed (${detail})`, colors.red);
+	process.exit(1);
+}
+
+function isInsideGitWorkTree() {
+	try {
+		return (
+			execFileSync('git', ['rev-parse', '--is-inside-work-tree'], {
+				cwd: rootDir,
+				encoding: 'utf8',
+				stdio: ['ignore', 'pipe', 'ignore'],
+			}).trim() === 'true'
+		);
+	} catch (error) {
+		if (error?.code === 'ENOENT' || error?.status === 128) return false;
+		failGitCheck('determine whether the registry has staged changes', error);
+	}
+}
+
+function printFallbackDiff(existingOutput, generatedOutput) {
+	const existingLines = existingOutput.split('\n');
+	const generatedLines = generatedOutput.split('\n');
+	let firstChange = 0;
+	while (
+		firstChange < existingLines.length &&
+		firstChange < generatedLines.length &&
+		existingLines[firstChange] === generatedLines[firstChange]
+	) {
+		firstChange++;
+	}
+
+	let existingEnd = existingLines.length - 1;
+	let generatedEnd = generatedLines.length - 1;
+	while (
+		existingEnd >= firstChange &&
+		generatedEnd >= firstChange &&
+		existingLines[existingEnd] === generatedLines[generatedEnd]
+	) {
+		existingEnd--;
+		generatedEnd--;
+	}
+
+	const contextStart = Math.max(0, firstChange - 3);
+	const existingContextEnd = Math.min(existingLines.length - 1, existingEnd + 3);
+	const generatedContextEnd = Math.min(generatedLines.length - 1, generatedEnd + 3);
+	const existingCount = existingContextEnd - contextStart + 1;
+	const generatedCount = generatedContextEnd - contextStart + 1;
+
+	console.error('--- registry/index.json');
+	console.error('+++ generated registry/index.json');
+	console.error(
+		`@@ -${contextStart + 1},${existingCount} +${contextStart + 1},${generatedCount} @@`
+	);
+	for (let index = contextStart; index < firstChange; index++) {
+		console.error(` ${existingLines[index]}`);
+	}
+	for (let index = firstChange; index <= existingEnd; index++) {
+		console.error(`-${existingLines[index]}`);
+	}
+	for (let index = firstChange; index <= generatedEnd; index++) {
+		console.error(`+${generatedLines[index]}`);
+	}
+	for (let index = generatedEnd + 1; index <= generatedContextEnd; index++) {
+		console.error(` ${generatedLines[index]}`);
+	}
+}
+
 /**
  * Compute SHA-256 checksum in SRI format
  */
@@ -1043,21 +1112,29 @@ async function main() {
 						stdio: ['pipe', 'inherit', 'inherit'],
 					});
 				} catch (error) {
-					if (error?.status !== 1) throw error;
+					if (error?.code === 'ENOENT') {
+						printFallbackDiff(existingOutput, output);
+					} else if (error?.status !== 1) {
+						failGitCheck('show the stale registry index diff', error);
+					}
 				}
 				log('❌ Registry index is stale; run `pnpm generate-registry` and commit it', colors.red);
 				process.exit(1);
 			}
 
 			let hasStagedArtifactChange = false;
-			try {
-				execFileSync('git', ['diff', '--cached', '--quiet', '--', 'registry/index.json'], {
-					cwd: rootDir,
-					stdio: 'ignore',
-				});
-			} catch (error) {
-				if (error?.status !== 1) throw error;
-				hasStagedArtifactChange = true;
+			if (isInsideGitWorkTree()) {
+				try {
+					execFileSync('git', ['diff', '--cached', '--quiet', '--', 'registry/index.json'], {
+						cwd: rootDir,
+						stdio: 'ignore',
+					});
+				} catch (error) {
+					if (error?.status !== 1) {
+						failGitCheck('check the staged registry index', error);
+					}
+					hasStagedArtifactChange = true;
+				}
 			}
 
 			if (hasStagedArtifactChange) {
@@ -1069,7 +1146,9 @@ async function main() {
 						maxBuffer: 64 * 1024 * 1024,
 					});
 				} catch (error) {
-					if (error?.status !== 128) throw error;
+					if (error?.status !== 128) {
+						failGitCheck('read the staged registry index', error);
+					}
 				}
 
 				if (stagedOutput !== output && stagedOutput !== existingOutput) {
@@ -1079,7 +1158,9 @@ async function main() {
 							stdio: 'inherit',
 						});
 					} catch (error) {
-						if (error?.status !== 1) throw error;
+						if (error?.status !== 1) {
+							failGitCheck('show the staged registry index diff', error);
+						}
 					}
 					log(
 						'❌ Staged registry index is stale; run `pnpm generate-registry` and stage it',

@@ -1,6 +1,14 @@
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import {
+	existsSync,
+	mkdirSync,
+	mkdtempSync,
+	readFileSync,
+	rmSync,
+	symlinkSync,
+	writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -18,10 +26,11 @@ function sha256(content) {
 	return createHash('sha256').update(content).digest('hex');
 }
 
-function runCheck(cwd) {
+function runCheck(cwd, env = process.env) {
 	return spawnSync(process.execPath, ['scripts/generate-registry-index.js', '--check'], {
 		cwd,
 		encoding: 'utf8',
+		env,
 	});
 }
 
@@ -44,6 +53,38 @@ function withWorktree(fn) {
 		return fn(cwd);
 	} finally {
 		git(repoRoot, ['worktree', 'remove', '--force', cwd]);
+		rmSync(parent, { force: true, recursive: true });
+	}
+}
+
+function withArchive(fn) {
+	const parent = mkdtempSync(join(tmpdir(), 'greater-registry-no-git-'));
+	const cwd = join(parent, 'repo');
+	const binDir = join(parent, 'bin');
+	mkdirSync(cwd);
+	mkdirSync(binDir);
+
+	const archive = execFileSync('git', ['archive', '--format=tar', fixtureRef], {
+		cwd: repoRoot,
+		maxBuffer: 64 * 1024 * 1024,
+	});
+	execFileSync('tar', ['-xf', '-', '-C', cwd], {
+		input: archive,
+		maxBuffer: 64 * 1024 * 1024,
+	});
+
+	const rootModules = join(repoRoot, 'node_modules');
+	if (existsSync(rootModules)) {
+		symlinkSync(rootModules, join(cwd, 'node_modules'), 'dir');
+	}
+
+	const env = { ...process.env, PATH: binDir };
+	const gitProbe = spawnSync('git', ['--version'], { env, encoding: 'utf8' });
+	assert.equal(gitProbe.error?.code, 'ENOENT', 'git must be unavailable in the archive fixture');
+
+	try {
+		return fn(cwd, env);
+	} finally {
 		rmSync(parent, { force: true, recursive: true });
 	}
 }
@@ -125,6 +166,39 @@ const tests = [
 					`clean registry should pass\nstdout:\n${result.stdout}\nstderr:\n${result.stderr}`
 				);
 				assert.equal(sha256(readFileSync(artifact)), before);
+			}),
+	],
+	[
+		'fresh artifact passes without git or a work tree',
+		() =>
+			withArchive((cwd, env) => {
+				const result = runCheck(cwd, env);
+				const output = `${result.stdout}\n${result.stderr}`;
+
+				assert.equal(
+					result.status,
+					0,
+					`fresh registry without git should pass\nstdout:\n${result.stdout}\nstderr:\n${result.stderr}`
+				);
+				assert.match(output, /Registry index is freshly generated/);
+				assert.doesNotMatch(output, /ENOENT|\n\s+at\s/);
+			}),
+	],
+	[
+		'stale artifact fails with a diff without git or a work tree',
+		() =>
+			withArchive((cwd, env) => {
+				const artifact = join(cwd, 'registry', 'index.json');
+				writeFileSync(artifact, perturb(readFileSync(artifact, 'utf8'), '1.0.2'));
+
+				const result = runCheck(cwd, env);
+				const output = `${result.stdout}\n${result.stderr}`;
+
+				expectFailure(result, 'stale registry without git');
+				assert.match(output, /--- registry\/index\.json/);
+				assert.match(output, /\+\+\+ generated registry\/index\.json/);
+				assert.match(output, /Registry index is stale/);
+				assert.doesNotMatch(output, /ENOENT|\n\s+at\s/);
 			}),
 	],
 ];
