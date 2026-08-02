@@ -139,6 +139,10 @@ function relTokens(value: unknown): string[] {
 	return [];
 }
 
+function relTokensWithoutOpener(value: unknown): string[] {
+	return relTokens(value).filter((token) => token.toLowerCase() !== 'opener');
+}
+
 function isHastElement(node: HastNode): node is HastElement {
 	return node.type === 'element';
 }
@@ -175,11 +179,10 @@ function rehypeExternalLinkProperties(options: ExternalLinkOptions) {
 				if (child.tagName === 'a' && typeof href === 'string') {
 					const isExternal = isExternalHttpUrl(href);
 					const hasTarget = 'target' in child.properties;
+					const attachesBlankTarget = isExternal && options.externalLinksInNewTab && !hasTarget;
 
 					if (isExternal && options.addRelToExternalLinks) {
-						const tokens = relTokens(child.properties['rel']).filter(
-							(token) => token.toLowerCase() !== 'opener'
-						);
+						const tokens = relTokensWithoutOpener(child.properties['rel']);
 						const normalizedTokens = new Set(tokens.map((token) => token.toLowerCase()));
 
 						for (const token of SECURITY_TOKENS) {
@@ -192,7 +195,12 @@ function rehypeExternalLinkProperties(options: ExternalLinkOptions) {
 						child.properties['rel'] = tokens;
 					}
 
-					if (isExternal && options.externalLinksInNewTab && !hasTarget) {
+					if (attachesBlankTarget) {
+						if (!options.addRelToExternalLinks && 'rel' in child.properties) {
+							const tokens = relTokensWithoutOpener(child.properties['rel']);
+							if (tokens.length > 0) child.properties['rel'] = tokens;
+							else delete child.properties['rel'];
+						}
 						child.properties['target'] = '_blank';
 					}
 				}

@@ -113,13 +113,28 @@ describe('sanitizeHtml', () => {
 		}
 	);
 
-	it('leaves authored rel verbatim when library rel intervention is disabled', () => {
-		const anchor = expectOnlySafeAnchor('<a href="https://evil.test" rel="me opener">x</a>', {
-			addRelToExternalLinks: false,
-		});
+	it.each(['Opener', 'OPENER'])(
+		'drops authored rel=%s without adding tokens when only new-tab attachment is enabled',
+		(rel) => {
+			const anchor = expectOnlySafeAnchor(`<a href="https://evil.test" rel="me ${rel}">x</a>`, {
+				addRelToExternalLinks: false,
+			});
+
+			// Attaching _blank must not preserve an explicit opener relationship, even when
+			// the caller opted out of adding external-link rel tokens.
+			expect(anchor.getAttribute('rel')?.split(/\s+/u)).toEqual(['me']);
+			expect(anchor.getAttribute('target')).toBe('_blank');
+		}
+	);
+
+	it('leaves authored rel and target verbatim when both link interventions are disabled', () => {
+		const anchor = expectOnlySafeAnchor(
+			'<a href="https://evil.test" target="named" rel="me opener">x</a>',
+			{ addRelToExternalLinks: false, externalLinksInNewTab: false }
+		);
 
 		expect(anchor.getAttribute('rel')).toBe('me opener');
-		expect(anchor.getAttribute('target')).toBe('_blank');
+		expect(anchor.getAttribute('target')).toBe('named');
 	});
 
 	it('leaves an authored target verbatim when library new-tab attachment is disabled', () => {

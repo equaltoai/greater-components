@@ -159,6 +159,17 @@ describe('messaging sanitization', () => {
 		expect(anchor.getAttribute('rel')?.split(/\s+/u)).toEqual(expectedRel);
 	});
 
+	it.each(['Opener', 'OPENER'])(
+		'drops authored rel=%s after delegating with shared rel addition disabled',
+		(rel) => {
+			const anchor = expectOnlySafeAnchor(
+				`<a href="https://evil.test" target="_blank" rel="me ${rel}">x</a>`
+			);
+
+			expect(anchor.getAttribute('rel')?.split(/\s+/u)).toEqual(['me', 'noopener', 'noreferrer']);
+		}
+	);
+
 	it('treats https:evil.test as internal when resolved against the https sentinel base', () => {
 		const anchor = expectOnlySafeAnchor(
 			'<a href="https:evil.test" target="named" rel="opener">x</a>'
