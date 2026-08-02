@@ -2,7 +2,21 @@ import { sanitizeHtml } from '@equaltoai/greater-components-utils';
 import rehypeParse from 'rehype-parse';
 import rehypeStringify from 'rehype-stringify';
 import { unified } from 'unified';
-import type { Element, Root } from 'hast';
+
+interface SanitizedNode {
+	type: string;
+}
+
+interface SanitizedElement extends SanitizedNode {
+	type: 'element';
+	tagName: string;
+	properties: Record<string, unknown>;
+	children: SanitizedNode[];
+}
+
+interface SanitizedParent {
+	children: SanitizedNode[];
+}
 
 const RAW_TEXT_ELEMENTS_TO_DROP = [
 	'style',
@@ -84,16 +98,20 @@ function dropRawTextElements(html: string): string {
 
 const htmlFragmentProcessor = unified().use(rehypeParse, { fragment: true }).use(rehypeStringify);
 
-function relTokens(element: Element): string[] {
+function isSanitizedElement(node: SanitizedNode): node is SanitizedElement {
+	return node.type === 'element';
+}
+
+function relTokens(element: SanitizedElement): string[] {
 	const rel = element.properties['rel'];
 	if (Array.isArray(rel)) return rel.map(String).filter(Boolean);
 	if (typeof rel === 'string') return rel.split(/\s+/u).filter(Boolean);
 	return [];
 }
 
-function hardenExternalAnchors(node: Root | Element): void {
+function hardenExternalAnchors(node: SanitizedParent): void {
 	for (const child of node.children) {
-		if (child.type !== 'element') continue;
+		if (!isSanitizedElement(child)) continue;
 
 		if (
 			child.tagName === 'a' &&
@@ -118,7 +136,7 @@ function hardenExternalAnchors(node: Root | Element): void {
 }
 
 function secureExternalLinks(html: string): string {
-	const tree = htmlFragmentProcessor.parse(html) as Root;
+	const tree = htmlFragmentProcessor.parse(html);
 	hardenExternalAnchors(tree);
 	return htmlFragmentProcessor.stringify(tree);
 }
