@@ -129,9 +129,18 @@ interface HastElement extends HastNode {
 }
 
 const SECURITY_TOKENS = ['noopener', 'noreferrer'];
-// This fixed sentinel is classification-only, never a real outbound origin. Relative URLs need
-// an absolute base, and HTTPS avoids downgrade quirks when resolving special-scheme shorthand.
-const SANITIZER_BASE_URL = new URL('https://greater-sanitize.invalid/');
+const SANITIZER_BASE_HOST = 'greater-sanitize.invalid';
+// Sentinel collisions are safe only because RFC 6761 reserves .invalid from delegation. A
+// resolvable sentinel would turn an internal classification into a live external-link bypass.
+if (!SANITIZER_BASE_HOST.endsWith('.invalid')) {
+	throw new Error('The sanitizer sentinel host must use the reserved .invalid TLD');
+}
+// A single host feeds both scheme variants so special-scheme shorthand is classified against
+// the union of plausible page schemes.
+const SANITIZER_BASE_URLS = ['https:', 'http:'].map(
+	(protocol) => new URL(`${protocol}//${SANITIZER_BASE_HOST}/`)
+);
+const SANITIZER_BASE_ORIGINS = new Set(SANITIZER_BASE_URLS.map(({ origin }) => origin));
 
 function relTokens(value: unknown): string[] {
 	if (Array.isArray(value)) return value.map(String).filter(Boolean);
@@ -148,22 +157,20 @@ function isHastElement(node: HastNode): node is HastElement {
 }
 
 // Mirrors packages/shared/messaging/src/sanitize.ts; keep external-link classification aligned.
-// Mirror the WHATWG URL parser's pre-parse normalization.
-function urlParserNormalized(href: string): string {
-	// eslint-disable-next-line no-control-regex -- WHATWG strips the full leading C0 range.
-	return href.replace(/^[\x00-\x20]+/u, '').replace(/[\t\n\r]/gu, '');
-}
-
 function isExternalHttpUrl(href: string): boolean {
-	try {
-		const resolved = new URL(urlParserNormalized(href), SANITIZER_BASE_URL);
-		return (
-			(resolved.protocol === 'http:' || resolved.protocol === 'https:') &&
-			resolved.origin !== SANITIZER_BASE_URL.origin
-		);
-	} catch {
-		return false;
-	}
+	return SANITIZER_BASE_URLS.some((baseUrl) => {
+		try {
+			const resolved = new URL(href, baseUrl);
+			// Unioning both bases deliberately over-hardens same-scheme shorthand such as
+			// https:foo. Mastodon/federation emits absolute URLs, so that cost is vanishingly rare.
+			return (
+				(resolved.protocol === 'http:' || resolved.protocol === 'https:') &&
+				!SANITIZER_BASE_ORIGINS.has(resolved.origin)
+			);
+		} catch {
+			return false;
+		}
+	});
 }
 
 /** Add external-link protections before the sanitized tree is serialized. */
