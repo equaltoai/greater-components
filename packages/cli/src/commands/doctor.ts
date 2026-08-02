@@ -327,7 +327,7 @@ export async function checkNpmDependencies(
 			name: 'NPM Dependencies',
 			passed: true,
 			severity: 'info',
-			message: 'All required dependencies are installed',
+			message: 'All required dependencies are declared',
 		});
 	}
 

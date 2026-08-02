@@ -548,7 +548,7 @@ describe('checkNpmDependencies extended', () => {
 		expect(registry.faces.blog.includes.shared).not.toContain('content');
 		expect(readingResults.find((result) => result.name === 'NPM Dependencies')).toMatchObject({
 			passed: true,
-			message: 'All required dependencies are installed',
+			message: 'All required dependencies are declared',
 		});
 		expect(
 			contentExpandedResults.find((result) => result.name === 'NPM Dependencies')
@@ -588,7 +588,7 @@ describe('checkNpmDependencies extended', () => {
 	});
 
 	it('reports manifest-vs-floor drift without treating the declaration as missing', async () => {
-		const { checkNpmDependencies } = await import('../src/commands/doctor.js');
+		const { checkNpmDependencies, formatResult } = await import('../src/commands/doctor.js');
 		const { getComponent } = await import('../src/registry/index.js');
 		vi.mocked(getComponent).mockReturnValue({
 			name: 'adapters',
@@ -609,7 +609,7 @@ describe('checkNpmDependencies extended', () => {
 		expect(results[0]).toMatchObject({
 			name: 'NPM Dependencies',
 			passed: true,
-			message: 'All required dependencies are installed',
+			message: 'All required dependencies are declared',
 		});
 		expect(results[1]).toMatchObject({
 			name: 'Manifest vs Required Floors',
@@ -618,6 +618,9 @@ describe('checkNpmDependencies extended', () => {
 			message: 'viem: manifest 2.51.3; Greater requires ^2.55.10',
 		});
 		expect(results[1]?.details).toContain('consumer-owned declaration was preserved');
+		expect(results.map(formatResult).join('\n')).not.toContain(
+			'All required dependencies are installed'
+		);
 	});
 });
 
