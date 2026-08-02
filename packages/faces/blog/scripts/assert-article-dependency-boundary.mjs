@@ -1,8 +1,11 @@
 import fs from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const packageDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const repoRoot = path.resolve(packageDir, '../../..');
+const umbrellaDir = path.join(repoRoot, 'packages', 'greater-components');
 const articleDir = path.join(packageDir, 'dist', 'components', 'Article');
 const editorRoot = path.join(packageDir, 'dist', 'components', 'Editor', 'Root.js');
 const articleModules = fs
@@ -50,3 +53,70 @@ if (!editorGraph.includes('"@equaltoai/greater-components-content"')) {
 console.log(
 	`Article dependency boundary holds across ${articleModules.length} reading modules: no remark/shiki/mdast graph; editor content dependency retained.`
 );
+
+if (process.argv.includes('--umbrella')) {
+	const cliTransformPath = path.join(repoRoot, 'packages', 'cli', 'dist', 'utils', 'transform.js');
+	const { transformImports } = await import(pathToFileURL(cliTransformPath).href);
+	const transformed = transformImports(
+		[
+			'<script>',
+			"import { sanitizeHtml } from '@equaltoai/greater-components-utils/sanitizeHtml';",
+			"import { formatDateTime } from '@equaltoai/greater-components-utils/relativeTime';",
+			'</script>',
+		].join('\n'),
+		{
+			installMode: 'hybrid',
+			aliases: {
+				components: '$lib/components',
+				utils: '$lib/utils',
+				ui: '$lib/components/ui',
+				hooks: '$lib/primitives',
+				lib: '$lib',
+				greater: '$lib/greater',
+			},
+		},
+		'lib/components/Article/Content.svelte'
+	);
+	const postTransformSpecifiers = Array.from(
+		transformed.content.matchAll(/from ['"]([^'"]+)['"]/g),
+		(match) => match[1]
+	);
+	const expectedSpecifiers = [
+		'@equaltoai/greater-components/utils/sanitizeHtml',
+		'@equaltoai/greater-components/utils/relativeTime',
+	];
+	if (JSON.stringify(postTransformSpecifiers) !== JSON.stringify(expectedSpecifiers)) {
+		console.error(
+			`Unexpected post-transform utility specifiers: ${postTransformSpecifiers.join(', ')}`
+		);
+		process.exit(1);
+	}
+
+	const resolutionProbe = String.raw`
+		const expected = [
+			['@equaltoai/greater-components/utils/sanitizeHtml', ['sanitizeHtml', 'sanitizeForPreview']],
+			['@equaltoai/greater-components/utils/relativeTime', ['relativeTime', 'formatDateTime']],
+		];
+
+		for (const [specifier, names] of expected) {
+			const resolved = import.meta.resolve(specifier);
+			const module = await import(specifier);
+			const missing = names.filter((name) => typeof module[name] !== 'function');
+			if (missing.length > 0) {
+				throw new Error(specifier + ' is missing function export(s): ' + missing.join(', '));
+			}
+			console.log('Resolved ' + specifier + ' -> ' + resolved + '; functions=' + names.join(','));
+		}
+	`;
+	const result = spawnSync(process.execPath, ['--input-type=module', '--eval', resolutionProbe], {
+		cwd: umbrellaDir,
+		encoding: 'utf8',
+	});
+
+	if (result.stdout) process.stdout.write(result.stdout);
+	if (result.stderr) process.stderr.write(result.stderr);
+	if (result.status !== 0) {
+		console.error('Post-transform utility specifiers do not resolve through the umbrella exports.');
+		process.exit(result.status ?? 1);
+	}
+}

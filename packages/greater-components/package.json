@@ -124,6 +124,14 @@
       "types": "./dist/utils/index.d.ts",
       "import": "./dist/utils/index.js"
     },
+    "./utils/sanitizeHtml": {
+      "types": "./dist/utils/sanitizeHtml.d.ts",
+      "import": "./dist/utils/sanitizeHtml.js"
+    },
+    "./utils/relativeTime": {
+      "types": "./dist/utils/relativeTime.d.ts",
+      "import": "./dist/utils/relativeTime.js"
+    },
     "./utils/*": "./dist/utils/*",
     "./content": {
       "types": "./dist/content/index.d.ts",
@@ -417,7 +425,7 @@
   ],
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "node scripts/build.js",
+    "build": "node scripts/build.js && node ../faces/blog/scripts/assert-article-dependency-boundary.mjs --umbrella",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage"
   },
