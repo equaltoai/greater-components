@@ -180,6 +180,11 @@
 	color: var(--gr-blog-article-tag-text);
 }
 
+[data-theme='dark'] .gr-blog-tag-cloud .gr-blog-tag-cloud__tag {
+	background: var(--gr-color-gray-700);
+	color: var(--gr-color-gray-100);
+}
+
 [data-theme='dark'] .gr-blog-article__content code {
 	color: var(--gr-blog-code-text);
 }
@@ -1082,7 +1087,7 @@
 }
 
 .gr-blog-review-attribution__empty {
-	color: var(--gr-color-gray-500, var(--gr-color-gray-500));
+	color: var(--gr-color-gray-500);
 	font-style: italic;
 }
 
