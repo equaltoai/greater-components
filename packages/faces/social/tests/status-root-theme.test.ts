@@ -2,7 +2,71 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-const css = fs.readFileSync(path.resolve(process.cwd(), 'src/theme.css'), 'utf8');
+const socialCss = fs.readFileSync(path.resolve(process.cwd(), 'src/theme.css'), 'utf8');
+const tokenCss = fs.readFileSync(
+	path.resolve(process.cwd(), '../../tokens/dist/theme.css'),
+	'utf8'
+);
+
+function declarations(css: string, selector: string): string {
+	let offset = 0;
+	while (offset < css.length) {
+		const open = css.indexOf('{', offset);
+		if (open < 0) break;
+		const start = Math.max(css.lastIndexOf('}', open - 1), css.lastIndexOf('{', open - 1)) + 1;
+		const candidate = css
+			.slice(start, open)
+			.replace(/\/\*[\s\S]*?\*\//g, '')
+			.trim();
+		const close = css.indexOf('}', open);
+		if (candidate === selector && close >= 0) return css.slice(open + 1, close);
+		offset = open + 1;
+	}
+	throw new Error(`Missing CSS block for ${selector}`);
+}
+
+function property(block: string, name: string): string {
+	const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	const match = block.match(new RegExp(`(?:^|;)\\s*${escaped}\\s*:\\s*([^;]+)`));
+	if (!match?.[1]) throw new Error(`Missing ${name}`);
+	return match[1].trim();
+}
+
+function readCustomProperties(block: string): Map<string, string> {
+	return new Map(
+		Array.from(block.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g), (match) => [
+			match[1] as string,
+			match[2]?.trim() as string,
+		])
+	);
+}
+
+function resolveValue(
+	value: string,
+	properties: Map<string, string>,
+	seen = new Set<string>()
+): string {
+	const trimmed = value.trim();
+	if (/^#[\da-f]{6}$/i.test(trimmed)) return trimmed.toLowerCase();
+
+	const variable = trimmed.match(/^var\(\s*(--[\w-]+)\s*(?:,\s*(.+))?\)$/s);
+	if (!variable?.[1]) throw new Error(`Unresolved CSS value: ${value}`);
+
+	const name = variable[1];
+	if (seen.has(name)) throw new Error(`Circular CSS variable: ${name}`);
+	const nextSeen = new Set(seen).add(name);
+	const declared = properties.get(name);
+	if (declared) return resolveValue(declared, properties, nextSeen);
+	if (variable[2]) return resolveValue(variable[2], properties, nextSeen);
+	throw new Error(`Missing emitted token: ${name}`);
+}
+
+function themeProperties(selector: string): Map<string, string> {
+	return new Map([
+		...readCustomProperties(declarations(tokenCss, ':root')),
+		...readCustomProperties(declarations(tokenCss, selector)),
+	]);
+}
 
 function luminance(hex: string): number {
 	const channels = hex
@@ -28,38 +92,70 @@ function contrast(foreground: string, background: string): number {
 
 describe('status root themed background', () => {
 	it('pins theme-aware dark and high-contrast activation chains', () => {
-		expect(css).toContain(`[data-theme='dark'] .status-root {
-	--status-bg: var(--gr-semantic-background-primary, #030712);
-	--status-bg-hover: var(--gr-semantic-background-secondary, #111827);
-}`);
-		expect(css).toContain(`[data-theme='highContrast'] .status-root,
-[data-theme='high-contrast'] .status-root {
-	--status-bg: var(--gr-semantic-background-primary, #000000);
-	--status-bg-hover: var(--gr-semantic-background-primary, #000000);
-}`);
-		expect(css).toContain(`:root:not([data-theme]) .status-root {
-		--status-bg: var(--gr-semantic-background-primary, #030712);`);
-		expect(css).toContain(`:root:not([data-theme]) .status-root {
-		--status-bg: var(--gr-semantic-background-primary, #000000);`);
+		expect(
+			property(declarations(socialCss, "[data-theme='dark'] .status-root"), '--status-bg')
+		).toBe('var(--gr-semantic-background-primary, #030712)');
+		expect(
+			property(
+				declarations(
+					socialCss,
+					"[data-theme='highContrast'] .status-root,\n[data-theme='high-contrast'] .status-root"
+				),
+				'--status-bg'
+			)
+		).toBe('var(--gr-semantic-background-primary, #000000)');
+		expect(socialCss).toMatch(
+			/@media \(prefers-color-scheme: dark\)[\s\S]*?:root:not\(\[data-theme\]\) \.status-root[\s\S]*?--status-bg: var\(--gr-semantic-background-primary, #030712\)/
+		);
+		expect(socialCss).toMatch(
+			/@media \(prefers-contrast: high\)[\s\S]*?:root:not\(\[data-theme\]\) \.status-root[\s\S]*?--status-bg: var\(--gr-semantic-background-primary, #000000\)/
+		);
 	});
 
-	it('keeps status body text and links above the AA contrast floor', () => {
-		const cells = [
-			['dark body', '#f9fafb', '#030712'],
-			['dark link', '#1d9bf0', '#030712'],
-			['high-contrast body', '#ffffff', '#000000'],
-			['high-contrast link', '#1d9bf0', '#000000'],
+	it('resolves status body and link contrast from the shipped stylesheets', () => {
+		const bodyValue = property(declarations(socialCss, '.status-content'), 'color');
+		const linkValue = property(
+			declarations(
+				socialCss,
+				"[data-theme='dark'] .status-content a,\n[data-theme='highContrast'] .status-content a,\n[data-theme='high-contrast'] .status-content a"
+			),
+			'color'
+		);
+		const themes = [
+			{
+				name: 'dark',
+				tokenSelector: '[data-theme="dark"]',
+				statusSelector: "[data-theme='dark'] .status-root",
+			},
+			{
+				name: 'high-contrast',
+				tokenSelector: '[data-theme="highContrast"],\n[data-theme="high-contrast"]',
+				statusSelector:
+					"[data-theme='highContrast'] .status-root,\n[data-theme='high-contrast'] .status-root",
+			},
 		] as const;
 
-		for (const [name, foreground, background] of cells) {
-			expect(contrast(foreground, background), name).toBeGreaterThanOrEqual(4.5);
-		}
+		for (const theme of themes) {
+			const properties = themeProperties(theme.tokenSelector);
+			const backgroundValue = property(
+				declarations(socialCss, theme.statusSelector),
+				'--status-bg'
+			);
+			const background = resolveValue(backgroundValue, properties);
+			for (const [cell, value] of [
+				['body', bodyValue],
+				['link', linkValue],
+			] as const) {
+				const foreground = resolveValue(value, properties);
+				expect(contrast(foreground, background), `${theme.name} ${cell}`).toBeGreaterThanOrEqual(
+					4.5
+				);
+			}
 
-		expect(css).toContain(
-			'color: var(--gr-semantic-foreground-primary, var(--status-text-primary, #0f1419))'
-		);
-		expect(css).toContain(
-			"[data-theme='dark'] .status-content a,\n[data-theme='highContrast'] .status-content a,\n[data-theme='high-contrast'] .status-content a"
-		);
+			expect(
+				contrast(resolveValue(linkValue, new Map()), resolveValue(backgroundValue, new Map())),
+				`${theme.name} link fallbacks`
+			).toBeGreaterThanOrEqual(4.5);
+		}
 	});
 });
