@@ -23,7 +23,7 @@
 			language="css"
 			code={`:global(:root) {
   --gr-color-primary-600: #2563eb;
-  --gr-semantic-background-primary: var(--gr-color-gray-0);
+  --gr-semantic-background-primary: var(--gr-color-base-white);
 }`}
 		/>
 	</section>

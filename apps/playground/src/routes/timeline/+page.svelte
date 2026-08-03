@@ -593,8 +593,8 @@
 	}
 
 	.sidebar-nav button.selected {
-		background: var(--gr-semantic-action-primary-muted);
-		color: var(--gr-semantic-action-primary-foreground);
+		background: var(--gr-color-primary-100);
+		color: var(--gr-color-base-white);
 	}
 
 	.preferences-trigger {
@@ -763,10 +763,10 @@
 	}
 
 	.state-card {
-		border: 1px solid var(--gr-semantic-action-danger-border);
+		border: 1px solid var(--gr-color-error-300);
 		border-radius: var(--gr-radii-xl);
 		padding: 1rem;
-		background: var(--gr-semantic-action-danger-muted);
+		background: var(--gr-color-error-100);
 	}
 
 	@media (max-width: 1280px) {

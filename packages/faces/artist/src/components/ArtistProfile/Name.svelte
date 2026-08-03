@@ -151,8 +151,8 @@ Features:
 		align-items: center;
 		gap: var(--gr-spacing-scale-2);
 		margin: 0;
-		font-size: var(--gr-font-size-2xl);
-		font-weight: var(--gr-font-weight-bold);
+		font-size: var(--gr-typography-fontSize-2xl);
+		font-weight: var(--gr-typography-fontWeight-bold);
 		color: var(--gr-color-gray-100);
 		transition: color 0.2s;
 	}
@@ -164,7 +164,7 @@ Features:
 
 	.profile-name__username {
 		margin: 0;
-		font-size: var(--gr-font-size-md);
+		font-size: var(--gr-typography-fontSize-base);
 		color: var(--gr-color-gray-400);
 	}
 

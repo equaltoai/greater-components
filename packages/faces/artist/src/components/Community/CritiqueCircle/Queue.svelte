@@ -143,13 +143,13 @@ CritiqueCircle.Queue - Critique request queue management
 <style>
 	.critique-queue {
 		background: var(--gr-color-gray-800);
-		border-radius: var(--gr-radius-lg);
+		border-radius: var(--gr-radii-lg);
 		padding: var(--gr-spacing-scale-5);
 	}
 
 	.critique-queue__title {
-		font-size: var(--gr-font-size-lg);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-lg);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		margin: 0 0 var(--gr-spacing-scale-4) 0;
 	}
 
@@ -169,8 +169,8 @@ CritiqueCircle.Queue - Critique request queue management
 	}
 
 	.critique-queue__field label {
-		font-size: var(--gr-font-size-sm);
-		font-weight: var(--gr-font-weight-medium);
+		font-size: var(--gr-typography-fontSize-sm);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		color: var(--gr-color-gray-300);
 	}
 
@@ -179,9 +179,9 @@ CritiqueCircle.Queue - Critique request queue management
 		padding: var(--gr-spacing-scale-3);
 		background: var(--gr-color-gray-700);
 		border: 1px solid var(--gr-color-gray-600);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: var(--gr-color-gray-100);
-		font-size: var(--gr-font-size-base);
+		font-size: var(--gr-typography-fontSize-base);
 	}
 
 	.critique-queue__field textarea {
@@ -193,9 +193,9 @@ CritiqueCircle.Queue - Critique request queue management
 		padding: var(--gr-spacing-scale-3) var(--gr-spacing-scale-5);
 		background: var(--gr-color-primary-600);
 		border: none;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: white;
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		cursor: pointer;
 		transition: background 0.2s;
 	}
@@ -227,12 +227,12 @@ CritiqueCircle.Queue - Critique request queue management
 		gap: var(--gr-spacing-scale-4);
 		padding: var(--gr-spacing-scale-3);
 		background: var(--gr-color-gray-700);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 	}
 
 	.critique-queue__position {
-		font-size: var(--gr-font-size-lg);
-		font-weight: var(--gr-font-weight-bold);
+		font-size: var(--gr-typography-fontSize-lg);
+		font-weight: var(--gr-typography-fontWeight-bold);
 		color: var(--gr-color-primary-400);
 		min-width: 40px;
 	}
@@ -248,7 +248,7 @@ CritiqueCircle.Queue - Critique request queue management
 		width: 48px;
 		height: 48px;
 		object-fit: cover;
-		border-radius: var(--gr-radius-sm);
+		border-radius: var(--gr-radii-sm);
 	}
 
 	.critique-queue__details {
@@ -257,11 +257,11 @@ CritiqueCircle.Queue - Critique request queue management
 	}
 
 	.critique-queue__artwork-title {
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 	}
 
 	.critique-queue__artist {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-400);
 	}
 
@@ -269,7 +269,7 @@ CritiqueCircle.Queue - Critique request queue management
 		display: flex;
 		flex-direction: column;
 		align-items: flex-end;
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 	}
 
 	.critique-queue__wait-label {
@@ -277,14 +277,14 @@ CritiqueCircle.Queue - Critique request queue management
 	}
 
 	.critique-queue__wait-time {
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 	}
 
 	.critique-queue__status {
 		margin-top: var(--gr-spacing-scale-4);
 		padding: var(--gr-spacing-scale-4);
 		background: var(--gr-color-primary-900);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 	}
 
 	.critique-queue__status p {
@@ -295,9 +295,9 @@ CritiqueCircle.Queue - Critique request queue management
 		display: inline-block;
 		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
 		background: var(--gr-color-warning-600);
-		border-radius: var(--gr-radius-sm);
-		font-size: var(--gr-font-size-xs);
-		font-weight: var(--gr-font-weight-medium);
+		border-radius: var(--gr-radii-sm);
+		font-size: var(--gr-typography-fontSize-xs);
+		font-weight: var(--gr-typography-fontWeight-medium);
 	}
 
 	@media (prefers-reduced-motion: reduce) {

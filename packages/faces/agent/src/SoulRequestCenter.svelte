@@ -254,8 +254,8 @@
 	}
 
 	.soul-request-center__filter--active {
-		background: color-mix(in srgb, var(--gr-color-secondary-100) 62%, white 38%);
-		color: var(--gr-color-secondary-800);
+		background: color-mix(in srgb, var(--gr-color-gray-100) 62%, white 38%);
+		color: var(--gr-color-gray-800);
 		font-weight: 700;
 	}
 

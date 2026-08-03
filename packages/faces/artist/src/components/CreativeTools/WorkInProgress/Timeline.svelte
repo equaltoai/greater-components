@@ -140,7 +140,7 @@ WorkInProgress.Timeline - Visual progress timeline
 		height: 16px;
 		background: var(--gr-color-gray-600);
 		border: 3px solid var(--gr-color-gray-800);
-		border-radius: var(--gr-radius-full);
+		border-radius: var(--gr-radii-full);
 		transition:
 			background 0.2s,
 			transform 0.2s;
@@ -160,13 +160,13 @@ WorkInProgress.Timeline - Visual progress timeline
 	}
 
 	.wip-timeline__milestone-label {
-		font-size: var(--gr-font-size-xs);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-xs);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: var(--gr-color-gray-300);
 	}
 
 	.wip-timeline__milestone-progress {
-		font-size: var(--gr-font-size-xs);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: var(--gr-color-gray-500);
 	}
 
@@ -174,7 +174,7 @@ WorkInProgress.Timeline - Visual progress timeline
 		margin: var(--gr-spacing-scale-4) 0 0;
 		padding: 0;
 		list-style: none;
-		font-size: var(--gr-font-size-xs);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: var(--gr-color-gray-500);
 	}
 

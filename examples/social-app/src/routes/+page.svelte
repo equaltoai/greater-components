@@ -110,15 +110,15 @@
 
 	.status-card {
 		padding: var(--gr-spacing-4);
-		border: 1px solid var(--gr-color-border);
+		border: 1px solid var(--gr-semantic-border-default);
 		border-radius: var(--gr-radii-lg);
-		background: var(--gr-color-surface);
+		background: var(--gr-semantic-background-surface);
 	}
 
 	.status-header {
 		display: flex;
-		gap: var(--gr-spacing-3);
-		margin-bottom: var(--gr-spacing-3);
+		gap: var(--gr-spacing-scale-3);
+		margin-bottom: var(--gr-spacing-scale-3);
 	}
 
 	.avatar {
@@ -137,12 +137,12 @@
 	}
 
 	.username {
-		color: var(--gr-color-text-secondary);
+		color: var(--gr-semantic-foreground-secondary);
 		font-size: var(--gr-typography-fontSize-sm);
 	}
 
 	.status-content {
-		margin-bottom: var(--gr-spacing-3);
+		margin-bottom: var(--gr-spacing-scale-3);
 	}
 
 	.status-actions {
@@ -153,26 +153,26 @@
 	.action-btn {
 		background: none;
 		border: none;
-		color: var(--gr-color-text-secondary);
+		color: var(--gr-semantic-foreground-secondary);
 		cursor: pointer;
-		padding: var(--gr-spacing-1) var(--gr-spacing-2);
+		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
 		border-radius: var(--gr-radii-md);
 	}
 
 	.action-btn:hover {
-		background: var(--gr-color-surface-hover);
+		background: var(--gr-semantic-background-tertiary);
 	}
 
 	.demo-note {
 		padding: var(--gr-spacing-4);
-		background: var(--gr-color-surface-alt);
+		background: var(--gr-semantic-background-secondary);
 		border-radius: var(--gr-radii-md);
 		font-size: var(--gr-typography-fontSize-sm);
 	}
 
 	.demo-note code {
-		background: var(--gr-color-surface);
-		padding: var(--gr-spacing-1) var(--gr-spacing-2);
+		background: var(--gr-semantic-background-surface);
+		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
 		border-radius: var(--gr-radii-sm);
 	}
 </style>

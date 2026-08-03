@@ -36,28 +36,28 @@
 <style>
 	.settings-section {
 		margin-bottom: 2rem;
-		background: var(--gr-color-surface);
-		border: 1px solid var(--gr-color-border);
-		border-radius: var(--gr-radius-md);
+		background: var(--gr-semantic-background-surface);
+		border: 1px solid var(--gr-semantic-border-default);
+		border-radius: var(--gr-radii-md);
 		overflow: hidden;
 	}
 	.settings-section__header {
 		padding: 1.5rem;
-		border-bottom: 1px solid var(--gr-color-border);
+		border-bottom: 1px solid var(--gr-semantic-border-default);
 		display: flex;
 		align-items: center;
 		gap: 1rem;
-		background: var(--gr-color-surface-subtle);
+		background: var(--gr-semantic-background-secondary);
 	}
 	.settings-section__title {
 		font-size: 1.125rem;
 		font-weight: 600;
-		color: var(--gr-color-text);
+		color: var(--gr-semantic-foreground-primary);
 		margin: 0;
 	}
 	.settings-section__description {
 		font-size: 0.875rem;
-		color: var(--gr-color-text-muted);
+		color: var(--gr-semantic-foreground-tertiary);
 		margin: 0.25rem 0 0;
 	}
 	.settings-section__content {

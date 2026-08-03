@@ -155,13 +155,13 @@ Collaboration.Uploads - File upload and asset management
 <style>
 	.collab-uploads {
 		background: var(--gr-color-gray-800);
-		border-radius: var(--gr-radius-lg);
+		border-radius: var(--gr-radii-lg);
 		padding: var(--gr-spacing-scale-5);
 	}
 
 	.collab-uploads__title {
-		font-size: var(--gr-font-size-lg);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-lg);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		margin: 0 0 var(--gr-spacing-scale-4) 0;
 	}
 
@@ -174,7 +174,7 @@ Collaboration.Uploads - File upload and asset management
 		gap: var(--gr-spacing-scale-2);
 		padding: var(--gr-spacing-scale-8);
 		border: 2px dashed var(--gr-color-gray-600);
-		border-radius: var(--gr-radius-lg);
+		border-radius: var(--gr-radii-lg);
 		cursor: pointer;
 		transition:
 			border-color 0.2s,
@@ -206,7 +206,7 @@ Collaboration.Uploads - File upload and asset management
 	}
 
 	.collab-uploads__hint {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-500);
 	}
 
@@ -228,7 +228,7 @@ Collaboration.Uploads - File upload and asset management
 		flex-direction: column;
 		background: var(--gr-color-gray-700);
 		border: 2px solid transparent;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		overflow: hidden;
 		cursor: pointer;
 		text-align: left;
@@ -277,15 +277,15 @@ Collaboration.Uploads - File upload and asset management
 	}
 
 	.collab-uploads__asset-name {
-		font-size: var(--gr-font-size-sm);
-		font-weight: var(--gr-font-weight-medium);
+		font-size: var(--gr-typography-fontSize-sm);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
 
 	.collab-uploads__asset-meta {
-		font-size: var(--gr-font-size-xs);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: var(--gr-color-gray-400);
 	}
 

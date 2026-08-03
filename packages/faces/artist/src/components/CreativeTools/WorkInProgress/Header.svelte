@@ -146,7 +146,7 @@ WorkInProgress.Header - Thread header with title, artist, and status
 	.wip-header__avatar {
 		width: 48px;
 		height: 48px;
-		border-radius: var(--gr-radius-full);
+		border-radius: var(--gr-radii-full);
 		object-fit: cover;
 	}
 
@@ -156,12 +156,12 @@ WorkInProgress.Header - Thread header with title, artist, and status
 	}
 
 	.wip-header__artist-name {
-		font-weight: var(--gr-font-weight-semibold);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: var(--gr-color-gray-100);
 	}
 
 	.wip-header__date {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-400);
 	}
 
@@ -171,8 +171,8 @@ WorkInProgress.Header - Thread header with title, artist, and status
 	}
 
 	.wip-header__title {
-		font-size: var(--gr-font-size-xl);
-		font-weight: var(--gr-font-weight-bold);
+		font-size: var(--gr-typography-fontSize-xl);
+		font-weight: var(--gr-typography-fontWeight-bold);
 		color: var(--gr-color-gray-100);
 		margin: 0 0 var(--gr-spacing-scale-2) 0;
 	}
@@ -181,14 +181,14 @@ WorkInProgress.Header - Thread header with title, artist, and status
 		display: flex;
 		flex-wrap: wrap;
 		gap: var(--gr-spacing-scale-3);
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-400);
 	}
 
 	.wip-header__status {
 		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
-		border-radius: var(--gr-radius-sm);
-		font-weight: var(--gr-font-weight-medium);
+		border-radius: var(--gr-radii-sm);
+		font-weight: var(--gr-typography-fontWeight-medium);
 	}
 
 	.wip-header__status[data-status='in-progress'] {
@@ -210,9 +210,9 @@ WorkInProgress.Header - Thread header with title, artist, and status
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
 		background: var(--gr-color-primary-600);
 		border: none;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: white;
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		cursor: pointer;
 		transition: background 0.2s;
 	}

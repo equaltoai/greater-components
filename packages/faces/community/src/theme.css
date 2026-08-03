@@ -8,11 +8,11 @@
 
 :root {
 	/* Card layout */
-	--gr-community-card-background: var(--gr-color-surface-primary);
-	--gr-community-card-border: var(--gr-color-border-primary);
+	--gr-community-card-background: var(--gr-semantic-background-surface);
+	--gr-community-card-border: var(--gr-semantic-border-default);
 	--gr-community-card-radius: var(--gr-radii-lg);
-	--gr-community-card-shadow: var(--gr-shadow-sm);
-	--gr-community-card-hover-shadow: var(--gr-shadow-md);
+	--gr-community-card-shadow: var(--gr-shadows-sm);
+	--gr-community-card-hover-shadow: var(--gr-shadows-md);
 
 	/* Content sizing */
 	--gr-community-content-max-width: 740px;
@@ -28,7 +28,7 @@
 
 	/* Comment threading */
 	--gr-community-comment-indent: 16px;
-	--gr-community-comment-line-color: var(--gr-color-border-secondary);
+	--gr-community-comment-line-color: var(--gr-semantic-border-subtle);
 	--gr-community-comment-line-width: 2px;
 	--gr-community-comment-collapsed-opacity: 0.6;
 	--gr-community-comment-op-highlight: var(--gr-color-primary-100);
@@ -42,13 +42,13 @@
 	--gr-community-flair-font-weight: var(--gr-typography-fontWeight-medium);
 
 	/* Post metadata */
-	--gr-community-meta-color: var(--gr-color-text-tertiary);
+	--gr-community-meta-color: var(--gr-semantic-foreground-tertiary);
 	--gr-community-meta-font-size: var(--gr-typography-fontSize-sm);
 	--gr-community-meta-separator: '·';
 
 	/* Sorting controls */
 	--gr-community-sort-active-color: var(--gr-color-primary-600);
-	--gr-community-sort-inactive-color: var(--gr-color-text-secondary);
+	--gr-community-sort-inactive-color: var(--gr-semantic-foreground-secondary);
 
 	/* Moderation */
 	--gr-community-mod-badge-color: var(--gr-color-success-600);
@@ -59,7 +59,7 @@
 
 	/* Rules sidebar */
 	--gr-community-rule-number-color: var(--gr-color-primary-500);
-	--gr-community-rule-border: var(--gr-color-border-primary);
+	--gr-community-rule-border: var(--gr-semantic-border-default);
 
 	/* Wiki */
 	--gr-community-wiki-toc-width: 200px;
@@ -142,7 +142,7 @@
 .gr-community-post__title {
 	font-size: var(--gr-typography-fontSize-lg);
 	font-weight: var(--gr-typography-fontWeight-semibold);
-	color: var(--gr-color-text-primary);
+	color: var(--gr-semantic-foreground-primary);
 	margin: 0 0 var(--gr-spacing-scale-1);
 	line-height: 1.3;
 }
@@ -187,7 +187,7 @@
 }
 
 .gr-community-post__action:hover {
-	color: var(--gr-color-text-primary);
+	color: var(--gr-semantic-foreground-primary);
 }
 
 /* ============================================================================
@@ -238,7 +238,7 @@
 	font-family: var(--gr-community-vote-score-font);
 	font-size: var(--gr-typography-fontSize-sm);
 	font-weight: var(--gr-typography-fontWeight-bold);
-	color: var(--gr-color-text-primary);
+	color: var(--gr-semantic-foreground-primary);
 	min-width: 2ch;
 	text-align: center;
 }
@@ -307,7 +307,7 @@
 
 .gr-community-comment__author {
 	font-weight: var(--gr-typography-fontWeight-semibold);
-	color: var(--gr-color-text-primary);
+	color: var(--gr-semantic-foreground-primary);
 }
 
 .gr-community-comment__badge {
@@ -336,7 +336,7 @@
 .gr-community-comment__content {
 	font-size: var(--gr-typography-fontSize-base);
 	line-height: 1.5;
-	color: var(--gr-color-text-primary);
+	color: var(--gr-semantic-foreground-primary);
 }
 
 .gr-community-comment__children {
@@ -374,7 +374,7 @@
 
 .gr-community-flair--post {
 	background: var(--gr-color-gray-100);
-	color: var(--gr-color-text-primary);
+	color: var(--gr-semantic-foreground-primary);
 }
 
 .gr-community-flair--user {
@@ -391,7 +391,7 @@
 	align-items: center;
 	gap: var(--gr-spacing-scale-4);
 	padding: var(--gr-spacing-scale-2) 0;
-	border-bottom: 1px solid var(--gr-color-border-primary);
+	border-bottom: 1px solid var(--gr-semantic-border-default);
 	margin-bottom: var(--gr-spacing-scale-3);
 }
 
@@ -414,7 +414,7 @@
 
 .gr-community-sort__option:hover {
 	background: var(--gr-color-gray-100);
-	color: var(--gr-color-text-primary);
+	color: var(--gr-semantic-foreground-primary);
 }
 
 .gr-community-sort__option--active {
@@ -436,7 +436,7 @@
 .gr-community-rules__title {
 	font-size: var(--gr-typography-fontSize-base);
 	font-weight: var(--gr-typography-fontWeight-bold);
-	color: var(--gr-color-text-primary);
+	color: var(--gr-semantic-foreground-primary);
 	margin: 0 0 var(--gr-spacing-scale-3);
 	padding-bottom: var(--gr-spacing-scale-2);
 	border-bottom: 1px solid var(--gr-community-rule-border);
@@ -474,13 +474,13 @@
 .gr-community-rule__title {
 	font-size: var(--gr-typography-fontSize-sm);
 	font-weight: var(--gr-typography-fontWeight-semibold);
-	color: var(--gr-color-text-primary);
+	color: var(--gr-semantic-foreground-primary);
 	margin: 0 0 var(--gr-spacing-scale-1);
 }
 
 .gr-community-rule__description {
 	font-size: var(--gr-typography-fontSize-sm);
-	color: var(--gr-color-text-secondary);
+	color: var(--gr-semantic-foreground-secondary);
 	margin: 0;
 	line-height: 1.4;
 }
@@ -506,7 +506,7 @@
 .gr-community-mod-panel__title {
 	font-size: var(--gr-typography-fontSize-lg);
 	font-weight: var(--gr-typography-fontWeight-bold);
-	color: var(--gr-color-text-primary);
+	color: var(--gr-semantic-foreground-primary);
 	margin: 0;
 }
 
@@ -521,7 +521,7 @@
 	padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
 	border: none;
 	background: transparent;
-	color: var(--gr-color-text-secondary);
+	color: var(--gr-semantic-foreground-secondary);
 	font-size: var(--gr-typography-fontSize-sm);
 	font-weight: var(--gr-typography-fontWeight-medium);
 	cursor: pointer;
@@ -533,7 +533,7 @@
 }
 
 .gr-community-mod-panel__tab:hover {
-	color: var(--gr-color-text-primary);
+	color: var(--gr-semantic-foreground-primary);
 }
 
 .gr-community-mod-panel__tab--active {
@@ -548,7 +548,7 @@
 .gr-community-mod-panel__refresh {
 	border: 1px solid var(--gr-community-card-border);
 	background: var(--gr-community-card-background);
-	color: var(--gr-color-text-primary);
+	color: var(--gr-semantic-foreground-primary);
 	border-radius: var(--gr-radii-md);
 	padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-3);
 	font-size: var(--gr-typography-fontSize-sm);
@@ -568,7 +568,7 @@
 
 .gr-community-mod-panel__status {
 	font-size: var(--gr-typography-fontSize-sm);
-	color: var(--gr-color-text-secondary);
+	color: var(--gr-semantic-foreground-secondary);
 	margin: 0;
 }
 
@@ -595,7 +595,7 @@
 .gr-community-mod-queue-item__title {
 	font-size: var(--gr-typography-fontSize-base);
 	font-weight: var(--gr-typography-fontWeight-semibold);
-	color: var(--gr-color-text-primary);
+	color: var(--gr-semantic-foreground-primary);
 	margin: 0 0 var(--gr-spacing-scale-1);
 }
 
@@ -604,18 +604,18 @@
 	flex-wrap: wrap;
 	gap: var(--gr-spacing-scale-2);
 	font-size: var(--gr-typography-fontSize-sm);
-	color: var(--gr-color-text-secondary);
+	color: var(--gr-semantic-foreground-secondary);
 }
 
 .gr-community-mod-queue-item__reports {
 	margin: var(--gr-spacing-scale-2) 0 0;
 	padding-left: var(--gr-spacing-scale-4);
 	font-size: var(--gr-typography-fontSize-sm);
-	color: var(--gr-color-text-secondary);
+	color: var(--gr-semantic-foreground-secondary);
 }
 
 .gr-community-mod-queue-item__report-detail {
-	color: var(--gr-color-text-tertiary);
+	color: var(--gr-semantic-foreground-tertiary);
 }
 
 .gr-community-mod-queue-item__preview {
@@ -623,7 +623,7 @@
 	padding: var(--gr-spacing-scale-2);
 	border-radius: var(--gr-radii-md);
 	background: var(--gr-color-gray-50);
-	border: 1px solid var(--gr-color-border-secondary);
+	border: 1px solid var(--gr-semantic-border-subtle);
 }
 
 .gr-community-mod-queue-item__actions {
@@ -635,7 +635,7 @@
 .gr-community-mod-queue-item__actions button {
 	border: 1px solid var(--gr-community-card-border);
 	background: var(--gr-community-card-background);
-	color: var(--gr-color-text-primary);
+	color: var(--gr-semantic-foreground-primary);
 	border-radius: var(--gr-radii-md);
 	padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
 	font-size: var(--gr-typography-fontSize-sm);
@@ -668,19 +668,19 @@
 	flex-wrap: wrap;
 	gap: var(--gr-spacing-scale-2);
 	font-size: var(--gr-typography-fontSize-sm);
-	color: var(--gr-color-text-secondary);
+	color: var(--gr-semantic-foreground-secondary);
 }
 
 .gr-community-mod-log__action {
 	font-weight: var(--gr-typography-fontWeight-semibold);
-	color: var(--gr-color-text-primary);
+	color: var(--gr-semantic-foreground-primary);
 	text-transform: uppercase;
 }
 
 .gr-community-mod-log__meta {
 	margin-top: var(--gr-spacing-scale-1);
 	font-size: var(--gr-typography-fontSize-sm);
-	color: var(--gr-color-text-tertiary);
+	color: var(--gr-semantic-foreground-tertiary);
 }
 
 /* ============================================================================
@@ -735,13 +735,13 @@
 .gr-community-header__name {
 	font-size: var(--gr-typography-fontSize-2xl);
 	font-weight: var(--gr-typography-fontWeight-bold);
-	color: var(--gr-color-text-primary);
+	color: var(--gr-semantic-foreground-primary);
 	margin: 0;
 }
 
 .gr-community-header__title {
 	font-size: var(--gr-typography-fontSize-sm);
-	color: var(--gr-color-text-secondary);
+	color: var(--gr-semantic-foreground-secondary);
 	margin: var(--gr-spacing-scale-1) 0 0;
 }
 
@@ -750,18 +750,18 @@
 	gap: var(--gr-spacing-scale-4);
 	margin-top: var(--gr-spacing-scale-2);
 	font-size: var(--gr-typography-fontSize-sm);
-	color: var(--gr-color-text-secondary);
+	color: var(--gr-semantic-foreground-secondary);
 }
 
 .gr-community-header__stat-value {
 	font-weight: var(--gr-typography-fontWeight-bold);
-	color: var(--gr-color-text-primary);
+	color: var(--gr-semantic-foreground-primary);
 }
 
 .gr-community-header__subscribe {
 	border: 1px solid var(--gr-community-card-border);
 	background: var(--gr-community-card-background);
-	color: var(--gr-color-text-primary);
+	color: var(--gr-semantic-foreground-primary);
 	border-radius: var(--gr-radii-full);
 	padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
 	font-size: var(--gr-typography-fontSize-sm);
@@ -804,7 +804,7 @@
 	margin: 0;
 	font-size: var(--gr-typography-fontSize-xl);
 	font-weight: var(--gr-typography-fontWeight-bold);
-	color: var(--gr-color-text-primary);
+	color: var(--gr-semantic-foreground-primary);
 }
 
 .gr-community-wiki__meta {
@@ -813,7 +813,7 @@
 	flex-wrap: wrap;
 	gap: var(--gr-spacing-scale-2);
 	font-size: var(--gr-typography-fontSize-sm);
-	color: var(--gr-color-text-secondary);
+	color: var(--gr-semantic-foreground-secondary);
 }
 
 .gr-community-wiki__actions {
@@ -825,7 +825,7 @@
 .gr-community-wiki__action {
 	border: 1px solid var(--gr-community-card-border);
 	background: var(--gr-community-card-background);
-	color: var(--gr-color-text-primary);
+	color: var(--gr-semantic-foreground-primary);
 	border-radius: var(--gr-radii-md);
 	padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-3);
 	font-size: var(--gr-typography-fontSize-sm);
@@ -845,7 +845,7 @@
 
 .gr-community-wiki__status {
 	font-size: var(--gr-typography-fontSize-sm);
-	color: var(--gr-color-text-secondary);
+	color: var(--gr-semantic-foreground-secondary);
 	margin: var(--gr-spacing-scale-2) 0 0;
 }
 
@@ -882,7 +882,7 @@
 
 .gr-community-wiki__field-label {
 	font-size: var(--gr-typography-fontSize-sm);
-	color: var(--gr-color-text-secondary);
+	color: var(--gr-semantic-foreground-secondary);
 }
 
 .gr-community-wiki__textarea,
@@ -891,8 +891,8 @@
 	border-radius: var(--gr-radii-md);
 	padding: var(--gr-spacing-scale-2);
 	font-size: var(--gr-typography-fontSize-sm);
-	background: var(--gr-color-surface-primary);
-	color: var(--gr-color-text-primary);
+	background: var(--gr-semantic-background-surface);
+	color: var(--gr-semantic-foreground-primary);
 }
 
 .gr-community-wiki__textarea {
@@ -928,11 +928,11 @@
 
 .gr-community-wiki-history__rev {
 	font-weight: var(--gr-typography-fontWeight-semibold);
-	color: var(--gr-color-text-primary);
+	color: var(--gr-semantic-foreground-primary);
 }
 
 .gr-community-wiki-history__reason {
 	margin-top: var(--gr-spacing-scale-1);
 	font-size: var(--gr-typography-fontSize-sm);
-	color: var(--gr-color-text-secondary);
+	color: var(--gr-semantic-foreground-secondary);
 }

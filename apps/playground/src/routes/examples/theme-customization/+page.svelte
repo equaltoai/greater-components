@@ -44,10 +44,10 @@
 	}
 
 	.theme-card {
-		border: 1px solid var(--gr-color-border);
+		border: 1px solid var(--gr-semantic-border-default);
 		padding: 1rem;
 		margin-bottom: 1rem;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 	}
 
 	.color-swatch {
@@ -59,7 +59,7 @@
 	}
 
 	pre {
-		background: var(--gr-color-surface-subtle);
+		background: var(--gr-semantic-background-secondary);
 		padding: 1rem;
 		overflow: auto;
 		font-size: 0.8rem;

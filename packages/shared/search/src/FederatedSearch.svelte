@@ -197,7 +197,7 @@
 		flex-direction: column;
 		gap: var(--gr-spacing-scale-2);
 		padding: var(--gr-spacing-scale-3);
-		background: var(--gr-color-surface-secondary);
+		background: var(--gr-semantic-background-secondary);
 		border-radius: var(--gr-radii-md);
 	}
 
@@ -213,7 +213,7 @@
 		gap: var(--gr-spacing-scale-2);
 		font-size: var(--gr-typography-fontSize-sm);
 		font-weight: var(--gr-typography-fontWeight-medium);
-		color: var(--gr-color-text-primary);
+		color: var(--gr-semantic-foreground-primary);
 	}
 
 	.federated-search__instances {
@@ -227,7 +227,7 @@
 		align-items: center;
 		justify-content: space-between;
 		padding: var(--gr-spacing-scale-2);
-		background: var(--gr-color-surface-primary);
+		background: var(--gr-semantic-background-surface);
 		border-radius: var(--gr-radii-sm);
 		transition: opacity 0.2s ease;
 	}
@@ -248,7 +248,7 @@
 
 	.federated-search__count {
 		font-size: var(--gr-typography-fontSize-xs);
-		color: var(--gr-color-text-muted);
+		color: var(--gr-semantic-foreground-tertiary);
 	}
 
 	.federated-search__error {
@@ -263,14 +263,14 @@
 		gap: var(--gr-spacing-scale-2);
 		cursor: pointer;
 		font-size: var(--gr-typography-fontSize-sm);
-		color: var(--gr-color-text-secondary);
+		color: var(--gr-semantic-foreground-secondary);
 	}
 
 	.federated-search__status {
 		font-size: var(--gr-typography-fontSize-sm);
-		color: var(--gr-color-text-muted);
+		color: var(--gr-semantic-foreground-tertiary);
 		text-align: center;
 		padding-top: var(--gr-spacing-scale-2);
-		border-top: 1px solid var(--gr-color-border-subtle);
+		border-top: 1px solid var(--gr-semantic-border-subtle);
 	}
 </style>

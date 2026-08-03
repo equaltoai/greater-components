@@ -522,7 +522,7 @@ Features:
 		left: 3px;
 		width: 20px;
 		height: 20px;
-		background: var(--gr-color-white);
+		background: var(--gr-color-base-white);
 		border-radius: 50%;
 		transition: transform 200ms ease-out;
 	}
@@ -553,23 +553,23 @@ Features:
 	.gr-transparency-optout-impact-badge {
 		font-size: var(--gr-typography-fontSize-xs);
 		font-weight: var(--gr-typography-fontWeight-medium);
-		padding: var(--gr-spacing-scale-0-5) var(--gr-spacing-scale-2);
+		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
 		border-radius: var(--gr-radii-sm);
 	}
 
 	.gr-transparency-optout-impact-badge--low {
-		background: var(--gr-color-green-900);
-		color: var(--gr-color-green-300);
+		background: var(--gr-color-success-900);
+		color: var(--gr-color-success-300);
 	}
 
 	.gr-transparency-optout-impact-badge--high {
-		background: var(--gr-color-amber-900);
-		color: var(--gr-color-amber-300);
+		background: var(--gr-color-warning-900);
+		color: var(--gr-color-warning-300);
 	}
 
 	.gr-transparency-optout-impact-badge--complete {
-		background: var(--gr-color-red-900);
-		color: var(--gr-color-red-300);
+		background: var(--gr-color-error-900);
+		color: var(--gr-color-error-300);
 	}
 
 	.gr-transparency-optout-impact-text {
@@ -600,8 +600,8 @@ Features:
 	}
 
 	.gr-transparency-optout-status-badge--blocked {
-		background: var(--gr-color-red-900);
-		color: var(--gr-color-red-300);
+		background: var(--gr-color-error-900);
+		color: var(--gr-color-error-300);
 	}
 
 	.gr-transparency-optout-status-badge--partial {
@@ -694,7 +694,7 @@ Features:
 	.gr-transparency-optout-dialog-btn--confirm {
 		background: var(--gr-color-primary-600);
 		border: 1px solid var(--gr-color-primary-500);
-		color: var(--gr-color-white);
+		color: var(--gr-color-base-white);
 	}
 
 	.gr-transparency-optout-dialog-btn--confirm:hover {

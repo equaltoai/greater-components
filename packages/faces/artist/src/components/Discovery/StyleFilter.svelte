@@ -203,7 +203,7 @@ Features:
 	.style-filter__title {
 		margin: 0;
 		font-size: var(--gr-typography-fontSize-lg);
-		font-weight: var(--gr-font-weight-semibold);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: var(--gr-color-gray-100);
 	}
 
@@ -257,7 +257,7 @@ Features:
 	.style-filter__category-title {
 		margin: 0 0 var(--gr-spacing-scale-2);
 		font-size: var(--gr-typography-fontSize-sm);
-		font-weight: var(--gr-font-weight-semibold);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: var(--gr-color-gray-400);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;

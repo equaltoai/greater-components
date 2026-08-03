@@ -130,8 +130,8 @@ Features:
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
 		border: 1px solid transparent;
 		border-radius: var(--gr-radii-md);
-		font-size: var(--gr-font-size-sm);
-		font-weight: var(--gr-font-weight-medium);
+		font-size: var(--gr-typography-fontSize-sm);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		cursor: pointer;
 		transition:
 			background 0.2s,

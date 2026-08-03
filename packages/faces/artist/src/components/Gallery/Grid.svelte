@@ -347,7 +347,7 @@ Implements REQ-A11Y-004: Keyboard navigation with arrow keys
 
 	.gallery-item:hover {
 		transform: translateY(-2px);
-		box-shadow: var(--gr-shadow-lg);
+		box-shadow: var(--gr-shadows-lg);
 	}
 
 	.gallery-item:focus {

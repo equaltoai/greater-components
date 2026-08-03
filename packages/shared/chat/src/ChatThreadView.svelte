@@ -244,14 +244,14 @@
 	}
 
 	.chat-thread-view__message--assistant .chat-thread-view__message-text {
-		background: var(--gr-color-surface-secondary);
-		color: var(--gr-color-text-primary);
+		background: var(--gr-semantic-background-secondary);
+		color: var(--gr-semantic-foreground-primary);
 		border-bottom-left-radius: var(--gr-radii-sm);
 	}
 
 	.chat-thread-view__message--system .chat-thread-view__message-text {
-		background: var(--gr-color-surface-tertiary);
-		color: var(--gr-color-text-muted);
+		background: var(--gr-semantic-background-tertiary);
+		color: var(--gr-semantic-foreground-secondary);
 		text-align: center;
 		font-style: italic;
 	}
@@ -269,7 +269,7 @@
 
 	.chat-thread-view__message-time {
 		font-size: var(--gr-typography-fontSize-xs);
-		color: var(--gr-color-text-muted);
+		color: var(--gr-semantic-foreground-tertiary);
 	}
 
 	.chat-thread-view__branch-button {
@@ -278,17 +278,17 @@
 		gap: var(--gr-spacing-scale-1);
 		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
 		background: transparent;
-		border: 1px solid var(--gr-color-border-subtle);
+		border: 1px solid var(--gr-semantic-border-subtle);
 		border-radius: var(--gr-radii-sm);
 		font-size: var(--gr-typography-fontSize-xs);
-		color: var(--gr-color-text-muted);
+		color: var(--gr-semantic-foreground-tertiary);
 		cursor: pointer;
 		transition: all 0.2s ease;
 	}
 
 	.chat-thread-view__branch-button:hover {
-		background: var(--gr-color-surface-hover);
-		color: var(--gr-color-text-primary);
+		background: var(--gr-semantic-background-tertiary);
+		color: var(--gr-semantic-foreground-primary);
 	}
 
 	.chat-thread-view__branch-item {
@@ -301,7 +301,7 @@
 		gap: var(--gr-spacing-scale-1);
 		margin-left: calc(32px + var(--gr-spacing-scale-2));
 		padding-left: var(--gr-spacing-scale-3);
-		border-left: 2px solid var(--gr-color-border-subtle);
+		border-left: 2px solid var(--gr-semantic-border-subtle);
 	}
 
 	.chat-thread-view__branch-link {
@@ -309,18 +309,18 @@
 		align-items: center;
 		gap: var(--gr-spacing-scale-1);
 		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
-		background: var(--gr-color-surface-secondary);
+		background: var(--gr-semantic-background-secondary);
 		border: none;
 		border-radius: var(--gr-radii-sm);
 		font-size: var(--gr-typography-fontSize-xs);
-		color: var(--gr-color-text-secondary);
+		color: var(--gr-semantic-foreground-secondary);
 		cursor: pointer;
 		transition: all 0.2s ease;
 	}
 
 	.chat-thread-view__branch-link:hover {
-		background: var(--gr-color-surface-hover);
-		color: var(--gr-color-text-primary);
+		background: var(--gr-semantic-background-tertiary);
+		color: var(--gr-semantic-foreground-primary);
 	}
 
 	.chat-thread-view__branch-link--active {

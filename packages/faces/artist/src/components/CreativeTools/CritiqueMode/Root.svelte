@@ -64,7 +64,7 @@ CritiqueMode.Root - Container for structured critique interface
 		width: 100%;
 		background: var(--gr-color-gray-900);
 		color: var(--gr-color-gray-100);
-		border-radius: var(--gr-radius-lg);
+		border-radius: var(--gr-radii-lg);
 		overflow: hidden;
 	}
 

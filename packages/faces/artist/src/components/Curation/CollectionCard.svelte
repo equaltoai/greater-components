@@ -258,7 +258,7 @@ Features:
 	.collection-card {
 		position: relative;
 		background: var(--gr-color-gray-800);
-		border-radius: var(--gr-radius-lg);
+		border-radius: var(--gr-radii-lg);
 		overflow: hidden;
 		transition:
 			transform 0.2s,
@@ -339,7 +339,7 @@ Features:
 	}
 
 	.collection-card__preview-empty span {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 	}
 
 	.collection-card__content {
@@ -357,8 +357,8 @@ Features:
 	}
 
 	.collection-card__title {
-		font-size: var(--gr-font-size-base);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-base);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: var(--gr-color-gray-100);
 		margin: 0;
 		line-height: 1.3;
@@ -386,7 +386,7 @@ Features:
 	}
 
 	.collection-card__description {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-400);
 		margin: 0;
 		line-height: 1.5;
@@ -406,12 +406,12 @@ Features:
 	.collection-card__owner-avatar {
 		width: 24px;
 		height: 24px;
-		border-radius: var(--gr-radius-full);
+		border-radius: var(--gr-radii-full);
 		object-fit: cover;
 	}
 
 	.collection-card__owner-name {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-300);
 	}
 
@@ -428,7 +428,7 @@ Features:
 	.collection-card__contributor-avatar {
 		width: 24px;
 		height: 24px;
-		border-radius: var(--gr-radius-full);
+		border-radius: var(--gr-radii-full);
 		border: 2px solid var(--gr-color-gray-800);
 		margin-left: -8px;
 	}
@@ -443,16 +443,16 @@ Features:
 		justify-content: center;
 		width: 24px;
 		height: 24px;
-		border-radius: var(--gr-radius-full);
+		border-radius: var(--gr-radii-full);
 		background: var(--gr-color-gray-600);
 		border: 2px solid var(--gr-color-gray-800);
 		margin-left: -8px;
-		font-size: var(--gr-font-size-xs);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: var(--gr-color-gray-300);
 	}
 
 	.collection-card__contributor-label {
-		font-size: var(--gr-font-size-xs);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: var(--gr-color-gray-400);
 	}
 
@@ -464,7 +464,7 @@ Features:
 	}
 
 	.collection-card__count {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-400);
 	}
 
@@ -477,7 +477,7 @@ Features:
 		padding: 0;
 		background: none;
 		border: none;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: var(--gr-color-gray-400);
 		cursor: pointer;
 		position: relative;

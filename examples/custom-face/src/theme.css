@@ -6,13 +6,13 @@
 :root {
 	/* Custom color palette */
 	--custom-face-primary: var(--gr-color-primary-600);
-	--custom-face-secondary: var(--gr-color-secondary-500);
-	--custom-face-accent: var(--gr-color-accent-500);
+	--custom-face-secondary: var(--gr-color-gray-500);
+	--custom-face-accent: var(--gr-color-primary-500);
 
 	/* Custom spacing */
 	--custom-face-card-padding: var(--gr-spacing-4);
-	--custom-face-card-gap: var(--gr-spacing-3);
-	--custom-face-section-gap: var(--gr-spacing-6);
+	--custom-face-card-gap: var(--gr-spacing-scale-3);
+	--custom-face-section-gap: var(--gr-spacing-scale-6);
 
 	/* Custom typography */
 	--custom-face-heading-weight: 700;
@@ -22,21 +22,21 @@
 /* Dark mode overrides */
 [data-theme='dark'] {
 	--custom-face-primary: var(--gr-color-primary-400);
-	--custom-face-secondary: var(--gr-color-secondary-400);
-	--custom-face-accent: var(--gr-color-accent-400);
+	--custom-face-secondary: var(--gr-color-gray-400);
+	--custom-face-accent: var(--gr-color-primary-400);
 }
 
 /* High contrast mode */
 [data-theme='high-contrast'] {
 	--custom-face-primary: var(--gr-color-primary-900);
-	--custom-face-secondary: var(--gr-color-secondary-900);
+	--custom-face-secondary: var(--gr-color-gray-900);
 }
 
 /* Component-specific styles */
 .custom-card {
-	--card-bg: var(--gr-color-surface);
-	--card-border: var(--gr-color-border);
-	--card-shadow: var(--gr-shadow-md);
+	--card-bg: var(--gr-semantic-background-surface);
+	--card-border: var(--gr-semantic-border-default);
+	--card-shadow: var(--gr-shadows-md);
 
 	background: var(--card-bg);
 	border: 1px solid var(--card-border);
@@ -46,30 +46,30 @@
 }
 
 .custom-card:hover {
-	--card-shadow: var(--gr-shadow-lg);
+	--card-shadow: var(--gr-shadows-lg);
 }
 
 .custom-card__header {
 	display: flex;
 	align-items: center;
 	gap: var(--custom-face-card-gap);
-	margin-bottom: var(--gr-spacing-3);
+	margin-bottom: var(--gr-spacing-scale-3);
 }
 
 .custom-card__content {
-	color: var(--gr-color-text-primary);
+	color: var(--gr-semantic-foreground-primary);
 	font-size: var(--custom-face-body-size);
 	line-height: var(--gr-typography-lineHeight-relaxed);
 }
 
 .custom-card__footer {
 	margin-top: var(--gr-spacing-4);
-	padding-top: var(--gr-spacing-3);
-	border-top: 1px solid var(--gr-color-border);
+	padding-top: var(--gr-spacing-scale-3);
+	border-top: 1px solid var(--gr-semantic-border-default);
 }
 
 .custom-card__actions {
 	display: flex;
-	gap: var(--gr-spacing-2);
+	gap: var(--gr-spacing-scale-2);
 	justify-content: flex-end;
 }

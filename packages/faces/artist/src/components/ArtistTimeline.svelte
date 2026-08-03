@@ -257,7 +257,7 @@ Features:
 	}
 
 	.artist-timeline__name {
-		font-weight: var(--gr-font-weight-semibold);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: var(--gr-color-gray-100);
 	}
 
@@ -265,7 +265,7 @@ Features:
 	.artist-timeline__separator,
 	.artist-timeline__time {
 		color: var(--gr-color-gray-500);
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 	}
 
 	.artist-timeline__content {
@@ -305,7 +305,7 @@ Features:
 	}
 
 	.artist-timeline__artwork-title {
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		color: white;
 	}
 
@@ -313,8 +313,8 @@ Features:
 		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
 		background: var(--gr-color-primary-600);
 		border-radius: var(--gr-radii-sm);
-		font-size: var(--gr-font-size-xs);
-		font-weight: var(--gr-font-weight-medium);
+		font-size: var(--gr-typography-fontSize-xs);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		color: white;
 	}
 
@@ -335,7 +335,7 @@ Features:
 		border: none;
 		background: none;
 		color: var(--gr-color-gray-500);
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		cursor: pointer;
 		transition: color 0.2s;
 	}
@@ -362,7 +362,7 @@ Features:
 		align-items: center;
 		gap: var(--gr-spacing-scale-2);
 		color: var(--gr-color-gray-500);
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 	}
 
 	.artist-timeline__spinner {

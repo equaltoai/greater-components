@@ -74,7 +74,7 @@
 	.debug-info {
 		margin-top: 2rem;
 		padding: 1rem;
-		background: var(--gr-color-surface-subtle);
-		border-radius: var(--gr-radius-md);
+		background: var(--gr-semantic-background-secondary);
+		border-radius: var(--gr-radii-md);
 	}
 </style>

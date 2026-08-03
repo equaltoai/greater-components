@@ -1480,7 +1480,7 @@ body.gr-scroll-locked {
 }
 
 .gr-spinner--gray {
-	color: var(--gr-semantic-text-secondary);
+	color: var(--gr-semantic-foreground-secondary);
 }
 
 /* Spinner reduced motion */
@@ -1512,7 +1512,7 @@ body.gr-scroll-locked {
 	margin: 0;
 	font-family: var(--gr-typography-fontFamily-sans);
 	font-size: var(--gr-typography-fontSize-sm);
-	color: var(--gr-semantic-text-secondary);
+	color: var(--gr-semantic-foreground-secondary);
 	text-align: center;
 }
 
@@ -2501,7 +2501,7 @@ body.gr-scroll-locked {
 	margin-bottom: 0.75rem;
 	font-weight: var(--gr-typography-fontWeight-bold);
 	line-height: 1.25;
-	color: var(--gr-semantic-foreground-strong);
+	color: var(--gr-semantic-foreground-primary);
 }
 
 .gr-markdown h1 {
@@ -2528,7 +2528,7 @@ body.gr-scroll-locked {
 	border-radius: var(--gr-radii-sm);
 	font-size: 0.85em;
 	font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
-	color: var(--gr-semantic-foreground-strong);
+	color: var(--gr-semantic-foreground-primary);
 }
 
 .gr-markdown pre {
@@ -2603,7 +2603,7 @@ body.gr-scroll-locked {
 	background-color: var(--gr-color-base-white);
 	border: 1px solid var(--gr-semantic-border-default);
 	border-radius: var(--gr-radii-md);
-	box-shadow: var(--gr-shadow-lg);
+	box-shadow: var(--gr-shadows-lg);
 	z-index: 1000;
 	min-width: 12rem;
 }
@@ -4202,7 +4202,7 @@ body {
 	background-color: var(--gr-semantic-background-primary);
 	border: 1px solid var(--gr-semantic-border-default);
 	border-radius: var(--gr-radii-md);
-	box-shadow: var(--gr-shadow-lg);
+	box-shadow: var(--gr-shadows-lg);
 	z-index: 1000;
 	display: flex;
 	flex-direction: column;
@@ -4538,7 +4538,7 @@ body {
 	font-size: var(--gr-typography-fontSize-sm);
 	line-height: var(--gr-typography-lineHeight-tight);
 	border-radius: var(--gr-radii-md);
-	box-shadow: var(--gr-shadow-lg);
+	box-shadow: var(--gr-shadows-lg);
 	opacity: 0;
 	pointer-events: none;
 	transition-property: opacity;
@@ -4769,11 +4769,6 @@ body {
 
 .gr-swatch--info {
 	background-color: var(--gr-color-info-500, #3b82f6);
-}
-
-/* Harmony color swatches - use CSS custom property for dynamic colors */
-.gr-swatch--harmony {
-	background-color: var(--gr-harmony-swatch-color);
 }
 
 /* Theme Workbench specific styles */

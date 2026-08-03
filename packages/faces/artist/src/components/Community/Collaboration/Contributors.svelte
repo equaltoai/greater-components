@@ -110,7 +110,7 @@ Collaboration.Contributors - Artist attribution chain
 <style>
 	.collab-contributors {
 		background: var(--gr-color-gray-800);
-		border-radius: var(--gr-radius-lg);
+		border-radius: var(--gr-radii-lg);
 		padding: var(--gr-spacing-scale-5);
 	}
 
@@ -122,8 +122,8 @@ Collaboration.Contributors - Artist attribution chain
 	}
 
 	.collab-contributors__title {
-		font-size: var(--gr-font-size-lg);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-lg);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		margin: 0;
 	}
 
@@ -131,9 +131,9 @@ Collaboration.Contributors - Artist attribution chain
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
 		background: var(--gr-color-primary-600);
 		border: none;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: white;
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		cursor: pointer;
 	}
 
@@ -148,7 +148,7 @@ Collaboration.Contributors - Artist attribution chain
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
 		background: var(--gr-color-gray-700);
 		border: 1px solid var(--gr-color-gray-600);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: var(--gr-color-gray-100);
 	}
 
@@ -156,7 +156,7 @@ Collaboration.Contributors - Artist attribution chain
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
 		background: var(--gr-color-success-600);
 		border: none;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: white;
 		cursor: pointer;
 	}
@@ -180,13 +180,13 @@ Collaboration.Contributors - Artist attribution chain
 		width: 100%;
 		padding: var(--gr-spacing-scale-3);
 		background: var(--gr-color-gray-700);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 	}
 
 	.collab-contributors__avatar {
 		width: 48px;
 		height: 48px;
-		border-radius: var(--gr-radius-full);
+		border-radius: var(--gr-radii-full);
 		object-fit: cover;
 		background: var(--gr-color-gray-600);
 	}
@@ -199,21 +199,21 @@ Collaboration.Contributors - Artist attribution chain
 	}
 
 	.collab-contributors__name {
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 	}
 
 	.collab-contributors__role {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-primary-400);
 	}
 
 	.collab-contributors__contribution {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-400);
 	}
 
 	.collab-contributors__joined {
-		font-size: var(--gr-font-size-xs);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: var(--gr-color-gray-500);
 	}
 

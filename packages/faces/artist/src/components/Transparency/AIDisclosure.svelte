@@ -362,7 +362,7 @@ Supports three display variants:
 		align-items: center;
 		justify-content: center;
 		background: var(--gr-color-primary-600);
-		color: var(--gr-color-white);
+		color: var(--gr-color-base-white);
 		min-width: fit-content;
 		padding: 0 var(--gr-spacing-scale-2);
 	}
@@ -372,7 +372,7 @@ Supports three display variants:
 		align-items: center;
 		justify-content: center;
 		background: var(--gr-color-gray-600);
-		color: var(--gr-color-white);
+		color: var(--gr-color-base-white);
 		min-width: fit-content;
 		padding: 0 var(--gr-spacing-scale-2);
 	}

@@ -73,7 +73,7 @@
 
 <style>
 	.error {
-		color: var(--gr-color-error);
+		color: var(--gr-semantic-action-error-default);
 		margin-bottom: 1rem;
 	}
 </style>

@@ -104,15 +104,15 @@
 
 <style>
 	.gr-contrast-checker {
-		border: 1px solid var(--gr-color-border);
-		border-radius: var(--gr-radius-md);
+		border: 1px solid var(--gr-semantic-border-default);
+		border-radius: var(--gr-radii-md);
 		overflow: hidden;
 	}
 
 	.gr-contrast-checker__preview {
 		padding: 1.5rem;
 		text-align: center;
-		border-bottom: 1px solid var(--gr-color-border);
+		border-bottom: 1px solid var(--gr-semantic-border-default);
 	}
 
 	/* Preset-based preview styles */
@@ -149,7 +149,7 @@
 
 	.gr-contrast-checker__metrics {
 		padding: 1rem;
-		background: var(--gr-color-surface);
+		background: var(--gr-semantic-background-surface);
 	}
 
 	.gr-contrast-checker__metric-row {
@@ -179,7 +179,7 @@
 
 	.gr-contrast-checker__compliance-label {
 		font-size: 0.75rem;
-		color: var(--gr-color-text-muted);
+		color: var(--gr-semantic-foreground-tertiary);
 	}
 
 	.gr-contrast-checker__compliance-badge {
@@ -191,18 +191,18 @@
 
 	.gr-contrast-checker__metric-value--pass,
 	.gr-contrast-checker__compliance-badge--pass {
-		color: var(--gr-color-success-text);
-		background: var(--gr-color-success-bg);
+		color: var(--gr-color-success-700);
+		background: var(--gr-color-success-50);
 	}
 
 	.gr-contrast-checker__metric-value--fail,
 	.gr-contrast-checker__compliance-badge--fail {
-		color: var(--gr-color-error-text);
-		background: var(--gr-color-error-bg);
+		color: var(--gr-color-error-700);
+		background: var(--gr-color-error-50);
 	}
 
 	.gr-contrast-checker__metric-value--warn {
-		color: var(--gr-color-warning-text);
-		background: var(--gr-color-warning-bg);
+		color: var(--gr-color-warning-700);
+		background: var(--gr-color-warning-50);
 	}
 </style>

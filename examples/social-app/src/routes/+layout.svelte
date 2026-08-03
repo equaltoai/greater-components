@@ -41,7 +41,7 @@
 
 	.app-header {
 		padding: var(--gr-spacing-4);
-		border-bottom: 1px solid var(--gr-color-border);
+		border-bottom: 1px solid var(--gr-semantic-border-default);
 	}
 
 	.app-header nav {
@@ -52,7 +52,7 @@
 	}
 
 	.app-header a {
-		color: var(--gr-color-text-primary);
+		color: var(--gr-semantic-foreground-primary);
 		text-decoration: none;
 	}
 
