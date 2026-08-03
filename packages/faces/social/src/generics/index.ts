@@ -468,14 +468,7 @@ export interface GenericNotification<T extends ActivityPubActivity = ActivityPub
 	 * Notification type
 	 */
 	type:
-		| 'mention'
-		| 'reblog'
-		| 'favourite'
-		| 'follow'
-		| 'follow_request'
-		| 'poll'
-		| 'status'
-		| string;
+		'mention' | 'reblog' | 'favourite' | 'follow' | 'follow_request' | 'poll' | 'status' | string;
 
 	/**
 	 * Account that triggered the notification

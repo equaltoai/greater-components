@@ -13,9 +13,7 @@ export type SoulBootstrapHexString = `0x${string}`;
 export type SoulBootstrapSigningMethod = 'eip191_personal_sign';
 export type SoulBootstrapMessageEncoding = 'utf8' | 'hex_bytes';
 export type SoulBootstrapSigningPlanKind =
-	| 'wallet_challenge'
-	| 'principal_declaration'
-	| 'finalize_self_attestation';
+	'wallet_challenge' | 'principal_declaration' | 'finalize_self_attestation';
 
 export type SoulBootstrapSigningPlanErrorCode =
 	| 'missing_state'
@@ -35,9 +33,7 @@ export type SoulBootstrapSigningPlanErrorCode =
 	| 'missing_signature';
 
 export type SoulBootstrapSigningPlanSource =
-	| SoulBootstrapResult
-	| SoulBootstrapSurface
-	| SoulBootstrapState;
+	SoulBootstrapResult | SoulBootstrapSurface | SoulBootstrapState;
 
 export interface SoulBootstrapSigningPlanErrorOptions {
 	code: SoulBootstrapSigningPlanErrorCode;
@@ -84,8 +80,7 @@ export interface SoulBootstrapHexBytesSigningInstruction {
 }
 
 export type SoulBootstrapWalletSigningInstruction =
-	| SoulBootstrapUtf8SigningInstruction
-	| SoulBootstrapHexBytesSigningInstruction;
+	SoulBootstrapUtf8SigningInstruction | SoulBootstrapHexBytesSigningInstruction;
 
 export interface SoulBootstrapSigningPlanBase {
 	kind: SoulBootstrapSigningPlanKind;

@@ -17,11 +17,7 @@ import type {
 export type ConversationFolder = 'INBOX' | 'REQUESTS';
 export type DmRequestState = 'PENDING' | 'ACCEPTED' | 'DECLINED';
 export type RealtimeConnectionStatus =
-	| 'idle'
-	| 'connecting'
-	| 'connected'
-	| 'disconnected'
-	| 'error';
+	'idle' | 'connecting' | 'connected' | 'disconnected' | 'error';
 
 export interface MessageParticipant {
 	id: string;

@@ -67,13 +67,7 @@ export interface WebSocketClientState {
 	lastEventId: string | null;
 }
 export type WebSocketEventType =
-	| 'open'
-	| 'close'
-	| 'error'
-	| 'message'
-	| 'reconnecting'
-	| 'reconnected'
-	| 'latency';
+	'open' | 'close' | 'error' | 'message' | 'reconnecting' | 'reconnected' | 'latency';
 export interface WebSocketEvent {
 	type: WebSocketEventType | TransportEventName | string;
 	data?: unknown;

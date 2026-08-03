@@ -5,13 +5,7 @@
  */
 
 export type CommissionStatus =
-	| 'inquiry'
-	| 'quoted'
-	| 'accepted'
-	| 'in_progress'
-	| 'revision'
-	| 'completed'
-	| 'cancelled';
+	'inquiry' | 'quoted' | 'accepted' | 'in_progress' | 'revision' | 'completed' | 'cancelled';
 
 export interface MockCommission {
 	id: string;

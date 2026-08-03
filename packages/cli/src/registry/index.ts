@@ -27,15 +27,7 @@ export type ComponentTarget = 'components' | 'utils' | 'types' | 'styles';
 
 /** Domain categories for filtering */
 export type ComponentDomain =
-	| 'social'
-	| 'blog'
-	| 'community'
-	| 'agent'
-	| 'auth'
-	| 'admin'
-	| 'chat'
-	| 'core'
-	| 'artist';
+	'social' | 'blog' | 'community' | 'agent' | 'auth' | 'admin' | 'chat' | 'core' | 'artist';
 
 export interface ComponentMetadata {
 	name: string;

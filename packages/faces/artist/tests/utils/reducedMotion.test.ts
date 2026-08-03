@@ -178,8 +178,7 @@ describe('reducedMotion Utils', () => {
 			const action = motionSafe(node, { animation: FADE_IN });
 
 			const animation = (node as unknown as { __grLastAnimation?: unknown }).__grLastAnimation as
-				| { __grKeyframes?: Keyframe[]; cancel?: () => void }
-				| undefined;
+				{ __grKeyframes?: Keyframe[]; cancel?: () => void } | undefined;
 
 			expect(animation?.__grKeyframes).toEqual([{}, { opacity: '1' }]);
 

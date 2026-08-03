@@ -215,13 +215,7 @@ export function getNotificationIcon(type: NotificationType): string {
  * Get color for notification type
  */
 export type NotificationColor =
-	| 'primary'
-	| 'success'
-	| 'accent'
-	| 'secondary'
-	| 'info'
-	| 'warning'
-	| 'muted';
+	'primary' | 'success' | 'accent' | 'secondary' | 'info' | 'warning' | 'muted';
 
 export function getNotificationColor(type: NotificationType): NotificationColor {
 	switch (type) {

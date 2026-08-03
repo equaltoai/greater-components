@@ -71,8 +71,7 @@
 		 * Action handlers to pass into StatusCard
 		 */
 		actionHandlers?:
-			| StatusCardActionHandlers
-			| ((status: Status) => StatusCardActionHandlers | undefined);
+			StatusCardActionHandlers | ((status: Status) => StatusCardActionHandlers | undefined);
 	}
 
 	let {

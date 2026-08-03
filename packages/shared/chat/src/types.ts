@@ -73,9 +73,7 @@ export interface ChatActionRequestMoment extends ChatWorkflowMomentBase {
 }
 
 export type ChatMessageMoment =
-	| ChatArtifactCardMoment
-	| ChatCheckpointBannerMoment
-	| ChatActionRequestMoment;
+	ChatArtifactCardMoment | ChatCheckpointBannerMoment | ChatActionRequestMoment;
 
 export interface ChatDeclarationMetadata {
 	kind: 'declaration';
@@ -99,9 +97,7 @@ export interface ChatFinalizeMetadata {
 }
 
 export type ChatMessageWorkflowMetadata =
-	| ChatDeclarationMetadata
-	| ChatApprovalMetadata
-	| ChatFinalizeMetadata;
+	ChatDeclarationMetadata | ChatApprovalMetadata | ChatFinalizeMetadata;
 
 /**
  * Chat message

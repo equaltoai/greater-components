@@ -95,11 +95,7 @@ Handles quote, community_note, trust_update, cost_alert, and moderation_action n
 	let { notification, content, onClick, class: className = '' }: Props = $props();
 
 	type LesserNotificationType =
-		| 'quote'
-		| 'community_note'
-		| 'trust_update'
-		| 'cost_alert'
-		| 'moderation_action';
+		'quote' | 'community_note' | 'trust_update' | 'cost_alert' | 'moderation_action';
 
 	const notificationType = $derived(notification.type as LesserNotificationType);
 

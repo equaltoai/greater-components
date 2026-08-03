@@ -87,12 +87,7 @@ export interface AIUsageData {
 }
 
 export type AIUsageType =
-	| 'NONE'
-	| 'REFERENCE'
-	| 'ASSISTANCE'
-	| 'ENHANCEMENT'
-	| 'GENERATION'
-	| 'FULL_GENERATION';
+	'NONE' | 'REFERENCE' | 'ASSISTANCE' | 'ENHANCEMENT' | 'GENERATION' | 'FULL_GENERATION';
 
 export interface ArtworkStats {
 	viewCount: number;
@@ -304,12 +299,7 @@ export interface CommissionUpdate {
 }
 
 export type UpdateType =
-	| 'SKETCH'
-	| 'WORK_IN_PROGRESS'
-	| 'REVISION'
-	| 'MILESTONE'
-	| 'MESSAGE'
-	| 'REVISION_REQUEST';
+	'SKETCH' | 'WORK_IN_PROGRESS' | 'REVISION' | 'MILESTONE' | 'MESSAGE' | 'REVISION_REQUEST';
 
 export interface CommissionDelivery {
 	id: string;

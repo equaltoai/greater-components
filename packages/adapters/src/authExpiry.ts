@@ -30,10 +30,7 @@ export const UNAUTHENTICATED_CODE = 'UNAUTHENTICATED';
  * credential already known to be stale.
  */
 export type TokenRefreshCallback = () =>
-	| Promise<string | null | undefined>
-	| string
-	| null
-	| undefined;
+	Promise<string | null | undefined> | string | null | undefined;
 
 /** Notified when auth expiry is terminal for this transport. */
 export type AuthExpiredHandler = (error: AuthExpiredError) => void;

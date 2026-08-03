@@ -405,11 +405,7 @@ export interface LesserPageInfo {
 export interface LesserStreamingUpdate {
 	__typename: string;
 	eventType:
-		| 'POST_CREATED'
-		| 'POST_UPDATED'
-		| 'POST_DELETED'
-		| 'NOTIFICATION_CREATED'
-		| 'ACCOUNT_UPDATED';
+		'POST_CREATED' | 'POST_UPDATED' | 'POST_DELETED' | 'NOTIFICATION_CREATED' | 'ACCOUNT_UPDATED';
 	timestamp: string;
 	data: LesserStreamingData;
 }
