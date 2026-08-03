@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { stripCssBlockComments } from '../../../../scripts/css-source.mjs';
 
 const component = fs.readFileSync(path.resolve(process.cwd(), 'src/ChatThreadView.svelte'), 'utf8');
 const chatCss = component.match(/<style>([\s\S]*?)<\/style>/)?.[1] ?? '';
@@ -11,7 +12,7 @@ const tokenCss = fs.readFileSync(
 
 function declarations(css: string, selector: string): string {
 	for (const match of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
-		if (match[1]?.replace(/\/\*[\s\S]*?\*\//g, '').trim() === selector) return match[2] ?? '';
+		if (stripCssBlockComments(match[1] ?? '').trim() === selector) return match[2] ?? '';
 	}
 	throw new Error(`Missing CSS block for ${selector}`);
 }

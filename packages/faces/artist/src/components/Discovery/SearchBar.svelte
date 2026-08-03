@@ -427,7 +427,7 @@ Features:
 
 	.search-bar__input-wrapper:focus-within {
 		border-color: var(--gr-color-primary-500);
-		box-shadow: 0 0 0 3px rgba(var(--gr-color-primary-500-rgb), 0.2);
+		box-shadow: 0 0 0 3px color-mix(in srgb, var(--gr-color-primary-500) 20%, transparent);
 	}
 
 	.search-bar__icon {
@@ -509,7 +509,7 @@ Features:
 		border: none;
 		border-radius: var(--gr-radii-md);
 		color: white;
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		cursor: pointer;
 		transition: background 0.2s;
 	}
@@ -535,7 +535,7 @@ Features:
 		border-radius: var(--gr-radii-lg);
 		list-style: none;
 		z-index: 100;
-		box-shadow: var(--gr-shadow-lg);
+		box-shadow: var(--gr-shadows-lg);
 	}
 
 	.search-bar__suggestion {

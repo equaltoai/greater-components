@@ -5,6 +5,7 @@ import { join, relative } from 'path';
 import { parse } from 'node-html-parser';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { stripCssBlockComments } from './css-source.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -376,9 +377,7 @@ export function scanFaceThemeCss(pattern) {
 		try {
 			const content = readFileSync(filePath, 'utf-8');
 			const relPath = relative(workspaceRoot, filePath);
-			const withoutComments = content.replace(/\/\*[\s\S]*?\*\//g, (match) =>
-				match.replace(/[^\n]/g, ' ')
-			);
+			const withoutComments = stripCssBlockComments(content);
 
 			const lines = withoutComments.split('\n');
 			for (let i = 0; i < lines.length; i += 1) {

@@ -11,6 +11,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { stripCssBlockComments } from './css-source.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -43,7 +44,7 @@ const sourceExtensions = new Set([
 	'.graphql',
 ]);
 const standaloneStyleExtensions = new Set(['.css', '.scss', '.pcss', '.sass', '.less', '.styl']);
-const componentStyleExtensions = new Set(['.svelte', '.vue', '.astro']);
+const componentStyleExtensions = new Set(['.svelte', '.vue', '.astro', '.html', '.svg']);
 const jsTsExtensions = new Set(['.js', '.jsx', '.mjs', '.cjs', '.ts', '.tsx', '.mts', '.cts']);
 
 const colors = {
@@ -78,31 +79,361 @@ function lineNumberAt(content, offset) {
 	return content.slice(0, offset).split('\n').length;
 }
 
-function stripBlockComments(content) {
-	return content.replace(/\/\*[\s\S]*?\*\//g, (comment) => comment.replace(/[^\n]/g, ' '));
+function canStartJsRegex(content, offset) {
+	let previousOffset = offset - 1;
+	while (previousOffset >= 0 && /\s/.test(content[previousOffset])) previousOffset -= 1;
+	if (previousOffset < 0) return true;
+
+	const previousCharacter = content[previousOffset];
+	if (previousCharacter === '<' && /[A-Za-z]/.test(content[offset + 1] ?? '')) return false;
+	// This conservative accept set knowingly omits regex starts after `}`, `)`, and
+	// `else`. Expanding it without a full parser can classify division as regex; that
+	// safe-direction claim applies only to stripJsComments: a false positive copies the
+	// candidate verbatim, so suspicious references remain visible and fail loud.
+	// markupExpressionEnd changes structural offsets, so it independently distrusts a
+	// candidate span with lexer uncertainty or an unquoted component-region tag.
+	// The JSX ambiguity above is structurally unreachable in the current audited tree,
+	// which contains no .jsx or .tsx files.
+	if (/[([{,:;=!?&|+\-*%^~<>]/.test(previousCharacter)) return true;
+
+	const prefix = content.slice(0, previousOffset + 1);
+	return /(?:^|[^\w$])(return|throw|case|delete|void|typeof|yield|await|instanceof|in|of)\s*$/.test(
+		prefix
+	);
 }
 
-function stripLeadingLineComments(content) {
-	return content.replace(/^[\t ]*\/\/.*$/gm, (comment) => comment.replace(/[^\n]/g, ' '));
+function stripJsComments(content, { stripLineComments = true } = {}) {
+	let result = '';
+	let quote = null;
+
+	for (let offset = 0; offset < content.length; offset += 1) {
+		const character = content[offset];
+		if (quote) {
+			result += character;
+			if (character === '\\' && offset + 1 < content.length) {
+				offset += 1;
+				result += content[offset];
+			} else if (character === quote) {
+				quote = null;
+			} else if (quote !== '`' && (character === '\n' || character === '\r')) {
+				quote = null;
+			}
+			continue;
+		}
+
+		if (character === '"' || character === "'" || character === '`') {
+			quote = character;
+			result += character;
+			continue;
+		}
+
+		if (character === '/' && content[offset + 1] === '/') {
+			while (offset < content.length && content[offset] !== '\n' && content[offset] !== '\r') {
+				result += stripLineComments ? ' ' : content[offset];
+				offset += 1;
+			}
+			offset -= 1;
+			continue;
+		}
+
+		if (character === '/' && content[offset + 1] === '*') {
+			const commentEnd = content.indexOf('*/', offset + 2);
+			if (commentEnd === -1) {
+				// Unlike CSS, an unterminated JS block comment is a syntax error. Keep
+				// the remainder visible so the audit fails loud instead of losing EOF.
+				result += content.slice(offset);
+				break;
+			}
+
+			for (; offset <= commentEnd + 1; offset += 1) {
+				const commentCharacter = content[offset];
+				result += commentCharacter === '\n' || commentCharacter === '\r' ? commentCharacter : ' ';
+			}
+			offset -= 1;
+			continue;
+		}
+
+		if (character === '/' && canStartJsRegex(content, offset)) {
+			let inCharacterClass = false;
+			result += character;
+			for (offset += 1; offset < content.length; offset += 1) {
+				const regexCharacter = content[offset];
+				result += regexCharacter;
+				if (regexCharacter === '\\' && offset + 1 < content.length) {
+					offset += 1;
+					result += content[offset];
+				} else if (regexCharacter === '[') {
+					inCharacterClass = true;
+				} else if (regexCharacter === ']') {
+					inCharacterClass = false;
+				} else if (regexCharacter === '/' && !inCharacterClass) {
+					break;
+				} else if (regexCharacter === '\n' || regexCharacter === '\r') {
+					break;
+				}
+			}
+			continue;
+		}
+
+		result += character;
+	}
+
+	return result;
+}
+
+function markupTagEnd(content, offset) {
+	let quote = null;
+	for (; offset < content.length; offset += 1) {
+		const character = content[offset];
+		if (quote) {
+			if (character === quote) quote = null;
+			continue;
+		}
+		if (character === '"' || character === "'") quote = character;
+		else if (character === '>') return offset;
+	}
+	return -1;
+}
+
+function expressionSpanIsTrusted(content, start, end) {
+	let quote = null;
+	let lineComment = false;
+	let blockComment = false;
+	let regex = false;
+	let regexCharacterClass = false;
+	let inTemplate = false;
+	const templateFrames = [];
+
+	for (let offset = start; offset < end; offset += 1) {
+		const character = content[offset];
+		if (lineComment) {
+			if (character === '\n' || character === '\r') lineComment = false;
+			continue;
+		}
+		if (blockComment) {
+			if (character === '*' && content[offset + 1] === '/') {
+				blockComment = false;
+				offset += 1;
+			}
+			continue;
+		}
+		if (quote) {
+			if (character === '\\') offset += 1;
+			else if (character === quote) quote = null;
+			else if (character === '\n' || character === '\r') quote = null;
+			continue;
+		}
+		if (regex) {
+			if (character === '\\') offset += 1;
+			else if (character === '[') regexCharacterClass = true;
+			else if (character === ']') regexCharacterClass = false;
+			else if (character === '/' && !regexCharacterClass) regex = false;
+			else if (character === '\n' || character === '\r') regex = false;
+			continue;
+		}
+		if (inTemplate) {
+			if (character === '\\') offset += 1;
+			else if (character === '`') {
+				templateFrames.pop();
+				inTemplate = false;
+			} else if (character === '$' && content[offset + 1] === '{') {
+				templateFrames[templateFrames.length - 1].expressionDepth = 0;
+				inTemplate = false;
+				offset += 1;
+			}
+			continue;
+		}
+
+		if (/^<\/?(?:script|style)(?=[\s/>])/i.test(content.slice(offset, end))) return false;
+
+		if (character === '"' || character === "'") quote = character;
+		else if (character === '`') {
+			templateFrames.push({ expressionDepth: null });
+			inTemplate = true;
+		} else if (character === '/' && content[offset + 1] === '/') {
+			lineComment = true;
+			offset += 1;
+		} else if (character === '/' && content[offset + 1] === '*') {
+			blockComment = true;
+			offset += 1;
+		} else if (
+			character === '/' &&
+			!(content[offset - 1] === '{' && /[A-Za-z]/.test(content[offset + 1] ?? '')) &&
+			canStartJsRegex(content, offset)
+		) {
+			regex = true;
+			regexCharacterClass = false;
+		} else if (templateFrames.length > 0) {
+			const templateFrame = templateFrames[templateFrames.length - 1];
+			if (character === '{') templateFrame.expressionDepth += 1;
+			else if (character === '}' && templateFrame.expressionDepth === 0) {
+				templateFrame.expressionDepth = null;
+				inTemplate = true;
+			} else if (character === '}') templateFrame.expressionDepth -= 1;
+		}
+	}
+
+	return (
+		!quote && !lineComment && !blockComment && !regex && !inTemplate && templateFrames.length === 0
+	);
+}
+
+function markupExpressionEnd(content, offset) {
+	const start = offset;
+	let depth = 0;
+	let quote = null;
+	let lineComment = false;
+	let blockComment = false;
+	let regex = false;
+	let regexCharacterClass = false;
+
+	for (; offset < content.length; offset += 1) {
+		const character = content[offset];
+		if (lineComment) {
+			if (character === '\n' || character === '\r') lineComment = false;
+			continue;
+		}
+		if (blockComment) {
+			if (character === '*' && content[offset + 1] === '/') {
+				blockComment = false;
+				offset += 1;
+			}
+			continue;
+		}
+		if (quote) {
+			if (character === '\\') offset += 1;
+			else if (character === quote) quote = null;
+			else if (quote !== '`' && (character === '\n' || character === '\r')) quote = null;
+			continue;
+		}
+		if (regex) {
+			if (character === '\\') offset += 1;
+			else if (character === '[') regexCharacterClass = true;
+			else if (character === ']') regexCharacterClass = false;
+			else if (character === '/' && !regexCharacterClass) regex = false;
+			else if (character === '\n' || character === '\r') regex = false;
+			continue;
+		}
+
+		if (character === '"' || character === "'" || character === '`') quote = character;
+		else if (character === '/' && content[offset + 1] === '/') {
+			lineComment = true;
+			offset += 1;
+		} else if (character === '/' && content[offset + 1] === '*') {
+			blockComment = true;
+			offset += 1;
+		} else if (
+			character === '/' &&
+			!(content[offset - 1] === '{' && /[A-Za-z]/.test(content[offset + 1] ?? '')) &&
+			canStartJsRegex(content, offset)
+		) {
+			regex = true;
+		} else if (character === '{') depth += 1;
+		else if (character === '}' && --depth === 0) {
+			return expressionSpanIsTrusted(content, start, offset + 1) ? offset : -1;
+		}
+	}
+
+	return -1;
+}
+
+function componentRegions(content) {
+	const regions = [];
+	let offset = 0;
+
+	while (offset < content.length) {
+		if (content.startsWith('<!--', offset)) {
+			const commentEnd = content.indexOf('-->', offset + 4);
+			if (commentEnd === -1) break;
+			offset = commentEnd + 3;
+			continue;
+		}
+
+		if (content[offset] === '{') {
+			const expressionEnd = markupExpressionEnd(content, offset);
+			if (expressionEnd === -1) break;
+			offset = expressionEnd + 1;
+			continue;
+		}
+
+		if (content[offset] !== '<') {
+			offset += 1;
+			continue;
+		}
+
+		const opening = content.slice(offset).match(/^<(script|style)(?=[\s/>])/i);
+		if (!opening) {
+			const markupTag = content
+				.slice(offset)
+				.match(/^<\/?[A-Za-z][\w:.-]*(?=[\s/>])|^<!(?!--)|^<\?/i);
+			if (!markupTag) {
+				offset += 1;
+				continue;
+			}
+			const tagEnd = markupTagEnd(content, offset + 1);
+			offset = tagEnd === -1 ? offset + 1 : tagEnd + 1;
+			continue;
+		}
+
+		const type = opening[1].toLowerCase();
+		const openingEnd = markupTagEnd(content, offset + opening[0].length);
+		if (openingEnd === -1) break;
+
+		const closingPattern = new RegExp(`<\\/${type}\\s*>`, 'gi');
+		closingPattern.lastIndex = openingEnd + 1;
+		const closing = closingPattern.exec(content);
+		if (!closing) break;
+
+		regions.push({
+			type,
+			start: offset,
+			contentStart: openingEnd + 1,
+			contentEnd: closing.index,
+			end: closingPattern.lastIndex,
+		});
+		offset = closingPattern.lastIndex;
+	}
+
+	return regions;
+}
+
+function stripComponentRegionComments(content) {
+	let result = '';
+	let offset = 0;
+	for (const region of componentRegions(content)) {
+		result += content.slice(offset, region.contentStart);
+		const regionContent = content.slice(region.contentStart, region.contentEnd);
+		result +=
+			region.type === 'script'
+				? // Preserve component-script line comments as audited text (base behavior),
+					// while JS lexing keeps block-comment syntax out of strings and regexes.
+					stripJsComments(regionContent, { stripLineComments: false })
+				: stripCssBlockComments(regionContent);
+		result += content.slice(region.contentEnd, region.end);
+		offset = region.end;
+	}
+	return result + content.slice(offset);
 }
 
 function referenceContent(file, content) {
-	const withoutBlocks = stripBlockComments(content);
-	return jsTsExtensions.has(path.extname(file))
-		? stripLeadingLineComments(withoutBlocks)
-		: withoutBlocks;
+	const extension = path.extname(file);
+	if (standaloneStyleExtensions.has(extension)) return stripCssBlockComments(content);
+	if (componentStyleExtensions.has(extension)) return stripComponentRegionComments(content);
+	if (jsTsExtensions.has(extension)) {
+		return stripJsComments(content);
+	}
+	return content;
 }
 
 function definitionContent(file, content) {
 	const extension = path.extname(file);
-	if (standaloneStyleExtensions.has(extension)) return stripBlockComments(content);
+	if (standaloneStyleExtensions.has(extension)) return stripCssBlockComments(content);
 	if (!componentStyleExtensions.has(extension)) return '';
 
-	return Array.from(
-		content.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi),
-		(match) => match[1] ?? ''
-	)
-		.map(stripBlockComments)
+	return componentRegions(content)
+		.filter((region) => region.type === 'style')
+		.map((region) => content.slice(region.contentStart, region.contentEnd))
+		.map(stripCssBlockComments)
 		.join('\n');
 }
 
@@ -155,13 +486,14 @@ function customPropertyReferences(content) {
 	return references;
 }
 
-function auditTokenReferences() {
-	const emittedThemePath = path.join(rootDir, 'packages', 'tokens', 'dist', 'theme.css');
-	const palettesPath = path.join(rootDir, 'packages', 'tokens', 'src', 'palettes.json');
-	const sourceRoots = ['packages', 'apps', 'examples', 'docs'].map((directory) =>
-		path.join(rootDir, directory)
-	);
-
+export function auditTokenReferences({
+	rootDirectory = rootDir,
+	emittedThemePath = path.join(rootDirectory, 'packages', 'tokens', 'dist', 'theme.css'),
+	palettesPath = path.join(rootDirectory, 'packages', 'tokens', 'src', 'palettes.json'),
+	sourceRoots = ['packages', 'apps', 'examples', 'docs'].map((directory) =>
+		path.join(rootDirectory, directory)
+	),
+} = {}) {
 	const emittedTheme = fs.readFileSync(emittedThemePath, 'utf8');
 	const emittedProperties = new Set(
 		Array.from(emittedTheme.matchAll(/(--gr-[\w-]+)\s*:/g), (match) => match[1])
@@ -174,7 +506,7 @@ function auditTokenReferences() {
 	const sourceFiles = sourceRoots
 		.flatMap((sourceRoot) => listFilesRecursive(sourceRoot))
 		.filter((file) => {
-			const relative = path.relative(rootDir, file);
+			const relative = path.relative(rootDirectory, file);
 			if (
 				relative
 					.split(path.sep)
@@ -204,7 +536,7 @@ function auditTokenReferences() {
 			const property = match[1];
 			if (property && !emittedProperties.has(property)) {
 				paletteErrors.push({
-					file: path.relative(rootDir, file),
+					file: path.relative(rootDirectory, file),
 					line: lineNumberAt(content, match.index ?? 0),
 					property,
 				});
@@ -213,7 +545,7 @@ function auditTokenReferences() {
 		for (const reference of customPropertyReferences(uncommented)) {
 			if (!sourceProperties.has(reference.property) && !reference.hasFallback) {
 				referenceErrors.push({
-					file: path.relative(rootDir, file),
+					file: path.relative(rootDirectory, file),
 					line: lineNumberAt(content, reference.offset),
 					property: reference.property,
 				});
@@ -309,4 +641,9 @@ function main() {
 	process.exit(0);
 }
 
-main();
+if (
+	process.argv[1] &&
+	fs.realpathSync(process.argv[1]) === fs.realpathSync(fileURLToPath(import.meta.url))
+) {
+	main();
+}

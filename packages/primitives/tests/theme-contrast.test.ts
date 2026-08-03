@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { stripCssBlockComments } from '../../../scripts/css-source.mjs';
 
 const tokenCss = fs.readFileSync(path.resolve(process.cwd(), '../tokens/dist/theme.css'), 'utf8');
 
@@ -17,10 +18,7 @@ function declarations(css: string, selector: string): string {
 		const open = css.indexOf('{', offset);
 		if (open < 0) break;
 		const start = Math.max(css.lastIndexOf('}', open - 1), css.lastIndexOf('{', open - 1)) + 1;
-		const candidate = css
-			.slice(start, open)
-			.replace(/\/\*[\s\S]*?\*\//g, '')
-			.trim();
+		const candidate = stripCssBlockComments(css.slice(start, open)).trim();
 		const close = css.indexOf('}', open);
 		if (candidate === selector && close >= 0) return css.slice(open + 1, close);
 		offset = open + 1;

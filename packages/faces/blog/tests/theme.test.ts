@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { stripCssBlockComments } from '../../../../scripts/css-source.mjs';
 
 const blogCss = fs.readFileSync(path.resolve(process.cwd(), 'src/theme.css'), 'utf8');
 const tokenCss = fs.readFileSync(
@@ -15,10 +16,7 @@ function declarations(css: string, selector: string): string {
 		const open = css.indexOf('{', offset);
 		if (open < 0) break;
 		const start = Math.max(css.lastIndexOf('}', open - 1), css.lastIndexOf('{', open - 1)) + 1;
-		const candidate = css
-			.slice(start, open)
-			.replace(/\/\*[\s\S]*?\*\//g, '')
-			.trim();
+		const candidate = stripCssBlockComments(css.slice(start, open)).trim();
 		const close = css.indexOf('}', open);
 		if (candidate === selector && close >= 0) blocks.push(css.slice(open + 1, close));
 		offset = open + 1;
@@ -110,7 +108,7 @@ function contrast(foreground: string, background: string): number {
 
 describe('blog reading-surface theme', () => {
 	it('references selectable palettes only through emitted token paths', () => {
-		const uncommentedBlogCss = blogCss.replace(/\/\*[\s\S]*?\*\//g, '');
+		const uncommentedBlogCss = stripCssBlockComments(blogCss);
 		const emittedTokens = new Set(
 			Array.from(tokenCss.matchAll(/(--gr-[\w-]+)\s*:/g), (match) => match[1])
 		);
