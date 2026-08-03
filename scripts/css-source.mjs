@@ -47,14 +47,18 @@ export function stripCssBlockComments(source) {
 			// An unquoted url() is a single CSS url-token. Comment-looking text
 			// inside it is data, so copy through the closing parenthesis verbatim.
 			if (source[valueOffset] !== '"' && source[valueOffset] !== "'") {
+				let parenthesisDepth = 0;
 				for (; offset < source.length; offset += 1) {
 					const urlCharacter = source[offset];
 					result += urlCharacter;
 					if (urlCharacter === '\\' && offset + 1 < source.length) {
 						offset += 1;
 						result += source[offset];
+					} else if (urlCharacter === '(') {
+						parenthesisDepth += 1;
 					} else if (urlCharacter === ')') {
-						break;
+						parenthesisDepth -= 1;
+						if (parenthesisDepth === 0) break;
 					}
 				}
 				continue;

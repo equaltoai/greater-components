@@ -70,6 +70,13 @@ test('token audit distinguishes CSS strings from block comments', () => {
 			)
 		);
 		fs.writeFileSync(
+			path.join(fixtureRoot, 'url-token-nested-paren.css'),
+			[
+				'.a{background:url(http://e/a(b)/*y);}',
+				'.b{color:var(--gr-url-token-nested-paren-audit-token);}',
+			].join('\n')
+		);
+		fs.writeFileSync(
 			path.join(fixtureRoot, 'component-script-style.svelte'),
 			[
 				'<script>',
@@ -145,6 +152,11 @@ test('token audit distinguishes CSS strings from block comments', () => {
 				file: 'typescript-template-glob.ts',
 				line: 2,
 				property: '--gr-typescript-template-glob-audit-token',
+			},
+			{
+				file: 'url-token-nested-paren.css',
+				line: 2,
+				property: '--gr-url-token-nested-paren-audit-token',
 			},
 			{ file: 'url-token.css', line: 2, property: '--gr-url-token-audit-token' },
 		]);
