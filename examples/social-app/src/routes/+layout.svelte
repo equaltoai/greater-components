@@ -40,13 +40,13 @@
 	}
 
 	.app-header {
-		padding: var(--gr-spacing-4);
+		padding: var(--gr-spacing-scale-4);
 		border-bottom: 1px solid var(--gr-semantic-border-default);
 	}
 
 	.app-header nav {
 		display: flex;
-		gap: var(--gr-spacing-4);
+		gap: var(--gr-spacing-scale-4);
 		max-width: 600px;
 		margin: 0 auto;
 	}
@@ -64,7 +64,7 @@
 		flex: 1;
 		max-width: 600px;
 		margin: 0 auto;
-		padding: var(--gr-spacing-4);
+		padding: var(--gr-spacing-scale-4);
 		width: 100%;
 	}
 </style>

@@ -18,11 +18,19 @@ const rootDir = path.resolve(__dirname, '..');
 const sourceExtensions = new Set([
 	'.css',
 	'.scss',
+	'.pcss',
+	'.sass',
+	'.less',
+	'.styl',
 	'.svelte',
+	'.vue',
+	'.astro',
 	'.js',
+	'.jsx',
 	'.mjs',
 	'.cjs',
 	'.ts',
+	'.tsx',
 	'.mts',
 	'.cts',
 	'.json',
@@ -34,6 +42,9 @@ const sourceExtensions = new Set([
 	'.yml',
 	'.graphql',
 ]);
+const standaloneStyleExtensions = new Set(['.css', '.scss', '.pcss', '.sass', '.less', '.styl']);
+const componentStyleExtensions = new Set(['.svelte', '.vue', '.astro']);
+const jsTsExtensions = new Set(['.js', '.jsx', '.mjs', '.cjs', '.ts', '.tsx', '.mts', '.cts']);
 
 const colors = {
 	green: '\x1b[32m',
@@ -71,11 +82,35 @@ function stripBlockComments(content) {
 	return content.replace(/\/\*[\s\S]*?\*\//g, (comment) => comment.replace(/[^\n]/g, ' '));
 }
 
+function stripLeadingLineComments(content) {
+	return content.replace(/^[\t ]*\/\/.*$/gm, (comment) => comment.replace(/[^\n]/g, ' '));
+}
+
+function referenceContent(file, content) {
+	const withoutBlocks = stripBlockComments(content);
+	return jsTsExtensions.has(path.extname(file))
+		? stripLeadingLineComments(withoutBlocks)
+		: withoutBlocks;
+}
+
+function definitionContent(file, content) {
+	const extension = path.extname(file);
+	if (standaloneStyleExtensions.has(extension)) return stripBlockComments(content);
+	if (!componentStyleExtensions.has(extension)) return '';
+
+	return Array.from(
+		content.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi),
+		(match) => match[1] ?? ''
+	)
+		.map(stripBlockComments)
+		.join('\n');
+}
+
 function customPropertyReferences(content) {
 	const references = [];
 
 	for (let offset = 0; offset < content.length; offset += 1) {
-		if (content.slice(offset, offset + 4) !== 'var(') continue;
+		if (content.slice(offset, offset + 4).toLowerCase() !== 'var(') continue;
 
 		let depth = 1;
 		let quote = null;
@@ -123,7 +158,7 @@ function customPropertyReferences(content) {
 function auditTokenReferences() {
 	const emittedThemePath = path.join(rootDir, 'packages', 'tokens', 'dist', 'theme.css');
 	const palettesPath = path.join(rootDir, 'packages', 'tokens', 'src', 'palettes.json');
-	const sourceRoots = ['packages', 'apps', 'examples'].map((directory) =>
+	const sourceRoots = ['packages', 'apps', 'examples', 'docs'].map((directory) =>
 		path.join(rootDir, directory)
 	);
 
@@ -156,7 +191,7 @@ function auditTokenReferences() {
 	const referenceErrors = [];
 
 	for (const file of sourceFiles) {
-		const content = stripBlockComments(fs.readFileSync(file, 'utf8'));
+		const content = definitionContent(file, fs.readFileSync(file, 'utf8'));
 		for (const match of content.matchAll(/(--gr-[\w-]+)\s*:/g)) {
 			if (match[1]) sourceProperties.add(match[1]);
 		}
@@ -164,7 +199,7 @@ function auditTokenReferences() {
 
 	for (const file of sourceFiles) {
 		const content = fs.readFileSync(file, 'utf8');
-		const uncommented = stripBlockComments(content);
+		const uncommented = referenceContent(file, content);
 		for (const match of uncommented.matchAll(paletteReference)) {
 			const property = match[1];
 			if (property && !emittedProperties.has(property)) {

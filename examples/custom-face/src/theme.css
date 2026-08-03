@@ -10,7 +10,7 @@
 	--custom-face-accent: var(--gr-color-primary-500);
 
 	/* Custom spacing */
-	--custom-face-card-padding: var(--gr-spacing-4);
+	--custom-face-card-padding: var(--gr-spacing-scale-4);
 	--custom-face-card-gap: var(--gr-spacing-scale-3);
 	--custom-face-section-gap: var(--gr-spacing-scale-6);
 
@@ -63,7 +63,7 @@
 }
 
 .custom-card__footer {
-	margin-top: var(--gr-spacing-4);
+	margin-top: var(--gr-spacing-scale-4);
 	padding-top: var(--gr-spacing-scale-3);
 	border-top: 1px solid var(--gr-semantic-border-default);
 }

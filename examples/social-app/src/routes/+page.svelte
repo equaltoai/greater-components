@@ -94,7 +94,7 @@
 	.home-timeline {
 		display: flex;
 		flex-direction: column;
-		gap: var(--gr-spacing-4);
+		gap: var(--gr-spacing-scale-4);
 	}
 
 	.timeline-header {
@@ -109,7 +109,7 @@
 	}
 
 	.status-card {
-		padding: var(--gr-spacing-4);
+		padding: var(--gr-spacing-scale-4);
 		border: 1px solid var(--gr-semantic-border-default);
 		border-radius: var(--gr-radii-lg);
 		background: var(--gr-semantic-background-surface);
@@ -147,7 +147,7 @@
 
 	.status-actions {
 		display: flex;
-		gap: var(--gr-spacing-4);
+		gap: var(--gr-spacing-scale-4);
 	}
 
 	.action-btn {
@@ -164,7 +164,7 @@
 	}
 
 	.demo-note {
-		padding: var(--gr-spacing-4);
+		padding: var(--gr-spacing-scale-4);
 		background: var(--gr-semantic-background-secondary);
 		border-radius: var(--gr-radii-md);
 		font-size: var(--gr-typography-fontSize-sm);

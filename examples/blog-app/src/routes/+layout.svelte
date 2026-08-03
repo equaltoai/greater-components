@@ -43,7 +43,7 @@
 	}
 
 	.app-header {
-		padding: var(--gr-spacing-4);
+		padding: var(--gr-spacing-scale-4);
 		border-bottom: 1px solid var(--gr-semantic-border-default);
 	}
 
@@ -64,7 +64,7 @@
 
 	.app-header nav {
 		display: flex;
-		gap: var(--gr-spacing-4);
+		gap: var(--gr-spacing-scale-4);
 	}
 
 	.app-header a {
@@ -85,7 +85,7 @@
 	}
 
 	.app-footer {
-		padding: var(--gr-spacing-4);
+		padding: var(--gr-spacing-scale-4);
 		text-align: center;
 		border-top: 1px solid var(--gr-semantic-border-default);
 		color: var(--gr-semantic-foreground-secondary);

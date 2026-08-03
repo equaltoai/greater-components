@@ -13320,13 +13320,13 @@
 /* Content */
 .gr-profile-header__content {
 	position: relative;
-	padding: var(--gr-spacing-4) var(--gr-spacing-scale-6);
+	padding: var(--gr-spacing-scale-4) var(--gr-spacing-scale-6);
 	margin-top: -3rem;
 }
 
 @media (max-width: 640px) {
 	.gr-profile-header__content {
-		padding: var(--gr-spacing-4);
+		padding: var(--gr-spacing-scale-4);
 		margin-top: -2rem;
 	}
 }
@@ -13336,7 +13336,7 @@
 	display: flex;
 	align-items: flex-end;
 	justify-content: space-between;
-	margin-bottom: var(--gr-spacing-4);
+	margin-bottom: var(--gr-spacing-scale-4);
 }
 
 .gr-profile-header__avatar-wrapper {
@@ -13375,7 +13375,7 @@
 
 /* Identity */
 .gr-profile-header__identity {
-	margin-bottom: var(--gr-spacing-4);
+	margin-bottom: var(--gr-spacing-scale-4);
 }
 
 .gr-profile-header__display-name {
@@ -13419,7 +13419,7 @@
 
 /* Bio */
 .gr-profile-header__bio {
-	margin-bottom: var(--gr-spacing-4);
+	margin-bottom: var(--gr-spacing-scale-4);
 }
 
 .gr-profile-header__bio-content p {
@@ -13442,7 +13442,7 @@
 
 /* Fields */
 .gr-profile-header__fields {
-	margin: 0 0 var(--gr-spacing-4) 0;
+	margin: 0 0 var(--gr-spacing-scale-4) 0;
 	border: 1px solid var(--gr-semantic-border-subtle);
 	border-radius: var(--gr-radii-md);
 	overflow: hidden;
@@ -13518,7 +13518,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	gap: var(--gr-spacing-4);
+	gap: var(--gr-spacing-scale-4);
 	font-size: var(--gr-typography-fontSize-sm);
 	color: var(--gr-semantic-foreground-secondary);
 }
@@ -13535,7 +13535,7 @@
 
 .gr-profile-header__counts {
 	display: flex;
-	gap: var(--gr-spacing-4);
+	gap: var(--gr-spacing-scale-4);
 	flex-wrap: wrap;
 }
 

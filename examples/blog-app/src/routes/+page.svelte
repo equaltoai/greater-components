@@ -77,7 +77,7 @@
 
 	.page-header {
 		text-align: center;
-		margin-bottom: var(--gr-spacing-4);
+		margin-bottom: var(--gr-spacing-scale-4);
 	}
 
 	.page-header h1 {
@@ -119,7 +119,7 @@
 
 	.article-excerpt {
 		color: var(--gr-semantic-foreground-secondary);
-		margin: 0 0 var(--gr-spacing-4);
+		margin: 0 0 var(--gr-spacing-scale-4);
 		line-height: 1.6;
 	}
 
@@ -161,7 +161,7 @@
 	}
 
 	.demo-note {
-		padding: var(--gr-spacing-4);
+		padding: var(--gr-spacing-scale-4);
 		background: var(--gr-semantic-background-secondary);
 		border-radius: var(--gr-radii-md);
 		font-size: var(--gr-typography-fontSize-sm);

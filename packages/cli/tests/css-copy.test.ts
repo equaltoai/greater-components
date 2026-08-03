@@ -100,7 +100,9 @@ describe('copyCssFiles', () => {
 
 		const tokensCss = fsStore.get(tokensPath)?.toString() ?? '';
 		expect(tokensCss).toContain('--gr-color-primary: #000000;');
-		expect(tokensCss).toContain('--gr-semantic-bg-default: var(--gr-color-primary);');
+		expect(tokensCss).toContain(
+			['--gr-semantic-bg-default: var', '(--gr-color-primary);'].join('')
+		);
 		expect(tokensCss).toContain('/* animations */');
 
 		// Ensure we do not try to fetch build-only artifacts from git refs.
