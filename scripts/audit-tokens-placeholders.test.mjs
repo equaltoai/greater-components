@@ -64,6 +64,29 @@ test('token audit distinguishes CSS strings from block comments', () => {
 			)
 		);
 		fs.writeFileSync(
+			path.join(fixtureRoot, 'typescript-regex-closed-comment.ts'),
+			[
+				'const re = /[/*]/;',
+				'const style = `color: var(--gr-typescript-regex-closed-comment-audit-token)`;',
+				'/** doc */',
+			].join('\n')
+		);
+		fs.writeFileSync(
+			path.join(fixtureRoot, 'typescript-template-closed-comment.ts'),
+			[
+				'const style = `begin /*',
+				'color: var(--gr-typescript-template-closed-comment-audit-token);',
+				'*/ end`;',
+			].join('\n')
+		);
+		fs.writeFileSync(
+			path.join(fixtureRoot, 'typescript-unterminated-block-comment.ts'),
+			[
+				'/* unterminated JavaScript block comment',
+				'const style = `color: var(--gr-typescript-unterminated-block-comment-audit-token)`;',
+			].join('\n')
+		);
+		fs.writeFileSync(
 			path.join(fixtureRoot, 'url-token.css'),
 			['.a{background:url(http://e/x/*y);}', '.b{color:var(--gr-url-token-audit-token);}'].join(
 				'\n'
@@ -174,14 +197,29 @@ test('token audit distinguishes CSS strings from block comments', () => {
 				property: '--gr-typescript-glob-audit-token',
 			},
 			{
+				file: 'typescript-regex-closed-comment.ts',
+				line: 2,
+				property: '--gr-typescript-regex-closed-comment-audit-token',
+			},
+			{
 				file: 'typescript-regex.ts',
 				line: 2,
 				property: '--gr-typescript-regex-audit-token',
 			},
 			{
+				file: 'typescript-template-closed-comment.ts',
+				line: 2,
+				property: '--gr-typescript-template-closed-comment-audit-token',
+			},
+			{
 				file: 'typescript-template-glob.ts',
 				line: 2,
 				property: '--gr-typescript-template-glob-audit-token',
+			},
+			{
+				file: 'typescript-unterminated-block-comment.ts',
+				line: 2,
+				property: '--gr-typescript-unterminated-block-comment-audit-token',
 			},
 			{
 				file: 'url-token-nested-paren.css',
