@@ -93,12 +93,7 @@ describe('newly-live primitive theme cells', () => {
 		const checkerCss = componentStyle('src/components/Theme/ContrastChecker.svelte');
 		const properties = themeProperties(theme);
 		const cells = [
-			[
-				'settings title',
-				settingsCss,
-				'.settings-section__title',
-				'.settings-section__header',
-			],
+			['settings title', settingsCss, '.settings-section__title', '.settings-section__header'],
 			[
 				'settings description',
 				settingsCss,
@@ -117,12 +112,7 @@ describe('newly-live primitive theme cells', () => {
 				'.gr-contrast-checker__metric-value--fail,\n\t.gr-contrast-checker__compliance-badge--fail',
 				null,
 			],
-			[
-				'contrast warning',
-				checkerCss,
-				'.gr-contrast-checker__metric-value--warn',
-				null,
-			],
+			['contrast warning', checkerCss, '.gr-contrast-checker__metric-value--warn', null],
 		] as const;
 
 		for (const [name, css, foregroundSelector, backgroundSelector] of cells) {

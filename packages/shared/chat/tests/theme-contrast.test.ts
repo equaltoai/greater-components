@@ -4,7 +4,10 @@ import { describe, expect, it } from 'vitest';
 
 const component = fs.readFileSync(path.resolve(process.cwd(), 'src/ChatThreadView.svelte'), 'utf8');
 const chatCss = component.match(/<style>([\s\S]*?)<\/style>/)?.[1] ?? '';
-const tokenCss = fs.readFileSync(path.resolve(process.cwd(), '../../tokens/dist/theme.css'), 'utf8');
+const tokenCss = fs.readFileSync(
+	path.resolve(process.cwd(), '../../tokens/dist/theme.css'),
+	'utf8'
+);
 
 function declarations(css: string, selector: string): string {
 	for (const match of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
@@ -25,7 +28,10 @@ function declarationValue(css: string, selector: string, property: string): stri
 
 function properties(theme: 'light' | 'dark'): Map<string, string> {
 	const values = new Map<string, string>();
-	for (const block of [declarations(tokenCss, ':root'), declarations(tokenCss, `[data-theme="${theme}"]`)]) {
+	for (const block of [
+		declarations(tokenCss, ':root'),
+		declarations(tokenCss, `[data-theme="${theme}"]`),
+	]) {
 		for (const match of block.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)) {
 			if (match[1] && match[2]) values.set(match[1], match[2].trim());
 		}
@@ -58,17 +64,23 @@ function contrast(foreground: string, background: string): number {
 }
 
 describe('newly-live chat theme cells', () => {
-	it.each(['light', 'dark'] as const)('binds message declarations to AA contrast in %s', (theme) => {
-		const values = properties(theme);
-		for (const [name, selector] of [
-			['assistant message', '.chat-thread-view__message--assistant .chat-thread-view__message-text'],
-			['system message', '.chat-thread-view__message--system .chat-thread-view__message-text'],
-			['branch link', '.chat-thread-view__branch-link'],
-			['branch link hover', '.chat-thread-view__branch-link:hover'],
-		] as const) {
-			const foreground = resolve(declarationValue(chatCss, selector, 'color'), values);
-			const background = resolve(declarationValue(chatCss, selector, 'background'), values);
-			expect(contrast(foreground, background), name).toBeGreaterThanOrEqual(4.5);
+	it.each(['light', 'dark'] as const)(
+		'binds message declarations to AA contrast in %s',
+		(theme) => {
+			const values = properties(theme);
+			for (const [name, selector] of [
+				[
+					'assistant message',
+					'.chat-thread-view__message--assistant .chat-thread-view__message-text',
+				],
+				['system message', '.chat-thread-view__message--system .chat-thread-view__message-text'],
+				['branch link', '.chat-thread-view__branch-link'],
+				['branch link hover', '.chat-thread-view__branch-link:hover'],
+			] as const) {
+				const foreground = resolve(declarationValue(chatCss, selector, 'color'), values);
+				const background = resolve(declarationValue(chatCss, selector, 'background'), values);
+				expect(contrast(foreground, background), name).toBeGreaterThanOrEqual(4.5);
+			}
 		}
-	});
+	);
 });
