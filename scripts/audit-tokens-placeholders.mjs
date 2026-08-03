@@ -236,8 +236,13 @@ function markupExpressionEnd(content, offset) {
 		} else if (character === '/' && content[offset + 1] === '*') {
 			blockComment = true;
 			offset += 1;
-		} else if (character === '/' && canStartJsRegex(content, offset)) regex = true;
-		else if (character === '{') depth += 1;
+		} else if (
+			character === '/' &&
+			!(content[offset - 1] === '{' && /[A-Za-z]/.test(content[offset + 1] ?? '')) &&
+			canStartJsRegex(content, offset)
+		) {
+			regex = true;
+		} else if (character === '{') depth += 1;
 		else if (character === '}' && --depth === 0) return offset;
 	}
 

@@ -132,6 +132,18 @@ test('token audit distinguishes CSS strings from block comments', () => {
 			].join('\n')
 		);
 		fs.writeFileSync(
+			path.join(fixtureRoot, 'component-svelte-block.svelte'),
+			[
+				'{#if true}',
+				'\t<p>shown</p>',
+				'{/if}',
+				'<style>',
+				'/* .commented { color: var(--gr-component-svelte-block-comment-only-audit-token); } */',
+				'.real { color: var(--gr-component-svelte-block-audit-token); }',
+				'</style>',
+			].join('\n')
+		);
+		fs.writeFileSync(
 			path.join(fixtureRoot, 'document.html'),
 			[
 				'<style>',
@@ -177,6 +189,11 @@ test('token audit distinguishes CSS strings from block comments', () => {
 				file: 'component-script-style.svelte',
 				line: 6,
 				property: '--gr-component-script-style-audit-token',
+			},
+			{
+				file: 'component-svelte-block.svelte',
+				line: 6,
+				property: '--gr-component-svelte-block-audit-token',
 			},
 			{ file: 'document.html', line: 3, property: '--gr-html-style-audit-token' },
 			{ file: 'e3a.css', line: 2, property: '--gr-color-gray-1000' },
