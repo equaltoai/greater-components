@@ -94,7 +94,7 @@ function canStartJsRegex(content, offset) {
 	);
 }
 
-function stripJsComments(content) {
+function stripJsComments(content, { stripLineComments = true } = {}) {
 	let result = '';
 	let quote = null;
 
@@ -119,7 +119,7 @@ function stripJsComments(content) {
 			continue;
 		}
 
-		if (character === '/' && content[offset + 1] === '/') {
+		if (stripLineComments && character === '/' && content[offset + 1] === '/') {
 			while (offset < content.length && content[offset] !== '\n' && content[offset] !== '\r') {
 				result += ' ';
 				offset += 1;
@@ -248,7 +248,9 @@ function stripComponentRegionComments(content) {
 		const regionContent = content.slice(region.contentStart, region.contentEnd);
 		result +=
 			region.type === 'script'
-				? stripJsComments(regionContent)
+				? // Preserve component-script line comments as audited text (base behavior),
+					// while JS lexing keeps block-comment syntax out of strings and regexes.
+					stripJsComments(regionContent, { stripLineComments: false })
 				: stripCssBlockComments(regionContent);
 		result += content.slice(region.contentEnd, region.end);
 		offset = region.end;
