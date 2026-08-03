@@ -15,6 +15,25 @@ import { fileURLToPath } from 'node:url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
+const sourceExtensions = new Set([
+	'.css',
+	'.scss',
+	'.svelte',
+	'.js',
+	'.mjs',
+	'.cjs',
+	'.ts',
+	'.mts',
+	'.cts',
+	'.json',
+	'.md',
+	'.mdx',
+	'.html',
+	'.svg',
+	'.yaml',
+	'.yml',
+	'.graphql',
+]);
 
 const colors = {
 	green: '\x1b[32m',
@@ -130,7 +149,7 @@ function auditTokenReferences() {
 			) {
 				return false;
 			}
-			return file.endsWith('.css') || file.endsWith('.scss') || file.endsWith('.svelte');
+			return sourceExtensions.has(path.extname(file));
 		});
 	const sourceProperties = new Set(emittedProperties);
 	const paletteErrors = [];
