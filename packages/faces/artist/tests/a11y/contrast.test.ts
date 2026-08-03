@@ -10,6 +10,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import { calculateContrastRatio } from '../../src/utils/highContrast';
+import { stripCssBlockComments } from '../../../../../scripts/css-source.mjs';
 
 const tokenCss = fs.readFileSync(
 	path.resolve(process.cwd(), '../../tokens/dist/theme.css'),
@@ -25,7 +26,7 @@ function componentStyle(relativePath: string): string {
 
 function declarations(css: string, selector: string): string {
 	for (const match of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
-		if (match[1]?.replace(/\/\*[\s\S]*?\*\//g, '').trim() === selector) return match[2] ?? '';
+		if (stripCssBlockComments(match[1] ?? '').trim() === selector) return match[2] ?? '';
 	}
 	throw new Error(`Missing CSS block for ${selector}`);
 }
