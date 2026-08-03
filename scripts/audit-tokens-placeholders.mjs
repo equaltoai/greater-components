@@ -88,8 +88,10 @@ function canStartJsRegex(content, offset) {
 	if (previousCharacter === '<' && /[A-Za-z]/.test(content[offset + 1] ?? '')) return false;
 	// This conservative accept set knowingly omits regex starts after `}`, `)`, and
 	// `else`. Expanding it without a full parser can classify division as regex; that
-	// safe-direction false positive copies the candidate verbatim and suppresses
-	// comment stripping, so suspicious token references remain visible and fail loud.
+	// safe-direction claim applies only to stripJsComments: a false positive copies the
+	// candidate verbatim, so suspicious references remain visible and fail loud.
+	// markupExpressionEnd changes structural offsets, so it independently distrusts a
+	// candidate span with lexer uncertainty or an unquoted component-region tag.
 	// The JSX ambiguity above is structurally unreachable in the current audited tree,
 	// which contains no .jsx or .tsx files.
 	if (/[([{,:;=!?&|+\-*%^~<>]/.test(previousCharacter)) return true;
@@ -193,7 +195,91 @@ function markupTagEnd(content, offset) {
 	return -1;
 }
 
+function expressionSpanIsTrusted(content, start, end) {
+	let quote = null;
+	let lineComment = false;
+	let blockComment = false;
+	let regex = false;
+	let regexCharacterClass = false;
+	let inTemplate = false;
+	const templateFrames = [];
+
+	for (let offset = start; offset < end; offset += 1) {
+		const character = content[offset];
+		if (lineComment) {
+			if (character === '\n' || character === '\r') lineComment = false;
+			continue;
+		}
+		if (blockComment) {
+			if (character === '*' && content[offset + 1] === '/') {
+				blockComment = false;
+				offset += 1;
+			}
+			continue;
+		}
+		if (quote) {
+			if (character === '\\') offset += 1;
+			else if (character === quote) quote = null;
+			else if (character === '\n' || character === '\r') quote = null;
+			continue;
+		}
+		if (regex) {
+			if (character === '\\') offset += 1;
+			else if (character === '[') regexCharacterClass = true;
+			else if (character === ']') regexCharacterClass = false;
+			else if (character === '/' && !regexCharacterClass) regex = false;
+			else if (character === '\n' || character === '\r') regex = false;
+			continue;
+		}
+		if (inTemplate) {
+			if (character === '\\') offset += 1;
+			else if (character === '`') {
+				templateFrames.pop();
+				inTemplate = false;
+			} else if (character === '$' && content[offset + 1] === '{') {
+				templateFrames[templateFrames.length - 1].expressionDepth = 0;
+				inTemplate = false;
+				offset += 1;
+			}
+			continue;
+		}
+
+		if (/^<\/?(?:script|style)(?=[\s/>])/i.test(content.slice(offset, end))) return false;
+
+		if (character === '"' || character === "'") quote = character;
+		else if (character === '`') {
+			templateFrames.push({ expressionDepth: null });
+			inTemplate = true;
+		} else if (character === '/' && content[offset + 1] === '/') {
+			lineComment = true;
+			offset += 1;
+		} else if (character === '/' && content[offset + 1] === '*') {
+			blockComment = true;
+			offset += 1;
+		} else if (
+			character === '/' &&
+			!(content[offset - 1] === '{' && /[A-Za-z]/.test(content[offset + 1] ?? '')) &&
+			canStartJsRegex(content, offset)
+		) {
+			regex = true;
+			regexCharacterClass = false;
+		} else if (templateFrames.length > 0) {
+			const templateFrame = templateFrames[templateFrames.length - 1];
+			if (character === '{') templateFrame.expressionDepth += 1;
+			else if (character === '}' && templateFrame.expressionDepth === 0) {
+				templateFrame.expressionDepth = null;
+				inTemplate = true;
+			} else if (character === '}') templateFrame.expressionDepth -= 1;
+		}
+	}
+
+	return (
+		!quote && !lineComment && !blockComment && !regex && !inTemplate && templateFrames.length === 0
+	);
+}
+
 function markupExpressionEnd(content, offset) {
+	const start = offset;
 	let depth = 0;
 	let quote = null;
 	let lineComment = false;
@@ -243,7 +329,9 @@ function markupExpressionEnd(content, offset) {
 		) {
 			regex = true;
 		} else if (character === '{') depth += 1;
-		else if (character === '}' && --depth === 0) return offset;
+		else if (character === '}' && --depth === 0) {
+			return expressionSpanIsTrusted(content, start, offset + 1) ? offset : -1;
+		}
 	}
 
 	return -1;

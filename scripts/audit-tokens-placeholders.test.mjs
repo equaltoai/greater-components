@@ -144,6 +144,78 @@ test('token audit distinguishes CSS strings from block comments', () => {
 			].join('\n')
 		);
 		fs.writeFileSync(
+			path.join(fixtureRoot, 'component-expression-desync-double.svelte'),
+			[
+				'<p>{`${"`"}`}</p>',
+				'<script>',
+				'\tif (ready()) /}/.test(s);',
+				'\t// <style>',
+				'\t// packages/faces/*/src/lib',
+				'</script>',
+				'<style>',
+				'\t.victim { color: var(--gr-v2final-phantom-xyz); }',
+				'</style>',
+			].join('\n')
+		);
+		fs.writeFileSync(
+			path.join(fixtureRoot, 'component-expression-desync-regex.svelte'),
+			[
+				'<p>{`${x.replace(/`/g, "")}`}</p>',
+				'<script>',
+				'\tif (ready()) /}/.test(s);',
+				'\t// <style>',
+				'\t// packages/faces/*/src/lib',
+				'</script>',
+				'<style>',
+				'\t.victim { color: var(--gr-expression-desync-regex-audit-token); }',
+				'</style>',
+			].join('\n')
+		);
+		fs.writeFileSync(
+			path.join(fixtureRoot, 'component-expression-desync-single.svelte'),
+			[
+				"<p>{`${'`'}`}</p>",
+				'<script>',
+				'\tif (ready()) /}/.test(s);',
+				'\t// <style>',
+				'\t// packages/faces/*/src/lib',
+				'</script>',
+				'<style>',
+				'\t.victim { color: var(--gr-expression-desync-single-audit-token); }',
+				'</style>',
+			].join('\n')
+		);
+		fs.writeFileSync(
+			path.join(fixtureRoot, 'component-expression-nesting-map.svelte'),
+			[
+				'<p>{`${items.map(i => `<li>${i}</li>`).join("")}`}</p>',
+				'<style>',
+				'/* var(--gr-expression-nesting-map-comment-only-audit-token) */',
+				'.real { color: var(--gr-expression-nesting-map-audit-token); }',
+				'</style>',
+			].join('\n')
+		);
+		fs.writeFileSync(
+			path.join(fixtureRoot, 'component-expression-nesting-recursive.svelte'),
+			[
+				'<p>{`${`${`${x}`}`}`}</p>',
+				'<style>',
+				'/* var(--gr-expression-nesting-recursive-comment-only-audit-token) */',
+				'.real { color: var(--gr-expression-nesting-recursive-audit-token); }',
+				'</style>',
+			].join('\n')
+		);
+		fs.writeFileSync(
+			path.join(fixtureRoot, 'component-expression-nesting-template.svelte'),
+			[
+				'<p>{`a${`b`}c`}</p>',
+				'<style>',
+				'/* var(--gr-expression-nesting-template-comment-only-audit-token) */',
+				'.real { color: var(--gr-expression-nesting-template-audit-token); }',
+				'</style>',
+			].join('\n')
+		);
+		fs.writeFileSync(
 			path.join(fixtureRoot, 'document.html'),
 			[
 				'<style>',
@@ -175,6 +247,36 @@ test('token audit distinguishes CSS strings from block comments', () => {
 			{ file: 'e3a.css', line: 2, property: '--gr-color-gray-1000' },
 		]);
 		assert.deepEqual(result.referenceErrors, [
+			{
+				file: 'component-expression-desync-double.svelte',
+				line: 8,
+				property: '--gr-v2final-phantom-xyz',
+			},
+			{
+				file: 'component-expression-desync-regex.svelte',
+				line: 8,
+				property: '--gr-expression-desync-regex-audit-token',
+			},
+			{
+				file: 'component-expression-desync-single.svelte',
+				line: 8,
+				property: '--gr-expression-desync-single-audit-token',
+			},
+			{
+				file: 'component-expression-nesting-map.svelte',
+				line: 4,
+				property: '--gr-expression-nesting-map-audit-token',
+			},
+			{
+				file: 'component-expression-nesting-recursive.svelte',
+				line: 4,
+				property: '--gr-expression-nesting-recursive-audit-token',
+			},
+			{
+				file: 'component-expression-nesting-template.svelte',
+				line: 4,
+				property: '--gr-expression-nesting-template-audit-token',
+			},
 			{
 				file: 'component-markup-style.svelte',
 				line: 4,
