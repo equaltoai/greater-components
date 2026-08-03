@@ -160,12 +160,12 @@ test('token audit distinguishes CSS strings from block comments', () => {
 		fs.writeFileSync(
 			path.join(fixtureRoot, 'component-expression-desync-regex.svelte'),
 			[
-				'<p>{`${x.replace(/`/g, "")}`}</p>',
-				'<script>',
-				'\tif (ready()) /}/.test(s);',
-				'\t// <style>',
-				'\t// packages/faces/*/src/lib',
-				'</script>',
+				'<p>{`${x.replace(/`/g, "")}<style>packages/*/src`}</p>',
+				'',
+				'',
+				'',
+				'',
+				'',
 				'<style>',
 				'\t.victim { color: var(--gr-expression-desync-regex-audit-token); }',
 				'</style>',
