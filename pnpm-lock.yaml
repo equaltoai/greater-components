@@ -297,7 +297,7 @@ importers:
   packages/adapters:
     dependencies:
       '@apollo/client':
-        specifier: ^4.1.7
+        specifier: 4.1.7
         version: 4.1.7(graphql-ws@6.2.0(graphql@16.13.2)(ws@8.21.1))(graphql@16.13.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(rxjs@7.8.2)
       '@apollo/client-react-streaming':
         specifier: ^0.14.5
@@ -839,7 +839,7 @@ importers:
   packages/greater-components:
     dependencies:
       '@apollo/client':
-        specifier: ^4.1.7
+        specifier: 4.1.7
         version: 4.1.7(graphql-ws@6.2.0(graphql@16.13.2)(ws@8.21.1))(graphql@16.13.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(rxjs@7.8.2)
       '@apollo/client-react-streaming':
         specifier: ^0.14.5
