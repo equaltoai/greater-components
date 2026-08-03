@@ -137,62 +137,90 @@ async function getFilesRecursively(dir: string): Promise<string[]> {
 
 type StripState = 'normal' | 'line-comment' | 'block-comment' | 'single' | 'double' | 'template';
 
-function isExecutableScriptMatch(content: string, offset: number): boolean {
-	let state: StripState = 'normal';
-	let escaped = false;
+interface StripCursor {
+	state: StripState;
+	escaped: boolean;
+}
 
-	for (let i = 0; i < offset; i++) {
-		const char = content[i] ?? '';
-		const next = content[i + 1] ?? '';
+function advanceStripCursor(cursor: StripCursor, content: string, offset: number): number {
+	const char = content[offset] ?? '';
+	const next = content[offset + 1] ?? '';
 
-		if (state === 'line-comment') {
-			if (char === '\n') state = 'normal';
-			continue;
-		}
-
-		if (state === 'block-comment') {
-			if (char === '*' && next === '/') {
-				state = 'normal';
-				i++;
-			}
-			continue;
-		}
-
-		if (state === 'single' || state === 'double' || state === 'template') {
-			if (escaped) {
-				escaped = false;
-				continue;
-			}
-			if (char === '\\') {
-				escaped = true;
-				continue;
-			}
-			if (
-				(state === 'single' && char === "'") ||
-				(state === 'double' && char === '"') ||
-				(state === 'template' && char === '`')
-			) {
-				state = 'normal';
-			}
-			continue;
-		}
-
-		if (char === '/' && next === '/') {
-			state = 'line-comment';
-			i++;
-			continue;
-		}
-		if (char === '/' && next === '*') {
-			state = 'block-comment';
-			i++;
-			continue;
-		}
-		if (char === "'") state = 'single';
-		else if (char === '"') state = 'double';
-		else if (char === '`') state = 'template';
+	if (cursor.state === 'line-comment') {
+		if (char === '\n' || char === '\r') cursor.state = 'normal';
+		return 1;
 	}
 
-	return state === 'normal';
+	if (cursor.state === 'block-comment') {
+		if (char === '*' && next === '/') {
+			cursor.state = 'normal';
+			return 2;
+		}
+		return 1;
+	}
+
+	if (cursor.state === 'single' || cursor.state === 'double' || cursor.state === 'template') {
+		if (cursor.escaped) {
+			cursor.escaped = false;
+			return 1;
+		}
+		if (char === '\\') {
+			cursor.escaped = true;
+			return 1;
+		}
+		if (
+			(cursor.state === 'single' && char === "'") ||
+			(cursor.state === 'double' && char === '"') ||
+			(cursor.state === 'template' && char === '`')
+		) {
+			cursor.state = 'normal';
+		}
+		return 1;
+	}
+
+	if (char === '/' && next === '/') {
+		cursor.state = 'line-comment';
+		return 2;
+	}
+	if (char === '/' && next === '*') {
+		cursor.state = 'block-comment';
+		return 2;
+	}
+	if (char === "'") cursor.state = 'single';
+	else if (char === '"') cursor.state = 'double';
+	else if (char === '`') cursor.state = 'template';
+	return 1;
+}
+
+function isExecutableScriptMatch(content: string, offset: number): boolean {
+	const cursor: StripCursor = { state: 'normal', escaped: false };
+	for (let index = 0; index < offset;) {
+		index += advanceStripCursor(cursor, content, index);
+	}
+	return cursor.state === 'normal';
+}
+
+function stripHtmlComments(content: string): string {
+	const stripped = content.split('');
+	const cursor: StripCursor = { state: 'normal', escaped: false };
+
+	for (let offset = 0; offset < content.length;) {
+		if (cursor.state === 'normal' && content.startsWith('<!--', offset)) {
+			const commentEnd = content.indexOf('-->', offset + 4);
+			if (commentEnd !== -1) {
+				for (let commentOffset = offset; commentOffset < commentEnd + 3; commentOffset++) {
+					const char = content[commentOffset] ?? '';
+					stripped[commentOffset] = char === '\n' || char === '\r' ? char : ' ';
+				}
+				offset = commentEnd + 3;
+				continue;
+			}
+		}
+
+		offset += advanceStripCursor(cursor, content, offset);
+	}
+
+	return stripped.join('');
 }
 
 function maskSvelteMarkup(content: string): string {
@@ -214,11 +242,21 @@ function maskSvelteMarkup(content: string): string {
 	return masked.join('');
 }
 
+function hasExecutableImportShapedToken(content: string): boolean {
+	const pattern =
+		/(?:^|[;\n\r])\s*(?:import\s+(?:[^'"\n\r]+?\s+from\s*)?['"]|export\s+[^'"\n\r]+?\s+from\s*['"])|(?<![\w$])import\s*\(\s*['"]|@import\s+(?:url\s*\(\s*)?['"]/g;
+
+	let match: RegExpExecArray | null;
+	while ((match = pattern.exec(content)) !== null) {
+		const statementOffset = match.index + match[0].search(/\b(?:import|export)\b|@import\b/);
+		if (isExecutableScriptMatch(content, statementOffset)) return true;
+	}
+	return false;
+}
+
 function importSpecifiers(content: string, filePath?: string): string[] {
 	const specifiers: string[] = [];
-	const commentStripped = content.replace(/<!--[\s\S]*?-->/g, (comment) =>
-		comment.replace(/[^\n]/g, ' ')
-	);
+	const commentStripped = stripHtmlComments(content);
 	// Svelte markup is not JavaScript: only script/style bodies may influence
 	// string and comment state for executable import matches.
 	const executableContent = filePath?.endsWith('.svelte')
@@ -238,6 +276,11 @@ function importSpecifiers(content: string, filePath?: string): string[] {
 				specifiers.push(match[2]);
 			}
 		}
+	}
+	if (specifiers.length === 0 && hasExecutableImportShapedToken(executableContent)) {
+		throw new Error(
+			`Import recovery found an import-shaped token but recovered no specifiers from ${filePath ?? '<unknown file>'}`
+		);
 	}
 	return specifiers;
 }
@@ -281,6 +324,38 @@ describe('greater add review (real command)', () => {
 		].join('\n');
 
 		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual(['pkg-real']);
+	});
+
+	it('recovers a Svelte import after an HTML comment opener inside a script string (E1)', () => {
+		const source = [
+			'<script>',
+			"const marker = 'escaped \\' <!--';",
+			"import 'pkg-real';",
+			'</script>',
+			'-->',
+		].join('\n');
+
+		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual(['pkg-real']);
+	});
+
+	it('recovers a Svelte import after an unterminated markup comment (E2)', () => {
+		const source = ['<!--', '<script>', "import 'pkg-real';", '</script>'].join('\n');
+
+		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual(['pkg-real']);
+	});
+
+	it('recovers a TypeScript import after an HTML comment opener inside a string (E3)', () => {
+		const source = ['const marker = `<!--`;', "import 'pkg-real';", "const closer = '-->';"].join(
+			'\n'
+		);
+
+		expect(importSpecifiers(source, 'synthetic.ts')).toEqual(['pkg-real']);
+	});
+
+	it('fails loudly when an import-shaped token yields no recovered specifier', () => {
+		expect(() => importSpecifiers("import { hidden } from 'malformed;", 'malformed.ts')).toThrow(
+			'Import recovery found an import-shaped token but recovered no specifiers from malformed.ts'
+		);
 	});
 
 	it('preserves pins and installs a relative-import tree that type-checks and builds', async () => {
