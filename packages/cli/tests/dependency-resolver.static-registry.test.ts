@@ -9,6 +9,11 @@ describe('bundled static registry dependency resolution', () => {
 		expect(result.success).toBe(true);
 		expect(
 			result.npmDependencies.find((dependency) => dependency.name === '@apollo/client')
-		).toEqual({ name: '@apollo/client', version: '4.1.7' });
+		).toEqual({ name: '@apollo/client', version: '4.2.9' });
+		expect(
+			result.npmDependencies.find(
+				(dependency) => dependency.name === '@apollo/client-react-streaming'
+			)
+		).toEqual({ name: '@apollo/client-react-streaming', version: '^0.14.5' });
 	});
 });
