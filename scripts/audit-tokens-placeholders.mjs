@@ -79,15 +79,62 @@ function lineNumberAt(content, offset) {
 	return content.slice(0, offset).split('\n').length;
 }
 
-function stripLeadingLineComments(content) {
-	return content.replace(/^[\t ]*\/\/.*$/gm, (comment) => comment.replace(/[^\n]/g, ' '));
+function stripJsLineComments(content) {
+	let result = '';
+	let quote = null;
+
+	for (let offset = 0; offset < content.length; offset += 1) {
+		const character = content[offset];
+		if (quote) {
+			result += character;
+			if (character === '\\' && offset + 1 < content.length) {
+				offset += 1;
+				result += content[offset];
+			} else if (character === quote) {
+				quote = null;
+			} else if (quote !== '`' && (character === '\n' || character === '\r')) {
+				quote = null;
+			}
+			continue;
+		}
+
+		if (character === '"' || character === "'" || character === '`') {
+			quote = character;
+			result += character;
+			continue;
+		}
+
+		if (character === '/' && content[offset + 1] === '/') {
+			while (offset < content.length && content[offset] !== '\n' && content[offset] !== '\r') {
+				result += ' ';
+				offset += 1;
+			}
+			offset -= 1;
+			continue;
+		}
+
+		result += character;
+	}
+
+	return result;
+}
+
+function stripComponentStyleBlockComments(content) {
+	return content.replace(
+		/(<style\b[^>]*>)([\s\S]*?)(<\/style>)/gi,
+		(_match, openingTag, styleContent, closingTag) =>
+			`${openingTag}${stripCssBlockComments(styleContent)}${closingTag}`
+	);
 }
 
 function referenceContent(file, content) {
-	const withoutBlocks = stripCssBlockComments(content);
-	return jsTsExtensions.has(path.extname(file))
-		? stripLeadingLineComments(withoutBlocks)
-		: withoutBlocks;
+	const extension = path.extname(file);
+	if (standaloneStyleExtensions.has(extension)) return stripCssBlockComments(content);
+	if (componentStyleExtensions.has(extension)) return stripComponentStyleBlockComments(content);
+	if (jsTsExtensions.has(extension)) {
+		return stripCssBlockComments(stripJsLineComments(content));
+	}
+	return content;
 }
 
 function definitionContent(file, content) {
@@ -307,6 +354,9 @@ function main() {
 	process.exit(0);
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === __filename) {
+if (
+	process.argv[1] &&
+	fs.realpathSync(process.argv[1]) === fs.realpathSync(fileURLToPath(import.meta.url))
+) {
 	main();
 }
