@@ -18,28 +18,6 @@ import { RetryLink } from '@apollo/client/link/retry/index.js';
 import { createClient, type Client } from 'graphql-ws';
 import { CombinedGraphQLErrors } from '@apollo/client/errors/index.js';
 import { cacheConfig } from './cache.js';
-
-/* eslint-disable @typescript-eslint/no-namespace -- Apollo's declaration-merging API requires namespaces. */
-declare module '@apollo/client' {
-	namespace ApolloClient {
-		namespace DeclareDefaultOptions {
-			// Optional declarations keep this library compatible with consumer-owned
-			// clients while admitting the `all` defaults used by Greater's client.
-			interface WatchQuery {
-				errorPolicy?: 'all';
-			}
-
-			interface Query {
-				errorPolicy?: 'all';
-			}
-
-			interface Mutate {
-				errorPolicy?: 'all';
-			}
-		}
-	}
-}
-/* eslint-enable @typescript-eslint/no-namespace */
 import {
 	AUTH_EXPIRED_CODE,
 	AuthExpiredError,
@@ -49,6 +27,28 @@ import {
 	type AuthExpiredHandler,
 	type TokenRefreshCallback,
 } from '../authExpiry.js';
+
+/* eslint-disable @typescript-eslint/no-namespace -- Apollo's declaration-merging API requires namespaces. */
+declare module '@apollo/client' {
+	namespace ApolloClient {
+		namespace DeclareDefaultOptions {
+			// Optional declarations keep this library compatible with consumer-owned
+			// clients while admitting the `all` defaults used by Greater's client.
+			interface WatchQuery {
+				errorPolicy?: 'none' | 'ignore' | 'all';
+			}
+
+			interface Query {
+				errorPolicy?: 'none' | 'ignore' | 'all';
+			}
+
+			interface Mutate {
+				errorPolicy?: 'none' | 'ignore' | 'all';
+			}
+		}
+	}
+}
+/* eslint-enable @typescript-eslint/no-namespace */
 
 export interface GraphQLClientConfig {
 	/**
