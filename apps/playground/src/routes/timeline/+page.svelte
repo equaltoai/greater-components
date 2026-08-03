@@ -594,7 +594,7 @@
 
 	.sidebar-nav button.selected {
 		background: var(--gr-color-primary-100);
-		color: var(--gr-color-base-white);
+		color: var(--gr-color-primary-900);
 	}
 
 	.preferences-trigger {
@@ -767,6 +767,7 @@
 		border-radius: var(--gr-radii-xl);
 		padding: 1rem;
 		background: var(--gr-color-error-100);
+		color: var(--gr-color-error-900);
 	}
 
 	@media (max-width: 1280px) {
