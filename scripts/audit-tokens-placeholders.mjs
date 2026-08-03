@@ -119,9 +119,9 @@ function stripJsComments(content, { stripLineComments = true } = {}) {
 			continue;
 		}
 
-		if (stripLineComments && character === '/' && content[offset + 1] === '/') {
+		if (character === '/' && content[offset + 1] === '/') {
 			while (offset < content.length && content[offset] !== '\n' && content[offset] !== '\r') {
-				result += ' ';
+				result += stripLineComments ? ' ' : content[offset];
 				offset += 1;
 			}
 			offset -= 1;

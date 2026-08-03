@@ -89,6 +89,16 @@ test('token audit distinguishes CSS strings from block comments', () => {
 			].join('\n')
 		);
 		fs.writeFileSync(
+			path.join(fixtureRoot, 'component-script-line-comment.svelte'),
+			[
+				'<script>',
+				'\t// Generated files live under packages/faces/*/src/lib/*',
+				'\tconst style = `color: var(--gr-component-script-line-comment-audit-token)`;',
+				'\t/** doc */',
+				'</script>',
+			].join('\n')
+		);
+		fs.writeFileSync(
 			path.join(fixtureRoot, 'document.html'),
 			[
 				'<style>',
@@ -120,6 +130,11 @@ test('token audit distinguishes CSS strings from block comments', () => {
 			{ file: 'e3a.css', line: 2, property: '--gr-color-gray-1000' },
 		]);
 		assert.deepEqual(result.referenceErrors, [
+			{
+				file: 'component-script-line-comment.svelte',
+				line: 3,
+				property: '--gr-component-script-line-comment-audit-token',
+			},
 			{
 				file: 'component-script-style.svelte',
 				line: 6,
