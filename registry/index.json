@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-02T19:10:09.454Z",
+  "generatedAt": "2026-08-02T23:58:25.765Z",
   "ref": "greater-v0.11.9",
   "version": "0.11.9",
   "checksums": {
@@ -1106,7 +1106,7 @@
     "packages/faces/blog/src/index.ts": "sha256-GnJM/z+KouLcZ7pk992s7hwhuI52RC0dLOFlAPo3X1o=",
     "packages/faces/blog/src/patterns/index.ts": "sha256-meoG+gNvG1Os36voxE5lVckTjWYsOZA+Tdff8i7HsDY=",
     "packages/faces/blog/src/share.ts": "sha256-zh34kdwk9EtN/we6XkorjmvX8eXNRaQQBC1YKwVOSCo=",
-    "packages/faces/blog/src/theme.css": "sha256-bOUgmqu39QtNYETX6XKA4Oubhx9b3kt8vYiKLmb59kQ=",
+    "packages/faces/blog/src/theme.css": "sha256-rMIJJY8KvUAkAXhRIbP7fmSQvFWfUgsse2Gy/gLGllo=",
     "packages/faces/blog/src/types.ts": "sha256-nfVa2XmlruYKSE432+1kVae4efSDuv9ENZHJHXWfO/4=",
     "packages/faces/community/src/components/Community/context.ts": "sha256-o7hAokh6NA8qRTQSPQx4gZSwM2yKGGWlgI9xWCCQTY8=",
     "packages/faces/community/src/components/Community/Header.svelte": "sha256-Cgg2NDuydM3itR8WioXBTqcdGuRWBeMnvmi/yfg7yCc=",
@@ -1141,7 +1141,7 @@
     "packages/faces/community/src/components/Wiki/Root.svelte": "sha256-AD0jxr5r3cej0cAltug3RyPMvvsUTUu+M3TPzlWIw0M=",
     "packages/faces/community/src/index.ts": "sha256-D/NdPVN+HVexdqKLIPLgwPXti4yYZFgztf/9StwAGkY=",
     "packages/faces/community/src/patterns/index.ts": "sha256-kRP0ROU/+0oDWOAxAu8NXWhR47fPnxjpXQHgKsL6Vhw=",
-    "packages/faces/community/src/theme.css": "sha256-r80CiFwFk/4wJ5n01HKoCImBtUVtvVB7nQvx7m//+68=",
+    "packages/faces/community/src/theme.css": "sha256-Bv7l1bpwxdZebcGw4Ft7VbIXuUegPiU1kZ58UPU0Es0=",
     "packages/faces/community/src/types.ts": "sha256-wEwXOHVZlULqUqn/FKSLoXzZlJSwTxYExJHQm7+U79I=",
     "packages/faces/artist/src/adapters/artistAdapter.ts": "sha256-LXukzcPVqCu3rH5f4+pw4kZMi54SZ2x3mfrrb0EEQYE=",
     "packages/faces/artist/src/components/ArtistBadge.svelte": "sha256-qG53BPZJRYIWTDXeoeExOf/zQF7t3qjKb/VpQbYx0Nc=",
@@ -1160,9 +1160,9 @@
     "packages/faces/artist/src/components/ArtistProfile/Timeline.svelte": "sha256-pYTXPUJ+ObxLhvbKiAFqwRvXbbSx8nOd6Jiy+OETlME=",
     "packages/faces/artist/src/components/ArtistTimeline/index.ts": "sha256-DKtEBn2hsKq9aQQC3Se3sAH4Qyv9bcq9qftg00h6FZg=",
     "packages/faces/artist/src/components/ArtistTimeline.svelte": "sha256-B/A9t/xM8UdSV5+UaDVkYrU3KAKSH3CsPzhSeMs5HAM=",
-    "packages/faces/artist/src/components/Artwork/Actions.svelte": "sha256-6NHpKElejn6kEoBexel/w0ylSnQh/1fEIaOEW6/eg/8=",
-    "packages/faces/artist/src/components/Artwork/AIDisclosure.svelte": "sha256-EiOQG1Z1mH8tUt9VkO7kwAusrd6+6UMXytlzbZ90+rE=",
-    "packages/faces/artist/src/components/Artwork/Attribution.svelte": "sha256-i0Z0EtdJJuHakz4+QEn20xhbJkxOF8+Yz1dnRvVuO+8=",
+    "packages/faces/artist/src/components/Artwork/Actions.svelte": "sha256-GXBihIIw90V8/1CHiBRmKHbnpg4tWXcPFEHXoG0l9E0=",
+    "packages/faces/artist/src/components/Artwork/AIDisclosure.svelte": "sha256-mKG4lYa/h2wVkzcdN45ERgJqOPvnlNBp1EwRaf0gWtc=",
+    "packages/faces/artist/src/components/Artwork/Attribution.svelte": "sha256-iy9ZVZP3pHxfJFbF9n1OiVxQszetpSlYfRJ6f2xj91s=",
     "packages/faces/artist/src/components/Artwork/context.ts": "sha256-wTQwllHHORte9qG/MNa8phOYDn1yZX0b1ApKyy26Uf8=",
     "packages/faces/artist/src/components/Artwork/Image.svelte": "sha256-16FmETvACjAjLAjV1NY0XDP50bafUmrj1IZ8nK/b63Y=",
     "packages/faces/artist/src/components/Artwork/index.ts": "sha256-Qoc+aLbbdwGiCI/sjnGqayeThQ1Wati1s9CHCQkVOmE=",
@@ -1240,16 +1240,16 @@
     "packages/faces/artist/src/components/MediaViewer/Navigation.svelte": "sha256-d+xVTVNoM896cPJWitkBcvQ6MBrn7KHx/j/jvPlTGEc=",
     "packages/faces/artist/src/components/MediaViewer/Root.svelte": "sha256-xj7dC00b9R6i0IAzTRQXWUFXO5FDGlEs26IKnwy7PPI=",
     "packages/faces/artist/src/components/MediaViewer/ZoomControls.svelte": "sha256-wby9XJ+JRj327wE2bBhEjdn6NWzOjYEQTMgm5RtnYUw=",
-    "packages/faces/artist/src/components/Monetization/DirectPurchase.svelte": "sha256-3BpwuXm3ovquQpFs8kDAdUcL9JxFG8Bndx4pdgGpPMw=",
+    "packages/faces/artist/src/components/Monetization/DirectPurchase.svelte": "sha256-BoIKe2Z8CxaCviFanCTaXEZ54Xuuv/Um4KmSk7TZe/4=",
     "packages/faces/artist/src/components/Monetization/index.ts": "sha256-rMMEbtBMXVx3TTbc2PDVol0M9qPQFSzVvwbBxSCKMPE=",
     "packages/faces/artist/src/components/Monetization/InstitutionalTools.svelte": "sha256-NCTPifwVDooZIZlsymYLmErufgWVbwy/ACiOCovDKJE=",
-    "packages/faces/artist/src/components/Monetization/PremiumBadge.svelte": "sha256-OlD5NK8Cn60BxvjGKFum5K6t0IHMGMwUfHnVFcGap6U=",
-    "packages/faces/artist/src/components/Monetization/ProtectionTools.svelte": "sha256-rysyZIi+oqMl1fi2bNHBXK5RwhlmNU2N9/e4sq7W30E=",
-    "packages/faces/artist/src/components/Monetization/TipJar.svelte": "sha256-bznNJglJA73ucUNwsoGiZVwhrc+Bcl3DjnJJIevAhkI=",
+    "packages/faces/artist/src/components/Monetization/PremiumBadge.svelte": "sha256-5qymZj5uHo1ZKg0lNelFRSgjpSTJMDHTrHLeiXY3QQI=",
+    "packages/faces/artist/src/components/Monetization/ProtectionTools.svelte": "sha256-4973UNFdO7rOKulh7Efjj6OWkoAhqwjU47O3yi26gQk=",
+    "packages/faces/artist/src/components/Monetization/TipJar.svelte": "sha256-YsUF/EWswwFsZ9yXif180YvnT/YCVcqBI2blqtRVDzI=",
     "packages/faces/artist/src/components/PortfolioSection.svelte": "sha256-2gQ8aAOEGOFh5zmos3E3nPHlzIQ684yQspSAW1aYrpg=",
-    "packages/faces/artist/src/components/Transparency/AIDisclosure.svelte": "sha256-XVkIqnZTTR72FHOcaD+sbdHVNz2z1MGOA0YCsaEIi/c=",
+    "packages/faces/artist/src/components/Transparency/AIDisclosure.svelte": "sha256-sVjsl5dRPU1Yaa9+jYjq8A9gShPtocIbxvqOTi3pRHg=",
     "packages/faces/artist/src/components/Transparency/AIOptOutControls.svelte": "sha256-HgTv5l3PeM3z3IlS1+6yGUAepSKljHQiVRIqj1bAat0=",
-    "packages/faces/artist/src/components/Transparency/EthicalSourcingBadge.svelte": "sha256-nsyVlNo4GVsbJcJSqwgaeAYgxZTpgOP3TWPiWK1A3Ok=",
+    "packages/faces/artist/src/components/Transparency/EthicalSourcingBadge.svelte": "sha256-Kwf+BMQ7SvFsIOkE2CKJNlHXPT5DDZAa9Z8PoeJv6lk=",
     "packages/faces/artist/src/components/Transparency/index.ts": "sha256-8ZrN45E4iiVNIYHPwZ7QIe+MbkF5KnPJUwhRt+jmr84=",
     "packages/faces/artist/src/components/Transparency/ProcessDocumentation.svelte": "sha256-wdmeVWpN9Bz4uM0RQmYPcNU9pmB0bCZToXmEnBlrZQE=",
     "packages/faces/artist/src/index.ts": "sha256-/0ZhuioYTEf7cIFGwhXmQVYnxyxbu9dn7IEDgF93/uE=",
@@ -1410,7 +1410,7 @@
     "packages/shared/chat/src/ChatInput.svelte": "sha256-lU6LPsynBURd6Mb4hNJ4SiRIQ5EtrFVChV4KbrvWGOo=",
     "packages/shared/chat/src/ChatMessage.svelte": "sha256-PpUf+DIw5R0FvGV4g9b4qHU8hrZQceQ9al/ha3R1y20=",
     "packages/shared/chat/src/ChatMessageAction.svelte": "sha256-pEcRybpKjXTvpfBEUzEK5ZsqQFY7Mequc8wdLyCBHso=",
-    "packages/shared/chat/src/ChatMessages.svelte": "sha256-QB0ljSSirBW556RPlFF3AksCrw21dxW8tjoFq4XYz84=",
+    "packages/shared/chat/src/ChatMessages.svelte": "sha256-M68I+kyLEwfkbYYm2aUzlyCZn8BuR86fA7TNOO0iYLU=",
     "packages/shared/chat/src/ChatSettings.svelte": "sha256-3KK1ivBHd/qrP6ODHkeWCSs7//0cKmMxzfvBipA9PzE=",
     "packages/shared/chat/src/ChatSuggestions.svelte": "sha256-xJJBHn5k57LVPEZMJJw4QY754aK1w3DDSl+u1RC4DMI=",
     "packages/shared/chat/src/ChatThreadView.svelte": "sha256-znXq/fPkCGPHD/HWkIGWK7JFFXC47q3yhqHN1O5YfcY=",
@@ -7354,8 +7354,8 @@
         },
         {
           "path": "src/theme.css",
-          "checksum": "sha256-bOUgmqu39QtNYETX6XKA4Oubhx9b3kt8vYiKLmb59kQ=",
-          "size": 33377
+          "checksum": "sha256-rMIJJY8KvUAkAXhRIbP7fmSQvFWfUgsse2Gy/gLGllo=",
+          "size": 33044
         },
         {
           "path": "src/types.ts",
@@ -7642,8 +7642,8 @@
         },
         {
           "path": "src/theme.css",
-          "checksum": "sha256-r80CiFwFk/4wJ5n01HKoCImBtUVtvVB7nQvx7m//+68=",
-          "size": 24498
+          "checksum": "sha256-Bv7l1bpwxdZebcGw4Ft7VbIXuUegPiU1kZ58UPU0Es0=",
+          "size": 25345
         },
         {
           "path": "src/types.ts",
@@ -7857,17 +7857,17 @@
         },
         {
           "path": "src/components/Artwork/Actions.svelte",
-          "checksum": "sha256-6NHpKElejn6kEoBexel/w0ylSnQh/1fEIaOEW6/eg/8=",
+          "checksum": "sha256-GXBihIIw90V8/1CHiBRmKHbnpg4tWXcPFEHXoG0l9E0=",
           "size": 6406
         },
         {
           "path": "src/components/Artwork/AIDisclosure.svelte",
-          "checksum": "sha256-EiOQG1Z1mH8tUt9VkO7kwAusrd6+6UMXytlzbZ90+rE=",
+          "checksum": "sha256-mKG4lYa/h2wVkzcdN45ERgJqOPvnlNBp1EwRaf0gWtc=",
           "size": 5726
         },
         {
           "path": "src/components/Artwork/Attribution.svelte",
-          "checksum": "sha256-i0Z0EtdJJuHakz4+QEn20xhbJkxOF8+Yz1dnRvVuO+8=",
+          "checksum": "sha256-iy9ZVZP3pHxfJFbF9n1OiVxQszetpSlYfRJ6f2xj91s=",
           "size": 4869
         },
         {
@@ -8257,7 +8257,7 @@
         },
         {
           "path": "src/components/Monetization/DirectPurchase.svelte",
-          "checksum": "sha256-3BpwuXm3ovquQpFs8kDAdUcL9JxFG8Bndx4pdgGpPMw=",
+          "checksum": "sha256-BoIKe2Z8CxaCviFanCTaXEZ54Xuuv/Um4KmSk7TZe/4=",
           "size": 25916
         },
         {
@@ -8272,17 +8272,17 @@
         },
         {
           "path": "src/components/Monetization/PremiumBadge.svelte",
-          "checksum": "sha256-OlD5NK8Cn60BxvjGKFum5K6t0IHMGMwUfHnVFcGap6U=",
+          "checksum": "sha256-5qymZj5uHo1ZKg0lNelFRSgjpSTJMDHTrHLeiXY3QQI=",
           "size": 8094
         },
         {
           "path": "src/components/Monetization/ProtectionTools.svelte",
-          "checksum": "sha256-rysyZIi+oqMl1fi2bNHBXK5RwhlmNU2N9/e4sq7W30E=",
+          "checksum": "sha256-4973UNFdO7rOKulh7Efjj6OWkoAhqwjU47O3yi26gQk=",
           "size": 24859
         },
         {
           "path": "src/components/Monetization/TipJar.svelte",
-          "checksum": "sha256-bznNJglJA73ucUNwsoGiZVwhrc+Bcl3DjnJJIevAhkI=",
+          "checksum": "sha256-YsUF/EWswwFsZ9yXif180YvnT/YCVcqBI2blqtRVDzI=",
           "size": 19924
         },
         {
@@ -8292,7 +8292,7 @@
         },
         {
           "path": "src/components/Transparency/AIDisclosure.svelte",
-          "checksum": "sha256-XVkIqnZTTR72FHOcaD+sbdHVNz2z1MGOA0YCsaEIi/c=",
+          "checksum": "sha256-sVjsl5dRPU1Yaa9+jYjq8A9gShPtocIbxvqOTi3pRHg=",
           "size": 12403
         },
         {
@@ -8302,7 +8302,7 @@
         },
         {
           "path": "src/components/Transparency/EthicalSourcingBadge.svelte",
-          "checksum": "sha256-nsyVlNo4GVsbJcJSqwgaeAYgxZTpgOP3TWPiWK1A3Ok=",
+          "checksum": "sha256-Kwf+BMQ7SvFsIOkE2CKJNlHXPT5DDZAa9Z8PoeJv6lk=",
           "size": 16074
         },
         {
@@ -9521,8 +9521,8 @@
         },
         {
           "path": "src/ChatMessages.svelte",
-          "checksum": "sha256-QB0ljSSirBW556RPlFF3AksCrw21dxW8tjoFq4XYz84=",
-          "size": 13565
+          "checksum": "sha256-M68I+kyLEwfkbYYm2aUzlyCZn8BuR86fA7TNOO0iYLU=",
+          "size": 13547
         },
         {
           "path": "src/ChatSettings.svelte",

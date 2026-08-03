@@ -10,6 +10,7 @@ const tokenCss = fs.readFileSync(
 
 function declarations(css: string, selector: string): string {
 	let offset = 0;
+	const blocks: string[] = [];
 	while (offset < css.length) {
 		const open = css.indexOf('{', offset);
 		if (open < 0) break;
@@ -19,9 +20,10 @@ function declarations(css: string, selector: string): string {
 			.replace(/\/\*[\s\S]*?\*\//g, '')
 			.trim();
 		const close = css.indexOf('}', open);
-		if (candidate === selector && close >= 0) return css.slice(open + 1, close);
+		if (candidate === selector && close >= 0) blocks.push(css.slice(open + 1, close));
 		offset = open + 1;
 	}
+	if (blocks.length > 0) return blocks.join('\n');
 	throw new Error(`Missing CSS block for ${selector}`);
 }
 
@@ -32,6 +34,15 @@ function readCustomProperties(block: string): Map<string, string> {
 			match[2]?.trim() as string,
 		])
 	);
+}
+
+function declarationValue(css: string, selector: string, property: string): string {
+	const matches = Array.from(
+		declarations(css, selector).matchAll(new RegExp(`(?:^|;)\\s*${property}\\s*:\\s*([^;]+)`, 'g'))
+	);
+	const value = matches.at(-1)?.[1]?.trim();
+	if (!value) throw new Error(`Missing ${property} declaration for ${selector}`);
+	return value;
 }
 
 function resolveValue(
@@ -60,9 +71,13 @@ function themeProperties(theme: 'light' | 'dark'): Map<string, string> {
 		...readCustomProperties(declarations(tokenCss, ':root')),
 		...readCustomProperties(declarations(blogCss, ':root')),
 	]);
+	for (const [name, value] of readCustomProperties(
+		declarations(tokenCss, `[data-theme="${theme}"]`)
+	)) {
+		properties.set(name, value);
+	}
 	if (theme === 'dark') {
 		for (const [name, value] of [
-			...readCustomProperties(declarations(tokenCss, '[data-theme="dark"]')),
 			...readCustomProperties(declarations(blogCss, "[data-theme='dark']")),
 		]) {
 			properties.set(name, value);
@@ -94,6 +109,22 @@ function contrast(foreground: string, background: string): number {
 }
 
 describe('blog reading-surface theme', () => {
+	it('references selectable palettes only through emitted token paths', () => {
+		const uncommentedBlogCss = blogCss.replace(/\/\*[\s\S]*?\*\//g, '');
+		const emittedTokens = new Set(
+			Array.from(tokenCss.matchAll(/(--gr-[\w-]+)\s*:/g), (match) => match[1])
+		);
+		const paletteReferences = Array.from(
+			uncommentedBlogCss.matchAll(/var\(\s*(--gr-color-(?:gray|neutral|slate|stone|zinc)-[\w-]+)/g),
+			(match) => match[1]
+		);
+
+		expect(
+			paletteReferences.filter((token) => !emittedTokens.has(token)),
+			'palette names select --gr-color-gray-* values and are not token paths'
+		).toEqual([]);
+	});
+
 	it.each(['light', 'dark'] as const)('resolves all new public reading tokens in %s', (theme) => {
 		const properties = themeProperties(theme);
 		for (const token of [
@@ -150,17 +181,288 @@ describe('blog reading-surface theme', () => {
 		);
 	});
 
+	it.each(['light', 'dark'] as const)(
+		'holds contrast for every neutral-mapping text cell in %s',
+		(theme) => {
+			const properties = themeProperties(theme);
+			const pageBackground = { value: 'var(--gr-semantic-background-primary)' };
+			const articleHeadings =
+				'.gr-blog-article__content h1,\n.gr-blog-article__content h2,\n.gr-blog-article__content h3,\n.gr-blog-article__content h4';
+			const darkArticleHeadings =
+				"[data-theme='dark'] .gr-blog-article__content h1,\n[data-theme='dark'] .gr-blog-article__content h2,\n[data-theme='dark'] .gr-blog-article__content h3,\n[data-theme='dark'] .gr-blog-article__content h4,\n[data-theme='dark'] .gr-blog-article__content h5,\n[data-theme='dark'] .gr-blog-article__content h6,\n[data-theme='dark'] .gr-blog-article__title";
+			const darkCardSubtitle =
+				"[data-theme='dark'] .gr-blog-article-card__subtitle,\n[data-theme='dark'] .gr-blog-article-card__excerpt";
+			const darkTocArchiveMeta =
+				"[data-theme='dark'] .gr-blog-toc__title,\n[data-theme='dark'] .gr-blog-archive__month-title,\n[data-theme='dark'] .gr-blog-editor__meta";
+			const darkNewsletterArchive =
+				"[data-theme='dark'] .gr-blog-newsletter__title,\n[data-theme='dark'] .gr-blog-archive__year";
+			const cells: Array<{
+				name: string;
+				foreground: { selector: string; property: string };
+				background: { selector?: string; property?: string; value?: string };
+			}> =
+				theme === 'light'
+					? [
+							{
+								name: 'article prose',
+								foreground: { selector: '.gr-blog-article__content', property: 'color' },
+								background: pageBackground,
+							},
+							{
+								name: 'article heading',
+								foreground: { selector: articleHeadings, property: 'color' },
+								background: pageBackground,
+							},
+							...[
+								['card meta', '.gr-blog-article-card__meta'],
+								[
+									'card subtitle',
+									'.gr-blog-article-card__subtitle,\n.gr-blog-article-card__excerpt',
+								],
+							].map(([name, selector]) => ({
+								name,
+								foreground: { selector, property: 'color' },
+								background: { selector: '.gr-blog-article-card', property: 'background' },
+							})),
+							{
+								name: 'card tag',
+								foreground: { selector: '.gr-blog-article-card__tag', property: 'color' },
+								background: { selector: '.gr-blog-article-card__tag', property: 'background' },
+							},
+							...[
+								['toc title', '.gr-blog-toc__title'],
+								['toc link', '.gr-blog-toc__link'],
+								['archive year', '.gr-blog-archive__year'],
+								['archive month', '.gr-blog-archive__month-title'],
+								['editor meta', '.gr-blog-editor__meta'],
+							].map(([name, selector]) => ({
+								name,
+								foreground: { selector, property: 'color' },
+								background: pageBackground,
+							})),
+							...[
+								['author name', '.gr-blog-author-card__name'],
+								['author bio', '.gr-blog-author-card__bio'],
+							].map(([name, selector]) => ({
+								name,
+								foreground: { selector, property: 'color' },
+								background: { selector: '.gr-blog-author-card', property: 'background' },
+							})),
+							{
+								name: 'publication',
+								foreground: { selector: '.gr-blog-publication-banner', property: 'color' },
+								background: { selector: '.gr-blog-publication-banner', property: 'background' },
+							},
+							...[
+								['newsletter title', '.gr-blog-newsletter__title'],
+								['newsletter description', '.gr-blog-newsletter__description'],
+							].map(([name, selector]) => ({
+								name,
+								foreground: { selector, property: 'color' },
+								background: { selector: '.gr-blog-newsletter', property: 'background' },
+							})),
+							{
+								name: 'tag cloud',
+								foreground: { selector: '.gr-blog-tag-cloud__tag', property: 'color' },
+								background: { selector: '.gr-blog-tag-cloud__tag', property: 'background' },
+							},
+							{
+								name: 'toolbar button',
+								foreground: { selector: '.gr-blog-editor-toolbar__button', property: 'color' },
+								background: { selector: '.gr-blog-editor-toolbar', property: 'background' },
+							},
+							{
+								name: 'toolbar button hover',
+								foreground: {
+									selector: '.gr-blog-editor-toolbar__button:hover',
+									property: 'color',
+								},
+								background: {
+									selector: '.gr-blog-editor-toolbar__button:hover',
+									property: 'background',
+								},
+							},
+							{
+								name: 'caption gradient',
+								foreground: { selector: '.gr-blog-featured-image__caption', property: 'color' },
+								background: { value: '#4d4d4d' },
+							},
+						]
+					: [
+							{
+								name: 'article prose',
+								foreground: {
+									selector: "[data-theme='dark'] .gr-blog-article__content",
+									property: 'color',
+								},
+								background: {
+									selector: "[data-theme='dark'] .gr-blog-article",
+									property: 'background',
+								},
+							},
+							{
+								name: 'article heading',
+								foreground: { selector: darkArticleHeadings, property: 'color' },
+								background: {
+									selector: "[data-theme='dark'] .gr-blog-article",
+									property: 'background',
+								},
+							},
+							...[
+								[
+									'article meta',
+									"[data-theme='dark'] .gr-blog-article__subtitle,\n[data-theme='dark'] .gr-blog-article__meta",
+								],
+								['article link', "[data-theme='dark'] .gr-blog-article__content a"],
+							].map(([name, selector]) => ({
+								name,
+								foreground: { selector, property: 'color' },
+								background: {
+									selector: "[data-theme='dark'] .gr-blog-article",
+									property: 'background',
+								},
+							})),
+							...[
+								[
+									'article tag',
+									"[data-theme='dark'] .gr-blog-article__tags .gr-blog-tag-cloud__tag",
+								],
+								['code', "[data-theme='dark'] .gr-blog-article__content code"],
+							].map(([name, selector]) => ({
+								name,
+								foreground: { selector, property: 'color' },
+								background: {
+									selector:
+										name === 'code' ? '.gr-blog-article__content :not(pre) > code' : selector,
+									property: 'background',
+								},
+							})),
+							...[
+								['card meta', "[data-theme='dark'] .gr-blog-article-card__meta"],
+								['card title', "[data-theme='dark'] .gr-blog-article-card__title"],
+								['card subtitle', darkCardSubtitle],
+							].map(([name, selector]) => ({
+								name,
+								foreground: { selector, property: 'color' },
+								background: {
+									selector: "[data-theme='dark'] .gr-blog-article-card",
+									property: 'background',
+								},
+							})),
+							{
+								name: 'card tag',
+								foreground: {
+									selector: "[data-theme='dark'] .gr-blog-article-card__tag",
+									property: 'color',
+								},
+								background: {
+									selector: "[data-theme='dark'] .gr-blog-article-card__tag",
+									property: 'background',
+								},
+							},
+							...[
+								['toc title', darkTocArchiveMeta],
+								['toc link', '.gr-blog-toc__link'],
+								['archive year', darkNewsletterArchive],
+								['archive month', darkTocArchiveMeta],
+								['editor meta', darkTocArchiveMeta],
+							].map(([name, selector]) => ({
+								name,
+								foreground: { selector, property: 'color' },
+								background: pageBackground,
+							})),
+							...[
+								['author name', '.gr-blog-author-card__name'],
+								['author bio', '.gr-blog-author-card__bio'],
+							].map(([name, selector]) => ({
+								name,
+								foreground: { selector, property: 'color' },
+								background: { selector: '.gr-blog-author-card', property: 'background' },
+							})),
+							{
+								name: 'publication',
+								foreground: { selector: '.gr-blog-publication-banner', property: 'color' },
+								background: { selector: '.gr-blog-publication-banner', property: 'background' },
+							},
+							...[
+								['newsletter title', darkNewsletterArchive],
+								['newsletter description', "[data-theme='dark'] .gr-blog-newsletter__description"],
+							].map(([name, selector]) => ({
+								name,
+								foreground: { selector, property: 'color' },
+								background: { selector: '.gr-blog-newsletter', property: 'background' },
+							})),
+							{
+								name: 'tag cloud',
+								foreground: {
+									selector: "[data-theme='dark'] .gr-blog-tag-cloud .gr-blog-tag-cloud__tag",
+									property: 'color',
+								},
+								background: {
+									selector: "[data-theme='dark'] .gr-blog-tag-cloud .gr-blog-tag-cloud__tag",
+									property: 'background',
+								},
+							},
+							{
+								name: 'toolbar button',
+								foreground: { selector: '.gr-blog-editor-toolbar__button', property: 'color' },
+								background: { selector: '.gr-blog-editor-toolbar', property: 'background' },
+							},
+							{
+								name: 'toolbar button hover',
+								foreground: {
+									selector: '.gr-blog-editor-toolbar__button:hover',
+									property: 'color',
+								},
+								background: {
+									selector: '.gr-blog-editor-toolbar__button:hover',
+									property: 'background',
+								},
+							},
+							{
+								name: 'editor preview',
+								foreground: {
+									selector: "[data-theme='dark'] .gr-blog-editor__preview",
+									property: 'color',
+								},
+								background: {
+									selector: "[data-theme='dark'] .gr-blog-editor__preview",
+									property: 'background',
+								},
+							},
+							{
+								name: 'caption gradient',
+								foreground: { selector: '.gr-blog-featured-image__caption', property: 'color' },
+								background: { value: '#4d4d4d' },
+							},
+						];
+
+			for (const { name, foreground, background } of cells) {
+				const foregroundValue = resolveValue(
+					declarationValue(blogCss, foreground.selector, foreground.property),
+					properties
+				);
+				const backgroundValue = resolveValue(
+					background.value ??
+						declarationValue(blogCss, background.selector as string, background.property as string),
+					properties
+				);
+				expect(contrast(foregroundValue, backgroundValue), name).toBeGreaterThanOrEqual(4.5);
+			}
+		}
+	);
+
 	it('leaves the light reading surface on its pre-theme cascade', () => {
 		expect(declarations(blogCss, '.gr-blog-article')).not.toMatch(/\b(?:background|color)\s*:/);
 		expect(declarations(blogCss, '.gr-blog-article__content')).toContain(
-			'color: var(--gr-color-neutral-800)'
+			'color: var(--gr-color-gray-800)'
 		);
 		expect(
 			declarations(
 				blogCss,
 				'.gr-blog-article__content h1,\n.gr-blog-article__content h2,\n.gr-blog-article__content h3,\n.gr-blog-article__content h4'
 			)
-		).toContain('color: var(--gr-color-neutral-900)');
+		).toContain('color: var(--gr-color-gray-900)');
 		expect(() => declarations(blogCss, '.gr-blog-article__content a')).toThrow();
 		expect(declarations(blogCss, '.gr-blog-article__content code')).not.toMatch(/\bcolor\s*:/);
 	});

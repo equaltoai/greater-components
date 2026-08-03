@@ -345,7 +345,7 @@ Features:
 	}
 
 	.gr-transparency-ethical-badge--clickable .gr-transparency-ethical-badge-main:hover {
-		background: var(--gr-color-gray-750);
+		background: var(--gr-color-gray-700);
 		border-color: var(--gr-color-gray-600);
 	}
 
@@ -515,7 +515,7 @@ Features:
 	.gr-transparency-ethical-badge-details {
 		margin-top: var(--gr-spacing-scale-2);
 		padding: var(--gr-spacing-scale-4);
-		background: var(--gr-color-gray-850);
+		background: var(--gr-color-gray-800);
 		border: 1px solid var(--gr-color-gray-700);
 		border-radius: var(--gr-radii-md);
 	}

@@ -176,10 +176,12 @@ New tokens are prefixed `--gr-blog-review-*`: card padding and radius, plus
 `approved` / `changes` / `pending` / `agent` background, foreground, and border
 triples, with light and dark values.
 
-Neutral steps are written as `var(--gr-color-neutral-N, var(--gr-color-gray-N))`
-because `--gr-color-neutral-*` is a bridge-level alias rather than a token the
-tokens package emits. Consumers that bridge their brand through
-`--gr-color-neutral-*` win; consumers that do not still render correctly.
+`neutral` is a selectable palette name, but `--gr-color-neutral-*` was never an
+emitted token family. This PR removes the never-functional, consumer-facing
+`var(--gr-color-neutral-N, var(--gr-color-gray-N))` bridge pattern. Consumers
+bridge neutral values through the emitted `--gr-color-gray-*` family or through
+their own component-level overrides. The repository guard rejects palette names
+used as custom-property paths so the removed pattern cannot return.
 
 ## Accessibility
 
