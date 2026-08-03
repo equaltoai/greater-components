@@ -2,6 +2,7 @@ import { render } from '@testing-library/svelte';
 import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
+import { stripCssBlockComments } from '../../../../../scripts/css-source.mjs';
 import { Flair } from '../../src/components/Flair/index.js';
 import { Voting } from '../../src/components/Voting/index.js';
 
@@ -10,6 +11,8 @@ const tokenCss = fs.readFileSync(
 	path.resolve(process.cwd(), '../../tokens/dist/theme.css'),
 	'utf8'
 );
+const darkHoverSurfaces =
+	"[data-theme='dark'] .gr-community-vote__button:hover,\n[data-theme='dark'] .gr-community-flair--post,\n[data-theme='dark'] .gr-community-sort__option:hover,\n[data-theme='dark'] .gr-community-mod-panel__refresh:hover,\n[data-theme='dark'] .gr-community-mod-queue-item__actions button:hover,\n[data-theme='dark'] .gr-community-header__subscribe:hover,\n[data-theme='dark'] .gr-community-wiki__action:hover";
 
 function declarations(css: string, selector: string): string {
 	let offset = 0;
@@ -18,10 +21,7 @@ function declarations(css: string, selector: string): string {
 		const open = css.indexOf('{', offset);
 		if (open < 0) break;
 		const start = Math.max(css.lastIndexOf('}', open - 1), css.lastIndexOf('{', open - 1)) + 1;
-		const candidate = css
-			.slice(start, open)
-			.replace(/\/\*[\s\S]*?\*\//g, '')
-			.trim();
+		const candidate = stripCssBlockComments(css.slice(start, open)).trim();
 		const close = css.indexOf('}', open);
 		if (candidate === selector && close >= 0) blocks.push(css.slice(open + 1, close));
 		offset = open + 1;
@@ -111,6 +111,22 @@ function contrast(foreground: string, background: string): number {
 }
 
 describe('A11y: Contrast & Visuals', () => {
+	it('binds the light vote backdrop to the rendered post surface chain', () => {
+		const postBackground = declarationValue(communityCss, '.gr-community-post', 'background');
+		const cardSurface = readCustomProperties(declarations(communityCss, ':root')).get(
+			'--gr-community-card-background'
+		);
+		if (!cardSurface) throw new Error('Missing --gr-community-card-background declaration');
+
+		// Voting renders inside `.gr-community-post`. Guard that declared surface chain so
+		// contrast cannot silently drift back to the page background when the card changes.
+		expect(postBackground).toBe('var(--gr-community-card-background)');
+		expect(cardSurface).toBe('var(--gr-semantic-background-surface)');
+		expect(resolveValue(postBackground, themeProperties('light'))).toBe(
+			resolveValue(cardSurface, themeProperties('light'))
+		);
+	});
+
 	it.each(['light', 'dark'] as const)(
 		'holds neutral vote icon contrast from the %s face declaration',
 		(theme) => {
@@ -119,12 +135,19 @@ describe('A11y: Contrast & Visuals', () => {
 				declarationValue(communityCss, '.gr-community-vote__button', 'color'),
 				properties
 			);
-			const background = resolveValue(
-				declarationValue(communityCss, '.gr-community-post', 'background'),
-				properties
-			);
-
-			expect(contrast(foreground, background)).toBeGreaterThanOrEqual(3);
+			for (const [name, selector] of [
+				['post surface', '.gr-community-post'],
+				[
+					'hover surface',
+					theme === 'dark' ? darkHoverSurfaces : '.gr-community-vote__button:hover',
+				],
+			] as const) {
+				const background = resolveValue(
+					declarationValue(communityCss, selector, 'background'),
+					properties
+				);
+				expect(contrast(foreground, background), name).toBeGreaterThanOrEqual(3);
+			}
 		}
 	);
 
@@ -132,97 +155,140 @@ describe('A11y: Contrast & Visuals', () => {
 		'holds text contrast for newly-live community cells in %s',
 		(theme) => {
 			const properties = themeProperties(theme);
-			type Backdrop = { selector: string; property: string; darkSelector?: string };
-			const cardBackground: Backdrop = {
-				selector: '.gr-community-post',
-				property: 'background',
+			type Declaration = { selector: string; property: string; darkSelector?: string };
+			type Cell = {
+				name: string;
+				foreground: Declaration;
+				background: Declaration;
 			};
-			const darkHoverSurfaces =
-				"[data-theme='dark'] .gr-community-vote__button:hover,\n[data-theme='dark'] .gr-community-flair--post,\n[data-theme='dark'] .gr-community-sort__option:hover,\n[data-theme='dark'] .gr-community-mod-panel__refresh:hover,\n[data-theme='dark'] .gr-community-mod-queue-item__actions button:hover,\n[data-theme='dark'] .gr-community-header__subscribe:hover,\n[data-theme='dark'] .gr-community-wiki__action:hover";
-			const cells: ReadonlyArray<readonly [string, string, string, Backdrop]> = [
-				['post title', '.gr-community-post__title', 'color', cardBackground],
-				['post action hover', '.gr-community-post__action:hover', 'color', cardBackground],
-				['vote score', '.gr-community-vote__score', 'color', cardBackground],
-				['comment author', '.gr-community-comment__author', 'color', cardBackground],
-				['comment content', '.gr-community-comment__content', 'color', cardBackground],
-				[
-					'post flair',
-					'.gr-community-flair--post',
-					'color',
-					{
-						selector: '.gr-community-flair--post',
-						property: 'background',
-						darkSelector: darkHoverSurfaces,
-					},
-				],
-				[
+			const surface = (selector: string): Declaration => ({ selector, property: 'background' });
+			const color = (selector: string): Declaration => ({ selector, property: 'color' });
+			const postSurface = surface('.gr-community-post');
+			const rulesSurface = surface('.gr-community-rules');
+			const moderationSurface = surface('.gr-community-mod-panel');
+			const moderationLogSurface = surface('.gr-community-mod-log__entry');
+			const headerSurface = surface('.gr-community-header__info');
+			const wikiHeaderSurface = surface('.gr-community-wiki__header');
+			const wikiEditorSurface = surface('.gr-community-wiki__editor');
+			const wikiHistorySurface = surface('.gr-community-wiki-history__item');
+			const hoverSurface = (selector: string): Declaration => ({
+				selector,
+				property: 'background',
+				darkSelector: darkHoverSurfaces,
+			});
+			const cell = (name: string, selector: string, background: Declaration): Cell => ({
+				name,
+				foreground: color(selector),
+				background,
+			});
+			const cells: ReadonlyArray<Cell> = [
+				cell('post title', '.gr-community-post__title', postSurface),
+				cell('post action hover', '.gr-community-post__action:hover', postSurface),
+				cell('vote score', '.gr-community-vote__score', postSurface),
+				cell('post flair', '.gr-community-flair--post', hoverSurface('.gr-community-flair--post')),
+				cell(
 					'sort hover',
 					'.gr-community-sort__option:hover',
-					'color',
-					{
-						selector: '.gr-community-sort__option:hover',
-						property: 'background',
-						darkSelector: darkHoverSurfaces,
-					},
-				],
-				['rules title', '.gr-community-rules__title', 'color', cardBackground],
-				['rule title', '.gr-community-rule__title', 'color', cardBackground],
-				['rule description', '.gr-community-rule__description', 'color', cardBackground],
-				['moderation title', '.gr-community-mod-panel__title', 'color', cardBackground],
-				['moderation tab', '.gr-community-mod-panel__tab', 'color', cardBackground],
-				['moderation tab hover', '.gr-community-mod-panel__tab:hover', 'color', cardBackground],
-				['moderation refresh', '.gr-community-mod-panel__refresh', 'color', cardBackground],
-				['moderation status', '.gr-community-mod-panel__status', 'color', cardBackground],
-				['queue title', '.gr-community-mod-queue-item__title', 'color', cardBackground],
-				['queue metadata', '.gr-community-mod-queue-item__meta', 'color', cardBackground],
-				['queue reports', '.gr-community-mod-queue-item__reports', 'color', cardBackground],
-				[
+					hoverSurface('.gr-community-sort__option:hover')
+				),
+				cell('rules title', '.gr-community-rules__title', rulesSurface),
+				cell('rule title', '.gr-community-rule__title', rulesSurface),
+				cell('rule description', '.gr-community-rule__description', rulesSurface),
+				cell('moderation title', '.gr-community-mod-panel__title', moderationSurface),
+				cell('moderation tab', '.gr-community-mod-panel__tab', moderationSurface),
+				cell('moderation tab hover', '.gr-community-mod-panel__tab:hover', moderationSurface),
+				cell('moderation status', '.gr-community-mod-panel__status', moderationSurface),
+				cell('queue title', '.gr-community-mod-queue-item__title', moderationSurface),
+				cell('queue metadata', '.gr-community-mod-queue-item__meta', moderationSurface),
+				cell('queue reports', '.gr-community-mod-queue-item__reports', moderationSurface),
+				cell(
 					'queue report detail',
 					'.gr-community-mod-queue-item__report-detail',
-					'color',
-					cardBackground,
-				],
-				['queue action', '.gr-community-mod-queue-item__actions button', 'color', cardBackground],
-				['log summary', '.gr-community-mod-log__summary', 'color', cardBackground],
-				['log action', '.gr-community-mod-log__action', 'color', cardBackground],
-				['log metadata', '.gr-community-mod-log__meta', 'color', cardBackground],
-				['header name', '.gr-community-header__name', 'color', cardBackground],
-				['header title', '.gr-community-header__title', 'color', cardBackground],
-				['header statistics', '.gr-community-header__stats', 'color', cardBackground],
-				['header statistic value', '.gr-community-header__stat-value', 'color', cardBackground],
-				['header subscribe', '.gr-community-header__subscribe', 'color', cardBackground],
-				['wiki title', '.gr-community-wiki__title', 'color', cardBackground],
-				['wiki metadata', '.gr-community-wiki__meta', 'color', cardBackground],
-				['wiki action', '.gr-community-wiki__action', 'color', cardBackground],
-				['wiki status', '.gr-community-wiki__status', 'color', cardBackground],
-				['wiki field label', '.gr-community-wiki__field-label', 'color', cardBackground],
-				[
-					'wiki editor input',
-					'.gr-community-wiki__textarea,\n.gr-community-wiki__input',
-					'color',
-					{
-						selector: '.gr-community-wiki__textarea,\n.gr-community-wiki__input',
-						property: 'background',
-					},
-				],
-				['wiki history revision', '.gr-community-wiki-history__rev', 'color', cardBackground],
-				['wiki history reason', '.gr-community-wiki-history__reason', 'color', cardBackground],
+					moderationSurface
+				),
+				cell('log summary', '.gr-community-mod-log__summary', moderationLogSurface),
+				cell('log action', '.gr-community-mod-log__action', moderationLogSurface),
+				cell('log metadata', '.gr-community-mod-log__meta', moderationLogSurface),
+				cell('header name', '.gr-community-header__name', headerSurface),
+				cell('header title', '.gr-community-header__title', headerSurface),
+				cell('header statistics', '.gr-community-header__stats', headerSurface),
+				cell('header statistic value', '.gr-community-header__stat-value', headerSurface),
+				cell('wiki title', '.gr-community-wiki__title', wikiHeaderSurface),
+				cell('wiki metadata', '.gr-community-wiki__meta', wikiHeaderSurface),
+				cell('wiki field label', '.gr-community-wiki__field-label', wikiEditorSurface),
+				cell('wiki history revision', '.gr-community-wiki-history__rev', wikiHistorySurface),
+				cell('wiki history reason', '.gr-community-wiki-history__reason', wikiHistorySurface),
+				{
+					name: 'moderation refresh',
+					foreground: color('.gr-community-mod-panel__refresh'),
+					background: surface('.gr-community-mod-panel__refresh'),
+				},
+				{
+					name: 'moderation refresh hover',
+					foreground: color('.gr-community-mod-panel__refresh'),
+					background: hoverSurface('.gr-community-mod-panel__refresh:hover'),
+				},
+				{
+					name: 'queue action',
+					foreground: color('.gr-community-mod-queue-item__actions button'),
+					background: surface('.gr-community-mod-queue-item__actions button'),
+				},
+				{
+					name: 'queue action hover',
+					foreground: color('.gr-community-mod-queue-item__actions button'),
+					background: hoverSurface('.gr-community-mod-queue-item__actions button:hover'),
+				},
+				{
+					name: 'header subscribe',
+					foreground: color('.gr-community-header__subscribe'),
+					background: surface('.gr-community-header__subscribe'),
+				},
+				{
+					name: 'header subscribe hover',
+					foreground: color('.gr-community-header__subscribe'),
+					background: hoverSurface('.gr-community-header__subscribe:hover'),
+				},
+				{
+					name: 'wiki action',
+					foreground: color('.gr-community-wiki__action'),
+					background: surface('.gr-community-wiki__action'),
+				},
+				{
+					name: 'wiki action hover',
+					foreground: color('.gr-community-wiki__action'),
+					background: hoverSurface('.gr-community-wiki__action:hover'),
+				},
+				{
+					name: 'wiki editor input',
+					foreground: color('.gr-community-wiki__textarea,\n.gr-community-wiki__input'),
+					background: surface('.gr-community-wiki__textarea,\n.gr-community-wiki__input'),
+				},
 			];
 
-			for (const [name, selector, property, backdrop] of cells) {
+			for (const {
+				name,
+				foreground: foregroundDeclaration,
+				background: backgroundDeclaration,
+			} of cells) {
 				const foreground = resolveValue(
-					declarationValue(communityCss, selector, property),
-					properties
-				);
-				const background = resolveValue(
 					declarationValue(
 						communityCss,
-						theme === 'dark' && backdrop.darkSelector ? backdrop.darkSelector : backdrop.selector,
-						backdrop.property
+						foregroundDeclaration.selector,
+						foregroundDeclaration.property
 					),
 					properties
 				);
-				expect(contrast(foreground, background), name).toBeGreaterThanOrEqual(4.5);
+				const backdrop = resolveValue(
+					declarationValue(
+						communityCss,
+						theme === 'dark' && backgroundDeclaration.darkSelector
+							? backgroundDeclaration.darkSelector
+							: backgroundDeclaration.selector,
+						backgroundDeclaration.property
+					),
+					properties
+				);
+				expect(contrast(foreground, backdrop), name).toBeGreaterThanOrEqual(4.5);
 			}
 		}
 	);

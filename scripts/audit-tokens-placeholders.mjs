@@ -11,6 +11,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { stripCssBlockComments } from './css-source.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -78,16 +79,12 @@ function lineNumberAt(content, offset) {
 	return content.slice(0, offset).split('\n').length;
 }
 
-function stripBlockComments(content) {
-	return content.replace(/\/\*[\s\S]*?\*\//g, (comment) => comment.replace(/[^\n]/g, ' '));
-}
-
 function stripLeadingLineComments(content) {
 	return content.replace(/^[\t ]*\/\/.*$/gm, (comment) => comment.replace(/[^\n]/g, ' '));
 }
 
 function referenceContent(file, content) {
-	const withoutBlocks = stripBlockComments(content);
+	const withoutBlocks = stripCssBlockComments(content);
 	return jsTsExtensions.has(path.extname(file))
 		? stripLeadingLineComments(withoutBlocks)
 		: withoutBlocks;
@@ -95,14 +92,14 @@ function referenceContent(file, content) {
 
 function definitionContent(file, content) {
 	const extension = path.extname(file);
-	if (standaloneStyleExtensions.has(extension)) return stripBlockComments(content);
+	if (standaloneStyleExtensions.has(extension)) return stripCssBlockComments(content);
 	if (!componentStyleExtensions.has(extension)) return '';
 
 	return Array.from(
 		content.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi),
 		(match) => match[1] ?? ''
 	)
-		.map(stripBlockComments)
+		.map(stripCssBlockComments)
 		.join('\n');
 }
 
@@ -155,13 +152,14 @@ function customPropertyReferences(content) {
 	return references;
 }
 
-function auditTokenReferences() {
-	const emittedThemePath = path.join(rootDir, 'packages', 'tokens', 'dist', 'theme.css');
-	const palettesPath = path.join(rootDir, 'packages', 'tokens', 'src', 'palettes.json');
-	const sourceRoots = ['packages', 'apps', 'examples', 'docs'].map((directory) =>
-		path.join(rootDir, directory)
-	);
-
+export function auditTokenReferences({
+	rootDirectory = rootDir,
+	emittedThemePath = path.join(rootDirectory, 'packages', 'tokens', 'dist', 'theme.css'),
+	palettesPath = path.join(rootDirectory, 'packages', 'tokens', 'src', 'palettes.json'),
+	sourceRoots = ['packages', 'apps', 'examples', 'docs'].map((directory) =>
+		path.join(rootDirectory, directory)
+	),
+} = {}) {
 	const emittedTheme = fs.readFileSync(emittedThemePath, 'utf8');
 	const emittedProperties = new Set(
 		Array.from(emittedTheme.matchAll(/(--gr-[\w-]+)\s*:/g), (match) => match[1])
@@ -174,7 +172,7 @@ function auditTokenReferences() {
 	const sourceFiles = sourceRoots
 		.flatMap((sourceRoot) => listFilesRecursive(sourceRoot))
 		.filter((file) => {
-			const relative = path.relative(rootDir, file);
+			const relative = path.relative(rootDirectory, file);
 			if (
 				relative
 					.split(path.sep)
@@ -204,7 +202,7 @@ function auditTokenReferences() {
 			const property = match[1];
 			if (property && !emittedProperties.has(property)) {
 				paletteErrors.push({
-					file: path.relative(rootDir, file),
+					file: path.relative(rootDirectory, file),
 					line: lineNumberAt(content, match.index ?? 0),
 					property,
 				});
@@ -213,7 +211,7 @@ function auditTokenReferences() {
 		for (const reference of customPropertyReferences(uncommented)) {
 			if (!sourceProperties.has(reference.property) && !reference.hasFallback) {
 				referenceErrors.push({
-					file: path.relative(rootDir, file),
+					file: path.relative(rootDirectory, file),
 					line: lineNumberAt(content, reference.offset),
 					property: reference.property,
 				});
@@ -309,4 +307,6 @@ function main() {
 	process.exit(0);
 }
 
-main();
+if (process.argv[1] && path.resolve(process.argv[1]) === __filename) {
+	main();
+}
