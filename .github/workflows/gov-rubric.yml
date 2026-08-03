@@ -15,7 +15,7 @@ jobs:
     env:
       PLAYWRIGHT_A11Y_USE_SYSTEM_CHROME: 'true'
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271
         with:
           version: 10.25.0
