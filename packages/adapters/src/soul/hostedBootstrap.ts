@@ -184,10 +184,7 @@ export interface HostedSoulGenesisComposerState {
 	canRefresh: boolean;
 	canRestart: boolean;
 	disabledReason:
-		| 'no_hosted_state'
-		| 'no_host_registration'
-		| 'no_available_composer_action'
-		| null;
+		'no_hosted_state' | 'no_host_registration' | 'no_available_composer_action' | null;
 }
 
 export interface HostedSoulBootstrapStateModel {
@@ -258,8 +255,7 @@ export interface HostedGenesisConversationSummaryResult {
 }
 
 export type HostedSoulBootstrapTerminalDeclarationCheckpointName =
-	| 'hosted_conversation'
-	| 'conversation';
+	'hosted_conversation' | 'conversation';
 
 export type HostedSoulBootstrapTerminalDeclaration = Readonly<
 	{

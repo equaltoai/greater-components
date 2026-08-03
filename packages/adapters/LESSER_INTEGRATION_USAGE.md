@@ -27,9 +27,7 @@ import { mapLesserPost, type UnifiedStatus } from '@equaltoai/greater-components
 const lesserPostFragment = {
 	id: '123',
 	content: 'Post content',
-	author: {
-		/* ... */
-	},
+	author: {/* ... */},
 	// Lesser-specific fields
 	estimatedCost: 1500000, // microcents
 	moderationScore: 0.2,
@@ -37,9 +35,7 @@ const lesserPostFragment = {
 	communityNotes: [
 		{
 			id: 'note1',
-			author: {
-				/* ... */
-			},
+			author: {/* ... */},
 			content: 'Additional context',
 			helpful: 25,
 			notHelpful: 3,
@@ -214,9 +210,7 @@ import type {
 } from '@equaltoai/greater-components-adapters';
 
 // UnifiedStatus includes all Lesser fields
-const status: UnifiedStatus = {
-	/* ... */
-};
+const status: UnifiedStatus = {/* ... */};
 status.estimatedCost; // number | undefined
 status.communityNotes; // Array<{ ... }> | undefined
 status.account.trustScore; // number | undefined
@@ -272,9 +266,7 @@ it('should populate Lesser metadata from UnifiedStatus', () => {
 			trustScore: 85,
 			/* ... */
 		},
-		communityNotes: [
-			/* ... */
-		],
+		communityNotes: [/* ... */],
 		/* ... */
 	};
 

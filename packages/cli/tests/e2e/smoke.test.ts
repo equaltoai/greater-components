@@ -55,7 +55,7 @@ const FACE_CASES = [
 					'Root.svelte',
 					'ShareBar.svelte',
 					'TableOfContents.svelte',
-					'context.ts',
+					'context.svelte.ts',
 					'date.ts',
 					'index.ts',
 					'normalize.ts',
@@ -67,7 +67,7 @@ const FACE_CASES = [
 			expect(await fs.pathExists(blogTypesPath)).toBe(true);
 			expect(await fs.pathExists(blogSharePath)).toBe(true);
 			expect(await fs.readFile(blogTypesPath, 'utf-8')).toContain('export interface ArticleData');
-			expect(await fs.readFile(path.join(articleDir, 'context.ts'), 'utf-8')).toContain(
+			expect(await fs.readFile(path.join(articleDir, 'context.svelte.ts'), 'utf-8')).toContain(
 				'../../blog-types.js'
 			);
 			expect(await fs.readFile(path.join(articleDir, 'ShareBar.svelte'), 'utf-8')).toContain(

@@ -79,11 +79,7 @@ export interface CommunicationNotification {
 }
 
 export type WorkflowEventKind =
-	| 'request_submitted'
-	| 'review_requested'
-	| 'approval_requested'
-	| 'finalize_ready'
-	| 'graduated';
+	'request_submitted' | 'review_requested' | 'approval_requested' | 'finalize_ready' | 'graduated';
 
 export interface WorkflowEventPayload {
 	kind: WorkflowEventKind;

@@ -109,13 +109,7 @@ export interface TimelineState {
 }
 
 export type TimelineSourceType =
-	| 'home'
-	| 'local'
-	| 'federated'
-	| 'direct'
-	| 'list'
-	| 'hashtag'
-	| 'actor';
+	'home' | 'local' | 'federated' | 'direct' | 'list' | 'hashtag' | 'actor';
 
 export interface TimelineSource {
 	type: TimelineSourceType;

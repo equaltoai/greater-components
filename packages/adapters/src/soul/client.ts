@@ -78,10 +78,7 @@ export interface ResolveEnsOptions {
 
 type QueryParamPrimitive = string | number | boolean;
 type QueryParamValue =
-	| QueryParamPrimitive
-	| null
-	| undefined
-	| ReadonlyArray<QueryParamPrimitive | null | undefined>;
+	QueryParamPrimitive | null | undefined | ReadonlyArray<QueryParamPrimitive | null | undefined>;
 
 interface RequestOptions {
 	method?: 'GET' | 'POST' | 'PUT';

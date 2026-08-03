@@ -3,7 +3,7 @@
 	import { StatusCard } from '@equaltoai/greater-components-social';
 	import type { DemoPageData } from '$lib/types/demo';
 	import type { Account, Status } from '@equaltoai/greater-components/fediverse/types';
-	import raw from '../../../../../../sample-timeline.json' assert { type: 'json' };
+	import raw from '../../../../../../sample-timeline.json' with { type: 'json' };
 
 	let { data }: { data: DemoPageData } = $props();
 

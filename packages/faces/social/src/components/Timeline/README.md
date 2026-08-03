@@ -21,9 +21,7 @@ Built using the **compound component pattern**, Timeline provides maximum flexib
 		StatusCompound as Status,
 	} from '@equaltoai/greater-components/faces/social';
 
-	const posts = [
-		/* ... */
-	]; // Status[] from API
+	const posts = [/* ... */]; // Status[] from API
 
 	async function handleLoadMore() {
 		// Fetch more posts

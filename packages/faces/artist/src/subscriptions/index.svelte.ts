@@ -82,10 +82,7 @@ export interface CommissionEvent {
  * Federation event types
  */
 export type FederationEventType =
-	| 'remote_artwork_received'
-	| 'remote_artist_followed'
-	| 'remote_interaction'
-	| 'federation_error';
+	'remote_artwork_received' | 'remote_artist_followed' | 'remote_interaction' | 'federation_error';
 
 /**
  * Federation event payload

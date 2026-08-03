@@ -14,13 +14,7 @@ export const AGENT_WORKFLOW_CONSUMERS = ['human', 'llm', 'hybrid'] as const;
 export type AgentWorkflowConsumer = (typeof AGENT_WORKFLOW_CONSUMERS)[number];
 
 export type AgentWorkflowValueKind =
-	| 'markdown'
-	| 'entity-list'
-	| 'decision'
-	| 'checklist'
-	| 'timestamp'
-	| 'metrics'
-	| 'links';
+	'markdown' | 'entity-list' | 'decision' | 'checklist' | 'timestamp' | 'metrics' | 'links';
 
 export interface AgentWorkflowSlotDefinition<P extends AgentWorkflowPhase = AgentWorkflowPhase> {
 	name: `${P}.${string}`;

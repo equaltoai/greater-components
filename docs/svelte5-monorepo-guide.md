@@ -940,18 +940,14 @@ describe('createCounter', () => {
 // utils/state.ts
 export function createToggle() {
 	let active = $state(false); // Error!
-	return {
-		/* ... */
-	};
+	return {/* ... */};
 }
 
 // GOOD: Use .svelte.ts extension
 // utils/state.svelte.ts
 export function createToggle() {
 	let active = $state(false); // Works!
-	return {
-		/* ... */
-	};
+	return {/* ... */};
 }
 ```
 
