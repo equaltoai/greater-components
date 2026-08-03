@@ -86,6 +86,12 @@ function canStartJsRegex(content, offset) {
 
 	const previousCharacter = content[previousOffset];
 	if (previousCharacter === '<' && /[A-Za-z]/.test(content[offset + 1] ?? '')) return false;
+	// This conservative accept set knowingly omits regex starts after `}`, `)`, and
+	// `else`. Expanding it without a full parser can classify division as regex; that
+	// safe-direction false positive copies the candidate verbatim and suppresses
+	// comment stripping, so suspicious token references remain visible and fail loud.
+	// The JSX ambiguity above is structurally unreachable in the current audited tree,
+	// which contains no .jsx or .tsx files.
 	if (/[([{,:;=!?&|+\-*%^~<>]/.test(previousCharacter)) return true;
 
 	const prefix = content.slice(0, previousOffset + 1);
