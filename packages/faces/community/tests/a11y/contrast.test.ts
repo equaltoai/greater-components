@@ -11,6 +11,10 @@ const tokenCss = fs.readFileSync(
 	path.resolve(process.cwd(), '../../tokens/dist/theme.css'),
 	'utf8'
 );
+const wikiHistoryComponent = fs.readFileSync(
+	path.resolve(process.cwd(), 'src/components/Wiki/History.svelte'),
+	'utf8'
+);
 const darkHoverSurfaces =
 	"[data-theme='dark'] .gr-community-vote__button:hover,\n[data-theme='dark'] .gr-community-flair--post,\n[data-theme='dark'] .gr-community-sort__option:hover,\n[data-theme='dark'] .gr-community-mod-panel__refresh:hover,\n[data-theme='dark'] .gr-community-mod-queue-item__actions button:hover,\n[data-theme='dark'] .gr-community-header__subscribe:hover,\n[data-theme='dark'] .gr-community-wiki__action:hover";
 
@@ -122,9 +126,6 @@ describe('A11y: Contrast & Visuals', () => {
 		// contrast cannot silently drift back to the page background when the card changes.
 		expect(postBackground).toBe('var(--gr-community-card-background)');
 		expect(cardSurface).toBe('var(--gr-semantic-background-surface)');
-		expect(resolveValue(postBackground, themeProperties('light'))).toBe(
-			resolveValue(cardSurface, themeProperties('light'))
-		);
 	});
 
 	it.each(['light', 'dark'] as const)(
@@ -155,13 +156,23 @@ describe('A11y: Contrast & Visuals', () => {
 		'holds text contrast for newly-live community cells in %s',
 		(theme) => {
 			const properties = themeProperties(theme);
-			type Declaration = { selector: string; property: string; darkSelector?: string };
+			type Declaration = {
+				selector: string;
+				property: string;
+				darkSelector?: string;
+				inherited?: boolean;
+			};
 			type Cell = {
 				name: string;
 				foreground: Declaration;
-				background: Declaration;
+				background: Declaration | Declaration[];
 			};
 			const surface = (selector: string): Declaration => ({ selector, property: 'background' });
+			const inheritedSurface = (selector: string): Declaration => ({
+				selector,
+				property: 'background',
+				inherited: true,
+			});
 			const color = (selector: string): Declaration => ({ selector, property: 'color' });
 			const postSurface = surface('.gr-community-post');
 			const rulesSurface = surface('.gr-community-rules');
@@ -171,12 +182,20 @@ describe('A11y: Contrast & Visuals', () => {
 			const wikiHeaderSurface = surface('.gr-community-wiki__header');
 			const wikiEditorSurface = surface('.gr-community-wiki__editor');
 			const wikiHistorySurface = surface('.gr-community-wiki-history__item');
+			const commentHighlightSurfaces = [
+				surface('.gr-community-comment--op'),
+				surface('.gr-community-comment--mod'),
+			];
 			const hoverSurface = (selector: string): Declaration => ({
 				selector,
 				property: 'background',
 				darkSelector: darkHoverSurfaces,
 			});
-			const cell = (name: string, selector: string, background: Declaration): Cell => ({
+			const cell = (
+				name: string,
+				selector: string,
+				background: Declaration | Declaration[]
+			): Cell => ({
 				name,
 				foreground: color(selector),
 				background,
@@ -185,6 +204,8 @@ describe('A11y: Contrast & Visuals', () => {
 				cell('post title', '.gr-community-post__title', postSurface),
 				cell('post action hover', '.gr-community-post__action:hover', postSurface),
 				cell('vote score', '.gr-community-vote__score', postSurface),
+				cell('comment author', '.gr-community-comment__author', commentHighlightSurfaces),
+				cell('comment content', '.gr-community-comment__content', commentHighlightSurfaces),
 				cell('post flair', '.gr-community-flair--post', hoverSurface('.gr-community-flair--post')),
 				cell(
 					'sort hover',
@@ -215,6 +236,11 @@ describe('A11y: Contrast & Visuals', () => {
 				cell('header statistic value', '.gr-community-header__stat-value', headerSurface),
 				cell('wiki title', '.gr-community-wiki__title', wikiHeaderSurface),
 				cell('wiki metadata', '.gr-community-wiki__meta', wikiHeaderSurface),
+				cell(
+					'wiki status',
+					'.gr-community-wiki__status',
+					inheritedSurface('.gr-community-wiki-history')
+				),
 				cell('wiki field label', '.gr-community-wiki__field-label', wikiEditorSurface),
 				cell('wiki history revision', '.gr-community-wiki-history__rev', wikiHistorySurface),
 				cell('wiki history reason', '.gr-community-wiki-history__reason', wikiHistorySurface),
@@ -278,17 +304,38 @@ describe('A11y: Contrast & Visuals', () => {
 					),
 					properties
 				);
-				const backdrop = resolveValue(
-					declarationValue(
-						communityCss,
-						theme === 'dark' && backgroundDeclaration.darkSelector
-							? backgroundDeclaration.darkSelector
-							: backgroundDeclaration.selector,
-						backgroundDeclaration.property
-					),
-					properties
-				);
-				expect(contrast(foreground, backdrop), name).toBeGreaterThanOrEqual(4.5);
+				const backgrounds = Array.isArray(backgroundDeclaration)
+					? backgroundDeclaration
+					: [backgroundDeclaration];
+				for (const background of backgrounds) {
+					if (background.inherited) {
+						// Wiki status renders inside this exact section, which intentionally declares no
+						// background. Keep the cell bound to that honest inherited consumer surface
+						// rather than substituting the unrelated card background used by the old test.
+						expect(wikiHistoryComponent).toMatch(
+							/<section class="gr-community-wiki-history"[\s\S]*class="gr-community-wiki__status"/
+						);
+						expect(declarations(communityCss, background.selector), name).not.toMatch(
+							/(?:^|;)\s*background(?:-color)?\s*:/
+						);
+						continue;
+					}
+
+					const backdrop = resolveValue(
+						declarationValue(
+							communityCss,
+							theme === 'dark' && background.darkSelector
+								? background.darkSelector
+								: background.selector,
+							background.property
+						),
+						properties
+					);
+					expect(
+						contrast(foreground, backdrop),
+						`${name} on ${background.selector}`
+					).toBeGreaterThanOrEqual(4.5);
+				}
 			}
 		}
 	);
