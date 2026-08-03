@@ -99,6 +99,16 @@ test('token audit distinguishes CSS strings from block comments', () => {
 			].join('\n')
 		);
 		fs.writeFileSync(
+			path.join(fixtureRoot, 'component-markup-style.svelte'),
+			[
+				"<p>Use {'<style>'} tags</p>",
+				'<div>packages/faces/*/src/lib</div>',
+				'<style>',
+				'.victim { color: var(--gr-component-markup-style-audit-token); }',
+				'</style>',
+			].join('\n')
+		);
+		fs.writeFileSync(
 			path.join(fixtureRoot, 'document.html'),
 			[
 				'<style>',
@@ -130,6 +140,11 @@ test('token audit distinguishes CSS strings from block comments', () => {
 			{ file: 'e3a.css', line: 2, property: '--gr-color-gray-1000' },
 		]);
 		assert.deepEqual(result.referenceErrors, [
+			{
+				file: 'component-markup-style.svelte',
+				line: 4,
+				property: '--gr-component-markup-style-audit-token',
+			},
 			{
 				file: 'component-script-line-comment.svelte',
 				line: 3,

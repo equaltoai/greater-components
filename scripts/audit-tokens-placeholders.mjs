@@ -187,6 +187,57 @@ function markupTagEnd(content, offset) {
 	return -1;
 }
 
+function markupExpressionEnd(content, offset) {
+	let depth = 0;
+	let quote = null;
+	let lineComment = false;
+	let blockComment = false;
+	let regex = false;
+	let regexCharacterClass = false;
+
+	for (; offset < content.length; offset += 1) {
+		const character = content[offset];
+		if (lineComment) {
+			if (character === '\n' || character === '\r') lineComment = false;
+			continue;
+		}
+		if (blockComment) {
+			if (character === '*' && content[offset + 1] === '/') {
+				blockComment = false;
+				offset += 1;
+			}
+			continue;
+		}
+		if (quote) {
+			if (character === '\\') offset += 1;
+			else if (character === quote) quote = null;
+			else if (quote !== '`' && (character === '\n' || character === '\r')) quote = null;
+			continue;
+		}
+		if (regex) {
+			if (character === '\\') offset += 1;
+			else if (character === '[') regexCharacterClass = true;
+			else if (character === ']') regexCharacterClass = false;
+			else if (character === '/' && !regexCharacterClass) regex = false;
+			else if (character === '\n' || character === '\r') regex = false;
+			continue;
+		}
+
+		if (character === '"' || character === "'" || character === '`') quote = character;
+		else if (character === '/' && content[offset + 1] === '/') {
+			lineComment = true;
+			offset += 1;
+		} else if (character === '/' && content[offset + 1] === '*') {
+			blockComment = true;
+			offset += 1;
+		} else if (character === '/' && canStartJsRegex(content, offset)) regex = true;
+		else if (character === '{') depth += 1;
+		else if (character === '}' && --depth === 0) return offset;
+	}
+
+	return -1;
+}
+
 function componentRegions(content) {
 	const regions = [];
 	let offset = 0;
@@ -196,6 +247,13 @@ function componentRegions(content) {
 			const commentEnd = content.indexOf('-->', offset + 4);
 			if (commentEnd === -1) break;
 			offset = commentEnd + 3;
+			continue;
+		}
+
+		if (content[offset] === '{') {
+			const expressionEnd = markupExpressionEnd(content, offset);
+			if (expressionEnd === -1) break;
+			offset = expressionEnd + 1;
 			continue;
 		}
 
