@@ -19,6 +19,7 @@ import { createClient, type Client } from 'graphql-ws';
 import { CombinedGraphQLErrors } from '@apollo/client/errors/index.js';
 import { cacheConfig } from './cache.js';
 
+/* eslint-disable @typescript-eslint/no-namespace -- Apollo's declaration-merging API requires namespaces. */
 declare module '@apollo/client' {
 	namespace ApolloClient {
 		namespace DeclareDefaultOptions {
@@ -38,6 +39,7 @@ declare module '@apollo/client' {
 		}
 	}
 }
+/* eslint-enable @typescript-eslint/no-namespace */
 import {
 	AUTH_EXPIRED_CODE,
 	AuthExpiredError,
