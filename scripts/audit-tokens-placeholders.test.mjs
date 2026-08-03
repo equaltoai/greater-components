@@ -69,6 +69,38 @@ test('token audit distinguishes CSS strings from block comments', () => {
 				'\n'
 			)
 		);
+		fs.writeFileSync(
+			path.join(fixtureRoot, 'component-script-style.svelte'),
+			[
+				'<script>',
+				'\tconst fakeStyle = "<style>";',
+				'\tconst glob = `packages/faces/*/src/lib/*`;',
+				'</script>',
+				'<style>',
+				'.victim { color: var(--gr-component-script-style-audit-token); }',
+				'</style>',
+			].join('\n')
+		);
+		fs.writeFileSync(
+			path.join(fixtureRoot, 'document.html'),
+			[
+				'<style>',
+				'/* .commented { color: var(--gr-html-comment-only-audit-token); } */',
+				'.real { color: var(--gr-html-style-audit-token); }',
+				'</style>',
+			].join('\n')
+		);
+		fs.writeFileSync(
+			path.join(fixtureRoot, 'icon.svg'),
+			[
+				'<svg>',
+				'<style>',
+				'/* .commented { color: var(--gr-svg-comment-only-audit-token); } */',
+				'.real { color: var(--gr-svg-style-audit-token); }',
+				'</style>',
+				'</svg>',
+			].join('\n')
+		);
 
 		const result = auditTokenReferences({
 			rootDirectory: fixtureRoot,
@@ -81,7 +113,14 @@ test('token audit distinguishes CSS strings from block comments', () => {
 			{ file: 'e3a.css', line: 2, property: '--gr-color-gray-1000' },
 		]);
 		assert.deepEqual(result.referenceErrors, [
+			{
+				file: 'component-script-style.svelte',
+				line: 6,
+				property: '--gr-component-script-style-audit-token',
+			},
+			{ file: 'document.html', line: 3, property: '--gr-html-style-audit-token' },
 			{ file: 'e3a.css', line: 2, property: '--gr-color-gray-1000' },
+			{ file: 'icon.svg', line: 4, property: '--gr-svg-style-audit-token' },
 			{
 				file: 'markdown-glob.md',
 				line: 2,

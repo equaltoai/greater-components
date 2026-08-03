@@ -44,7 +44,7 @@ const sourceExtensions = new Set([
 	'.graphql',
 ]);
 const standaloneStyleExtensions = new Set(['.css', '.scss', '.pcss', '.sass', '.less', '.styl']);
-const componentStyleExtensions = new Set(['.svelte', '.vue', '.astro']);
+const componentStyleExtensions = new Set(['.svelte', '.vue', '.astro', '.html', '.svg']);
 const jsTsExtensions = new Set(['.js', '.jsx', '.mjs', '.cjs', '.ts', '.tsx', '.mts', '.cts']);
 
 const colors = {
@@ -173,18 +173,93 @@ function stripJsComments(content) {
 	return result;
 }
 
-function stripComponentStyleBlockComments(content) {
-	return content.replace(
-		/(<style\b[^>]*>)([\s\S]*?)(<\/style>)/gi,
-		(_match, openingTag, styleContent, closingTag) =>
-			`${openingTag}${stripCssBlockComments(styleContent)}${closingTag}`
-	);
+function markupTagEnd(content, offset) {
+	let quote = null;
+	for (; offset < content.length; offset += 1) {
+		const character = content[offset];
+		if (quote) {
+			if (character === quote) quote = null;
+			continue;
+		}
+		if (character === '"' || character === "'") quote = character;
+		else if (character === '>') return offset;
+	}
+	return -1;
+}
+
+function componentRegions(content) {
+	const regions = [];
+	let offset = 0;
+
+	while (offset < content.length) {
+		if (content.startsWith('<!--', offset)) {
+			const commentEnd = content.indexOf('-->', offset + 4);
+			if (commentEnd === -1) break;
+			offset = commentEnd + 3;
+			continue;
+		}
+
+		if (content[offset] !== '<') {
+			offset += 1;
+			continue;
+		}
+
+		const opening = content.slice(offset).match(/^<(script|style)(?=[\s/>])/i);
+		if (!opening) {
+			const markupTag = content
+				.slice(offset)
+				.match(/^<\/?[A-Za-z][\w:.-]*(?=[\s/>])|^<!(?!--)|^<\?/i);
+			if (!markupTag) {
+				offset += 1;
+				continue;
+			}
+			const tagEnd = markupTagEnd(content, offset + 1);
+			offset = tagEnd === -1 ? offset + 1 : tagEnd + 1;
+			continue;
+		}
+
+		const type = opening[1].toLowerCase();
+		const openingEnd = markupTagEnd(content, offset + opening[0].length);
+		if (openingEnd === -1) break;
+
+		const closingPattern = new RegExp(`<\\/${type}\\s*>`, 'gi');
+		closingPattern.lastIndex = openingEnd + 1;
+		const closing = closingPattern.exec(content);
+		if (!closing) break;
+
+		regions.push({
+			type,
+			start: offset,
+			contentStart: openingEnd + 1,
+			contentEnd: closing.index,
+			end: closingPattern.lastIndex,
+		});
+		offset = closingPattern.lastIndex;
+	}
+
+	return regions;
+}
+
+function stripComponentRegionComments(content) {
+	let result = '';
+	let offset = 0;
+	for (const region of componentRegions(content)) {
+		result += content.slice(offset, region.contentStart);
+		const regionContent = content.slice(region.contentStart, region.contentEnd);
+		result +=
+			region.type === 'script'
+				? stripJsComments(regionContent)
+				: stripCssBlockComments(regionContent);
+		result += content.slice(region.contentEnd, region.end);
+		offset = region.end;
+	}
+	return result + content.slice(offset);
 }
 
 function referenceContent(file, content) {
 	const extension = path.extname(file);
 	if (standaloneStyleExtensions.has(extension)) return stripCssBlockComments(content);
-	if (componentStyleExtensions.has(extension)) return stripComponentStyleBlockComments(content);
+	if (componentStyleExtensions.has(extension)) return stripComponentRegionComments(content);
 	if (jsTsExtensions.has(extension)) {
 		return stripJsComments(content);
 	}
@@ -196,10 +271,9 @@ function definitionContent(file, content) {
 	if (standaloneStyleExtensions.has(extension)) return stripCssBlockComments(content);
 	if (!componentStyleExtensions.has(extension)) return '';
 
-	return Array.from(
-		content.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi),
-		(match) => match[1] ?? ''
-	)
+	return componentRegions(content)
+		.filter((region) => region.type === 'style')
+		.map((region) => content.slice(region.contentStart, region.contentEnd))
 		.map(stripCssBlockComments)
 		.join('\n');
 }
