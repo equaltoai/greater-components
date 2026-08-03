@@ -79,7 +79,22 @@ function lineNumberAt(content, offset) {
 	return content.slice(0, offset).split('\n').length;
 }
 
-function stripJsLineComments(content) {
+function canStartJsRegex(content, offset) {
+	let previousOffset = offset - 1;
+	while (previousOffset >= 0 && /\s/.test(content[previousOffset])) previousOffset -= 1;
+	if (previousOffset < 0) return true;
+
+	const previousCharacter = content[previousOffset];
+	if (previousCharacter === '<' && /[A-Za-z]/.test(content[offset + 1] ?? '')) return false;
+	if (/[([{,:;=!?&|+\-*%^~<>]/.test(previousCharacter)) return true;
+
+	const prefix = content.slice(0, previousOffset + 1);
+	return /(?:^|[^\w$])(return|throw|case|delete|void|typeof|yield|await|instanceof|in|of)\s*$/.test(
+		prefix
+	);
+}
+
+function stripJsComments(content) {
 	let result = '';
 	let quote = null;
 
@@ -113,6 +128,45 @@ function stripJsLineComments(content) {
 			continue;
 		}
 
+		if (character === '/' && content[offset + 1] === '*') {
+			const commentEnd = content.indexOf('*/', offset + 2);
+			if (commentEnd === -1) {
+				// Unlike CSS, an unterminated JS block comment is a syntax error. Keep
+				// the remainder visible so the audit fails loud instead of losing EOF.
+				result += content.slice(offset);
+				break;
+			}
+
+			for (; offset <= commentEnd + 1; offset += 1) {
+				const commentCharacter = content[offset];
+				result += commentCharacter === '\n' || commentCharacter === '\r' ? commentCharacter : ' ';
+			}
+			offset -= 1;
+			continue;
+		}
+
+		if (character === '/' && canStartJsRegex(content, offset)) {
+			let inCharacterClass = false;
+			result += character;
+			for (offset += 1; offset < content.length; offset += 1) {
+				const regexCharacter = content[offset];
+				result += regexCharacter;
+				if (regexCharacter === '\\' && offset + 1 < content.length) {
+					offset += 1;
+					result += content[offset];
+				} else if (regexCharacter === '[') {
+					inCharacterClass = true;
+				} else if (regexCharacter === ']') {
+					inCharacterClass = false;
+				} else if (regexCharacter === '/' && !inCharacterClass) {
+					break;
+				} else if (regexCharacter === '\n' || regexCharacter === '\r') {
+					break;
+				}
+			}
+			continue;
+		}
+
 		result += character;
 	}
 
@@ -132,7 +186,7 @@ function referenceContent(file, content) {
 	if (standaloneStyleExtensions.has(extension)) return stripCssBlockComments(content);
 	if (componentStyleExtensions.has(extension)) return stripComponentStyleBlockComments(content);
 	if (jsTsExtensions.has(extension)) {
-		return stripCssBlockComments(stripJsLineComments(content));
+		return stripJsComments(content);
 	}
 	return content;
 }

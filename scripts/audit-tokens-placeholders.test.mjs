@@ -44,6 +44,26 @@ test('token audit distinguishes CSS strings from block comments', () => {
 			].join('\n')
 		);
 		fs.writeFileSync(
+			path.join(fixtureRoot, 'typescript-template-glob.ts'),
+			[
+				'const glob = `packages/faces/*/src/lib/*`;',
+				'const style = `color: var(--gr-typescript-template-glob-audit-token)`;',
+			].join('\n')
+		);
+		fs.writeFileSync(
+			path.join(fixtureRoot, 'typescript-block-comment-url.ts'),
+			[
+				'/* see https://example.com/docs */',
+				'const style = `color: var(--gr-typescript-block-comment-url-audit-token)`;',
+			].join('\n')
+		);
+		fs.writeFileSync(
+			path.join(fixtureRoot, 'typescript-regex.ts'),
+			['const re = /[/*]/;', 'const style = `color: var(--gr-typescript-regex-audit-token)`;'].join(
+				'\n'
+			)
+		);
+		fs.writeFileSync(
 			path.join(fixtureRoot, 'url-token.css'),
 			['.a{background:url(http://e/x/*y);}', '.b{color:var(--gr-url-token-audit-token);}'].join(
 				'\n'
@@ -68,9 +88,24 @@ test('token audit distinguishes CSS strings from block comments', () => {
 				property: '--gr-markdown-glob-audit-token',
 			},
 			{
+				file: 'typescript-block-comment-url.ts',
+				line: 2,
+				property: '--gr-typescript-block-comment-url-audit-token',
+			},
+			{
 				file: 'typescript-glob.ts',
 				line: 3,
 				property: '--gr-typescript-glob-audit-token',
+			},
+			{
+				file: 'typescript-regex.ts',
+				line: 2,
+				property: '--gr-typescript-regex-audit-token',
+			},
+			{
+				file: 'typescript-template-glob.ts',
+				line: 2,
+				property: '--gr-typescript-template-glob-audit-token',
 			},
 			{ file: 'url-token.css', line: 2, property: '--gr-url-token-audit-token' },
 		]);
