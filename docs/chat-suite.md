@@ -769,19 +769,19 @@ Components use CSS custom properties for theming:
 ```css
 :root {
 	/* Container */
-	--chat-bg: var(--gr-color-background);
-	--chat-border: var(--gr-color-border);
+	--chat-bg: var(--gr-semantic-background-primary);
+	--chat-border: var(--gr-semantic-border-default);
 	--chat-radius: var(--gr-radii-lg);
 
 	/* Messages */
 	--chat-user-bg: var(--gr-color-primary-500);
 	--chat-user-text: white;
-	--chat-assistant-bg: var(--gr-color-surface);
-	--chat-assistant-text: var(--gr-color-text);
+	--chat-assistant-bg: var(--gr-semantic-background-surface);
+	--chat-assistant-text: var(--gr-semantic-foreground-primary);
 
 	/* Input */
-	--chat-input-bg: var(--gr-color-surface);
-	--chat-input-border: var(--gr-color-border);
+	--chat-input-bg: var(--gr-semantic-background-surface);
+	--chat-input-border: var(--gr-semantic-border-default);
 	--chat-input-focus: var(--gr-color-primary-500);
 }
 

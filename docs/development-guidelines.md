@@ -191,12 +191,12 @@ Greater Components extensively uses CSS custom properties. Follow these patterns
 /* ✅ Define in :root for global tokens */
 :root {
 	--gr-color-primary-500: #3b82f6;
-	--gr-spacing-md: 1rem;
+	--gr-spacing-scale-4: 1rem;
 }
 
 /* ✅ Define in component for local overrides */
 .card {
-	--card-padding: var(--gr-spacing-lg);
+	--card-padding: var(--gr-spacing-scale-6);
 	--card-background: var(--gr-color-gray-50);
 }
 ```
@@ -395,8 +395,8 @@ packages/primitives/src/components/
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		gap: var(--gr-spacing-sm);
-		padding: var(--gr-spacing-md) var(--gr-spacing-lg);
+		gap: var(--gr-spacing-scale-2);
+		padding: var(--gr-spacing-scale-4) var(--gr-spacing-scale-6);
 		border-radius: var(--gr-radii-md);
 		font-family: var(--gr-typography-fontFamily-sans);
 		font-weight: var(--gr-typography-fontWeight-medium);
@@ -428,17 +428,17 @@ packages/primitives/src/components/
 
 	/* Sizes */
 	.gr-button--sm {
-		padding: var(--gr-spacing-sm) var(--gr-spacing-md);
+		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
 		font-size: var(--gr-typography-fontSize-sm);
 	}
 
 	.gr-button--md {
-		padding: var(--gr-spacing-md) var(--gr-spacing-lg);
+		padding: var(--gr-spacing-scale-4) var(--gr-spacing-scale-6);
 		font-size: var(--gr-typography-fontSize-base);
 	}
 
 	.gr-button--lg {
-		padding: var(--gr-spacing-lg) var(--gr-spacing-xl);
+		padding: var(--gr-spacing-scale-6) var(--gr-spacing-scale-8);
 		font-size: var(--gr-typography-fontSize-lg);
 	}
 

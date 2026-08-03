@@ -111,7 +111,7 @@
   --gr-typography-fontFamily-sans: 'Inter', system-ui, sans-serif;
   
   /* Override spacing */
-  --gr-spacing-4: 1rem;
+  --gr-spacing-scale-4: 1rem;
   
   /* Override border radius */
   --gr-radii-lg: 12px;

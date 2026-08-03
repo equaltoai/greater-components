@@ -638,11 +638,11 @@ size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
 ### Spacing
 
 ```css
---gr-spacing-xs  /* 0.25rem */
---gr-spacing-sm  /* 0.5rem */
---gr-spacing-md  /* 1rem */
---gr-spacing-lg  /* 1.5rem */
---gr-spacing-xl  /* 2rem */
+--gr-spacing-scale-1 /* 0.25rem */
+--gr-spacing-scale-2 /* 0.5rem */
+--gr-spacing-scale-4 /* 1rem */
+--gr-spacing-scale-6 /* 1.5rem */
+--gr-spacing-scale-8 /* 2rem */
 ```
 
 ---

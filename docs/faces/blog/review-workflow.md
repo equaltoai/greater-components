@@ -178,7 +178,7 @@ triples, with light and dark values.
 
 `neutral` is a selectable palette name, but `--gr-color-neutral-*` was never an
 emitted token family. This PR removes the never-functional, consumer-facing
-`var(--gr-color-neutral-N, var(--gr-color-gray-N))` bridge pattern. Consumers
+`--gr-color-neutral-N` → `--gr-color-gray-N` bridge pattern. Consumers
 bridge neutral values through the emitted `--gr-color-gray-*` family or through
 their own component-level overrides. The repository guard rejects palette names
 used as custom-property paths so the removed pattern cannot return.

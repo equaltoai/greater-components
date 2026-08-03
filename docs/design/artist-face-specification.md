@@ -651,7 +651,7 @@ The platform MUST support the artistic process with:
 	/* Neutral base - recedes behind artwork */
 	--gr-artist-bg-primary: var(--gr-color-gray-950);
 	--gr-artist-bg-secondary: var(--gr-color-gray-900);
-	--gr-artist-bg-elevated: var(--gr-color-gray-850);
+	--gr-artist-bg-elevated: var(--gr-color-gray-800);
 
 	/* True black for media viewer */
 	--gr-artist-bg-immersive: #000000;
