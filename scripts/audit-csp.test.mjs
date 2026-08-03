@@ -1,11 +1,44 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
-import { scanSvelteSource, scanBuildOutput, generateReport } from './audit-csp.mjs';
+import {
+	scanSvelteSource,
+	scanBuildOutput,
+	generateReport,
+	scanFaceThemeCss,
+} from './audit-csp.mjs';
 import { writeFileSync, mkdirSync, rmSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
 
 describe('CSP Scanner Property Tests', () => {
+	describe('Face theme CSS scanner', () => {
+		it('does not treat comment delimiters inside CSS strings as comments', () => {
+			const testDir = join(tmpdir(), `csp-css-test-${Date.now()}-${Math.random()}`);
+			const themeDir = join(testDir, 'packages', 'faces', 'attack', 'src');
+			mkdirSync(themeDir, { recursive: true });
+
+			try {
+				writeFileSync(
+					join(themeDir, 'theme.css'),
+					[
+						'.open::after { content: "/*"; }',
+						'h1 { color: var(--gr-semantic-foreground-primary); }',
+						'.close::after { content: "*/"; }',
+					].join('\n')
+				);
+
+				const violations = scanFaceThemeCss(testDir);
+				expect(violations).toHaveLength(1);
+				expect(violations[0]).toMatchObject({
+					line: 2,
+					type: 'css-global-selector',
+				});
+			} finally {
+				rmSync(testDir, { recursive: true, force: true });
+			}
+		});
+	});
+
 	describe('Source Scanner', () => {
 		/**
 		 * Property 1: Source scanner detects style attributes
