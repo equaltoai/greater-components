@@ -252,7 +252,7 @@ Implements REQ-COMM-003: Learning & Growth
 	.mentor-match {
 		background: var(--gr-color-gray-900);
 		color: var(--gr-color-gray-100);
-		border-radius: var(--gr-radius-lg);
+		border-radius: var(--gr-radii-lg);
 		padding: var(--gr-spacing-scale-6);
 	}
 
@@ -261,8 +261,8 @@ Implements REQ-COMM-003: Learning & Growth
 	}
 
 	.mentor-match__title {
-		font-size: var(--gr-font-size-2xl);
-		font-weight: var(--gr-font-weight-bold);
+		font-size: var(--gr-typography-fontSize-2xl);
+		font-weight: var(--gr-typography-fontWeight-bold);
 		margin: 0 0 var(--gr-spacing-scale-2) 0;
 	}
 
@@ -277,7 +277,7 @@ Implements REQ-COMM-003: Learning & Growth
 		gap: var(--gr-spacing-scale-4);
 		padding: var(--gr-spacing-scale-4);
 		background: var(--gr-color-gray-800);
-		border-radius: var(--gr-radius-lg);
+		border-radius: var(--gr-radii-lg);
 		margin-bottom: var(--gr-spacing-scale-6);
 	}
 
@@ -289,8 +289,8 @@ Implements REQ-COMM-003: Learning & Growth
 	}
 
 	.mentor-match__filter label {
-		font-size: var(--gr-font-size-sm);
-		font-weight: var(--gr-font-weight-medium);
+		font-size: var(--gr-typography-fontSize-sm);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		color: var(--gr-color-gray-300);
 	}
 
@@ -299,7 +299,7 @@ Implements REQ-COMM-003: Learning & Growth
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
 		background: var(--gr-color-gray-700);
 		border: 1px solid var(--gr-color-gray-600);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: var(--gr-color-gray-100);
 	}
 
@@ -322,7 +322,7 @@ Implements REQ-COMM-003: Learning & Growth
 
 	.mentor-match__card {
 		background: var(--gr-color-gray-800);
-		border-radius: var(--gr-radius-lg);
+		border-radius: var(--gr-radii-lg);
 		padding: var(--gr-spacing-scale-4);
 		display: flex;
 		flex-direction: column;
@@ -338,7 +338,7 @@ Implements REQ-COMM-003: Learning & Growth
 	.mentor-match__avatar {
 		width: 56px;
 		height: 56px;
-		border-radius: var(--gr-radius-full);
+		border-radius: var(--gr-radii-full);
 		object-fit: cover;
 		background: var(--gr-color-gray-600);
 	}
@@ -348,13 +348,13 @@ Implements REQ-COMM-003: Learning & Growth
 	}
 
 	.mentor-match__name {
-		font-size: var(--gr-font-size-lg);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-lg);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		margin: 0;
 	}
 
 	.mentor-match__username {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-400);
 	}
 
@@ -370,17 +370,17 @@ Implements REQ-COMM-003: Learning & Growth
 		align-items: center;
 		padding: var(--gr-spacing-scale-2);
 		background: var(--gr-color-primary-900);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 	}
 
 	.mentor-match__score-value {
-		font-size: var(--gr-font-size-lg);
-		font-weight: var(--gr-font-weight-bold);
+		font-size: var(--gr-typography-fontSize-lg);
+		font-weight: var(--gr-typography-fontWeight-bold);
 		color: var(--gr-color-primary-300);
 	}
 
 	.mentor-match__score-label {
-		font-size: var(--gr-font-size-xs);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: var(--gr-color-primary-400);
 	}
 
@@ -393,13 +393,13 @@ Implements REQ-COMM-003: Learning & Growth
 	.mentor-match__criterion {
 		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
 		background: var(--gr-color-gray-700);
-		border-radius: var(--gr-radius-sm);
-		font-size: var(--gr-font-size-xs);
+		border-radius: var(--gr-radii-sm);
+		font-size: var(--gr-typography-fontSize-xs);
 	}
 
 	.mentor-match__availability h4 {
-		font-size: var(--gr-font-size-sm);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-sm);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		margin: 0 0 var(--gr-spacing-scale-2) 0;
 		color: var(--gr-color-gray-300);
 	}
@@ -407,14 +407,14 @@ Implements REQ-COMM-003: Learning & Growth
 	.mentor-match__availability ul {
 		margin: 0;
 		padding-left: var(--gr-spacing-scale-4);
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-400);
 	}
 
 	.mentor-match__rates {
 		display: flex;
 		gap: var(--gr-spacing-scale-3);
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-success-400);
 	}
 
@@ -426,11 +426,11 @@ Implements REQ-COMM-003: Learning & Growth
 
 	.mentor-match__rating {
 		color: var(--gr-color-warning-400);
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 	}
 
 	.mentor-match__review-count {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-400);
 	}
 
@@ -439,9 +439,9 @@ Implements REQ-COMM-003: Learning & Growth
 		padding: var(--gr-spacing-scale-3);
 		background: var(--gr-color-primary-600);
 		border: none;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: white;
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		cursor: pointer;
 		transition: background 0.2s;
 	}

@@ -306,7 +306,7 @@ Features:
 	.color-palette-search__title {
 		margin: 0;
 		font-size: var(--gr-typography-fontSize-lg);
-		font-weight: var(--gr-font-weight-semibold);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: var(--gr-color-gray-100);
 	}
 
@@ -550,7 +550,7 @@ Features:
 		border: none;
 		border-radius: var(--gr-radii-md);
 		color: white;
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		cursor: pointer;
 		transition: background 0.2s;
 	}

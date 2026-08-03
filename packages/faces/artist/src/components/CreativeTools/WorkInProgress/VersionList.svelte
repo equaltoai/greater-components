@@ -114,7 +114,7 @@ WorkInProgress.VersionList - Chronological version display
 		padding: var(--gr-spacing-scale-2);
 		background: var(--gr-color-gray-800);
 		border: 2px solid transparent;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		cursor: pointer;
 		transition:
 			border-color 0.2s,
@@ -132,7 +132,7 @@ WorkInProgress.VersionList - Chronological version display
 	.wip-version-list__thumbnail {
 		width: 80px;
 		height: 80px;
-		border-radius: var(--gr-radius-sm);
+		border-radius: var(--gr-radii-sm);
 		overflow: hidden;
 	}
 
@@ -150,8 +150,8 @@ WorkInProgress.VersionList - Chronological version display
 		justify-content: center;
 		background: var(--gr-color-gray-700);
 		color: var(--gr-color-gray-400);
-		font-size: var(--gr-font-size-lg);
-		font-weight: var(--gr-font-weight-bold);
+		font-size: var(--gr-typography-fontSize-lg);
+		font-weight: var(--gr-typography-fontWeight-bold);
 	}
 
 	.wip-version-list__info {
@@ -162,18 +162,18 @@ WorkInProgress.VersionList - Chronological version display
 	}
 
 	.wip-version-list__number {
-		font-size: var(--gr-font-size-sm);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-sm);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: var(--gr-color-gray-100);
 	}
 
 	.wip-version-list__date {
-		font-size: var(--gr-font-size-xs);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: var(--gr-color-gray-400);
 	}
 
 	.wip-version-list__progress {
-		font-size: var(--gr-font-size-xs);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: var(--gr-color-primary-400);
 	}
 

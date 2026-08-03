@@ -110,7 +110,7 @@ Features:
 
 	.profile-statement__content {
 		font-family: var(--gr-artist-font-statement, var(--gr-font-family-serif, Georgia, serif));
-		font-size: var(--gr-font-size-lg);
+		font-size: var(--gr-typography-fontSize-lg);
 		line-height: 1.7;
 		color: var(--gr-color-gray-200);
 	}
@@ -172,7 +172,7 @@ Features:
 	}
 
 	.profile-statement__content :global(strong) {
-		font-weight: var(--gr-font-weight-semibold);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: var(--gr-color-gray-100);
 	}
 
@@ -186,8 +186,8 @@ Features:
 		border: none;
 		background: none;
 		color: var(--gr-color-primary-400);
-		font-size: var(--gr-font-size-sm);
-		font-weight: var(--gr-font-weight-medium);
+		font-size: var(--gr-typography-fontSize-sm);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		cursor: pointer;
 		transition: color 0.2s;
 	}

@@ -125,12 +125,12 @@ Features:
 	.exhibition-statement {
 		padding: var(--gr-spacing-scale-6);
 		background: var(--gr-color-gray-800);
-		border-radius: var(--gr-radius-lg);
+		border-radius: var(--gr-radii-lg);
 	}
 
 	.exhibition-statement__heading {
-		font-size: var(--gr-font-size-lg);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-lg);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: var(--gr-color-gray-100);
 		margin: 0 0 var(--gr-spacing-scale-4) 0;
 	}
@@ -154,7 +154,7 @@ Features:
 	.exhibition-statement__avatar {
 		width: 48px;
 		height: 48px;
-		border-radius: var(--gr-radius-full);
+		border-radius: var(--gr-radii-full);
 		object-fit: cover;
 	}
 
@@ -164,14 +164,14 @@ Features:
 	}
 
 	.exhibition-statement__curator-name {
-		font-size: var(--gr-font-size-base);
-		font-weight: var(--gr-font-weight-medium);
+		font-size: var(--gr-typography-fontSize-base);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		color: var(--gr-color-gray-100);
 		transition: color 0.2s;
 	}
 
 	.exhibition-statement__curator-institution {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-400);
 	}
 
@@ -182,7 +182,7 @@ Features:
 	}
 
 	.exhibition-statement__text {
-		font-size: var(--gr-font-size-base);
+		font-size: var(--gr-typography-fontSize-base);
 		line-height: 1.7;
 		color: var(--gr-color-gray-300);
 		margin: 0;
@@ -198,8 +198,8 @@ Features:
 		background: none;
 		border: none;
 		color: var(--gr-color-primary-400);
-		font-size: var(--gr-font-size-sm);
-		font-weight: var(--gr-font-weight-medium);
+		font-size: var(--gr-typography-fontSize-sm);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		cursor: pointer;
 		transition: color 0.2s;
 	}

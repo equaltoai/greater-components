@@ -5800,8 +5800,8 @@
 	flex-direction: column;
 	gap: var(--gr-spacing-scale-1);
 	padding: var(--gr-spacing-scale-3);
-	background-color: var(--gr-semantic-background-warning-subtle);
-	border: 1px solid var(--gr-semantic-border-warning);
+	background-color: var(--gr-color-warning-50);
+	border: 1px solid var(--gr-color-warning-300);
 	border-radius: var(--gr-radii-md);
 }
 
@@ -13291,7 +13291,7 @@
 	background-color: var(--gr-semantic-background-primary);
 	border-radius: var(--gr-radii-lg);
 	overflow: hidden;
-	border: 1px solid var(--gr-semantic-border-secondary);
+	border: 1px solid var(--gr-semantic-border-subtle);
 }
 
 /* Banner */
@@ -13320,13 +13320,13 @@
 /* Content */
 .gr-profile-header__content {
 	position: relative;
-	padding: var(--gr-spacing-4) var(--gr-spacing-6);
+	padding: var(--gr-spacing-scale-4) var(--gr-spacing-scale-6);
 	margin-top: -3rem;
 }
 
 @media (max-width: 640px) {
 	.gr-profile-header__content {
-		padding: var(--gr-spacing-4);
+		padding: var(--gr-spacing-scale-4);
 		margin-top: -2rem;
 	}
 }
@@ -13336,63 +13336,63 @@
 	display: flex;
 	align-items: flex-end;
 	justify-content: space-between;
-	margin-bottom: var(--gr-spacing-4);
+	margin-bottom: var(--gr-spacing-scale-4);
 }
 
 .gr-profile-header__avatar-wrapper {
 	position: relative;
 	display: flex;
 	align-items: center;
-	gap: var(--gr-spacing-2);
+	gap: var(--gr-spacing-scale-2);
 }
 
 .gr-profile-header__avatar {
 	border: 4px solid var(--gr-semantic-background-primary);
-	box-shadow: var(--gr-shadow-lg);
+	box-shadow: var(--gr-shadows-lg);
 }
 
 /* Badges */
 .gr-profile-header__verified-badge {
 	color: var(--gr-color-success-600);
-	margin-left: var(--gr-spacing-1);
+	margin-left: var(--gr-spacing-scale-1);
 }
 
 .gr-profile-header__bot-badge {
 	display: flex;
 	align-items: center;
-	gap: var(--gr-spacing-1);
-	padding: var(--gr-spacing-1) var(--gr-spacing-2);
+	gap: var(--gr-spacing-scale-1);
+	padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
 	background-color: var(--gr-semantic-background-secondary);
 	border-radius: var(--gr-radii-full);
 	font-size: var(--gr-typography-fontSize-xs);
 	color: var(--gr-semantic-foreground-secondary);
-	border: 1px solid var(--gr-semantic-border-secondary);
+	border: 1px solid var(--gr-semantic-border-subtle);
 }
 
 .gr-profile-header__actions {
-	margin-bottom: var(--gr-spacing-2);
+	margin-bottom: var(--gr-spacing-scale-2);
 }
 
 /* Identity */
 .gr-profile-header__identity {
-	margin-bottom: var(--gr-spacing-4);
+	margin-bottom: var(--gr-spacing-scale-4);
 }
 
 .gr-profile-header__display-name {
 	display: flex;
 	align-items: center;
-	gap: var(--gr-spacing-2);
+	gap: var(--gr-spacing-scale-2);
 	font-size: var(--gr-typography-fontSize-2xl);
 	font-weight: var(--gr-typography-fontWeight-bold);
 	line-height: var(--gr-typography-lineHeight-tight);
 	color: var(--gr-semantic-foreground-primary);
-	margin: 0 0 var(--gr-spacing-1) 0;
+	margin: 0 0 var(--gr-spacing-scale-1) 0;
 }
 
 .gr-profile-header__display-name-text {
 	display: inline-flex;
 	align-items: center;
-	gap: var(--gr-spacing-1);
+	gap: var(--gr-spacing-scale-1);
 }
 
 .gr-profile-header__display-name-text img {
@@ -13419,11 +13419,11 @@
 
 /* Bio */
 .gr-profile-header__bio {
-	margin-bottom: var(--gr-spacing-4);
+	margin-bottom: var(--gr-spacing-scale-4);
 }
 
 .gr-profile-header__bio-content p {
-	margin: 0 0 var(--gr-spacing-2) 0;
+	margin: 0 0 var(--gr-spacing-scale-2) 0;
 	line-height: var(--gr-typography-lineHeight-relaxed);
 }
 
@@ -13442,8 +13442,8 @@
 
 /* Fields */
 .gr-profile-header__fields {
-	margin: 0 0 var(--gr-spacing-4) 0;
-	border: 1px solid var(--gr-semantic-border-secondary);
+	margin: 0 0 var(--gr-spacing-scale-4) 0;
+	border: 1px solid var(--gr-semantic-border-subtle);
 	border-radius: var(--gr-radii-md);
 	overflow: hidden;
 }
@@ -13451,7 +13451,7 @@
 .gr-profile-header__field {
 	display: grid;
 	grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-	border-bottom: 1px solid var(--gr-semantic-border-secondary);
+	border-bottom: 1px solid var(--gr-semantic-border-subtle);
 }
 
 .gr-profile-header__field:last-child {
@@ -13460,7 +13460,7 @@
 
 .gr-profile-header__field-name,
 .gr-profile-header__field-value {
-	padding: var(--gr-spacing-3);
+	padding: var(--gr-spacing-scale-3);
 	margin: 0;
 	font-size: var(--gr-typography-fontSize-sm);
 	line-height: var(--gr-typography-lineHeight-relaxed);
@@ -13470,7 +13470,7 @@
 	background-color: var(--gr-semantic-background-secondary);
 	color: var(--gr-semantic-foreground-secondary);
 	font-weight: var(--gr-typography-fontWeight-medium);
-	border-right: 1px solid var(--gr-semantic-border-secondary);
+	border-right: 1px solid var(--gr-semantic-border-subtle);
 	word-break: break-word;
 }
 
@@ -13499,7 +13499,7 @@
 
 .gr-profile-header__field-verified {
 	color: var(--gr-color-success-600);
-	margin-left: var(--gr-spacing-1);
+	margin-left: var(--gr-spacing-scale-1);
 }
 
 @media (max-width: 640px) {
@@ -13509,7 +13509,7 @@
 
 	.gr-profile-header__field-name {
 		border-right: none;
-		border-bottom: 1px solid var(--gr-semantic-border-secondary);
+		border-bottom: 1px solid var(--gr-semantic-border-subtle);
 	}
 }
 
@@ -13518,7 +13518,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	gap: var(--gr-spacing-4);
+	gap: var(--gr-spacing-scale-4);
 	font-size: var(--gr-typography-fontSize-sm);
 	color: var(--gr-semantic-foreground-secondary);
 }
@@ -13526,7 +13526,7 @@
 .gr-profile-header__join-date {
 	display: flex;
 	align-items: center;
-	gap: var(--gr-spacing-2);
+	gap: var(--gr-spacing-scale-2);
 }
 
 .gr-profile-header__calendar-icon {
@@ -13535,14 +13535,14 @@
 
 .gr-profile-header__counts {
 	display: flex;
-	gap: var(--gr-spacing-4);
+	gap: var(--gr-spacing-scale-4);
 	flex-wrap: wrap;
 }
 
 .gr-profile-header__count {
 	display: flex;
 	align-items: baseline;
-	gap: var(--gr-spacing-1);
+	gap: var(--gr-spacing-scale-1);
 	background: none;
 	border: none;
 	padding: 0;
@@ -13594,11 +13594,11 @@
 	.gr-profile-header__stats {
 		flex-direction: column;
 		align-items: flex-start;
-		gap: var(--gr-spacing-2);
+		gap: var(--gr-spacing-scale-2);
 	}
 
 	.gr-profile-header__counts {
-		gap: var(--gr-spacing-3);
+		gap: var(--gr-spacing-scale-3);
 	}
 }
 

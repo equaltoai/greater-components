@@ -122,7 +122,7 @@ LoadingState component - Wrapper for Spinner with message and fullscreen overlay
 		margin: 0;
 		font-family: var(--gr-typography-fontFamily-sans);
 		font-size: var(--gr-typography-fontSize-sm);
-		color: var(--gr-semantic-text-secondary);
+		color: var(--gr-semantic-foreground-secondary);
 		text-align: center;
 	}
 

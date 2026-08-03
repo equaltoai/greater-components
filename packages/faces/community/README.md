@@ -104,7 +104,7 @@ The community face provides these design tokens:
 ```css
 :root {
 	/* Card layout */
-	--gr-community-card-background: var(--gr-color-surface-primary);
+	--gr-community-card-background: var(--gr-semantic-background-surface);
 	--gr-community-card-radius: var(--gr-radii-lg);
 
 	/* Voting */
@@ -113,7 +113,7 @@ The community face provides these design tokens:
 
 	/* Comments */
 	--gr-community-comment-indent: 16px;
-	--gr-community-comment-line-color: var(--gr-color-border-secondary);
+	--gr-community-comment-line-color: var(--gr-semantic-border-subtle);
 
 	/* Flairs */
 	--gr-community-flair-radius: var(--gr-radii-full);

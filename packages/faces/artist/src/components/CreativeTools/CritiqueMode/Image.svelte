@@ -184,7 +184,7 @@
 		gap: var(--gr-spacing-scale-2);
 		padding: var(--gr-spacing-scale-2);
 		background: rgba(0, 0, 0, 0.7);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 	}
 
 	.critique-image__zoom-controls button {
@@ -195,7 +195,7 @@
 		justify-content: center;
 		background: var(--gr-color-gray-700);
 		border: none;
-		border-radius: var(--gr-radius-sm);
+		border-radius: var(--gr-radii-sm);
 		color: white;
 		cursor: pointer;
 	}
@@ -203,7 +203,7 @@
 	.critique-image__zoom-controls span {
 		min-width: 50px;
 		text-align: center;
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: white;
 	}
 

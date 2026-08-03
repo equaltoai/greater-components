@@ -241,7 +241,7 @@ Features:
 		padding: 0;
 		cursor: pointer;
 		overflow: hidden;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		aspect-ratio: 1;
 	}
 
@@ -269,13 +269,13 @@ Features:
 	}
 
 	.exhibition-gallery__title {
-		font-size: var(--gr-font-size-sm);
-		font-weight: var(--gr-font-weight-medium);
+		font-size: var(--gr-typography-fontSize-sm);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		color: white;
 	}
 
 	.exhibition-gallery__artist {
-		font-size: var(--gr-font-size-xs);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: var(--gr-color-gray-300);
 	}
 
@@ -295,7 +295,7 @@ Features:
 
 	.exhibition-gallery__narrative-number {
 		grid-column: 1 / -1;
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-500);
 		font-variant-numeric: tabular-nums;
 	}
@@ -310,7 +310,7 @@ Features:
 	.exhibition-gallery__narrative-image {
 		width: 100%;
 		height: auto;
-		border-radius: var(--gr-radius-lg);
+		border-radius: var(--gr-radii-lg);
 	}
 
 	.exhibition-gallery__narrative-content {
@@ -319,27 +319,27 @@ Features:
 	}
 
 	.exhibition-gallery__narrative-title {
-		font-size: var(--gr-font-size-2xl);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-2xl);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: var(--gr-color-gray-100);
 		margin: 0 0 var(--gr-spacing-scale-2) 0;
 	}
 
 	.exhibition-gallery__narrative-artist {
-		font-size: var(--gr-font-size-base);
+		font-size: var(--gr-typography-fontSize-base);
 		color: var(--gr-color-gray-300);
 		margin: 0 0 var(--gr-spacing-scale-4) 0;
 	}
 
 	.exhibition-gallery__narrative-description {
-		font-size: var(--gr-font-size-base);
+		font-size: var(--gr-typography-fontSize-base);
 		line-height: 1.7;
 		color: var(--gr-color-gray-400);
 		margin: 0 0 var(--gr-spacing-scale-4) 0;
 	}
 
 	.exhibition-gallery__narrative-medium {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-500);
 		margin: 0;
 	}
@@ -369,9 +369,9 @@ Features:
 		display: inline-block;
 		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-3);
 		background: var(--gr-color-primary-500);
-		border-radius: var(--gr-radius-full);
-		font-size: var(--gr-font-size-sm);
-		font-weight: var(--gr-font-weight-semibold);
+		border-radius: var(--gr-radii-full);
+		font-size: var(--gr-typography-fontSize-sm);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: white;
 	}
 
@@ -387,7 +387,7 @@ Features:
 		border: none;
 		padding: 0;
 		cursor: pointer;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		overflow: hidden;
 	}
 
@@ -403,7 +403,7 @@ Features:
 	}
 
 	.exhibition-gallery__timeline-title {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-200);
 	}
 

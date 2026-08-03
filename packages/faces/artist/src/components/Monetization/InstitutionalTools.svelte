@@ -163,10 +163,10 @@ REQ-ECON-006: Institutional tools (galleries, schools, collectives)
 
 <style>
 	.gr-monetization-institutional {
-		border: 1px solid var(--gr-color-border-primary);
-		border-radius: var(--gr-radius-lg);
-		background: var(--gr-color-surface-primary);
-		color: var(--gr-color-text-primary);
+		border: 1px solid var(--gr-semantic-border-default);
+		border-radius: var(--gr-radii-lg);
+		background: var(--gr-semantic-background-surface);
+		color: var(--gr-semantic-foreground-primary);
 		overflow: hidden;
 	}
 
@@ -176,21 +176,21 @@ REQ-ECON-006: Institutional tools (galleries, schools, collectives)
 		justify-content: space-between;
 		gap: var(--gr-spacing-scale-4);
 		padding: var(--gr-spacing-scale-4);
-		border-bottom: 1px solid var(--gr-color-border-primary);
+		border-bottom: 1px solid var(--gr-semantic-border-default);
 	}
 
 	.gr-monetization-institutional__name {
 		margin: 0;
-		font-size: var(--gr-font-size-lg);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-lg);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 	}
 
 	.gr-monetization-institutional__meta {
 		margin: var(--gr-spacing-scale-1) 0 0;
 		display: flex;
 		gap: var(--gr-spacing-scale-2);
-		color: var(--gr-color-text-secondary);
-		font-size: var(--gr-font-size-sm);
+		color: var(--gr-semantic-foreground-secondary);
+		font-size: var(--gr-typography-fontSize-sm);
 	}
 
 	.gr-monetization-institutional__body {
@@ -200,16 +200,16 @@ REQ-ECON-006: Institutional tools (galleries, schools, collectives)
 	}
 
 	.gr-monetization-institutional__panel {
-		border: 1px solid var(--gr-color-border-secondary);
-		border-radius: var(--gr-radius-md);
+		border: 1px solid var(--gr-semantic-border-subtle);
+		border-radius: var(--gr-radii-md);
 		padding: var(--gr-spacing-scale-4);
-		background: var(--gr-color-surface-secondary);
+		background: var(--gr-semantic-background-secondary);
 	}
 
 	.gr-monetization-institutional__panel-title {
 		margin: 0 0 var(--gr-spacing-scale-3);
-		font-size: var(--gr-font-size-md);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-base);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 	}
 
 	.gr-monetization-institutional__field {
@@ -217,18 +217,18 @@ REQ-ECON-006: Institutional tools (galleries, schools, collectives)
 		flex-direction: column;
 		gap: var(--gr-spacing-scale-1);
 		margin-bottom: var(--gr-spacing-scale-3);
-		font-size: var(--gr-font-size-sm);
-		color: var(--gr-color-text-secondary);
+		font-size: var(--gr-typography-fontSize-sm);
+		color: var(--gr-semantic-foreground-secondary);
 	}
 
 	.gr-monetization-institutional__input,
 	.gr-monetization-institutional__textarea {
-		border: 1px solid var(--gr-color-border-primary);
-		border-radius: var(--gr-radius-md);
+		border: 1px solid var(--gr-semantic-border-default);
+		border-radius: var(--gr-radii-md);
 		padding: var(--gr-spacing-scale-2);
-		background: var(--gr-color-surface-primary);
-		color: var(--gr-color-text-primary);
-		font-size: var(--gr-font-size-sm);
+		background: var(--gr-semantic-background-surface);
+		color: var(--gr-semantic-foreground-primary);
+		font-size: var(--gr-typography-fontSize-sm);
 	}
 
 	.gr-monetization-institutional__row {
@@ -245,16 +245,16 @@ REQ-ECON-006: Institutional tools (galleries, schools, collectives)
 	}
 
 	.gr-monetization-institutional__action {
-		border: 1px solid var(--gr-color-border-primary);
-		border-radius: var(--gr-radius-md);
+		border: 1px solid var(--gr-semantic-border-default);
+		border-radius: var(--gr-radii-md);
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
-		background: var(--gr-color-surface-primary);
-		color: var(--gr-color-text-primary);
+		background: var(--gr-semantic-background-surface);
+		color: var(--gr-semantic-foreground-primary);
 		cursor: pointer;
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 	}
 
 	.gr-monetization-institutional__action:hover {
-		background: var(--gr-color-surface-tertiary);
+		background: var(--gr-semantic-background-tertiary);
 	}
 </style>

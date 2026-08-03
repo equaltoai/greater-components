@@ -145,7 +145,7 @@ CritiqueCircle.Members - Circle membership management
 <style>
 	.critique-members {
 		background: var(--gr-color-gray-800);
-		border-radius: var(--gr-radius-lg);
+		border-radius: var(--gr-radii-lg);
 		padding: var(--gr-spacing-scale-5);
 	}
 
@@ -157,8 +157,8 @@ CritiqueCircle.Members - Circle membership management
 	}
 
 	.critique-members__title {
-		font-size: var(--gr-font-size-lg);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-lg);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		margin: 0;
 	}
 
@@ -166,9 +166,9 @@ CritiqueCircle.Members - Circle membership management
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
 		background: var(--gr-color-primary-600);
 		border: none;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: white;
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		cursor: pointer;
 	}
 
@@ -183,7 +183,7 @@ CritiqueCircle.Members - Circle membership management
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
 		background: var(--gr-color-gray-700);
 		border: 1px solid var(--gr-color-gray-600);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: var(--gr-color-gray-100);
 	}
 
@@ -191,7 +191,7 @@ CritiqueCircle.Members - Circle membership management
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
 		background: var(--gr-color-success-600);
 		border: none;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: white;
 		cursor: pointer;
 	}
@@ -215,13 +215,13 @@ CritiqueCircle.Members - Circle membership management
 		gap: var(--gr-spacing-scale-3);
 		padding: var(--gr-spacing-scale-3);
 		background: var(--gr-color-gray-700);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 	}
 
 	.critique-members__avatar {
 		width: 48px;
 		height: 48px;
-		border-radius: var(--gr-radius-full);
+		border-radius: var(--gr-radii-full);
 		object-fit: cover;
 		background: var(--gr-color-gray-600);
 	}
@@ -240,13 +240,13 @@ CritiqueCircle.Members - Circle membership management
 	}
 
 	.critique-members__name {
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 	}
 
 	.critique-members__badge {
 		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
-		border-radius: var(--gr-radius-sm);
-		font-size: var(--gr-font-size-xs);
+		border-radius: var(--gr-radii-sm);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: white;
 		background: var(--gr-color-gray-600);
 	}
@@ -264,14 +264,14 @@ CritiqueCircle.Members - Circle membership management
 	}
 
 	.critique-members__username {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-400);
 	}
 
 	.critique-members__stats {
 		display: flex;
 		gap: var(--gr-spacing-scale-3);
-		font-size: var(--gr-font-size-xs);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: var(--gr-color-gray-500);
 	}
 
@@ -284,8 +284,8 @@ CritiqueCircle.Members - Circle membership management
 		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
 		background: var(--gr-color-gray-600);
 		border: 1px solid var(--gr-color-gray-500);
-		border-radius: var(--gr-radius-sm);
+		border-radius: var(--gr-radii-sm);
 		color: var(--gr-color-gray-100);
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 	}
 </style>

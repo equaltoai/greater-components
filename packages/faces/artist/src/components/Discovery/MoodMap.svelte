@@ -228,7 +228,7 @@ Features:
 	.mood-map__title {
 		margin: 0;
 		font-size: var(--gr-typography-fontSize-lg);
-		font-weight: var(--gr-font-weight-semibold);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: var(--gr-color-gray-100);
 	}
 

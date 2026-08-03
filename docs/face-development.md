@@ -174,9 +174,9 @@ The manifest defines your face's metadata and components:
 	.my-component {
 		display: flex;
 		flex-direction: column;
-		gap: var(--gr-spacing-4);
-		padding: var(--gr-spacing-4);
-		background: var(--gr-color-surface);
+		gap: var(--gr-spacing-scale-4);
+		padding: var(--gr-spacing-scale-4);
+		background: var(--gr-semantic-background-surface);
 		border-radius: var(--gr-radii-lg);
 	}
 </style>
@@ -262,23 +262,23 @@ export interface MyComponentHandlers {
 :root {
 	/* Custom color palette */
 	--my-face-primary: var(--gr-color-primary-600);
-	--my-face-secondary: var(--gr-color-secondary-500);
+	--my-face-secondary: var(--gr-color-gray-500);
 
 	/* Custom spacing */
-	--my-face-card-padding: var(--gr-spacing-4);
-	--my-face-card-gap: var(--gr-spacing-3);
+	--my-face-card-padding: var(--gr-spacing-scale-4);
+	--my-face-card-gap: var(--gr-spacing-scale-3);
 }
 
 /* Dark mode overrides */
 [data-theme='dark'] {
 	--my-face-primary: var(--gr-color-primary-400);
-	--my-face-secondary: var(--gr-color-secondary-400);
+	--my-face-secondary: var(--gr-color-gray-400);
 }
 
 /* Component-specific styles */
 .my-component {
-	--component-bg: var(--gr-color-surface);
-	--component-border: var(--gr-color-border);
+	--component-bg: var(--gr-semantic-background-surface);
+	--component-border: var(--gr-semantic-border-default);
 }
 ```
 
@@ -420,8 +420,8 @@ Always use Greater Components design tokens:
 ```css
 /* ✅ Correct */
 .my-component {
-	padding: var(--gr-spacing-4);
-	color: var(--gr-color-text-primary);
+	padding: var(--gr-spacing-scale-4);
+	color: var(--gr-semantic-foreground-primary);
 }
 
 /* ❌ Incorrect */
@@ -437,7 +437,7 @@ Test and style for both light and dark themes:
 
 ```css
 .my-component {
-	background: var(--gr-color-surface);
+	background: var(--gr-semantic-background-surface);
 }
 
 [data-theme='dark'] .my-component {

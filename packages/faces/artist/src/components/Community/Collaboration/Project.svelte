@@ -110,7 +110,7 @@ Collaboration.Project - Project overview display
 <style>
 	.collab-project {
 		background: var(--gr-color-gray-800);
-		border-radius: var(--gr-radius-lg);
+		border-radius: var(--gr-radii-lg);
 		padding: var(--gr-spacing-scale-5);
 	}
 
@@ -122,8 +122,8 @@ Collaboration.Project - Project overview display
 	}
 
 	.collab-project__title {
-		font-size: var(--gr-font-size-lg);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-lg);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		margin: 0;
 	}
 
@@ -131,7 +131,7 @@ Collaboration.Project - Project overview display
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
 		background: var(--gr-color-gray-700);
 		border: 1px solid var(--gr-color-gray-600);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: var(--gr-color-gray-100);
 	}
 
@@ -142,8 +142,8 @@ Collaboration.Project - Project overview display
 	}
 
 	.collab-project__section h4 {
-		font-size: var(--gr-font-size-sm);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-sm);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: var(--gr-color-gray-400);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
@@ -168,12 +168,12 @@ Collaboration.Project - Project overview display
 	}
 
 	.collab-project__date-label {
-		font-size: var(--gr-font-size-xs);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: var(--gr-color-gray-400);
 	}
 
 	.collab-project__date-value {
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 	}
 
 	.collab-project__timeline-line {
@@ -191,12 +191,12 @@ Collaboration.Project - Project overview display
 	.collab-project__update {
 		padding: var(--gr-spacing-scale-3);
 		background: var(--gr-color-gray-700);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 	}
 
 	.collab-project__update-author {
-		font-weight: var(--gr-font-weight-medium);
-		font-size: var(--gr-font-size-sm);
+		font-weight: var(--gr-typography-fontWeight-medium);
+		font-size: var(--gr-typography-fontSize-sm);
 	}
 
 	.collab-project__update-content {
@@ -205,7 +205,7 @@ Collaboration.Project - Project overview display
 	}
 
 	.collab-project__update-date {
-		font-size: var(--gr-font-size-xs);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: var(--gr-color-gray-400);
 	}
 </style>

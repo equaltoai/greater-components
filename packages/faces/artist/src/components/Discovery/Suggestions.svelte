@@ -164,7 +164,7 @@ Features:
 	.suggestions__title {
 		margin: 0;
 		font-size: var(--gr-typography-fontSize-xl);
-		font-weight: var(--gr-font-weight-semibold);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: var(--gr-color-gray-100);
 	}
 
@@ -215,7 +215,7 @@ Features:
 	.suggestions__item:hover,
 	.suggestions__item:focus {
 		transform: translateY(-4px);
-		box-shadow: var(--gr-shadow-lg);
+		box-shadow: var(--gr-shadows-lg);
 	}
 
 	.suggestions__item:focus {
@@ -278,7 +278,7 @@ Features:
 	.suggestions__item-title {
 		margin: 0 0 var(--gr-spacing-scale-1);
 		font-size: var(--gr-typography-fontSize-sm);
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		color: var(--gr-color-gray-100);
 		white-space: nowrap;
 		overflow: hidden;

@@ -158,7 +158,7 @@ patterns:
           --gr-typography-fontFamily-sans: 'Inter', system-ui, sans-serif;
           
           /* Spacing adjustments */
-          --gr-spacing-md: 1rem;
+          --gr-spacing-scale-4: 1rem;
           
           /* Border radius */
           --gr-radii-lg: 12px;
@@ -480,12 +480,12 @@ patterns:
       <style>
         /* Mobile-first responsive design */
         .container {
-          padding: var(--gr-spacing-sm);
+          padding: var(--gr-spacing-scale-2);
         }
         
         @media (min-width: 768px) {
           .container {
-            padding: var(--gr-spacing-lg);
+            padding: var(--gr-spacing-scale-6);
           }
         }
       </style>

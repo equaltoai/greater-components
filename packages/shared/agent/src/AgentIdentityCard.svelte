@@ -157,8 +157,8 @@
 	.agent-surface-card__tag {
 		padding: 0.35rem 0.7rem;
 		border-radius: 999px;
-		background: color-mix(in srgb, var(--gr-color-secondary-100) 72%, white 28%);
-		color: var(--gr-color-secondary-700);
+		background: color-mix(in srgb, var(--gr-color-gray-100) 72%, white 28%);
+		color: var(--gr-color-gray-700);
 		font-size: 0.85rem;
 		font-weight: 600;
 	}

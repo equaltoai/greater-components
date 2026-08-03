@@ -440,7 +440,7 @@
 }
 
 .gr-blog-toc__link--h4 {
-	padding-left: var(--gr-spacing-scale-9);
+	padding-left: calc(var(--gr-spacing-scale-8) + var(--gr-spacing-scale-1));
 }
 
 /* ============================================================================

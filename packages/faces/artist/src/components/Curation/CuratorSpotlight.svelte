@@ -253,7 +253,7 @@ Features:
 <style>
 	.curator-spotlight {
 		background: var(--gr-color-gray-800);
-		border-radius: var(--gr-radius-lg);
+		border-radius: var(--gr-radii-lg);
 		padding: var(--gr-spacing-scale-6);
 		display: flex;
 		flex-direction: column;
@@ -291,7 +291,7 @@ Features:
 	.curator-spotlight__avatar {
 		width: 56px;
 		height: 56px;
-		border-radius: var(--gr-radius-full);
+		border-radius: var(--gr-radii-full);
 		object-fit: cover;
 	}
 
@@ -303,13 +303,13 @@ Features:
 	.curator-spotlight__avatar-placeholder {
 		width: 56px;
 		height: 56px;
-		border-radius: var(--gr-radius-full);
+		border-radius: var(--gr-radii-full);
 		background: var(--gr-color-gray-600);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		font-size: var(--gr-font-size-xl);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-xl);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: var(--gr-color-gray-300);
 	}
 
@@ -322,8 +322,8 @@ Features:
 		display: inline-flex;
 		align-items: center;
 		gap: var(--gr-spacing-scale-1);
-		font-size: var(--gr-font-size-lg);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-lg);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: var(--gr-color-gray-100);
 	}
 
@@ -334,7 +334,7 @@ Features:
 	}
 
 	.curator-spotlight__institution {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-400);
 	}
 
@@ -342,10 +342,10 @@ Features:
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
 		background: var(--gr-color-primary-500);
 		border: none;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: white;
-		font-size: var(--gr-font-size-sm);
-		font-weight: var(--gr-font-weight-medium);
+		font-size: var(--gr-typography-fontSize-sm);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		cursor: pointer;
 		transition: background 0.2s;
 		min-width: 90px;
@@ -385,7 +385,7 @@ Features:
 	}
 
 	.curator-spotlight__bio {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		line-height: 1.6;
 		color: var(--gr-color-gray-300);
 		margin: 0;
@@ -400,8 +400,8 @@ Features:
 	.curator-spotlight__focus-tag {
 		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
 		background: var(--gr-color-gray-700);
-		border-radius: var(--gr-radius-sm);
-		font-size: var(--gr-font-size-xs);
+		border-radius: var(--gr-radii-sm);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: var(--gr-color-gray-300);
 	}
 
@@ -409,13 +409,13 @@ Features:
 		margin: 0;
 		padding: var(--gr-spacing-scale-4);
 		background: var(--gr-color-gray-700);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		border-left: 3px solid var(--gr-color-primary-500);
 	}
 
 	.curator-spotlight__statement p {
 		margin: 0;
-		font-size: var(--gr-font-size-base);
+		font-size: var(--gr-typography-fontSize-base);
 		font-style: italic;
 		color: var(--gr-color-gray-200);
 		line-height: 1.6;
@@ -453,7 +453,7 @@ Features:
 		aspect-ratio: 1;
 		padding: 0;
 		border: none;
-		border-radius: var(--gr-radius-sm);
+		border-radius: var(--gr-radii-sm);
 		overflow: hidden;
 		cursor: pointer;
 	}
@@ -470,7 +470,7 @@ Features:
 	}
 
 	.curator-spotlight__more {
-		font-size: var(--gr-font-size-xs);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: var(--gr-color-gray-400);
 		text-align: right;
 	}
@@ -478,13 +478,13 @@ Features:
 	.curator-spotlight__stats {
 		display: flex;
 		gap: var(--gr-spacing-scale-4);
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-400);
 	}
 
 	.curator-spotlight__stat strong {
 		color: var(--gr-color-gray-200);
-		font-weight: var(--gr-font-weight-semibold);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 	}
 
 	.curator-spotlight__link {
@@ -492,8 +492,8 @@ Features:
 		align-items: center;
 		gap: var(--gr-spacing-scale-2);
 		color: var(--gr-color-primary-400);
-		font-size: var(--gr-font-size-sm);
-		font-weight: var(--gr-font-weight-medium);
+		font-size: var(--gr-typography-fontSize-sm);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		text-decoration: none;
 		transition: color 0.2s;
 	}

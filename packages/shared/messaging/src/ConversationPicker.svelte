@@ -268,7 +268,7 @@
 		flex-wrap: wrap;
 		gap: var(--gr-spacing-scale-2);
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
-		background: var(--gr-color-surface-secondary);
+		background: var(--gr-semantic-background-secondary);
 	}
 
 	.conversation-picker__error {
@@ -285,8 +285,8 @@
 		align-items: center;
 		gap: var(--gr-spacing-scale-1);
 		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
-		background: var(--gr-color-surface-primary);
-		border: 1px solid var(--gr-color-border-default);
+		background: var(--gr-semantic-background-surface);
+		border: 1px solid var(--gr-semantic-border-default);
 		border-radius: var(--gr-radii-full);
 		font-size: var(--gr-typography-fontSize-sm);
 		cursor: pointer;
@@ -294,11 +294,11 @@
 	}
 
 	.conversation-picker__chip:hover {
-		background: var(--gr-color-surface-hover);
+		background: var(--gr-semantic-background-tertiary);
 	}
 
 	.conversation-picker__chip-remove {
-		color: var(--gr-color-text-muted);
+		color: var(--gr-semantic-foreground-tertiary);
 	}
 
 	.conversation-picker__content {
@@ -313,7 +313,7 @@
 	.conversation-picker__section-title {
 		font-size: var(--gr-typography-fontSize-xs);
 		font-weight: var(--gr-typography-fontWeight-medium);
-		color: var(--gr-color-text-muted);
+		color: var(--gr-semantic-foreground-tertiary);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 		margin-bottom: var(--gr-spacing-scale-2);
@@ -340,7 +340,7 @@
 	}
 
 	.conversation-picker__item:hover {
-		background: var(--gr-color-surface-hover);
+		background: var(--gr-semantic-background-tertiary);
 	}
 
 	.conversation-picker__item--selected {
@@ -365,7 +365,7 @@
 	.conversation-picker__item-name {
 		font-size: var(--gr-typography-fontSize-sm);
 		font-weight: var(--gr-typography-fontWeight-medium);
-		color: var(--gr-color-text-primary);
+		color: var(--gr-semantic-foreground-primary);
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -374,7 +374,7 @@
 	.conversation-picker__item-username,
 	.conversation-picker__item-preview {
 		font-size: var(--gr-typography-fontSize-xs);
-		color: var(--gr-color-text-muted);
+		color: var(--gr-semantic-foreground-tertiary);
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -400,11 +400,11 @@
 		align-items: center;
 		gap: var(--gr-spacing-scale-2);
 		padding: var(--gr-spacing-scale-4);
-		color: var(--gr-color-text-muted);
+		color: var(--gr-semantic-foreground-tertiary);
 	}
 
 	.conversation-picker__footer {
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
-		border-top: 1px solid var(--gr-color-border-subtle);
+		border-top: 1px solid var(--gr-semantic-border-subtle);
 	}
 </style>

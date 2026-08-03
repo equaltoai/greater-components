@@ -163,8 +163,8 @@ Features:
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
 		border: 1px solid transparent;
 		border-radius: var(--gr-radii-md);
-		font-size: var(--gr-font-size-sm);
-		font-weight: var(--gr-font-weight-medium);
+		font-size: var(--gr-typography-fontSize-sm);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		cursor: pointer;
 		transition:
 			background 0.2s,
@@ -251,12 +251,12 @@ Features:
 	/* Size variants */
 	.profile-actions--sm .profile-actions__button {
 		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-3);
-		font-size: var(--gr-font-size-xs);
+		font-size: var(--gr-typography-fontSize-xs);
 	}
 
 	.profile-actions--lg .profile-actions__button {
 		padding: var(--gr-spacing-scale-3) var(--gr-spacing-scale-6);
-		font-size: var(--gr-font-size-md);
+		font-size: var(--gr-typography-fontSize-base);
 	}
 
 	/* Reduced motion */

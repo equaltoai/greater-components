@@ -404,8 +404,8 @@ Features:
 	}
 
 	.gr-transparency-process-step--hybrid .gr-transparency-process-dot {
-		border-color: var(--gr-color-amber-500);
-		background: var(--gr-color-amber-900);
+		border-color: var(--gr-color-warning-500);
+		background: var(--gr-color-warning-900);
 	}
 
 	.gr-transparency-process-line {
@@ -443,7 +443,7 @@ Features:
 
 	.gr-transparency-process-step-type {
 		font-size: var(--gr-typography-fontSize-xs);
-		padding: var(--gr-spacing-scale-0-5) var(--gr-spacing-scale-2);
+		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
 		border-radius: var(--gr-radii-full);
 		background: var(--gr-color-gray-800);
 		color: var(--gr-color-gray-400);
@@ -460,8 +460,8 @@ Features:
 	}
 
 	.gr-transparency-process-step--hybrid .gr-transparency-process-step-type {
-		background: var(--gr-color-amber-900);
-		color: var(--gr-color-amber-300);
+		background: var(--gr-color-warning-900);
+		color: var(--gr-color-warning-300);
 	}
 
 	.gr-transparency-process-step-title {
@@ -500,7 +500,7 @@ Features:
 
 	.gr-transparency-process-step-tool {
 		font-size: var(--gr-typography-fontSize-xs);
-		padding: var(--gr-spacing-scale-0-5) var(--gr-spacing-scale-2);
+		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
 		background: var(--gr-color-gray-800);
 		border-radius: var(--gr-radii-sm);
 		color: var(--gr-color-gray-300);

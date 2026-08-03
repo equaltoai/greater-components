@@ -274,7 +274,7 @@ Click handler to open MediaViewer or navigate
 
 	.gr-artist-artwork-card:hover {
 		transform: translateY(-2px);
-		box-shadow: var(--gr-shadow-lg);
+		box-shadow: var(--gr-shadows-lg);
 	}
 
 	.gr-artist-artwork-card:focus-visible {

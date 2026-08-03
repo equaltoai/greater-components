@@ -162,13 +162,13 @@ CritiqueCircle.History - Past critiques archive
 <style>
 	.critique-history {
 		background: var(--gr-color-gray-800);
-		border-radius: var(--gr-radius-lg);
+		border-radius: var(--gr-radii-lg);
 		padding: var(--gr-spacing-scale-5);
 	}
 
 	.critique-history__title {
-		font-size: var(--gr-font-size-lg);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-lg);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		margin: 0 0 var(--gr-spacing-scale-4) 0;
 	}
 
@@ -185,7 +185,7 @@ CritiqueCircle.History - Past critiques archive
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
 		background: var(--gr-color-gray-700);
 		border: 1px solid var(--gr-color-gray-600);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: var(--gr-color-gray-100);
 	}
 
@@ -198,7 +198,7 @@ CritiqueCircle.History - Past critiques archive
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
 		background: var(--gr-color-gray-700);
 		border: none;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: var(--gr-color-gray-300);
 		cursor: pointer;
 		transition:
@@ -236,7 +236,7 @@ CritiqueCircle.History - Past critiques archive
 		padding: var(--gr-spacing-scale-3);
 		background: var(--gr-color-gray-700);
 		border: 2px solid transparent;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		cursor: pointer;
 		text-align: left;
 		width: 100%;
@@ -255,7 +255,7 @@ CritiqueCircle.History - Past critiques archive
 		width: 48px;
 		height: 48px;
 		object-fit: cover;
-		border-radius: var(--gr-radius-sm);
+		border-radius: var(--gr-radii-sm);
 	}
 
 	.critique-history__item-info {
@@ -265,16 +265,16 @@ CritiqueCircle.History - Past critiques archive
 	}
 
 	.critique-history__item-title {
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 	}
 
 	.critique-history__item-artist {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-400);
 	}
 
 	.critique-history__item-meta {
-		font-size: var(--gr-font-size-xs);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: var(--gr-color-gray-500);
 	}
 
@@ -282,8 +282,8 @@ CritiqueCircle.History - Past critiques archive
 		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
 		background: var(--gr-color-success-900);
 		color: var(--gr-color-success-300);
-		border-radius: var(--gr-radius-sm);
-		font-size: var(--gr-font-size-xs);
+		border-radius: var(--gr-radii-sm);
+		font-size: var(--gr-typography-fontSize-xs);
 	}
 
 	.critique-history__detail {
@@ -299,7 +299,7 @@ CritiqueCircle.History - Past critiques archive
 	.critique-history__feedback-requested {
 		padding: var(--gr-spacing-scale-3);
 		background: var(--gr-color-gray-700);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		margin-bottom: var(--gr-spacing-scale-3);
 	}
 
@@ -316,14 +316,14 @@ CritiqueCircle.History - Past critiques archive
 	.critique-history__critique {
 		padding: var(--gr-spacing-scale-3);
 		background: var(--gr-color-gray-700);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 	}
 
 	.critique-history__critique-header {
 		display: flex;
 		justify-content: space-between;
 		margin-bottom: var(--gr-spacing-scale-2);
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 	}
 
 	.critique-history__critique-header time {

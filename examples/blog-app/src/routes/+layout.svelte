@@ -43,8 +43,8 @@
 	}
 
 	.app-header {
-		padding: var(--gr-spacing-4);
-		border-bottom: 1px solid var(--gr-color-border);
+		padding: var(--gr-spacing-scale-4);
+		border-bottom: 1px solid var(--gr-semantic-border-default);
 	}
 
 	.header-content {
@@ -58,17 +58,17 @@
 	.logo {
 		font-size: var(--gr-typography-fontSize-xl);
 		font-weight: 700;
-		color: var(--gr-color-text-primary);
+		color: var(--gr-semantic-foreground-primary);
 		text-decoration: none;
 	}
 
 	.app-header nav {
 		display: flex;
-		gap: var(--gr-spacing-4);
+		gap: var(--gr-spacing-scale-4);
 	}
 
 	.app-header a {
-		color: var(--gr-color-text-primary);
+		color: var(--gr-semantic-foreground-primary);
 		text-decoration: none;
 	}
 
@@ -80,14 +80,14 @@
 		flex: 1;
 		max-width: 800px;
 		margin: 0 auto;
-		padding: var(--gr-spacing-6);
+		padding: var(--gr-spacing-scale-6);
 		width: 100%;
 	}
 
 	.app-footer {
-		padding: var(--gr-spacing-4);
+		padding: var(--gr-spacing-scale-4);
 		text-align: center;
-		border-top: 1px solid var(--gr-color-border);
-		color: var(--gr-color-text-secondary);
+		border-top: 1px solid var(--gr-semantic-border-default);
+		color: var(--gr-semantic-foreground-secondary);
 	}
 </style>

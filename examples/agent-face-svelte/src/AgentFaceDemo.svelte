@@ -113,7 +113,7 @@
 			radial-gradient(circle at top right, rgba(226, 155, 254, 0.16), transparent 26rem),
 			var(--gr-semantic-background-primary);
 		color: var(--gr-semantic-foreground-primary);
-		font-family: var(--gr-typography-fontFamily-body);
+		font-family: var(--gr-typography-fontFamily-sans);
 	}
 
 	.agent-face-demo {
@@ -155,7 +155,7 @@
 	.agent-face-demo__header h1,
 	.agent-face-demo__meta-card h2 {
 		margin: 0.35rem 0 0;
-		font-family: var(--gr-typography-fontFamily-headline);
+		font-family: var(--gr-typography-fontFamily-heading);
 	}
 
 	.agent-face-demo__header h1 {

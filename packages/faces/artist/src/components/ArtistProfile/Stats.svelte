@@ -143,14 +143,14 @@ Features:
 	}
 
 	.profile-stats__value {
-		font-size: var(--gr-font-size-2xl);
-		font-weight: var(--gr-font-weight-bold);
+		font-size: var(--gr-typography-fontSize-2xl);
+		font-weight: var(--gr-typography-fontWeight-bold);
 		color: var(--gr-color-gray-100);
 		transition: color 0.2s;
 	}
 
 	.profile-stats__label {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-400);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;

@@ -218,7 +218,7 @@ WorkInProgress.Compare - Version comparison tool
 <style>
 	.wip-compare {
 		background: var(--gr-color-gray-800);
-		border-radius: var(--gr-radius-lg);
+		border-radius: var(--gr-radii-lg);
 		overflow: hidden;
 	}
 
@@ -240,7 +240,7 @@ WorkInProgress.Compare - Version comparison tool
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
 		background: var(--gr-color-gray-700);
 		border: none;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: var(--gr-color-gray-300);
 		cursor: pointer;
 		transition:
@@ -266,7 +266,7 @@ WorkInProgress.Compare - Version comparison tool
 		display: flex;
 		align-items: center;
 		gap: var(--gr-spacing-scale-2);
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-300);
 	}
 
@@ -274,7 +274,7 @@ WorkInProgress.Compare - Version comparison tool
 		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
 		background: var(--gr-color-gray-700);
 		border: 1px solid var(--gr-color-gray-600);
-		border-radius: var(--gr-radius-sm);
+		border-radius: var(--gr-radii-sm);
 		color: var(--gr-color-gray-100);
 	}
 
@@ -295,7 +295,7 @@ WorkInProgress.Compare - Version comparison tool
 	.wip-compare__panel img {
 		width: 100%;
 		height: auto;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 	}
 
 	.wip-compare__label {
@@ -304,8 +304,8 @@ WorkInProgress.Compare - Version comparison tool
 		left: var(--gr-spacing-scale-2);
 		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
 		background: rgba(0, 0, 0, 0.7);
-		border-radius: var(--gr-radius-sm);
-		font-size: var(--gr-font-size-sm);
+		border-radius: var(--gr-radii-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: white;
 	}
 
@@ -316,7 +316,7 @@ WorkInProgress.Compare - Version comparison tool
 	.wip-compare__slider-container {
 		position: relative;
 		overflow: hidden;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 	}
 
 	.wip-compare__slider-base {
@@ -532,7 +532,7 @@ WorkInProgress.Compare - Version comparison tool
 
 	.wip-compare__overlay-base {
 		width: 100%;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 	}
 
 	.wip-compare__overlay-top {
@@ -542,7 +542,7 @@ WorkInProgress.Compare - Version comparison tool
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 	}
 
 	.wip-compare__overlay-top--opacity-0 {
@@ -594,7 +594,7 @@ WorkInProgress.Compare - Version comparison tool
 		align-items: center;
 		gap: var(--gr-spacing-scale-2);
 		margin-top: var(--gr-spacing-scale-4);
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-300);
 	}
 
