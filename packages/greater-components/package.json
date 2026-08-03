@@ -454,7 +454,7 @@
     "execa": "^9.6.1",
     "focus-trap": "^8.2.2",
     "fs-extra": "^11.4.0",
-    "graphql": "^16.13.2",
+    "graphql": "^17.0.2",
     "graphql-ws": "^6.2.0",
     "hast-util-sanitize": "^5.0.2",
     "hast-util-to-mdast": "^10.1.2",
