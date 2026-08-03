@@ -172,8 +172,8 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		description: 'Protocol adapters package',
 		files: [{ path: 'greater/adapters/index.ts', content: '', type: 'utils' }],
 		dependencies: [
-			{ name: '@apollo/client', version: '4.1.7' },
-			{ name: '@apollo/client-react-streaming', version: '^0.14.0' },
+			{ name: '@apollo/client', version: '4.2.9' },
+			{ name: '@apollo/client-react-streaming', version: '^0.14.5' },
 			{ name: '@graphql-typed-document-node/core', version: '^3.2.0' },
 			{ name: 'graphql', version: '^16.12.0' },
 			{ name: 'graphql-ws', version: '^6.0.6' },

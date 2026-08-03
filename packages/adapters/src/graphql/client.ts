@@ -10,15 +10,7 @@
  * - Retry logic
  */
 
-import {
-	ApolloClient,
-	ApolloLink,
-	InMemoryCache,
-	HttpLink,
-	split,
-	from,
-	type DefaultOptions,
-} from '@apollo/client';
+import { ApolloClient, ApolloLink, InMemoryCache, HttpLink, split, from } from '@apollo/client';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions/index.js';
 import { getMainDefinition, Observable } from '@apollo/client/utilities/index.js';
 import { onError } from '@apollo/client/link/error/index.js';
@@ -26,6 +18,26 @@ import { RetryLink } from '@apollo/client/link/retry/index.js';
 import { createClient, type Client } from 'graphql-ws';
 import { CombinedGraphQLErrors } from '@apollo/client/errors/index.js';
 import { cacheConfig } from './cache.js';
+
+declare module '@apollo/client' {
+	namespace ApolloClient {
+		namespace DeclareDefaultOptions {
+			// Optional declarations keep this library compatible with consumer-owned
+			// clients while admitting the `all` defaults used by Greater's client.
+			interface WatchQuery {
+				errorPolicy?: 'all';
+			}
+
+			interface Query {
+				errorPolicy?: 'all';
+			}
+
+			interface Mutate {
+				errorPolicy?: 'all';
+			}
+		}
+	}
+}
 import {
 	AUTH_EXPIRED_CODE,
 	AuthExpiredError,
@@ -691,7 +703,7 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 	const link = from([credentialGenerationLink, errorLink, retryLink, splitLink]);
 
 	// Default options for all operations
-	const defaultOptions: DefaultOptions = {
+	const defaultOptions: ApolloClient.DefaultOptions.Input = {
 		watchQuery: {
 			fetchPolicy: 'cache-and-network',
 			errorPolicy: 'all',
