@@ -294,12 +294,11 @@ function importSpecifiers(content: string, filePath?: string): string[] {
 	const commentStripped = stripHtmlComments(content, filePath);
 	// Svelte markup is not JavaScript: only script/style bodies may influence
 	// string and comment state for executable import matches.
-	const rawExecutableContent = filePath?.endsWith('.svelte') ? maskSvelteMarkup(content) : content;
 	const executableContent = filePath?.endsWith('.svelte')
 		? maskSvelteMarkup(commentStripped)
 		: commentStripped;
 	const specifiers = recoverImportSpecifiers(executableContent);
-	if (specifiers.length === 0 && hasExecutableImportShapedToken(rawExecutableContent)) {
+	if (specifiers.length === 0 && hasExecutableImportShapedToken(executableContent)) {
 		throw new Error(
 			`Import recovery found an import-shaped token but recovered no specifiers from ${filePath ?? '<unknown file>'}`
 		);
@@ -361,6 +360,14 @@ describe('greater add review (real command)', () => {
 		const executableContent = maskSvelteMarkup(stripHtmlComments(source, 'synthetic.svelte'));
 
 		expect(recoverImportSpecifiers(executableContent)).toEqual([]);
+	});
+
+	it('does not fail loudly for an import-shaped token in a commented-out Svelte script', () => {
+		const source = ['<!--', '<script>', "import 'decoy';", '</script>', '-->', '<p>hi</p>'].join(
+			'\n'
+		);
+
+		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual([]);
 	});
 
 	it('recovers a Svelte import after an HTML comment opener inside a script string (E1)', () => {
