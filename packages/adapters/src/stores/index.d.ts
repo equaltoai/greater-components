@@ -3,6 +3,10 @@
  */
 export { createTimelineStore } from './timelineStore';
 export { createNotificationStore } from './notificationStore';
-export { createPresenceStore } from './presenceStore';
+export {
+	createPresenceStore,
+	createBrowserPresenceActivitySource,
+	createBrowserPresenceLocationSource,
+} from './presenceStore';
 export type * from './types';
 //# sourceMappingURL=index.d.ts.map

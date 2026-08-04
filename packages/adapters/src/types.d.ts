@@ -11,6 +11,7 @@ import type {
 	ModerationQueueUpdateSubscription,
 	CostAlertsSubscription,
 } from './graphql/generated/types.js';
+import type { AuthExpiredError, AuthExpiredHandler, TokenRefreshCallback } from './authExpiry.js';
 /**
  * Transport types and interfaces for WebSocket, SSE, and HTTP Polling
  */
@@ -34,7 +35,32 @@ export interface BaseTransportConfig {
 	/** Optional logger implementation for transport diagnostics */
 	logger?: TransportLogger;
 }
-export interface WebSocketClientConfig extends BaseTransportConfig {
+/**
+ * Credential-expiry handling, shared by transports that speak Lesser's
+ * subscribe-time expiry contract.
+ *
+ * Kept out of {@link BaseTransportConfig} deliberately: these are behavioural
+ * handlers with no default, not settings, so they must not appear in the
+ * `Required<Config>` shape the transports resolve their defaults into.
+ */
+export interface AuthExpiryConfig {
+	/**
+	 * Supplies a fresh credential when the server reports the current one
+	 * expired (Lesser v1.5.33 `TOKEN_EXPIRED`).
+	 *
+	 * When configured, the transport refreshes once, reconnects with the new
+	 * credential, and resumes — without consuming a reconnect attempt. When
+	 * omitted, credential expiry is terminal and surfaced as an
+	 * {@link AuthExpiredError} rather than retried silently.
+	 */
+	onTokenRefresh?: TokenRefreshCallback;
+	/**
+	 * Notified when credential expiry is terminal for this transport: no
+	 * refresh callback is configured, or refreshing produced no credential.
+	 */
+	onAuthExpired?: AuthExpiredHandler;
+}
+export interface WebSocketClientConfig extends BaseTransportConfig, AuthExpiryConfig {
 	/** Heartbeat interval in milliseconds (default: 30000) */
 	heartbeatInterval?: number;
 	/** Heartbeat timeout in milliseconds (default: 60000) */
@@ -44,6 +70,10 @@ export interface WebSocketClientConfig extends BaseTransportConfig {
 	/** Latency sampling interval in milliseconds (default: 10000) */
 	latencySamplingInterval?: number;
 }
+/** Config keys the WebSocket client resolves defaults for. */
+export type ResolvedWebSocketClientConfig = Required<
+	Omit<WebSocketClientConfig, keyof AuthExpiryConfig>
+>;
 export interface WebSocketMessage {
 	/** Message type/event name */
 	type: string;
@@ -67,7 +97,23 @@ export interface WebSocketClientState {
 	lastEventId: string | null;
 }
 export type WebSocketEventType =
-	'open' | 'close' | 'error' | 'message' | 'reconnecting' | 'reconnected' | 'latency';
+	| 'open'
+	| 'close'
+	| 'error'
+	| 'message'
+	| 'reconnecting'
+	| 'reconnected'
+	| 'latency'
+	| 'authExpired';
+/**
+ * Payload of the terminal `authExpired` event.
+ *
+ * Emitted when the server reported credential expiry and the transport could
+ * not recover it. Deliberately carries no credential material.
+ */
+export interface AuthExpiredEventData {
+	error: AuthExpiredError;
+}
 export interface WebSocketEvent {
 	type: WebSocketEventType | TransportEventName | string;
 	data?: unknown;

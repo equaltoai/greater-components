@@ -334,6 +334,34 @@ export interface LesserMentionFragment {
 	domain?: string;
 	url: string;
 }
+export interface LesserCommunicationFromFragment {
+	address: string;
+	displayName?: string;
+	soulAgentId?: string | null;
+}
+export interface LesserCommunicationToFragment {
+	address: string;
+	soulAgentId?: string | null;
+}
+export interface LesserCommunicationAttachmentFragment {
+	id: string;
+	filename: string;
+	contentType: string;
+	sizeBytes: number;
+	sha256: string;
+}
+export interface LesserCommunicationNotificationFragment {
+	channel: string;
+	from: LesserCommunicationFromFragment;
+	to?: LesserCommunicationToFragment | null;
+	attachments: LesserCommunicationAttachmentFragment[];
+	subject?: string | null;
+	body?: string | null;
+	receivedAt: string;
+	messageId: string;
+	inReplyTo?: string | null;
+	threadId: string;
+}
 export interface LesserNotificationFragment {
 	id: string;
 	notificationType:
@@ -351,11 +379,13 @@ export interface LesserNotificationFragment {
 		| 'COMMUNITY_NOTE'
 		| 'TRUST_UPDATE'
 		| 'COST_ALERT'
-		| 'MODERATION_ACTION';
+		| 'MODERATION_ACTION'
+		| 'COMMUNICATION_INBOUND';
 	createdAt: string;
 	triggerAccount: LesserAccountFragment;
 	status?: LesserObjectFragment;
 	adminReport?: LesserAdminReportFragment;
+	communication?: LesserCommunicationNotificationFragment;
 	isRead?: boolean;
 }
 export interface LesserAdminReportFragment {
@@ -548,5 +578,6 @@ export declare const LESSER_NOTIFICATION_TYPES: readonly [
 	'STATUS_UPDATE',
 	'ADMIN_SIGNUP',
 	'ADMIN_REPORT',
+	'COMMUNICATION_INBOUND',
 ];
 //# sourceMappingURL=types.d.ts.map
