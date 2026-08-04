@@ -142,10 +142,16 @@ interface StripCursor {
 	state: StripState;
 	escaped: boolean;
 	regexCharacterClass: boolean;
+	templateExpressionDepths: number[];
 }
 
 function createStripCursor(): StripCursor {
-	return { state: 'normal', escaped: false, regexCharacterClass: false };
+	return {
+		state: 'normal',
+		escaped: false,
+		regexCharacterClass: false,
+		templateExpressionDepths: [],
+	};
 }
 
 function canStartRegexLiteral(content: string, offset: number): boolean {
@@ -219,6 +225,11 @@ function advanceStripCursor(cursor: StripCursor, content: string, offset: number
 			cursor.escaped = true;
 			return 1;
 		}
+		if (cursor.state === 'template' && char === '$' && next === '{') {
+			cursor.templateExpressionDepths.push(1);
+			cursor.state = 'normal';
+			return 2;
+		}
 		if (
 			(cursor.state === 'single' && char === "'") ||
 			(cursor.state === 'double' && char === '"') ||
@@ -227,6 +238,22 @@ function advanceStripCursor(cursor: StripCursor, content: string, offset: number
 			cursor.state = 'normal';
 		}
 		return 1;
+	}
+
+	const templateExpressionIndex = cursor.templateExpressionDepths.length - 1;
+	if (templateExpressionIndex >= 0) {
+		if (char === '{') {
+			cursor.templateExpressionDepths[templateExpressionIndex]++;
+			return 1;
+		}
+		if (char === '}') {
+			cursor.templateExpressionDepths[templateExpressionIndex]--;
+			if (cursor.templateExpressionDepths[templateExpressionIndex] === 0) {
+				cursor.templateExpressionDepths.pop();
+				cursor.state = 'template';
+			}
+			return 1;
+		}
 	}
 
 	if (char === '/' && next === '/') {
@@ -384,7 +411,7 @@ function maskSvelteMarkup(content: string): string {
 
 function executableImportShapedTokenOffset(content: string): number | undefined {
 	const pattern =
-		/(?:^|[;\n\r])\s*(?:import\s+(?:[^'"]+?\s*from\s*)?['"]|export\s+[^'"]+?\s*from\s*['"])|(?<![\w$])import\s*\(\s*['"]|@import\s+(?:url\s*\(\s*)?['"]/g;
+		/(?:^|[;\n\r])\s*(?:import(?:\s+[^'"]+?\s*from\s*|\s*)['"]|export\s+[^'"]+?\s*from\s*['"])|(?<![\w$])import\s*\(\s*['"]|@import\s+(?:url\s*\(\s*)?['"]/g;
 
 	let match: RegExpExecArray | null;
 	while ((match = pattern.exec(content)) !== null) {
@@ -564,15 +591,54 @@ describe('greater add review (real command)', () => {
 		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual(['pkg-real']);
 	});
 
-	it('keeps imports above nested template literals in Svelte executable regions', () => {
+	it.each([
+		{
+			name: 'X1: recovers an import after a plain nested template',
+			source: "const value = `${items.map((item) => `${item}`).join('')}`;\nimport 'x1-real';",
+			expected: ['x1-real'],
+		},
+		{
+			name: 'X2: recovers an import after a nested template containing a closing tag',
+			source:
+				"const html = `<div>${items.map((item) => `<b>${item}</b>`).join('')}</div>`;\nimport 'x2-real';",
+			expected: ['x2-real'],
+		},
+		{
+			name: 'X3: recovers an import after a single template containing a closing tag',
+			source: "const html = `<div></b></div>`;\nimport 'x3-real';",
+			expected: ['x3-real'],
+		},
+		{
+			name: 'X4: recovers an import after a nested template containing a self-closing tag',
+			source:
+				"const html = `<div>${items.map((item) => `<br/>${item}`).join('')}</div>`;\nimport 'x4-real';",
+			expected: ['x4-real'],
+		},
+		{
+			name: 'X5: recovers a dynamic import after a nested template containing a closing tag',
+			source:
+				"const html = `<div>${items.map((item) => `<b>${item}</b>`).join('')}</div>`;\nawait import('./lazy.js');",
+			expected: ['./lazy.js'],
+		},
+		{
+			name: 'X8: recovers an import after division inside a nested template',
+			source:
+				"const html = `<div>${items.map((item) => `<b>${item / total}</b>`).join('')}</div>`;\nimport 'x8-real';",
+			expected: ['x8-real'],
+		},
+	])('$name', ({ source, expected }) => {
+		expect(importSpecifiers(source, 'nested-template.ts')).toEqual(expected);
+	});
+
+	it('X6: keeps a Svelte import before a nested template containing a closing tag', () => {
 		const source = [
 			'<script>',
-			"import 'pkg-real';",
+			"import './ctx.js';",
 			"const html = `<div>${items.map((item) => `<b>${item}</b>`).join('')}</div>`;",
 			'</script>',
 		].join('\n');
 
-		expect(importSpecifiers(source, 'nested-template.svelte')).toEqual(['pkg-real']);
+		expect(importSpecifiers(source, 'nested-template.svelte')).toEqual(['./ctx.js']);
 	});
 
 	it('finds a Svelte opening tag terminator after a quoted greater-than character', () => {
@@ -581,6 +647,16 @@ describe('greater add review (real command)', () => {
 		);
 
 		expect(importSpecifiers(source, 'quoted-attribute.svelte')).toEqual(['attribute-real']);
+	});
+
+	it('falls back to the first greater-than for an unterminated Svelte attribute quote', () => {
+		const source = ['<script data-x="a>', "import 'attribute-fallback-real';", '</script>'].join(
+			'\n'
+		);
+
+		expect(importSpecifiers(source, 'unterminated-attribute.svelte')).toEqual([
+			'attribute-fallback-real',
+		]);
 	});
 
 	it('fails loudly when an import-shaped token yields no recovered specifier', () => {
@@ -613,6 +689,12 @@ describe('greater add review (real command)', () => {
 				source: "export {a}from 'malformed;",
 				file: 'malformed.ts',
 				token: 'export',
+				line: 1,
+			},
+			{
+				source: "import'malformed;",
+				file: 'malformed.ts',
+				token: 'import',
 				line: 1,
 			},
 			{
