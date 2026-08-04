@@ -67,3 +67,25 @@ current-era fixtures, and the two fixture sets have diverged.
 The removed assertion is coverage Greater intends to re-establish when the upstream repositories
 again publish a same-version fixture pair. Greater does not restore or synthesize mismatched
 historical fixtures in the meantime.
+
+---
+
+## Quote Posts REST compatibility surface is 501-only
+
+- **Observed at:** `v1.6.0` (`858ad4f94fba055e2d0f9b6a8e0bb78dfea2c796`)
+- **Greater surface:** REST adapter compatibility; quote flows use GraphQL
+- **Status:** open upstream capability gap — no Greater code change required
+
+At v1.6.0, four Quote Posts REST endpoints lost their `200` responses and are now `501`-only:
+
+- `GET /api/v1/accounts/{id}/quote_permissions`
+- `PUT /api/v1/accounts/quote_permissions`
+- `POST /api/v1/statuses/{id}/quote`
+- `GET /api/v1/statuses/{id}/quotes`
+
+Quote Posts are therefore GraphQL-only at the pinned version. Upstream also dropped the
+`QuotePermissionsResponse`, `QuoteStatusAccount`, and `QuoteStatusSummary` schemas.
+
+This is Mastodon-compat-relevant because REST is the Mastodon-compat path. Greater has zero tracked
+references to the removed schemas, and its quote flows already go through GraphQL, so no adapter or
+component change accompanies this record.
