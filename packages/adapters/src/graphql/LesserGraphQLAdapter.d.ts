@@ -7,6 +7,7 @@
  */
 import { Observable, type FetchResult, type OperationVariables } from '@apollo/client';
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core';
+import type { LesserMessagesAdapter } from '../messaging/createLesserMessagesHandlers.js';
 import { type GraphQLClientConfig } from './client.js';
 import type {
 	TimelineQueryVariables,
@@ -18,13 +19,27 @@ import type {
 	CreateListMutationVariables,
 	UpdateListMutationVariables,
 	ConversationsQueryVariables,
+	ConversationMessagesQueryVariables,
+	CreateConversationMutationVariables,
+	SendMessageMutationVariables,
+	AcceptMessageRequestMutationVariables,
+	DeclineMessageRequestMutationVariables,
+	DeleteMessageMutationVariables,
 	UpdateRelationshipMutationVariables,
 	AgentsQueryVariables,
 	AgentActivityQueryVariables,
+	AgentAccessLeasesQueryVariables,
 	AgentMemorySearchQueryVariables,
 	RegisterAgentMutationVariables,
 	UpdateAgentMutationVariables,
 	DelegateToAgentMutationVariables,
+	CreateAgentAccessLeasePrincipalChallengeMutationVariables,
+	CreateAgentAccessLeaseAgentChallengeMutationVariables,
+	CreateAgentAccessLeaseMutationVariables,
+	RevokeAgentAccessLeaseMutationVariables,
+	CreateAgentAccessLeaseSessionKeyChallengeMutationVariables,
+	AuthorizeAgentAccessLeaseSessionKeyMutationVariables,
+	ExchangeAgentAccessLeaseTokenMutationVariables,
 	UpdateAdminAgentPolicyMutationVariables,
 	AdminVerifyAgentMutationVariables,
 	AdminUnverifyAgentMutationVariables,
@@ -75,7 +90,12 @@ import type {
 	NotificationLevel,
 	UploadMediaInput,
 	UploadMediaMutation,
+	UpdateMediaMutationVariables,
 	Actor,
+	SharedDraftReviewsQueryVariables,
+	ShareDraftForReviewMutation,
+	SubmitDraftReviewMutationVariables,
+	DraftReviewVerdict,
 } from './generated/types.js';
 export type ViewerQuery = {
 	viewer: Actor;
@@ -84,19 +104,75 @@ export type LesserGraphQLAdapterConfig = GraphQLClientConfig;
 export type TimelineVariables = TimelineQueryVariables;
 export type SearchVariables = SearchQueryVariables;
 export type CreateNoteVariables = CreateNoteMutationVariables;
+export type ConversationMessagesVariables = ConversationMessagesQueryVariables;
+export type CreateConversationVariables = CreateConversationMutationVariables;
+export type SendMessageVariables = SendMessageMutationVariables;
+export type UpdateMediaVariables = UpdateMediaMutationVariables;
 export declare class LesserGraphQLAdapterError extends Error {
 	readonly code: string;
 	readonly debugMessages: readonly string[];
+	/**
+	 * Server-defined `extensions.code` values carried by the failure, e.g.
+	 * `UNPROCESSABLE_ENTITY` or `CONFLICT`.
+	 *
+	 * Lesser's GraphQL error presenter sets `extensions.code` from its
+	 * structured `AppError` codes (cmd/graphql/main.go `graphQLErrorPresenter`).
+	 * The code is contract surface rather than server detail, so it survives
+	 * the user-safe sanitisation that strips messages — callers need it to tell
+	 * an expected condition from a genuine fault.
+	 */
+	readonly serverCodes: readonly string[];
 	constructor(
 		message: string,
 		options?: {
 			code?: string;
 			debugMessages?: readonly string[];
+			serverCodes?: readonly string[];
 			cause?: unknown;
 		}
 	);
 }
-export declare class LesserGraphQLAdapter {
+/** The `DraftReview` payload returned by a successful share. */
+export type SharedDraftReview = ShareDraftForReviewMutation['shareDraftForReview'];
+/**
+ * Result of {@link LesserGraphQLAdapter.shareDraftForReviewIfAbsent}.
+ *
+ * `already-invited` deliberately carries no `review`: the share was refused, so
+ * there is no server state to report and nothing for the caller to mistake for
+ * success.
+ */
+export type ShareDraftForReviewOutcome =
+	| {
+			status: 'invited';
+			review: SharedDraftReview;
+	  }
+	| {
+			status: 'already-invited';
+			draftId: string;
+			reviewer: string;
+			cause: unknown;
+	  };
+/**
+ * True when a failed share was refused because the grant already exists.
+ *
+ * Classification is by `extensions.code` only. The obvious alternative —
+ * matching the failure text — was deliberately rejected: server message strings
+ * are not contract, so a wording change upstream would silently reclassify a
+ * genuine fault as a benign "already invited" notice, and a substring as broad
+ * as "duplicate" can appear in failures that have nothing to do with this grant.
+ * Presenting a fault as an expected condition is the worse error in both
+ * directions.
+ *
+ * Known upstream gap at the pinned v1.5.33, reported rather than worked around:
+ * `CreateDraftReviewGrant` returns its storage error unwrapped, so
+ * `graphQLErrorPresenter` finds no `*AppError`, attaches no `extensions.code`,
+ * and that conflict is *not* recognised here. The share then surfaces as an
+ * ordinary error, which is the honest outcome while the code is missing — see
+ * `docs/lesser/contracts/upstream-gaps.md`. Once Lesser maps the conditional
+ * failure to `CodeConflict`, this function recognises it with no change.
+ */
+export declare function isDraftReviewShareConflict(error: unknown): boolean;
+export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 	private readonly client;
 	private readonly httpEndpoint;
 	private readonly baseHeaders;
@@ -225,9 +301,11 @@ export declare class LesserGraphQLAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
-										readonly modelVersion?: string | null | undefined;
+										readonly schemaVersion?: string | null | undefined;
+										readonly modelId?: string | null | undefined;
 								  }
 								| null
 								| undefined;
@@ -447,9 +525,11 @@ export declare class LesserGraphQLAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
-							readonly modelVersion?: string | null | undefined;
+							readonly schemaVersion?: string | null | undefined;
+							readonly modelId?: string | null | undefined;
 					  }
 					| null
 					| undefined;
@@ -729,9 +809,11 @@ export declare class LesserGraphQLAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
-										readonly modelVersion?: string | null | undefined;
+										readonly schemaVersion?: string | null | undefined;
+										readonly modelId?: string | null | undefined;
 								  }
 								| null
 								| undefined;
@@ -951,9 +1033,11 @@ export declare class LesserGraphQLAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
-							readonly modelVersion?: string | null | undefined;
+							readonly schemaVersion?: string | null | undefined;
+							readonly modelId?: string | null | undefined;
 					  }
 					| null
 					| undefined;
@@ -1234,9 +1318,11 @@ export declare class LesserGraphQLAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
-										readonly modelVersion?: string | null | undefined;
+										readonly schemaVersion?: string | null | undefined;
+										readonly modelId?: string | null | undefined;
 								  }
 								| null
 								| undefined;
@@ -1456,9 +1542,11 @@ export declare class LesserGraphQLAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
-							readonly modelVersion?: string | null | undefined;
+							readonly schemaVersion?: string | null | undefined;
+							readonly modelId?: string | null | undefined;
 					  }
 					| null
 					| undefined;
@@ -1738,9 +1826,11 @@ export declare class LesserGraphQLAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
-										readonly modelVersion?: string | null | undefined;
+										readonly schemaVersion?: string | null | undefined;
+										readonly modelId?: string | null | undefined;
 								  }
 								| null
 								| undefined;
@@ -1960,9 +2050,11 @@ export declare class LesserGraphQLAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
-							readonly modelVersion?: string | null | undefined;
+							readonly schemaVersion?: string | null | undefined;
+							readonly modelId?: string | null | undefined;
 					  }
 					| null
 					| undefined;
@@ -2243,9 +2335,11 @@ export declare class LesserGraphQLAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
-										readonly modelVersion?: string | null | undefined;
+										readonly schemaVersion?: string | null | undefined;
+										readonly modelId?: string | null | undefined;
 								  }
 								| null
 								| undefined;
@@ -2465,9 +2559,11 @@ export declare class LesserGraphQLAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
-							readonly modelVersion?: string | null | undefined;
+							readonly schemaVersion?: string | null | undefined;
+							readonly modelId?: string | null | undefined;
 					  }
 					| null
 					| undefined;
@@ -2748,9 +2844,11 @@ export declare class LesserGraphQLAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
-										readonly modelVersion?: string | null | undefined;
+										readonly schemaVersion?: string | null | undefined;
+										readonly modelId?: string | null | undefined;
 								  }
 								| null
 								| undefined;
@@ -2970,9 +3068,11 @@ export declare class LesserGraphQLAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
-							readonly modelVersion?: string | null | undefined;
+							readonly schemaVersion?: string | null | undefined;
+							readonly modelId?: string | null | undefined;
 					  }
 					| null
 					| undefined;
@@ -3253,9 +3353,11 @@ export declare class LesserGraphQLAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
-										readonly modelVersion?: string | null | undefined;
+										readonly schemaVersion?: string | null | undefined;
+										readonly modelId?: string | null | undefined;
 								  }
 								| null
 								| undefined;
@@ -3475,9 +3577,11 @@ export declare class LesserGraphQLAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
-							readonly modelVersion?: string | null | undefined;
+							readonly schemaVersion?: string | null | undefined;
+							readonly modelId?: string | null | undefined;
 					  }
 					| null
 					| undefined;
@@ -3750,9 +3854,11 @@ export declare class LesserGraphQLAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
-										readonly modelVersion?: string | null | undefined;
+										readonly schemaVersion?: string | null | undefined;
+										readonly modelId?: string | null | undefined;
 								  }
 								| null
 								| undefined;
@@ -3972,9 +4078,11 @@ export declare class LesserGraphQLAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
-							readonly modelVersion?: string | null | undefined;
+							readonly schemaVersion?: string | null | undefined;
+							readonly modelId?: string | null | undefined;
 					  }
 					| null
 					| undefined;
@@ -4239,6 +4347,75 @@ export declare class LesserGraphQLAdapter {
 		| null
 		| undefined
 	>;
+	getInstance(): Promise<{
+		readonly __typename: 'InstanceInfo';
+		readonly domain: string;
+		readonly title: string;
+		readonly shortDescription?: string | null | undefined;
+		readonly description: string;
+		readonly email?: string | null | undefined;
+		readonly version: string;
+		readonly sourceUrl?: string | null | undefined;
+		readonly streamingUrl?: string | null | undefined;
+		readonly thumbnailUrl?: string | null | undefined;
+		readonly languages: ReadonlyArray<string>;
+		readonly registrationsOpen: boolean;
+		readonly approvalRequired: boolean;
+		readonly invitesEnabled: boolean;
+		readonly userCount: number;
+		readonly statusCount: number;
+		readonly domainCount: number;
+		readonly contactAccount?:
+			| {
+					readonly __typename: 'Actor';
+					readonly id: string;
+					readonly username: string;
+					readonly domain?: string | null | undefined;
+					readonly displayName?: string | null | undefined;
+					readonly summary?: string | null | undefined;
+					readonly avatar?: string | null | undefined;
+					readonly header?: string | null | undefined;
+					readonly followers: number;
+					readonly following: number;
+					readonly statusesCount: number;
+					readonly bot: boolean;
+					readonly locked: boolean;
+					readonly updatedAt: string;
+					readonly isAgent: boolean;
+					readonly tipAddress?: string | null | undefined;
+					readonly tipChainId?: number | null | undefined;
+					readonly trustScore: number;
+					readonly agentInfo?:
+						| {
+								readonly __typename: 'Agent';
+								readonly id: string;
+								readonly agentType: import('./index.js').AgentType;
+								readonly verified: boolean;
+								readonly verifiedAt?: string | null | undefined;
+						  }
+						| null
+						| undefined;
+					readonly fields: ReadonlyArray<{
+						readonly __typename: 'Field';
+						readonly name: string;
+						readonly value: string;
+						readonly verifiedAt?: string | null | undefined;
+					}>;
+			  }
+			| null
+			| undefined;
+		readonly rules: ReadonlyArray<{
+			readonly __typename: 'InstanceRule';
+			readonly id: string;
+			readonly text: string;
+		}>;
+		readonly tips: {
+			readonly __typename: 'TipsConfig';
+			readonly enabled: boolean;
+			readonly chainId?: number | null | undefined;
+			readonly contractAddress?: string | null | undefined;
+		};
+	}>;
 	getAgentByUsername(username: string): Promise<
 		| {
 				readonly __typename: 'Agent';
@@ -4455,6 +4632,39 @@ export declare class LesserGraphQLAdapter {
 				| undefined;
 		}[]
 	>;
+	getMySouls(): Promise<
+		readonly {
+			readonly __typename: 'SoulInventoryItem';
+			readonly bindingState: import('./index.js').SoulBindingState;
+			readonly availableForIncorporation: boolean;
+			readonly agent: {
+				readonly __typename: 'SoulAgentIdentity';
+				readonly agentId: string;
+				readonly domain: string;
+				readonly localId: string;
+				readonly ensName?: string | null | undefined;
+				readonly wallet: string;
+				readonly principalAddress?: string | null | undefined;
+				readonly status: string;
+				readonly lifecycleStatus?: string | null | undefined;
+				readonly selfDescriptionVersion?: number | null | undefined;
+				readonly capabilities: ReadonlyArray<string>;
+				readonly mintTxHash?: string | null | undefined;
+				readonly mintedAt?: string | null | undefined;
+				readonly updatedAt?: string | null | undefined;
+			};
+			readonly binding?:
+				| {
+						readonly __typename: 'SoulAgentBinding';
+						readonly agentUsername: string;
+						readonly principalAddress?: string | null | undefined;
+						readonly boundAt: string;
+						readonly updatedAt: string;
+				  }
+				| null
+				| undefined;
+		}[]
+	>;
 	getAgentActivity(variables: AgentActivityQueryVariables): Promise<{
 		readonly __typename: 'AgentActivityConnection';
 		readonly totalCount: number;
@@ -4479,6 +4689,33 @@ export declare class LesserGraphQLAdapter {
 			readonly endCursor?: string | null | undefined;
 		};
 	}>;
+	getAgentAccessLeases(variables: AgentAccessLeasesQueryVariables): Promise<
+		readonly {
+			readonly __typename: 'AgentAccessLease';
+			readonly id: string;
+			readonly username: string;
+			readonly principalUsername: string;
+			readonly principalWallet: string;
+			readonly agentWallet: string;
+			readonly scopes: ReadonlyArray<string>;
+			readonly deviceLabel: string;
+			readonly status: string;
+			readonly idleTimeoutHours: number;
+			readonly idleExpiresAt: string;
+			readonly absoluteExpiresAt: string;
+			readonly lastUsedAt: string;
+			readonly leaseVersion: number;
+			readonly sessionPublicKey?: string | null | undefined;
+			readonly sessionKeyType?: string | null | undefined;
+			readonly sessionKeyCreatedAt?: string | null | undefined;
+			readonly sessionKeyLastUsedAt?: string | null | undefined;
+			readonly createdAt: string;
+			readonly updatedAt: string;
+			readonly revokedAt?: string | null | undefined;
+			readonly revokedBy?: string | null | undefined;
+			readonly revokedReason?: string | null | undefined;
+		}[]
+	>;
 	getAdminAgentPolicy(): Promise<{
 		readonly __typename: 'AdminAgentPolicy';
 		readonly allowAgents: boolean;
@@ -4602,9 +4839,11 @@ export declare class LesserGraphQLAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
-										readonly modelVersion?: string | null | undefined;
+										readonly schemaVersion?: string | null | undefined;
+										readonly modelId?: string | null | undefined;
 								  }
 								| null
 								| undefined;
@@ -4824,9 +5063,11 @@ export declare class LesserGraphQLAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
-							readonly modelVersion?: string | null | undefined;
+							readonly schemaVersion?: string | null | undefined;
+							readonly modelId?: string | null | undefined;
 					  }
 					| null
 					| undefined;
@@ -5293,6 +5534,198 @@ export declare class LesserGraphQLAdapter {
 		};
 	}>;
 	revokeAgentToken(username: string): Promise<boolean>;
+	createAgentAccessLeasePrincipalChallenge(
+		username: string,
+		input: CreateAgentAccessLeasePrincipalChallengeMutationVariables['input']
+	): Promise<{
+		readonly __typename: 'AgentAccessLeaseChallenge';
+		readonly id: string;
+		readonly leaseID: string;
+		readonly username: string;
+		readonly action: string;
+		readonly walletAddress: string;
+		readonly principalWallet: string;
+		readonly agentWallet: string;
+		readonly sessionPublicKey?: string | null | undefined;
+		readonly sessionKeyType?: string | null | undefined;
+		readonly scopes: ReadonlyArray<string>;
+		readonly deviceLabel: string;
+		readonly idleTimeoutHours: number;
+		readonly absoluteTTLHours: number;
+		readonly message: string;
+		readonly typedDataJson?: string | null | undefined;
+		readonly issuedAt: string;
+		readonly expiresAt: string;
+	}>;
+	createAgentAccessLeaseAgentChallenge(
+		username: string,
+		input: CreateAgentAccessLeaseAgentChallengeMutationVariables['input']
+	): Promise<{
+		readonly __typename: 'AgentAccessLeaseChallenge';
+		readonly id: string;
+		readonly leaseID: string;
+		readonly username: string;
+		readonly action: string;
+		readonly walletAddress: string;
+		readonly principalWallet: string;
+		readonly agentWallet: string;
+		readonly sessionPublicKey?: string | null | undefined;
+		readonly sessionKeyType?: string | null | undefined;
+		readonly scopes: ReadonlyArray<string>;
+		readonly deviceLabel: string;
+		readonly idleTimeoutHours: number;
+		readonly absoluteTTLHours: number;
+		readonly message: string;
+		readonly typedDataJson?: string | null | undefined;
+		readonly issuedAt: string;
+		readonly expiresAt: string;
+	}>;
+	createAgentAccessLease(
+		username: string,
+		input: CreateAgentAccessLeaseMutationVariables['input']
+	): Promise<{
+		readonly __typename: 'AgentAccessLease';
+		readonly id: string;
+		readonly username: string;
+		readonly principalUsername: string;
+		readonly principalWallet: string;
+		readonly agentWallet: string;
+		readonly scopes: ReadonlyArray<string>;
+		readonly deviceLabel: string;
+		readonly status: string;
+		readonly idleTimeoutHours: number;
+		readonly idleExpiresAt: string;
+		readonly absoluteExpiresAt: string;
+		readonly lastUsedAt: string;
+		readonly leaseVersion: number;
+		readonly sessionPublicKey?: string | null | undefined;
+		readonly sessionKeyType?: string | null | undefined;
+		readonly sessionKeyCreatedAt?: string | null | undefined;
+		readonly sessionKeyLastUsedAt?: string | null | undefined;
+		readonly createdAt: string;
+		readonly updatedAt: string;
+		readonly revokedAt?: string | null | undefined;
+		readonly revokedBy?: string | null | undefined;
+		readonly revokedReason?: string | null | undefined;
+	}>;
+	revokeAgentAccessLease(
+		username: string,
+		leaseID: string,
+		input?: RevokeAgentAccessLeaseMutationVariables['input']
+	): Promise<{
+		readonly __typename: 'AgentAccessLease';
+		readonly id: string;
+		readonly username: string;
+		readonly principalUsername: string;
+		readonly principalWallet: string;
+		readonly agentWallet: string;
+		readonly scopes: ReadonlyArray<string>;
+		readonly deviceLabel: string;
+		readonly status: string;
+		readonly idleTimeoutHours: number;
+		readonly idleExpiresAt: string;
+		readonly absoluteExpiresAt: string;
+		readonly lastUsedAt: string;
+		readonly leaseVersion: number;
+		readonly sessionPublicKey?: string | null | undefined;
+		readonly sessionKeyType?: string | null | undefined;
+		readonly sessionKeyCreatedAt?: string | null | undefined;
+		readonly sessionKeyLastUsedAt?: string | null | undefined;
+		readonly createdAt: string;
+		readonly updatedAt: string;
+		readonly revokedAt?: string | null | undefined;
+		readonly revokedBy?: string | null | undefined;
+		readonly revokedReason?: string | null | undefined;
+	}>;
+	createAgentAccessLeaseSessionKeyChallenge(
+		username: string,
+		leaseID: string,
+		input: CreateAgentAccessLeaseSessionKeyChallengeMutationVariables['input']
+	): Promise<{
+		readonly __typename: 'AgentAccessLeaseChallenge';
+		readonly id: string;
+		readonly leaseID: string;
+		readonly username: string;
+		readonly action: string;
+		readonly walletAddress: string;
+		readonly principalWallet: string;
+		readonly agentWallet: string;
+		readonly sessionPublicKey?: string | null | undefined;
+		readonly sessionKeyType?: string | null | undefined;
+		readonly scopes: ReadonlyArray<string>;
+		readonly deviceLabel: string;
+		readonly idleTimeoutHours: number;
+		readonly absoluteTTLHours: number;
+		readonly message: string;
+		readonly typedDataJson?: string | null | undefined;
+		readonly issuedAt: string;
+		readonly expiresAt: string;
+	}>;
+	authorizeAgentAccessLeaseSessionKey(
+		username: string,
+		leaseID: string,
+		input: AuthorizeAgentAccessLeaseSessionKeyMutationVariables['input']
+	): Promise<{
+		readonly __typename: 'AgentAccessLease';
+		readonly id: string;
+		readonly username: string;
+		readonly principalUsername: string;
+		readonly principalWallet: string;
+		readonly agentWallet: string;
+		readonly scopes: ReadonlyArray<string>;
+		readonly deviceLabel: string;
+		readonly status: string;
+		readonly idleTimeoutHours: number;
+		readonly idleExpiresAt: string;
+		readonly absoluteExpiresAt: string;
+		readonly lastUsedAt: string;
+		readonly leaseVersion: number;
+		readonly sessionPublicKey?: string | null | undefined;
+		readonly sessionKeyType?: string | null | undefined;
+		readonly sessionKeyCreatedAt?: string | null | undefined;
+		readonly sessionKeyLastUsedAt?: string | null | undefined;
+		readonly createdAt: string;
+		readonly updatedAt: string;
+		readonly revokedAt?: string | null | undefined;
+		readonly revokedBy?: string | null | undefined;
+		readonly revokedReason?: string | null | undefined;
+	}>;
+	createAgentAccessLeaseRenewChallenge(
+		username: string,
+		leaseID: string
+	): Promise<{
+		readonly __typename: 'AgentAccessLeaseChallenge';
+		readonly id: string;
+		readonly leaseID: string;
+		readonly username: string;
+		readonly action: string;
+		readonly walletAddress: string;
+		readonly principalWallet: string;
+		readonly agentWallet: string;
+		readonly sessionPublicKey?: string | null | undefined;
+		readonly sessionKeyType?: string | null | undefined;
+		readonly scopes: ReadonlyArray<string>;
+		readonly deviceLabel: string;
+		readonly idleTimeoutHours: number;
+		readonly absoluteTTLHours: number;
+		readonly message: string;
+		readonly typedDataJson?: string | null | undefined;
+		readonly issuedAt: string;
+		readonly expiresAt: string;
+	}>;
+	exchangeAgentAccessLeaseToken(
+		username: string,
+		leaseID: string,
+		input: ExchangeAgentAccessLeaseTokenMutationVariables['input']
+	): Promise<{
+		readonly __typename: 'AgentAccessLeaseTokenPayload';
+		readonly leaseID: string;
+		readonly accessToken: string;
+		readonly tokenType: string;
+		readonly scope: string;
+		readonly createdAt: string;
+		readonly expiresIn: number;
+	}>;
 	adminVerifyAgent(
 		username: string,
 		input?: AdminVerifyAgentMutationVariables['input']
@@ -5494,6 +5927,40 @@ export declare class LesserGraphQLAdapter {
 			| null
 			| undefined;
 	}>;
+	incorporateSoul(
+		agentId: string,
+		targetAgentUsername: string
+	): Promise<{
+		readonly __typename: 'SoulInventoryItem';
+		readonly bindingState: import('./index.js').SoulBindingState;
+		readonly availableForIncorporation: boolean;
+		readonly agent: {
+			readonly __typename: 'SoulAgentIdentity';
+			readonly agentId: string;
+			readonly domain: string;
+			readonly localId: string;
+			readonly ensName?: string | null | undefined;
+			readonly wallet: string;
+			readonly principalAddress?: string | null | undefined;
+			readonly status: string;
+			readonly lifecycleStatus?: string | null | undefined;
+			readonly selfDescriptionVersion?: number | null | undefined;
+			readonly capabilities: ReadonlyArray<string>;
+			readonly mintTxHash?: string | null | undefined;
+			readonly mintedAt?: string | null | undefined;
+			readonly updatedAt?: string | null | undefined;
+		};
+		readonly binding?:
+			| {
+					readonly __typename: 'SoulAgentBinding';
+					readonly agentUsername: string;
+					readonly principalAddress?: string | null | undefined;
+					readonly boundAt: string;
+					readonly updatedAt: string;
+			  }
+			| null
+			| undefined;
+	}>;
 	search(variables: SearchQueryVariables): Promise<{
 		readonly __typename: 'SearchResult';
 		readonly accounts: ReadonlyArray<{
@@ -5613,9 +6080,11 @@ export declare class LesserGraphQLAdapter {
 									readonly triggerDetails?: string | null | undefined;
 									readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 									readonly delegatedBy?: string | null | undefined;
+									readonly delegatedByDid?: string | null | undefined;
 									readonly scopes?: ReadonlyArray<string> | null | undefined;
 									readonly constraints?: ReadonlyArray<string> | null | undefined;
-									readonly modelVersion?: string | null | undefined;
+									readonly schemaVersion?: string | null | undefined;
+									readonly modelId?: string | null | undefined;
 							  }
 							| null
 							| undefined;
@@ -5835,9 +6304,11 @@ export declare class LesserGraphQLAdapter {
 						readonly triggerDetails?: string | null | undefined;
 						readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 						readonly delegatedBy?: string | null | undefined;
+						readonly delegatedByDid?: string | null | undefined;
 						readonly scopes?: ReadonlyArray<string> | null | undefined;
 						readonly constraints?: ReadonlyArray<string> | null | undefined;
-						readonly modelVersion?: string | null | undefined;
+						readonly schemaVersion?: string | null | undefined;
+						readonly modelId?: string | null | undefined;
 				  }
 				| null
 				| undefined;
@@ -6155,9 +6626,11 @@ export declare class LesserGraphQLAdapter {
 													readonly triggerDetails?: string | null | undefined;
 													readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 													readonly delegatedBy?: string | null | undefined;
+													readonly delegatedByDid?: string | null | undefined;
 													readonly scopes?: ReadonlyArray<string> | null | undefined;
 													readonly constraints?: ReadonlyArray<string> | null | undefined;
-													readonly modelVersion?: string | null | undefined;
+													readonly schemaVersion?: string | null | undefined;
+													readonly modelId?: string | null | undefined;
 											  }
 											| null
 											| undefined;
@@ -6377,9 +6850,11 @@ export declare class LesserGraphQLAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
-										readonly modelVersion?: string | null | undefined;
+										readonly schemaVersion?: string | null | undefined;
+										readonly modelId?: string | null | undefined;
 								  }
 								| null
 								| undefined;
@@ -6563,6 +7038,40 @@ export declare class LesserGraphQLAdapter {
 					  }
 					| null
 					| undefined;
+				readonly communication?:
+					| {
+							readonly __typename: 'CommunicationNotification';
+							readonly channel: string;
+							readonly subject?: string | null | undefined;
+							readonly body?: string | null | undefined;
+							readonly receivedAt: string;
+							readonly messageId: string;
+							readonly inReplyTo?: string | null | undefined;
+							readonly threadId: string;
+							readonly from: {
+								readonly __typename: 'CommunicationFrom';
+								readonly address: string;
+								readonly displayName?: string | null | undefined;
+								readonly soulAgentId?: string | null | undefined;
+							};
+							readonly to?:
+								| {
+										readonly __typename: 'CommunicationTo';
+										readonly address: string;
+								  }
+								| null
+								| undefined;
+							readonly attachments: ReadonlyArray<{
+								readonly __typename: 'CommunicationAttachment';
+								readonly id: string;
+								readonly filename: string;
+								readonly contentType: string;
+								readonly sizeBytes: number;
+								readonly sha256: string;
+							}>;
+					  }
+					| null
+					| undefined;
 			};
 		}>;
 		readonly pageInfo: {
@@ -6575,13 +7084,1622 @@ export declare class LesserGraphQLAdapter {
 	}>;
 	dismissNotification(id: string): Promise<boolean>;
 	clearNotifications(): Promise<boolean>;
-	getConversations(variables: ConversationsQueryVariables): Promise<
-		readonly {
+	getConversations(variables: ConversationsQueryVariables): Promise<any[]>;
+	getConversation(id: string): Promise<
+		| {
+				readonly __typename: 'Conversation';
+				readonly id: string;
+				readonly unread: boolean;
+				readonly createdAt: string;
+				readonly updatedAt: string;
+				readonly viewerMetadata: {
+					readonly __typename: 'ConversationViewerMetadata';
+					readonly requestState: import('./index.js').DmRequestState;
+					readonly requestedAt?: string | null | undefined;
+					readonly acceptedAt?: string | null | undefined;
+					readonly declinedAt?: string | null | undefined;
+				};
+				readonly accounts: ReadonlyArray<{
+					readonly __typename: 'Actor';
+					readonly id: string;
+					readonly username: string;
+					readonly domain?: string | null | undefined;
+					readonly displayName?: string | null | undefined;
+					readonly summary?: string | null | undefined;
+					readonly avatar?: string | null | undefined;
+					readonly header?: string | null | undefined;
+					readonly followers: number;
+					readonly following: number;
+					readonly statusesCount: number;
+					readonly bot: boolean;
+					readonly locked: boolean;
+					readonly updatedAt: string;
+					readonly isAgent: boolean;
+					readonly tipAddress?: string | null | undefined;
+					readonly tipChainId?: number | null | undefined;
+					readonly trustScore: number;
+					readonly agentInfo?:
+						| {
+								readonly __typename: 'Agent';
+								readonly id: string;
+								readonly agentType: import('./index.js').AgentType;
+								readonly verified: boolean;
+								readonly verifiedAt?: string | null | undefined;
+						  }
+						| null
+						| undefined;
+					readonly fields: ReadonlyArray<{
+						readonly __typename: 'Field';
+						readonly name: string;
+						readonly value: string;
+						readonly verifiedAt?: string | null | undefined;
+					}>;
+				}>;
+				readonly lastStatus?:
+					| {
+							readonly __typename: 'Object';
+							readonly id: string;
+							readonly type: import('./index.js').ObjectType;
+							readonly content: string;
+							readonly visibility: import('./index.js').Visibility;
+							readonly sensitive: boolean;
+							readonly spoilerText?: string | null | undefined;
+							readonly createdAt: string;
+							readonly updatedAt: string;
+							readonly repliesCount: number;
+							readonly likesCount: number;
+							readonly sharesCount: number;
+							readonly boosted: boolean;
+							readonly relationshipType: import('./index.js').ObjectRelationshipType;
+							readonly contentHash: string;
+							readonly estimatedCost: number;
+							readonly moderationScore?: number | null | undefined;
+							readonly quoteUrl?: string | null | undefined;
+							readonly quoteable: boolean;
+							readonly quotePermissions: import('./index.js').QuotePermission;
+							readonly quoteCount: number;
+							readonly boostedObject?:
+								| {
+										readonly __typename: 'Object';
+										readonly id: string;
+										readonly type: import('./index.js').ObjectType;
+										readonly content: string;
+										readonly visibility: import('./index.js').Visibility;
+										readonly sensitive: boolean;
+										readonly spoilerText?: string | null | undefined;
+										readonly createdAt: string;
+										readonly updatedAt: string;
+										readonly repliesCount: number;
+										readonly likesCount: number;
+										readonly sharesCount: number;
+										readonly boosted: boolean;
+										readonly relationshipType: import('./index.js').ObjectRelationshipType;
+										readonly contentHash: string;
+										readonly estimatedCost: number;
+										readonly moderationScore?: number | null | undefined;
+										readonly quoteUrl?: string | null | undefined;
+										readonly quoteable: boolean;
+										readonly quotePermissions: import('./index.js').QuotePermission;
+										readonly quoteCount: number;
+										readonly contentMap: ReadonlyArray<{
+											readonly __typename: 'ContentMap';
+											readonly language: string;
+											readonly content: string;
+										}>;
+										readonly attachments: ReadonlyArray<{
+											readonly __typename: 'Attachment';
+											readonly id: string;
+											readonly type: string;
+											readonly url: string;
+											readonly preview?: string | null | undefined;
+											readonly description?: string | null | undefined;
+											readonly blurhash?: string | null | undefined;
+											readonly width?: number | null | undefined;
+											readonly height?: number | null | undefined;
+											readonly duration?: number | null | undefined;
+										}>;
+										readonly tags: ReadonlyArray<{
+											readonly __typename: 'Tag';
+											readonly name: string;
+											readonly url: string;
+										}>;
+										readonly mentions: ReadonlyArray<{
+											readonly __typename: 'Mention';
+											readonly id: string;
+											readonly username: string;
+											readonly domain?: string | null | undefined;
+											readonly url: string;
+										}>;
+										readonly agentAttribution?:
+											| {
+													readonly __typename: 'AgentPostAttribution';
+													readonly triggerType?: string | null | undefined;
+													readonly triggerDetails?: string | null | undefined;
+													readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
+													readonly delegatedBy?: string | null | undefined;
+													readonly delegatedByDid?: string | null | undefined;
+													readonly scopes?: ReadonlyArray<string> | null | undefined;
+													readonly constraints?: ReadonlyArray<string> | null | undefined;
+													readonly schemaVersion?: string | null | undefined;
+													readonly modelId?: string | null | undefined;
+											  }
+											| null
+											| undefined;
+										readonly quoteContext?:
+											| {
+													readonly __typename: 'QuoteContext';
+													readonly quoteAllowed: boolean;
+													readonly quoteType: import('./index.js').QuoteType;
+													readonly withdrawn: boolean;
+													readonly originalAuthor: {
+														readonly __typename: 'Actor';
+														readonly id: string;
+														readonly username: string;
+														readonly domain?: string | null | undefined;
+														readonly displayName?: string | null | undefined;
+														readonly summary?: string | null | undefined;
+														readonly avatar?: string | null | undefined;
+														readonly header?: string | null | undefined;
+														readonly followers: number;
+														readonly following: number;
+														readonly statusesCount: number;
+														readonly bot: boolean;
+														readonly locked: boolean;
+														readonly updatedAt: string;
+														readonly isAgent: boolean;
+														readonly tipAddress?: string | null | undefined;
+														readonly tipChainId?: number | null | undefined;
+														readonly trustScore: number;
+														readonly agentInfo?:
+															| {
+																	readonly __typename: 'Agent';
+																	readonly id: string;
+																	readonly agentType: import('./index.js').AgentType;
+																	readonly verified: boolean;
+																	readonly verifiedAt?: string | null | undefined;
+															  }
+															| null
+															| undefined;
+														readonly fields: ReadonlyArray<{
+															readonly __typename: 'Field';
+															readonly name: string;
+															readonly value: string;
+															readonly verifiedAt?: string | null | undefined;
+														}>;
+													};
+													readonly originalNote?:
+														| {
+																readonly __typename: 'Object';
+																readonly id: string;
+																readonly type: import('./index.js').ObjectType;
+														  }
+														| null
+														| undefined;
+											  }
+											| null
+											| undefined;
+										readonly communityNotes: ReadonlyArray<{
+											readonly __typename: 'CommunityNote';
+											readonly id: string;
+											readonly content: string;
+											readonly helpful: number;
+											readonly notHelpful: number;
+											readonly createdAt: string;
+											readonly author: {
+												readonly __typename: 'Actor';
+												readonly id: string;
+												readonly username: string;
+												readonly domain?: string | null | undefined;
+												readonly displayName?: string | null | undefined;
+												readonly summary?: string | null | undefined;
+												readonly avatar?: string | null | undefined;
+												readonly header?: string | null | undefined;
+												readonly followers: number;
+												readonly following: number;
+												readonly statusesCount: number;
+												readonly bot: boolean;
+												readonly locked: boolean;
+												readonly updatedAt: string;
+												readonly isAgent: boolean;
+												readonly tipAddress?: string | null | undefined;
+												readonly tipChainId?: number | null | undefined;
+												readonly trustScore: number;
+												readonly agentInfo?:
+													| {
+															readonly __typename: 'Agent';
+															readonly id: string;
+															readonly agentType: import('./index.js').AgentType;
+															readonly verified: boolean;
+															readonly verifiedAt?: string | null | undefined;
+													  }
+													| null
+													| undefined;
+												readonly fields: ReadonlyArray<{
+													readonly __typename: 'Field';
+													readonly name: string;
+													readonly value: string;
+													readonly verifiedAt?: string | null | undefined;
+												}>;
+											};
+										}>;
+										readonly actor: {
+											readonly __typename: 'Actor';
+											readonly id: string;
+											readonly username: string;
+											readonly domain?: string | null | undefined;
+											readonly displayName?: string | null | undefined;
+											readonly summary?: string | null | undefined;
+											readonly avatar?: string | null | undefined;
+											readonly header?: string | null | undefined;
+											readonly followers: number;
+											readonly following: number;
+											readonly statusesCount: number;
+											readonly bot: boolean;
+											readonly locked: boolean;
+											readonly updatedAt: string;
+											readonly isAgent: boolean;
+											readonly tipAddress?: string | null | undefined;
+											readonly tipChainId?: number | null | undefined;
+											readonly trustScore: number;
+											readonly agentInfo?:
+												| {
+														readonly __typename: 'Agent';
+														readonly id: string;
+														readonly agentType: import('./index.js').AgentType;
+														readonly verified: boolean;
+														readonly verifiedAt?: string | null | undefined;
+												  }
+												| null
+												| undefined;
+											readonly fields: ReadonlyArray<{
+												readonly __typename: 'Field';
+												readonly name: string;
+												readonly value: string;
+												readonly verifiedAt?: string | null | undefined;
+											}>;
+										};
+										readonly inReplyTo?:
+											| {
+													readonly __typename: 'Object';
+													readonly id: string;
+													readonly type: import('./index.js').ObjectType;
+													readonly actor: {
+														readonly __typename: 'Actor';
+														readonly id: string;
+														readonly username: string;
+														readonly domain?: string | null | undefined;
+														readonly displayName?: string | null | undefined;
+														readonly summary?: string | null | undefined;
+														readonly avatar?: string | null | undefined;
+														readonly header?: string | null | undefined;
+														readonly followers: number;
+														readonly following: number;
+														readonly statusesCount: number;
+														readonly bot: boolean;
+														readonly locked: boolean;
+														readonly updatedAt: string;
+														readonly isAgent: boolean;
+														readonly tipAddress?: string | null | undefined;
+														readonly tipChainId?: number | null | undefined;
+														readonly trustScore: number;
+														readonly agentInfo?:
+															| {
+																	readonly __typename: 'Agent';
+																	readonly id: string;
+																	readonly agentType: import('./index.js').AgentType;
+																	readonly verified: boolean;
+																	readonly verifiedAt?: string | null | undefined;
+															  }
+															| null
+															| undefined;
+														readonly fields: ReadonlyArray<{
+															readonly __typename: 'Field';
+															readonly name: string;
+															readonly value: string;
+															readonly verifiedAt?: string | null | undefined;
+														}>;
+													};
+											  }
+											| null
+											| undefined;
+								  }
+								| null
+								| undefined;
+							readonly contentMap: ReadonlyArray<{
+								readonly __typename: 'ContentMap';
+								readonly language: string;
+								readonly content: string;
+							}>;
+							readonly attachments: ReadonlyArray<{
+								readonly __typename: 'Attachment';
+								readonly id: string;
+								readonly type: string;
+								readonly url: string;
+								readonly preview?: string | null | undefined;
+								readonly description?: string | null | undefined;
+								readonly blurhash?: string | null | undefined;
+								readonly width?: number | null | undefined;
+								readonly height?: number | null | undefined;
+								readonly duration?: number | null | undefined;
+							}>;
+							readonly tags: ReadonlyArray<{
+								readonly __typename: 'Tag';
+								readonly name: string;
+								readonly url: string;
+							}>;
+							readonly mentions: ReadonlyArray<{
+								readonly __typename: 'Mention';
+								readonly id: string;
+								readonly username: string;
+								readonly domain?: string | null | undefined;
+								readonly url: string;
+							}>;
+							readonly agentAttribution?:
+								| {
+										readonly __typename: 'AgentPostAttribution';
+										readonly triggerType?: string | null | undefined;
+										readonly triggerDetails?: string | null | undefined;
+										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
+										readonly delegatedBy?: string | null | undefined;
+										readonly delegatedByDid?: string | null | undefined;
+										readonly scopes?: ReadonlyArray<string> | null | undefined;
+										readonly constraints?: ReadonlyArray<string> | null | undefined;
+										readonly schemaVersion?: string | null | undefined;
+										readonly modelId?: string | null | undefined;
+								  }
+								| null
+								| undefined;
+							readonly quoteContext?:
+								| {
+										readonly __typename: 'QuoteContext';
+										readonly quoteAllowed: boolean;
+										readonly quoteType: import('./index.js').QuoteType;
+										readonly withdrawn: boolean;
+										readonly originalAuthor: {
+											readonly __typename: 'Actor';
+											readonly id: string;
+											readonly username: string;
+											readonly domain?: string | null | undefined;
+											readonly displayName?: string | null | undefined;
+											readonly summary?: string | null | undefined;
+											readonly avatar?: string | null | undefined;
+											readonly header?: string | null | undefined;
+											readonly followers: number;
+											readonly following: number;
+											readonly statusesCount: number;
+											readonly bot: boolean;
+											readonly locked: boolean;
+											readonly updatedAt: string;
+											readonly isAgent: boolean;
+											readonly tipAddress?: string | null | undefined;
+											readonly tipChainId?: number | null | undefined;
+											readonly trustScore: number;
+											readonly agentInfo?:
+												| {
+														readonly __typename: 'Agent';
+														readonly id: string;
+														readonly agentType: import('./index.js').AgentType;
+														readonly verified: boolean;
+														readonly verifiedAt?: string | null | undefined;
+												  }
+												| null
+												| undefined;
+											readonly fields: ReadonlyArray<{
+												readonly __typename: 'Field';
+												readonly name: string;
+												readonly value: string;
+												readonly verifiedAt?: string | null | undefined;
+											}>;
+										};
+										readonly originalNote?:
+											| {
+													readonly __typename: 'Object';
+													readonly id: string;
+													readonly type: import('./index.js').ObjectType;
+											  }
+											| null
+											| undefined;
+								  }
+								| null
+								| undefined;
+							readonly communityNotes: ReadonlyArray<{
+								readonly __typename: 'CommunityNote';
+								readonly id: string;
+								readonly content: string;
+								readonly helpful: number;
+								readonly notHelpful: number;
+								readonly createdAt: string;
+								readonly author: {
+									readonly __typename: 'Actor';
+									readonly id: string;
+									readonly username: string;
+									readonly domain?: string | null | undefined;
+									readonly displayName?: string | null | undefined;
+									readonly summary?: string | null | undefined;
+									readonly avatar?: string | null | undefined;
+									readonly header?: string | null | undefined;
+									readonly followers: number;
+									readonly following: number;
+									readonly statusesCount: number;
+									readonly bot: boolean;
+									readonly locked: boolean;
+									readonly updatedAt: string;
+									readonly isAgent: boolean;
+									readonly tipAddress?: string | null | undefined;
+									readonly tipChainId?: number | null | undefined;
+									readonly trustScore: number;
+									readonly agentInfo?:
+										| {
+												readonly __typename: 'Agent';
+												readonly id: string;
+												readonly agentType: import('./index.js').AgentType;
+												readonly verified: boolean;
+												readonly verifiedAt?: string | null | undefined;
+										  }
+										| null
+										| undefined;
+									readonly fields: ReadonlyArray<{
+										readonly __typename: 'Field';
+										readonly name: string;
+										readonly value: string;
+										readonly verifiedAt?: string | null | undefined;
+									}>;
+								};
+							}>;
+							readonly actor: {
+								readonly __typename: 'Actor';
+								readonly id: string;
+								readonly username: string;
+								readonly domain?: string | null | undefined;
+								readonly displayName?: string | null | undefined;
+								readonly summary?: string | null | undefined;
+								readonly avatar?: string | null | undefined;
+								readonly header?: string | null | undefined;
+								readonly followers: number;
+								readonly following: number;
+								readonly statusesCount: number;
+								readonly bot: boolean;
+								readonly locked: boolean;
+								readonly updatedAt: string;
+								readonly isAgent: boolean;
+								readonly tipAddress?: string | null | undefined;
+								readonly tipChainId?: number | null | undefined;
+								readonly trustScore: number;
+								readonly agentInfo?:
+									| {
+											readonly __typename: 'Agent';
+											readonly id: string;
+											readonly agentType: import('./index.js').AgentType;
+											readonly verified: boolean;
+											readonly verifiedAt?: string | null | undefined;
+									  }
+									| null
+									| undefined;
+								readonly fields: ReadonlyArray<{
+									readonly __typename: 'Field';
+									readonly name: string;
+									readonly value: string;
+									readonly verifiedAt?: string | null | undefined;
+								}>;
+							};
+							readonly inReplyTo?:
+								| {
+										readonly __typename: 'Object';
+										readonly id: string;
+										readonly type: import('./index.js').ObjectType;
+										readonly actor: {
+											readonly __typename: 'Actor';
+											readonly id: string;
+											readonly username: string;
+											readonly domain?: string | null | undefined;
+											readonly displayName?: string | null | undefined;
+											readonly summary?: string | null | undefined;
+											readonly avatar?: string | null | undefined;
+											readonly header?: string | null | undefined;
+											readonly followers: number;
+											readonly following: number;
+											readonly statusesCount: number;
+											readonly bot: boolean;
+											readonly locked: boolean;
+											readonly updatedAt: string;
+											readonly isAgent: boolean;
+											readonly tipAddress?: string | null | undefined;
+											readonly tipChainId?: number | null | undefined;
+											readonly trustScore: number;
+											readonly agentInfo?:
+												| {
+														readonly __typename: 'Agent';
+														readonly id: string;
+														readonly agentType: import('./index.js').AgentType;
+														readonly verified: boolean;
+														readonly verifiedAt?: string | null | undefined;
+												  }
+												| null
+												| undefined;
+											readonly fields: ReadonlyArray<{
+												readonly __typename: 'Field';
+												readonly name: string;
+												readonly value: string;
+												readonly verifiedAt?: string | null | undefined;
+											}>;
+										};
+								  }
+								| null
+								| undefined;
+					  }
+					| null
+					| undefined;
+		  }
+		| null
+		| undefined
+	>;
+	getConversationMessages(variables: ConversationMessagesQueryVariables): Promise<{
+		readonly __typename: 'ObjectConnection';
+		readonly totalCount: number;
+		readonly edges: ReadonlyArray<{
+			readonly __typename: 'ObjectEdge';
+			readonly cursor: string;
+			readonly node: {
+				readonly __typename: 'Object';
+				readonly id: string;
+				readonly type: import('./index.js').ObjectType;
+				readonly content: string;
+				readonly visibility: import('./index.js').Visibility;
+				readonly sensitive: boolean;
+				readonly spoilerText?: string | null | undefined;
+				readonly createdAt: string;
+				readonly updatedAt: string;
+				readonly repliesCount: number;
+				readonly likesCount: number;
+				readonly sharesCount: number;
+				readonly boosted: boolean;
+				readonly relationshipType: import('./index.js').ObjectRelationshipType;
+				readonly contentHash: string;
+				readonly estimatedCost: number;
+				readonly moderationScore?: number | null | undefined;
+				readonly quoteUrl?: string | null | undefined;
+				readonly quoteable: boolean;
+				readonly quotePermissions: import('./index.js').QuotePermission;
+				readonly quoteCount: number;
+				readonly boostedObject?:
+					| {
+							readonly __typename: 'Object';
+							readonly id: string;
+							readonly type: import('./index.js').ObjectType;
+							readonly content: string;
+							readonly visibility: import('./index.js').Visibility;
+							readonly sensitive: boolean;
+							readonly spoilerText?: string | null | undefined;
+							readonly createdAt: string;
+							readonly updatedAt: string;
+							readonly repliesCount: number;
+							readonly likesCount: number;
+							readonly sharesCount: number;
+							readonly boosted: boolean;
+							readonly relationshipType: import('./index.js').ObjectRelationshipType;
+							readonly contentHash: string;
+							readonly estimatedCost: number;
+							readonly moderationScore?: number | null | undefined;
+							readonly quoteUrl?: string | null | undefined;
+							readonly quoteable: boolean;
+							readonly quotePermissions: import('./index.js').QuotePermission;
+							readonly quoteCount: number;
+							readonly contentMap: ReadonlyArray<{
+								readonly __typename: 'ContentMap';
+								readonly language: string;
+								readonly content: string;
+							}>;
+							readonly attachments: ReadonlyArray<{
+								readonly __typename: 'Attachment';
+								readonly id: string;
+								readonly type: string;
+								readonly url: string;
+								readonly preview?: string | null | undefined;
+								readonly description?: string | null | undefined;
+								readonly blurhash?: string | null | undefined;
+								readonly width?: number | null | undefined;
+								readonly height?: number | null | undefined;
+								readonly duration?: number | null | undefined;
+							}>;
+							readonly tags: ReadonlyArray<{
+								readonly __typename: 'Tag';
+								readonly name: string;
+								readonly url: string;
+							}>;
+							readonly mentions: ReadonlyArray<{
+								readonly __typename: 'Mention';
+								readonly id: string;
+								readonly username: string;
+								readonly domain?: string | null | undefined;
+								readonly url: string;
+							}>;
+							readonly agentAttribution?:
+								| {
+										readonly __typename: 'AgentPostAttribution';
+										readonly triggerType?: string | null | undefined;
+										readonly triggerDetails?: string | null | undefined;
+										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
+										readonly delegatedBy?: string | null | undefined;
+										readonly delegatedByDid?: string | null | undefined;
+										readonly scopes?: ReadonlyArray<string> | null | undefined;
+										readonly constraints?: ReadonlyArray<string> | null | undefined;
+										readonly schemaVersion?: string | null | undefined;
+										readonly modelId?: string | null | undefined;
+								  }
+								| null
+								| undefined;
+							readonly quoteContext?:
+								| {
+										readonly __typename: 'QuoteContext';
+										readonly quoteAllowed: boolean;
+										readonly quoteType: import('./index.js').QuoteType;
+										readonly withdrawn: boolean;
+										readonly originalAuthor: {
+											readonly __typename: 'Actor';
+											readonly id: string;
+											readonly username: string;
+											readonly domain?: string | null | undefined;
+											readonly displayName?: string | null | undefined;
+											readonly summary?: string | null | undefined;
+											readonly avatar?: string | null | undefined;
+											readonly header?: string | null | undefined;
+											readonly followers: number;
+											readonly following: number;
+											readonly statusesCount: number;
+											readonly bot: boolean;
+											readonly locked: boolean;
+											readonly updatedAt: string;
+											readonly isAgent: boolean;
+											readonly tipAddress?: string | null | undefined;
+											readonly tipChainId?: number | null | undefined;
+											readonly trustScore: number;
+											readonly agentInfo?:
+												| {
+														readonly __typename: 'Agent';
+														readonly id: string;
+														readonly agentType: import('./index.js').AgentType;
+														readonly verified: boolean;
+														readonly verifiedAt?: string | null | undefined;
+												  }
+												| null
+												| undefined;
+											readonly fields: ReadonlyArray<{
+												readonly __typename: 'Field';
+												readonly name: string;
+												readonly value: string;
+												readonly verifiedAt?: string | null | undefined;
+											}>;
+										};
+										readonly originalNote?:
+											| {
+													readonly __typename: 'Object';
+													readonly id: string;
+													readonly type: import('./index.js').ObjectType;
+											  }
+											| null
+											| undefined;
+								  }
+								| null
+								| undefined;
+							readonly communityNotes: ReadonlyArray<{
+								readonly __typename: 'CommunityNote';
+								readonly id: string;
+								readonly content: string;
+								readonly helpful: number;
+								readonly notHelpful: number;
+								readonly createdAt: string;
+								readonly author: {
+									readonly __typename: 'Actor';
+									readonly id: string;
+									readonly username: string;
+									readonly domain?: string | null | undefined;
+									readonly displayName?: string | null | undefined;
+									readonly summary?: string | null | undefined;
+									readonly avatar?: string | null | undefined;
+									readonly header?: string | null | undefined;
+									readonly followers: number;
+									readonly following: number;
+									readonly statusesCount: number;
+									readonly bot: boolean;
+									readonly locked: boolean;
+									readonly updatedAt: string;
+									readonly isAgent: boolean;
+									readonly tipAddress?: string | null | undefined;
+									readonly tipChainId?: number | null | undefined;
+									readonly trustScore: number;
+									readonly agentInfo?:
+										| {
+												readonly __typename: 'Agent';
+												readonly id: string;
+												readonly agentType: import('./index.js').AgentType;
+												readonly verified: boolean;
+												readonly verifiedAt?: string | null | undefined;
+										  }
+										| null
+										| undefined;
+									readonly fields: ReadonlyArray<{
+										readonly __typename: 'Field';
+										readonly name: string;
+										readonly value: string;
+										readonly verifiedAt?: string | null | undefined;
+									}>;
+								};
+							}>;
+							readonly actor: {
+								readonly __typename: 'Actor';
+								readonly id: string;
+								readonly username: string;
+								readonly domain?: string | null | undefined;
+								readonly displayName?: string | null | undefined;
+								readonly summary?: string | null | undefined;
+								readonly avatar?: string | null | undefined;
+								readonly header?: string | null | undefined;
+								readonly followers: number;
+								readonly following: number;
+								readonly statusesCount: number;
+								readonly bot: boolean;
+								readonly locked: boolean;
+								readonly updatedAt: string;
+								readonly isAgent: boolean;
+								readonly tipAddress?: string | null | undefined;
+								readonly tipChainId?: number | null | undefined;
+								readonly trustScore: number;
+								readonly agentInfo?:
+									| {
+											readonly __typename: 'Agent';
+											readonly id: string;
+											readonly agentType: import('./index.js').AgentType;
+											readonly verified: boolean;
+											readonly verifiedAt?: string | null | undefined;
+									  }
+									| null
+									| undefined;
+								readonly fields: ReadonlyArray<{
+									readonly __typename: 'Field';
+									readonly name: string;
+									readonly value: string;
+									readonly verifiedAt?: string | null | undefined;
+								}>;
+							};
+							readonly inReplyTo?:
+								| {
+										readonly __typename: 'Object';
+										readonly id: string;
+										readonly type: import('./index.js').ObjectType;
+										readonly actor: {
+											readonly __typename: 'Actor';
+											readonly id: string;
+											readonly username: string;
+											readonly domain?: string | null | undefined;
+											readonly displayName?: string | null | undefined;
+											readonly summary?: string | null | undefined;
+											readonly avatar?: string | null | undefined;
+											readonly header?: string | null | undefined;
+											readonly followers: number;
+											readonly following: number;
+											readonly statusesCount: number;
+											readonly bot: boolean;
+											readonly locked: boolean;
+											readonly updatedAt: string;
+											readonly isAgent: boolean;
+											readonly tipAddress?: string | null | undefined;
+											readonly tipChainId?: number | null | undefined;
+											readonly trustScore: number;
+											readonly agentInfo?:
+												| {
+														readonly __typename: 'Agent';
+														readonly id: string;
+														readonly agentType: import('./index.js').AgentType;
+														readonly verified: boolean;
+														readonly verifiedAt?: string | null | undefined;
+												  }
+												| null
+												| undefined;
+											readonly fields: ReadonlyArray<{
+												readonly __typename: 'Field';
+												readonly name: string;
+												readonly value: string;
+												readonly verifiedAt?: string | null | undefined;
+											}>;
+										};
+								  }
+								| null
+								| undefined;
+					  }
+					| null
+					| undefined;
+				readonly contentMap: ReadonlyArray<{
+					readonly __typename: 'ContentMap';
+					readonly language: string;
+					readonly content: string;
+				}>;
+				readonly attachments: ReadonlyArray<{
+					readonly __typename: 'Attachment';
+					readonly id: string;
+					readonly type: string;
+					readonly url: string;
+					readonly preview?: string | null | undefined;
+					readonly description?: string | null | undefined;
+					readonly blurhash?: string | null | undefined;
+					readonly width?: number | null | undefined;
+					readonly height?: number | null | undefined;
+					readonly duration?: number | null | undefined;
+				}>;
+				readonly tags: ReadonlyArray<{
+					readonly __typename: 'Tag';
+					readonly name: string;
+					readonly url: string;
+				}>;
+				readonly mentions: ReadonlyArray<{
+					readonly __typename: 'Mention';
+					readonly id: string;
+					readonly username: string;
+					readonly domain?: string | null | undefined;
+					readonly url: string;
+				}>;
+				readonly agentAttribution?:
+					| {
+							readonly __typename: 'AgentPostAttribution';
+							readonly triggerType?: string | null | undefined;
+							readonly triggerDetails?: string | null | undefined;
+							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
+							readonly delegatedBy?: string | null | undefined;
+							readonly delegatedByDid?: string | null | undefined;
+							readonly scopes?: ReadonlyArray<string> | null | undefined;
+							readonly constraints?: ReadonlyArray<string> | null | undefined;
+							readonly schemaVersion?: string | null | undefined;
+							readonly modelId?: string | null | undefined;
+					  }
+					| null
+					| undefined;
+				readonly quoteContext?:
+					| {
+							readonly __typename: 'QuoteContext';
+							readonly quoteAllowed: boolean;
+							readonly quoteType: import('./index.js').QuoteType;
+							readonly withdrawn: boolean;
+							readonly originalAuthor: {
+								readonly __typename: 'Actor';
+								readonly id: string;
+								readonly username: string;
+								readonly domain?: string | null | undefined;
+								readonly displayName?: string | null | undefined;
+								readonly summary?: string | null | undefined;
+								readonly avatar?: string | null | undefined;
+								readonly header?: string | null | undefined;
+								readonly followers: number;
+								readonly following: number;
+								readonly statusesCount: number;
+								readonly bot: boolean;
+								readonly locked: boolean;
+								readonly updatedAt: string;
+								readonly isAgent: boolean;
+								readonly tipAddress?: string | null | undefined;
+								readonly tipChainId?: number | null | undefined;
+								readonly trustScore: number;
+								readonly agentInfo?:
+									| {
+											readonly __typename: 'Agent';
+											readonly id: string;
+											readonly agentType: import('./index.js').AgentType;
+											readonly verified: boolean;
+											readonly verifiedAt?: string | null | undefined;
+									  }
+									| null
+									| undefined;
+								readonly fields: ReadonlyArray<{
+									readonly __typename: 'Field';
+									readonly name: string;
+									readonly value: string;
+									readonly verifiedAt?: string | null | undefined;
+								}>;
+							};
+							readonly originalNote?:
+								| {
+										readonly __typename: 'Object';
+										readonly id: string;
+										readonly type: import('./index.js').ObjectType;
+								  }
+								| null
+								| undefined;
+					  }
+					| null
+					| undefined;
+				readonly communityNotes: ReadonlyArray<{
+					readonly __typename: 'CommunityNote';
+					readonly id: string;
+					readonly content: string;
+					readonly helpful: number;
+					readonly notHelpful: number;
+					readonly createdAt: string;
+					readonly author: {
+						readonly __typename: 'Actor';
+						readonly id: string;
+						readonly username: string;
+						readonly domain?: string | null | undefined;
+						readonly displayName?: string | null | undefined;
+						readonly summary?: string | null | undefined;
+						readonly avatar?: string | null | undefined;
+						readonly header?: string | null | undefined;
+						readonly followers: number;
+						readonly following: number;
+						readonly statusesCount: number;
+						readonly bot: boolean;
+						readonly locked: boolean;
+						readonly updatedAt: string;
+						readonly isAgent: boolean;
+						readonly tipAddress?: string | null | undefined;
+						readonly tipChainId?: number | null | undefined;
+						readonly trustScore: number;
+						readonly agentInfo?:
+							| {
+									readonly __typename: 'Agent';
+									readonly id: string;
+									readonly agentType: import('./index.js').AgentType;
+									readonly verified: boolean;
+									readonly verifiedAt?: string | null | undefined;
+							  }
+							| null
+							| undefined;
+						readonly fields: ReadonlyArray<{
+							readonly __typename: 'Field';
+							readonly name: string;
+							readonly value: string;
+							readonly verifiedAt?: string | null | undefined;
+						}>;
+					};
+				}>;
+				readonly actor: {
+					readonly __typename: 'Actor';
+					readonly id: string;
+					readonly username: string;
+					readonly domain?: string | null | undefined;
+					readonly displayName?: string | null | undefined;
+					readonly summary?: string | null | undefined;
+					readonly avatar?: string | null | undefined;
+					readonly header?: string | null | undefined;
+					readonly followers: number;
+					readonly following: number;
+					readonly statusesCount: number;
+					readonly bot: boolean;
+					readonly locked: boolean;
+					readonly updatedAt: string;
+					readonly isAgent: boolean;
+					readonly tipAddress?: string | null | undefined;
+					readonly tipChainId?: number | null | undefined;
+					readonly trustScore: number;
+					readonly agentInfo?:
+						| {
+								readonly __typename: 'Agent';
+								readonly id: string;
+								readonly agentType: import('./index.js').AgentType;
+								readonly verified: boolean;
+								readonly verifiedAt?: string | null | undefined;
+						  }
+						| null
+						| undefined;
+					readonly fields: ReadonlyArray<{
+						readonly __typename: 'Field';
+						readonly name: string;
+						readonly value: string;
+						readonly verifiedAt?: string | null | undefined;
+					}>;
+				};
+				readonly inReplyTo?:
+					| {
+							readonly __typename: 'Object';
+							readonly id: string;
+							readonly type: import('./index.js').ObjectType;
+							readonly actor: {
+								readonly __typename: 'Actor';
+								readonly id: string;
+								readonly username: string;
+								readonly domain?: string | null | undefined;
+								readonly displayName?: string | null | undefined;
+								readonly summary?: string | null | undefined;
+								readonly avatar?: string | null | undefined;
+								readonly header?: string | null | undefined;
+								readonly followers: number;
+								readonly following: number;
+								readonly statusesCount: number;
+								readonly bot: boolean;
+								readonly locked: boolean;
+								readonly updatedAt: string;
+								readonly isAgent: boolean;
+								readonly tipAddress?: string | null | undefined;
+								readonly tipChainId?: number | null | undefined;
+								readonly trustScore: number;
+								readonly agentInfo?:
+									| {
+											readonly __typename: 'Agent';
+											readonly id: string;
+											readonly agentType: import('./index.js').AgentType;
+											readonly verified: boolean;
+											readonly verifiedAt?: string | null | undefined;
+									  }
+									| null
+									| undefined;
+								readonly fields: ReadonlyArray<{
+									readonly __typename: 'Field';
+									readonly name: string;
+									readonly value: string;
+									readonly verifiedAt?: string | null | undefined;
+								}>;
+							};
+					  }
+					| null
+					| undefined;
+			};
+		}>;
+		readonly pageInfo: {
+			readonly __typename: 'PageInfo';
+			readonly hasNextPage: boolean;
+			readonly endCursor?: string | null | undefined;
+		};
+	}>;
+	createConversation(participantId: string): Promise<{
+		readonly __typename: 'Conversation';
+		readonly id: string;
+		readonly unread: boolean;
+		readonly createdAt: string;
+		readonly updatedAt: string;
+		readonly viewerMetadata: {
+			readonly __typename: 'ConversationViewerMetadata';
+			readonly requestState: import('./index.js').DmRequestState;
+			readonly requestedAt?: string | null | undefined;
+			readonly acceptedAt?: string | null | undefined;
+			readonly declinedAt?: string | null | undefined;
+		};
+		readonly accounts: ReadonlyArray<{
+			readonly __typename: 'Actor';
+			readonly id: string;
+			readonly username: string;
+			readonly domain?: string | null | undefined;
+			readonly displayName?: string | null | undefined;
+			readonly summary?: string | null | undefined;
+			readonly avatar?: string | null | undefined;
+			readonly header?: string | null | undefined;
+			readonly followers: number;
+			readonly following: number;
+			readonly statusesCount: number;
+			readonly bot: boolean;
+			readonly locked: boolean;
+			readonly updatedAt: string;
+			readonly isAgent: boolean;
+			readonly tipAddress?: string | null | undefined;
+			readonly tipChainId?: number | null | undefined;
+			readonly trustScore: number;
+			readonly agentInfo?:
+				| {
+						readonly __typename: 'Agent';
+						readonly id: string;
+						readonly agentType: import('./index.js').AgentType;
+						readonly verified: boolean;
+						readonly verifiedAt?: string | null | undefined;
+				  }
+				| null
+				| undefined;
+			readonly fields: ReadonlyArray<{
+				readonly __typename: 'Field';
+				readonly name: string;
+				readonly value: string;
+				readonly verifiedAt?: string | null | undefined;
+			}>;
+		}>;
+		readonly lastStatus?:
+			| {
+					readonly __typename: 'Object';
+					readonly id: string;
+					readonly type: import('./index.js').ObjectType;
+					readonly content: string;
+					readonly visibility: import('./index.js').Visibility;
+					readonly sensitive: boolean;
+					readonly spoilerText?: string | null | undefined;
+					readonly createdAt: string;
+					readonly updatedAt: string;
+					readonly repliesCount: number;
+					readonly likesCount: number;
+					readonly sharesCount: number;
+					readonly boosted: boolean;
+					readonly relationshipType: import('./index.js').ObjectRelationshipType;
+					readonly contentHash: string;
+					readonly estimatedCost: number;
+					readonly moderationScore?: number | null | undefined;
+					readonly quoteUrl?: string | null | undefined;
+					readonly quoteable: boolean;
+					readonly quotePermissions: import('./index.js').QuotePermission;
+					readonly quoteCount: number;
+					readonly boostedObject?:
+						| {
+								readonly __typename: 'Object';
+								readonly id: string;
+								readonly type: import('./index.js').ObjectType;
+								readonly content: string;
+								readonly visibility: import('./index.js').Visibility;
+								readonly sensitive: boolean;
+								readonly spoilerText?: string | null | undefined;
+								readonly createdAt: string;
+								readonly updatedAt: string;
+								readonly repliesCount: number;
+								readonly likesCount: number;
+								readonly sharesCount: number;
+								readonly boosted: boolean;
+								readonly relationshipType: import('./index.js').ObjectRelationshipType;
+								readonly contentHash: string;
+								readonly estimatedCost: number;
+								readonly moderationScore?: number | null | undefined;
+								readonly quoteUrl?: string | null | undefined;
+								readonly quoteable: boolean;
+								readonly quotePermissions: import('./index.js').QuotePermission;
+								readonly quoteCount: number;
+								readonly contentMap: ReadonlyArray<{
+									readonly __typename: 'ContentMap';
+									readonly language: string;
+									readonly content: string;
+								}>;
+								readonly attachments: ReadonlyArray<{
+									readonly __typename: 'Attachment';
+									readonly id: string;
+									readonly type: string;
+									readonly url: string;
+									readonly preview?: string | null | undefined;
+									readonly description?: string | null | undefined;
+									readonly blurhash?: string | null | undefined;
+									readonly width?: number | null | undefined;
+									readonly height?: number | null | undefined;
+									readonly duration?: number | null | undefined;
+								}>;
+								readonly tags: ReadonlyArray<{
+									readonly __typename: 'Tag';
+									readonly name: string;
+									readonly url: string;
+								}>;
+								readonly mentions: ReadonlyArray<{
+									readonly __typename: 'Mention';
+									readonly id: string;
+									readonly username: string;
+									readonly domain?: string | null | undefined;
+									readonly url: string;
+								}>;
+								readonly agentAttribution?:
+									| {
+											readonly __typename: 'AgentPostAttribution';
+											readonly triggerType?: string | null | undefined;
+											readonly triggerDetails?: string | null | undefined;
+											readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
+											readonly delegatedBy?: string | null | undefined;
+											readonly delegatedByDid?: string | null | undefined;
+											readonly scopes?: ReadonlyArray<string> | null | undefined;
+											readonly constraints?: ReadonlyArray<string> | null | undefined;
+											readonly schemaVersion?: string | null | undefined;
+											readonly modelId?: string | null | undefined;
+									  }
+									| null
+									| undefined;
+								readonly quoteContext?:
+									| {
+											readonly __typename: 'QuoteContext';
+											readonly quoteAllowed: boolean;
+											readonly quoteType: import('./index.js').QuoteType;
+											readonly withdrawn: boolean;
+											readonly originalAuthor: {
+												readonly __typename: 'Actor';
+												readonly id: string;
+												readonly username: string;
+												readonly domain?: string | null | undefined;
+												readonly displayName?: string | null | undefined;
+												readonly summary?: string | null | undefined;
+												readonly avatar?: string | null | undefined;
+												readonly header?: string | null | undefined;
+												readonly followers: number;
+												readonly following: number;
+												readonly statusesCount: number;
+												readonly bot: boolean;
+												readonly locked: boolean;
+												readonly updatedAt: string;
+												readonly isAgent: boolean;
+												readonly tipAddress?: string | null | undefined;
+												readonly tipChainId?: number | null | undefined;
+												readonly trustScore: number;
+												readonly agentInfo?:
+													| {
+															readonly __typename: 'Agent';
+															readonly id: string;
+															readonly agentType: import('./index.js').AgentType;
+															readonly verified: boolean;
+															readonly verifiedAt?: string | null | undefined;
+													  }
+													| null
+													| undefined;
+												readonly fields: ReadonlyArray<{
+													readonly __typename: 'Field';
+													readonly name: string;
+													readonly value: string;
+													readonly verifiedAt?: string | null | undefined;
+												}>;
+											};
+											readonly originalNote?:
+												| {
+														readonly __typename: 'Object';
+														readonly id: string;
+														readonly type: import('./index.js').ObjectType;
+												  }
+												| null
+												| undefined;
+									  }
+									| null
+									| undefined;
+								readonly communityNotes: ReadonlyArray<{
+									readonly __typename: 'CommunityNote';
+									readonly id: string;
+									readonly content: string;
+									readonly helpful: number;
+									readonly notHelpful: number;
+									readonly createdAt: string;
+									readonly author: {
+										readonly __typename: 'Actor';
+										readonly id: string;
+										readonly username: string;
+										readonly domain?: string | null | undefined;
+										readonly displayName?: string | null | undefined;
+										readonly summary?: string | null | undefined;
+										readonly avatar?: string | null | undefined;
+										readonly header?: string | null | undefined;
+										readonly followers: number;
+										readonly following: number;
+										readonly statusesCount: number;
+										readonly bot: boolean;
+										readonly locked: boolean;
+										readonly updatedAt: string;
+										readonly isAgent: boolean;
+										readonly tipAddress?: string | null | undefined;
+										readonly tipChainId?: number | null | undefined;
+										readonly trustScore: number;
+										readonly agentInfo?:
+											| {
+													readonly __typename: 'Agent';
+													readonly id: string;
+													readonly agentType: import('./index.js').AgentType;
+													readonly verified: boolean;
+													readonly verifiedAt?: string | null | undefined;
+											  }
+											| null
+											| undefined;
+										readonly fields: ReadonlyArray<{
+											readonly __typename: 'Field';
+											readonly name: string;
+											readonly value: string;
+											readonly verifiedAt?: string | null | undefined;
+										}>;
+									};
+								}>;
+								readonly actor: {
+									readonly __typename: 'Actor';
+									readonly id: string;
+									readonly username: string;
+									readonly domain?: string | null | undefined;
+									readonly displayName?: string | null | undefined;
+									readonly summary?: string | null | undefined;
+									readonly avatar?: string | null | undefined;
+									readonly header?: string | null | undefined;
+									readonly followers: number;
+									readonly following: number;
+									readonly statusesCount: number;
+									readonly bot: boolean;
+									readonly locked: boolean;
+									readonly updatedAt: string;
+									readonly isAgent: boolean;
+									readonly tipAddress?: string | null | undefined;
+									readonly tipChainId?: number | null | undefined;
+									readonly trustScore: number;
+									readonly agentInfo?:
+										| {
+												readonly __typename: 'Agent';
+												readonly id: string;
+												readonly agentType: import('./index.js').AgentType;
+												readonly verified: boolean;
+												readonly verifiedAt?: string | null | undefined;
+										  }
+										| null
+										| undefined;
+									readonly fields: ReadonlyArray<{
+										readonly __typename: 'Field';
+										readonly name: string;
+										readonly value: string;
+										readonly verifiedAt?: string | null | undefined;
+									}>;
+								};
+								readonly inReplyTo?:
+									| {
+											readonly __typename: 'Object';
+											readonly id: string;
+											readonly type: import('./index.js').ObjectType;
+											readonly actor: {
+												readonly __typename: 'Actor';
+												readonly id: string;
+												readonly username: string;
+												readonly domain?: string | null | undefined;
+												readonly displayName?: string | null | undefined;
+												readonly summary?: string | null | undefined;
+												readonly avatar?: string | null | undefined;
+												readonly header?: string | null | undefined;
+												readonly followers: number;
+												readonly following: number;
+												readonly statusesCount: number;
+												readonly bot: boolean;
+												readonly locked: boolean;
+												readonly updatedAt: string;
+												readonly isAgent: boolean;
+												readonly tipAddress?: string | null | undefined;
+												readonly tipChainId?: number | null | undefined;
+												readonly trustScore: number;
+												readonly agentInfo?:
+													| {
+															readonly __typename: 'Agent';
+															readonly id: string;
+															readonly agentType: import('./index.js').AgentType;
+															readonly verified: boolean;
+															readonly verifiedAt?: string | null | undefined;
+													  }
+													| null
+													| undefined;
+												readonly fields: ReadonlyArray<{
+													readonly __typename: 'Field';
+													readonly name: string;
+													readonly value: string;
+													readonly verifiedAt?: string | null | undefined;
+												}>;
+											};
+									  }
+									| null
+									| undefined;
+						  }
+						| null
+						| undefined;
+					readonly contentMap: ReadonlyArray<{
+						readonly __typename: 'ContentMap';
+						readonly language: string;
+						readonly content: string;
+					}>;
+					readonly attachments: ReadonlyArray<{
+						readonly __typename: 'Attachment';
+						readonly id: string;
+						readonly type: string;
+						readonly url: string;
+						readonly preview?: string | null | undefined;
+						readonly description?: string | null | undefined;
+						readonly blurhash?: string | null | undefined;
+						readonly width?: number | null | undefined;
+						readonly height?: number | null | undefined;
+						readonly duration?: number | null | undefined;
+					}>;
+					readonly tags: ReadonlyArray<{
+						readonly __typename: 'Tag';
+						readonly name: string;
+						readonly url: string;
+					}>;
+					readonly mentions: ReadonlyArray<{
+						readonly __typename: 'Mention';
+						readonly id: string;
+						readonly username: string;
+						readonly domain?: string | null | undefined;
+						readonly url: string;
+					}>;
+					readonly agentAttribution?:
+						| {
+								readonly __typename: 'AgentPostAttribution';
+								readonly triggerType?: string | null | undefined;
+								readonly triggerDetails?: string | null | undefined;
+								readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
+								readonly delegatedBy?: string | null | undefined;
+								readonly delegatedByDid?: string | null | undefined;
+								readonly scopes?: ReadonlyArray<string> | null | undefined;
+								readonly constraints?: ReadonlyArray<string> | null | undefined;
+								readonly schemaVersion?: string | null | undefined;
+								readonly modelId?: string | null | undefined;
+						  }
+						| null
+						| undefined;
+					readonly quoteContext?:
+						| {
+								readonly __typename: 'QuoteContext';
+								readonly quoteAllowed: boolean;
+								readonly quoteType: import('./index.js').QuoteType;
+								readonly withdrawn: boolean;
+								readonly originalAuthor: {
+									readonly __typename: 'Actor';
+									readonly id: string;
+									readonly username: string;
+									readonly domain?: string | null | undefined;
+									readonly displayName?: string | null | undefined;
+									readonly summary?: string | null | undefined;
+									readonly avatar?: string | null | undefined;
+									readonly header?: string | null | undefined;
+									readonly followers: number;
+									readonly following: number;
+									readonly statusesCount: number;
+									readonly bot: boolean;
+									readonly locked: boolean;
+									readonly updatedAt: string;
+									readonly isAgent: boolean;
+									readonly tipAddress?: string | null | undefined;
+									readonly tipChainId?: number | null | undefined;
+									readonly trustScore: number;
+									readonly agentInfo?:
+										| {
+												readonly __typename: 'Agent';
+												readonly id: string;
+												readonly agentType: import('./index.js').AgentType;
+												readonly verified: boolean;
+												readonly verifiedAt?: string | null | undefined;
+										  }
+										| null
+										| undefined;
+									readonly fields: ReadonlyArray<{
+										readonly __typename: 'Field';
+										readonly name: string;
+										readonly value: string;
+										readonly verifiedAt?: string | null | undefined;
+									}>;
+								};
+								readonly originalNote?:
+									| {
+											readonly __typename: 'Object';
+											readonly id: string;
+											readonly type: import('./index.js').ObjectType;
+									  }
+									| null
+									| undefined;
+						  }
+						| null
+						| undefined;
+					readonly communityNotes: ReadonlyArray<{
+						readonly __typename: 'CommunityNote';
+						readonly id: string;
+						readonly content: string;
+						readonly helpful: number;
+						readonly notHelpful: number;
+						readonly createdAt: string;
+						readonly author: {
+							readonly __typename: 'Actor';
+							readonly id: string;
+							readonly username: string;
+							readonly domain?: string | null | undefined;
+							readonly displayName?: string | null | undefined;
+							readonly summary?: string | null | undefined;
+							readonly avatar?: string | null | undefined;
+							readonly header?: string | null | undefined;
+							readonly followers: number;
+							readonly following: number;
+							readonly statusesCount: number;
+							readonly bot: boolean;
+							readonly locked: boolean;
+							readonly updatedAt: string;
+							readonly isAgent: boolean;
+							readonly tipAddress?: string | null | undefined;
+							readonly tipChainId?: number | null | undefined;
+							readonly trustScore: number;
+							readonly agentInfo?:
+								| {
+										readonly __typename: 'Agent';
+										readonly id: string;
+										readonly agentType: import('./index.js').AgentType;
+										readonly verified: boolean;
+										readonly verifiedAt?: string | null | undefined;
+								  }
+								| null
+								| undefined;
+							readonly fields: ReadonlyArray<{
+								readonly __typename: 'Field';
+								readonly name: string;
+								readonly value: string;
+								readonly verifiedAt?: string | null | undefined;
+							}>;
+						};
+					}>;
+					readonly actor: {
+						readonly __typename: 'Actor';
+						readonly id: string;
+						readonly username: string;
+						readonly domain?: string | null | undefined;
+						readonly displayName?: string | null | undefined;
+						readonly summary?: string | null | undefined;
+						readonly avatar?: string | null | undefined;
+						readonly header?: string | null | undefined;
+						readonly followers: number;
+						readonly following: number;
+						readonly statusesCount: number;
+						readonly bot: boolean;
+						readonly locked: boolean;
+						readonly updatedAt: string;
+						readonly isAgent: boolean;
+						readonly tipAddress?: string | null | undefined;
+						readonly tipChainId?: number | null | undefined;
+						readonly trustScore: number;
+						readonly agentInfo?:
+							| {
+									readonly __typename: 'Agent';
+									readonly id: string;
+									readonly agentType: import('./index.js').AgentType;
+									readonly verified: boolean;
+									readonly verifiedAt?: string | null | undefined;
+							  }
+							| null
+							| undefined;
+						readonly fields: ReadonlyArray<{
+							readonly __typename: 'Field';
+							readonly name: string;
+							readonly value: string;
+							readonly verifiedAt?: string | null | undefined;
+						}>;
+					};
+					readonly inReplyTo?:
+						| {
+								readonly __typename: 'Object';
+								readonly id: string;
+								readonly type: import('./index.js').ObjectType;
+								readonly actor: {
+									readonly __typename: 'Actor';
+									readonly id: string;
+									readonly username: string;
+									readonly domain?: string | null | undefined;
+									readonly displayName?: string | null | undefined;
+									readonly summary?: string | null | undefined;
+									readonly avatar?: string | null | undefined;
+									readonly header?: string | null | undefined;
+									readonly followers: number;
+									readonly following: number;
+									readonly statusesCount: number;
+									readonly bot: boolean;
+									readonly locked: boolean;
+									readonly updatedAt: string;
+									readonly isAgent: boolean;
+									readonly tipAddress?: string | null | undefined;
+									readonly tipChainId?: number | null | undefined;
+									readonly trustScore: number;
+									readonly agentInfo?:
+										| {
+												readonly __typename: 'Agent';
+												readonly id: string;
+												readonly agentType: import('./index.js').AgentType;
+												readonly verified: boolean;
+												readonly verifiedAt?: string | null | undefined;
+										  }
+										| null
+										| undefined;
+									readonly fields: ReadonlyArray<{
+										readonly __typename: 'Field';
+										readonly name: string;
+										readonly value: string;
+										readonly verifiedAt?: string | null | undefined;
+									}>;
+								};
+						  }
+						| null
+						| undefined;
+			  }
+			| null
+			| undefined;
+	}>;
+	sendMessage(
+		conversationId: string,
+		content: string,
+		mediaIds?: string[]
+	): Promise<{
+		readonly __typename: 'SendMessagePayload';
+		readonly conversation: {
 			readonly __typename: 'Conversation';
 			readonly id: string;
 			readonly unread: boolean;
 			readonly createdAt: string;
 			readonly updatedAt: string;
+			readonly viewerMetadata: {
+				readonly __typename: 'ConversationViewerMetadata';
+				readonly requestState: import('./index.js').DmRequestState;
+				readonly requestedAt?: string | null | undefined;
+				readonly acceptedAt?: string | null | undefined;
+				readonly declinedAt?: string | null | undefined;
+			};
 			readonly accounts: ReadonlyArray<{
 				readonly __typename: 'Actor';
 				readonly id: string;
@@ -6700,9 +8818,11 @@ export declare class LesserGraphQLAdapter {
 												readonly triggerDetails?: string | null | undefined;
 												readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 												readonly delegatedBy?: string | null | undefined;
+												readonly delegatedByDid?: string | null | undefined;
 												readonly scopes?: ReadonlyArray<string> | null | undefined;
 												readonly constraints?: ReadonlyArray<string> | null | undefined;
-												readonly modelVersion?: string | null | undefined;
+												readonly schemaVersion?: string | null | undefined;
+												readonly modelId?: string | null | undefined;
 										  }
 										| null
 										| undefined;
@@ -6922,9 +9042,11 @@ export declare class LesserGraphQLAdapter {
 									readonly triggerDetails?: string | null | undefined;
 									readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 									readonly delegatedBy?: string | null | undefined;
+									readonly delegatedByDid?: string | null | undefined;
 									readonly scopes?: ReadonlyArray<string> | null | undefined;
 									readonly constraints?: ReadonlyArray<string> | null | undefined;
-									readonly modelVersion?: string | null | undefined;
+									readonly schemaVersion?: string | null | undefined;
+									readonly modelId?: string | null | undefined;
 							  }
 							| null
 							| undefined;
@@ -7108,768 +9230,8 @@ export declare class LesserGraphQLAdapter {
 				  }
 				| null
 				| undefined;
-		}[]
-	>;
-	getConversation(id: string): Promise<
-		| {
-				readonly __typename: 'Conversation';
-				readonly id: string;
-				readonly unread: boolean;
-				readonly createdAt: string;
-				readonly updatedAt: string;
-				readonly accounts: ReadonlyArray<{
-					readonly __typename: 'Actor';
-					readonly id: string;
-					readonly username: string;
-					readonly domain?: string | null | undefined;
-					readonly displayName?: string | null | undefined;
-					readonly summary?: string | null | undefined;
-					readonly avatar?: string | null | undefined;
-					readonly header?: string | null | undefined;
-					readonly followers: number;
-					readonly following: number;
-					readonly statusesCount: number;
-					readonly bot: boolean;
-					readonly locked: boolean;
-					readonly updatedAt: string;
-					readonly isAgent: boolean;
-					readonly tipAddress?: string | null | undefined;
-					readonly tipChainId?: number | null | undefined;
-					readonly trustScore: number;
-					readonly agentInfo?:
-						| {
-								readonly __typename: 'Agent';
-								readonly id: string;
-								readonly agentType: import('./index.js').AgentType;
-								readonly verified: boolean;
-								readonly verifiedAt?: string | null | undefined;
-						  }
-						| null
-						| undefined;
-					readonly fields: ReadonlyArray<{
-						readonly __typename: 'Field';
-						readonly name: string;
-						readonly value: string;
-						readonly verifiedAt?: string | null | undefined;
-					}>;
-				}>;
-				readonly lastStatus?:
-					| {
-							readonly __typename: 'Object';
-							readonly id: string;
-							readonly type: import('./index.js').ObjectType;
-							readonly content: string;
-							readonly visibility: import('./index.js').Visibility;
-							readonly sensitive: boolean;
-							readonly spoilerText?: string | null | undefined;
-							readonly createdAt: string;
-							readonly updatedAt: string;
-							readonly repliesCount: number;
-							readonly likesCount: number;
-							readonly sharesCount: number;
-							readonly boosted: boolean;
-							readonly relationshipType: import('./index.js').ObjectRelationshipType;
-							readonly contentHash: string;
-							readonly estimatedCost: number;
-							readonly moderationScore?: number | null | undefined;
-							readonly quoteUrl?: string | null | undefined;
-							readonly quoteable: boolean;
-							readonly quotePermissions: import('./index.js').QuotePermission;
-							readonly quoteCount: number;
-							readonly boostedObject?:
-								| {
-										readonly __typename: 'Object';
-										readonly id: string;
-										readonly type: import('./index.js').ObjectType;
-										readonly content: string;
-										readonly visibility: import('./index.js').Visibility;
-										readonly sensitive: boolean;
-										readonly spoilerText?: string | null | undefined;
-										readonly createdAt: string;
-										readonly updatedAt: string;
-										readonly repliesCount: number;
-										readonly likesCount: number;
-										readonly sharesCount: number;
-										readonly boosted: boolean;
-										readonly relationshipType: import('./index.js').ObjectRelationshipType;
-										readonly contentHash: string;
-										readonly estimatedCost: number;
-										readonly moderationScore?: number | null | undefined;
-										readonly quoteUrl?: string | null | undefined;
-										readonly quoteable: boolean;
-										readonly quotePermissions: import('./index.js').QuotePermission;
-										readonly quoteCount: number;
-										readonly contentMap: ReadonlyArray<{
-											readonly __typename: 'ContentMap';
-											readonly language: string;
-											readonly content: string;
-										}>;
-										readonly attachments: ReadonlyArray<{
-											readonly __typename: 'Attachment';
-											readonly id: string;
-											readonly type: string;
-											readonly url: string;
-											readonly preview?: string | null | undefined;
-											readonly description?: string | null | undefined;
-											readonly blurhash?: string | null | undefined;
-											readonly width?: number | null | undefined;
-											readonly height?: number | null | undefined;
-											readonly duration?: number | null | undefined;
-										}>;
-										readonly tags: ReadonlyArray<{
-											readonly __typename: 'Tag';
-											readonly name: string;
-											readonly url: string;
-										}>;
-										readonly mentions: ReadonlyArray<{
-											readonly __typename: 'Mention';
-											readonly id: string;
-											readonly username: string;
-											readonly domain?: string | null | undefined;
-											readonly url: string;
-										}>;
-										readonly agentAttribution?:
-											| {
-													readonly __typename: 'AgentPostAttribution';
-													readonly triggerType?: string | null | undefined;
-													readonly triggerDetails?: string | null | undefined;
-													readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
-													readonly delegatedBy?: string | null | undefined;
-													readonly scopes?: ReadonlyArray<string> | null | undefined;
-													readonly constraints?: ReadonlyArray<string> | null | undefined;
-													readonly modelVersion?: string | null | undefined;
-											  }
-											| null
-											| undefined;
-										readonly quoteContext?:
-											| {
-													readonly __typename: 'QuoteContext';
-													readonly quoteAllowed: boolean;
-													readonly quoteType: import('./index.js').QuoteType;
-													readonly withdrawn: boolean;
-													readonly originalAuthor: {
-														readonly __typename: 'Actor';
-														readonly id: string;
-														readonly username: string;
-														readonly domain?: string | null | undefined;
-														readonly displayName?: string | null | undefined;
-														readonly summary?: string | null | undefined;
-														readonly avatar?: string | null | undefined;
-														readonly header?: string | null | undefined;
-														readonly followers: number;
-														readonly following: number;
-														readonly statusesCount: number;
-														readonly bot: boolean;
-														readonly locked: boolean;
-														readonly updatedAt: string;
-														readonly isAgent: boolean;
-														readonly tipAddress?: string | null | undefined;
-														readonly tipChainId?: number | null | undefined;
-														readonly trustScore: number;
-														readonly agentInfo?:
-															| {
-																	readonly __typename: 'Agent';
-																	readonly id: string;
-																	readonly agentType: import('./index.js').AgentType;
-																	readonly verified: boolean;
-																	readonly verifiedAt?: string | null | undefined;
-															  }
-															| null
-															| undefined;
-														readonly fields: ReadonlyArray<{
-															readonly __typename: 'Field';
-															readonly name: string;
-															readonly value: string;
-															readonly verifiedAt?: string | null | undefined;
-														}>;
-													};
-													readonly originalNote?:
-														| {
-																readonly __typename: 'Object';
-																readonly id: string;
-																readonly type: import('./index.js').ObjectType;
-														  }
-														| null
-														| undefined;
-											  }
-											| null
-											| undefined;
-										readonly communityNotes: ReadonlyArray<{
-											readonly __typename: 'CommunityNote';
-											readonly id: string;
-											readonly content: string;
-											readonly helpful: number;
-											readonly notHelpful: number;
-											readonly createdAt: string;
-											readonly author: {
-												readonly __typename: 'Actor';
-												readonly id: string;
-												readonly username: string;
-												readonly domain?: string | null | undefined;
-												readonly displayName?: string | null | undefined;
-												readonly summary?: string | null | undefined;
-												readonly avatar?: string | null | undefined;
-												readonly header?: string | null | undefined;
-												readonly followers: number;
-												readonly following: number;
-												readonly statusesCount: number;
-												readonly bot: boolean;
-												readonly locked: boolean;
-												readonly updatedAt: string;
-												readonly isAgent: boolean;
-												readonly tipAddress?: string | null | undefined;
-												readonly tipChainId?: number | null | undefined;
-												readonly trustScore: number;
-												readonly agentInfo?:
-													| {
-															readonly __typename: 'Agent';
-															readonly id: string;
-															readonly agentType: import('./index.js').AgentType;
-															readonly verified: boolean;
-															readonly verifiedAt?: string | null | undefined;
-													  }
-													| null
-													| undefined;
-												readonly fields: ReadonlyArray<{
-													readonly __typename: 'Field';
-													readonly name: string;
-													readonly value: string;
-													readonly verifiedAt?: string | null | undefined;
-												}>;
-											};
-										}>;
-										readonly actor: {
-											readonly __typename: 'Actor';
-											readonly id: string;
-											readonly username: string;
-											readonly domain?: string | null | undefined;
-											readonly displayName?: string | null | undefined;
-											readonly summary?: string | null | undefined;
-											readonly avatar?: string | null | undefined;
-											readonly header?: string | null | undefined;
-											readonly followers: number;
-											readonly following: number;
-											readonly statusesCount: number;
-											readonly bot: boolean;
-											readonly locked: boolean;
-											readonly updatedAt: string;
-											readonly isAgent: boolean;
-											readonly tipAddress?: string | null | undefined;
-											readonly tipChainId?: number | null | undefined;
-											readonly trustScore: number;
-											readonly agentInfo?:
-												| {
-														readonly __typename: 'Agent';
-														readonly id: string;
-														readonly agentType: import('./index.js').AgentType;
-														readonly verified: boolean;
-														readonly verifiedAt?: string | null | undefined;
-												  }
-												| null
-												| undefined;
-											readonly fields: ReadonlyArray<{
-												readonly __typename: 'Field';
-												readonly name: string;
-												readonly value: string;
-												readonly verifiedAt?: string | null | undefined;
-											}>;
-										};
-										readonly inReplyTo?:
-											| {
-													readonly __typename: 'Object';
-													readonly id: string;
-													readonly type: import('./index.js').ObjectType;
-													readonly actor: {
-														readonly __typename: 'Actor';
-														readonly id: string;
-														readonly username: string;
-														readonly domain?: string | null | undefined;
-														readonly displayName?: string | null | undefined;
-														readonly summary?: string | null | undefined;
-														readonly avatar?: string | null | undefined;
-														readonly header?: string | null | undefined;
-														readonly followers: number;
-														readonly following: number;
-														readonly statusesCount: number;
-														readonly bot: boolean;
-														readonly locked: boolean;
-														readonly updatedAt: string;
-														readonly isAgent: boolean;
-														readonly tipAddress?: string | null | undefined;
-														readonly tipChainId?: number | null | undefined;
-														readonly trustScore: number;
-														readonly agentInfo?:
-															| {
-																	readonly __typename: 'Agent';
-																	readonly id: string;
-																	readonly agentType: import('./index.js').AgentType;
-																	readonly verified: boolean;
-																	readonly verifiedAt?: string | null | undefined;
-															  }
-															| null
-															| undefined;
-														readonly fields: ReadonlyArray<{
-															readonly __typename: 'Field';
-															readonly name: string;
-															readonly value: string;
-															readonly verifiedAt?: string | null | undefined;
-														}>;
-													};
-											  }
-											| null
-											| undefined;
-								  }
-								| null
-								| undefined;
-							readonly contentMap: ReadonlyArray<{
-								readonly __typename: 'ContentMap';
-								readonly language: string;
-								readonly content: string;
-							}>;
-							readonly attachments: ReadonlyArray<{
-								readonly __typename: 'Attachment';
-								readonly id: string;
-								readonly type: string;
-								readonly url: string;
-								readonly preview?: string | null | undefined;
-								readonly description?: string | null | undefined;
-								readonly blurhash?: string | null | undefined;
-								readonly width?: number | null | undefined;
-								readonly height?: number | null | undefined;
-								readonly duration?: number | null | undefined;
-							}>;
-							readonly tags: ReadonlyArray<{
-								readonly __typename: 'Tag';
-								readonly name: string;
-								readonly url: string;
-							}>;
-							readonly mentions: ReadonlyArray<{
-								readonly __typename: 'Mention';
-								readonly id: string;
-								readonly username: string;
-								readonly domain?: string | null | undefined;
-								readonly url: string;
-							}>;
-							readonly agentAttribution?:
-								| {
-										readonly __typename: 'AgentPostAttribution';
-										readonly triggerType?: string | null | undefined;
-										readonly triggerDetails?: string | null | undefined;
-										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
-										readonly delegatedBy?: string | null | undefined;
-										readonly scopes?: ReadonlyArray<string> | null | undefined;
-										readonly constraints?: ReadonlyArray<string> | null | undefined;
-										readonly modelVersion?: string | null | undefined;
-								  }
-								| null
-								| undefined;
-							readonly quoteContext?:
-								| {
-										readonly __typename: 'QuoteContext';
-										readonly quoteAllowed: boolean;
-										readonly quoteType: import('./index.js').QuoteType;
-										readonly withdrawn: boolean;
-										readonly originalAuthor: {
-											readonly __typename: 'Actor';
-											readonly id: string;
-											readonly username: string;
-											readonly domain?: string | null | undefined;
-											readonly displayName?: string | null | undefined;
-											readonly summary?: string | null | undefined;
-											readonly avatar?: string | null | undefined;
-											readonly header?: string | null | undefined;
-											readonly followers: number;
-											readonly following: number;
-											readonly statusesCount: number;
-											readonly bot: boolean;
-											readonly locked: boolean;
-											readonly updatedAt: string;
-											readonly isAgent: boolean;
-											readonly tipAddress?: string | null | undefined;
-											readonly tipChainId?: number | null | undefined;
-											readonly trustScore: number;
-											readonly agentInfo?:
-												| {
-														readonly __typename: 'Agent';
-														readonly id: string;
-														readonly agentType: import('./index.js').AgentType;
-														readonly verified: boolean;
-														readonly verifiedAt?: string | null | undefined;
-												  }
-												| null
-												| undefined;
-											readonly fields: ReadonlyArray<{
-												readonly __typename: 'Field';
-												readonly name: string;
-												readonly value: string;
-												readonly verifiedAt?: string | null | undefined;
-											}>;
-										};
-										readonly originalNote?:
-											| {
-													readonly __typename: 'Object';
-													readonly id: string;
-													readonly type: import('./index.js').ObjectType;
-											  }
-											| null
-											| undefined;
-								  }
-								| null
-								| undefined;
-							readonly communityNotes: ReadonlyArray<{
-								readonly __typename: 'CommunityNote';
-								readonly id: string;
-								readonly content: string;
-								readonly helpful: number;
-								readonly notHelpful: number;
-								readonly createdAt: string;
-								readonly author: {
-									readonly __typename: 'Actor';
-									readonly id: string;
-									readonly username: string;
-									readonly domain?: string | null | undefined;
-									readonly displayName?: string | null | undefined;
-									readonly summary?: string | null | undefined;
-									readonly avatar?: string | null | undefined;
-									readonly header?: string | null | undefined;
-									readonly followers: number;
-									readonly following: number;
-									readonly statusesCount: number;
-									readonly bot: boolean;
-									readonly locked: boolean;
-									readonly updatedAt: string;
-									readonly isAgent: boolean;
-									readonly tipAddress?: string | null | undefined;
-									readonly tipChainId?: number | null | undefined;
-									readonly trustScore: number;
-									readonly agentInfo?:
-										| {
-												readonly __typename: 'Agent';
-												readonly id: string;
-												readonly agentType: import('./index.js').AgentType;
-												readonly verified: boolean;
-												readonly verifiedAt?: string | null | undefined;
-										  }
-										| null
-										| undefined;
-									readonly fields: ReadonlyArray<{
-										readonly __typename: 'Field';
-										readonly name: string;
-										readonly value: string;
-										readonly verifiedAt?: string | null | undefined;
-									}>;
-								};
-							}>;
-							readonly actor: {
-								readonly __typename: 'Actor';
-								readonly id: string;
-								readonly username: string;
-								readonly domain?: string | null | undefined;
-								readonly displayName?: string | null | undefined;
-								readonly summary?: string | null | undefined;
-								readonly avatar?: string | null | undefined;
-								readonly header?: string | null | undefined;
-								readonly followers: number;
-								readonly following: number;
-								readonly statusesCount: number;
-								readonly bot: boolean;
-								readonly locked: boolean;
-								readonly updatedAt: string;
-								readonly isAgent: boolean;
-								readonly tipAddress?: string | null | undefined;
-								readonly tipChainId?: number | null | undefined;
-								readonly trustScore: number;
-								readonly agentInfo?:
-									| {
-											readonly __typename: 'Agent';
-											readonly id: string;
-											readonly agentType: import('./index.js').AgentType;
-											readonly verified: boolean;
-											readonly verifiedAt?: string | null | undefined;
-									  }
-									| null
-									| undefined;
-								readonly fields: ReadonlyArray<{
-									readonly __typename: 'Field';
-									readonly name: string;
-									readonly value: string;
-									readonly verifiedAt?: string | null | undefined;
-								}>;
-							};
-							readonly inReplyTo?:
-								| {
-										readonly __typename: 'Object';
-										readonly id: string;
-										readonly type: import('./index.js').ObjectType;
-										readonly actor: {
-											readonly __typename: 'Actor';
-											readonly id: string;
-											readonly username: string;
-											readonly domain?: string | null | undefined;
-											readonly displayName?: string | null | undefined;
-											readonly summary?: string | null | undefined;
-											readonly avatar?: string | null | undefined;
-											readonly header?: string | null | undefined;
-											readonly followers: number;
-											readonly following: number;
-											readonly statusesCount: number;
-											readonly bot: boolean;
-											readonly locked: boolean;
-											readonly updatedAt: string;
-											readonly isAgent: boolean;
-											readonly tipAddress?: string | null | undefined;
-											readonly tipChainId?: number | null | undefined;
-											readonly trustScore: number;
-											readonly agentInfo?:
-												| {
-														readonly __typename: 'Agent';
-														readonly id: string;
-														readonly agentType: import('./index.js').AgentType;
-														readonly verified: boolean;
-														readonly verifiedAt?: string | null | undefined;
-												  }
-												| null
-												| undefined;
-											readonly fields: ReadonlyArray<{
-												readonly __typename: 'Field';
-												readonly name: string;
-												readonly value: string;
-												readonly verifiedAt?: string | null | undefined;
-											}>;
-										};
-								  }
-								| null
-								| undefined;
-					  }
-					| null
-					| undefined;
-		  }
-		| null
-		| undefined
-	>;
-	markConversationAsRead(id: string): Promise<{
-		readonly __typename: 'Conversation';
-		readonly id: string;
-		readonly unread: boolean;
-		readonly updatedAt: string;
-	}>;
-	deleteConversation(id: string): Promise<boolean>;
-	getLists(): Promise<
-		readonly {
-			readonly __typename: 'List';
-			readonly id: string;
-			readonly title: string;
-			readonly repliesPolicy: import('./index.js').RepliesPolicy;
-			readonly exclusive: boolean;
-			readonly accountCount: number;
-			readonly createdAt: string;
-			readonly updatedAt: string;
-		}[]
-	>;
-	getList(id: string): Promise<
-		| {
-				readonly __typename: 'List';
-				readonly id: string;
-				readonly title: string;
-				readonly repliesPolicy: import('./index.js').RepliesPolicy;
-				readonly exclusive: boolean;
-				readonly accountCount: number;
-				readonly createdAt: string;
-				readonly updatedAt: string;
-				readonly accounts: ReadonlyArray<{
-					readonly __typename: 'Actor';
-					readonly id: string;
-					readonly username: string;
-					readonly domain?: string | null | undefined;
-					readonly displayName?: string | null | undefined;
-					readonly summary?: string | null | undefined;
-					readonly avatar?: string | null | undefined;
-					readonly header?: string | null | undefined;
-					readonly followers: number;
-					readonly following: number;
-					readonly statusesCount: number;
-					readonly bot: boolean;
-					readonly locked: boolean;
-					readonly updatedAt: string;
-					readonly isAgent: boolean;
-					readonly tipAddress?: string | null | undefined;
-					readonly tipChainId?: number | null | undefined;
-					readonly trustScore: number;
-					readonly agentInfo?:
-						| {
-								readonly __typename: 'Agent';
-								readonly id: string;
-								readonly agentType: import('./index.js').AgentType;
-								readonly verified: boolean;
-								readonly verifiedAt?: string | null | undefined;
-						  }
-						| null
-						| undefined;
-					readonly fields: ReadonlyArray<{
-						readonly __typename: 'Field';
-						readonly name: string;
-						readonly value: string;
-						readonly verifiedAt?: string | null | undefined;
-					}>;
-				}>;
-		  }
-		| null
-		| undefined
-	>;
-	getListAccounts(id: string): Promise<
-		readonly {
-			readonly __typename: 'Actor';
-			readonly id: string;
-			readonly username: string;
-			readonly domain?: string | null | undefined;
-			readonly displayName?: string | null | undefined;
-			readonly summary?: string | null | undefined;
-			readonly avatar?: string | null | undefined;
-			readonly header?: string | null | undefined;
-			readonly followers: number;
-			readonly following: number;
-			readonly statusesCount: number;
-			readonly bot: boolean;
-			readonly locked: boolean;
-			readonly updatedAt: string;
-			readonly isAgent: boolean;
-			readonly tipAddress?: string | null | undefined;
-			readonly tipChainId?: number | null | undefined;
-			readonly trustScore: number;
-			readonly agentInfo?:
-				| {
-						readonly __typename: 'Agent';
-						readonly id: string;
-						readonly agentType: import('./index.js').AgentType;
-						readonly verified: boolean;
-						readonly verifiedAt?: string | null | undefined;
-				  }
-				| null
-				| undefined;
-			readonly fields: ReadonlyArray<{
-				readonly __typename: 'Field';
-				readonly name: string;
-				readonly value: string;
-				readonly verifiedAt?: string | null | undefined;
-			}>;
-		}[]
-	>;
-	createList(input: CreateListMutationVariables['input']): Promise<{
-		readonly __typename: 'List';
-		readonly id: string;
-		readonly title: string;
-		readonly repliesPolicy: import('./index.js').RepliesPolicy;
-		readonly exclusive: boolean;
-		readonly accountCount: number;
-		readonly createdAt: string;
-		readonly updatedAt: string;
-	}>;
-	updateList(
-		id: string,
-		input: UpdateListMutationVariables['input']
-	): Promise<{
-		readonly __typename: 'List';
-		readonly id: string;
-		readonly title: string;
-		readonly repliesPolicy: import('./index.js').RepliesPolicy;
-		readonly exclusive: boolean;
-		readonly accountCount: number;
-		readonly createdAt: string;
-		readonly updatedAt: string;
-	}>;
-	deleteList(id: string): Promise<boolean>;
-	addAccountsToList(
-		id: string,
-		accountIds: string[]
-	): Promise<{
-		readonly __typename: 'List';
-		readonly id: string;
-		readonly accountCount: number;
-		readonly accounts: ReadonlyArray<{
-			readonly __typename: 'Actor';
-			readonly id: string;
-			readonly username: string;
-			readonly domain?: string | null | undefined;
-			readonly displayName?: string | null | undefined;
-			readonly summary?: string | null | undefined;
-			readonly avatar?: string | null | undefined;
-			readonly header?: string | null | undefined;
-			readonly followers: number;
-			readonly following: number;
-			readonly statusesCount: number;
-			readonly bot: boolean;
-			readonly locked: boolean;
-			readonly updatedAt: string;
-			readonly isAgent: boolean;
-			readonly tipAddress?: string | null | undefined;
-			readonly tipChainId?: number | null | undefined;
-			readonly trustScore: number;
-			readonly agentInfo?:
-				| {
-						readonly __typename: 'Agent';
-						readonly id: string;
-						readonly agentType: import('./index.js').AgentType;
-						readonly verified: boolean;
-						readonly verifiedAt?: string | null | undefined;
-				  }
-				| null
-				| undefined;
-			readonly fields: ReadonlyArray<{
-				readonly __typename: 'Field';
-				readonly name: string;
-				readonly value: string;
-				readonly verifiedAt?: string | null | undefined;
-			}>;
-		}>;
-	}>;
-	removeAccountsFromList(
-		id: string,
-		accountIds: string[]
-	): Promise<{
-		readonly __typename: 'List';
-		readonly id: string;
-		readonly accountCount: number;
-		readonly accounts: ReadonlyArray<{
-			readonly __typename: 'Actor';
-			readonly id: string;
-			readonly username: string;
-			readonly domain?: string | null | undefined;
-			readonly displayName?: string | null | undefined;
-			readonly summary?: string | null | undefined;
-			readonly avatar?: string | null | undefined;
-			readonly header?: string | null | undefined;
-			readonly followers: number;
-			readonly following: number;
-			readonly statusesCount: number;
-			readonly bot: boolean;
-			readonly locked: boolean;
-			readonly updatedAt: string;
-			readonly isAgent: boolean;
-			readonly tipAddress?: string | null | undefined;
-			readonly tipChainId?: number | null | undefined;
-			readonly trustScore: number;
-			readonly agentInfo?:
-				| {
-						readonly __typename: 'Agent';
-						readonly id: string;
-						readonly agentType: import('./index.js').AgentType;
-						readonly verified: boolean;
-						readonly verifiedAt?: string | null | undefined;
-				  }
-				| null
-				| undefined;
-			readonly fields: ReadonlyArray<{
-				readonly __typename: 'Field';
-				readonly name: string;
-				readonly value: string;
-				readonly verifiedAt?: string | null | undefined;
-			}>;
-		}>;
-	}>;
-	uploadMedia(input: UploadMediaInput): Promise<UploadMediaMutation['uploadMedia']>;
-	createNote(input: CreateNoteMutationVariables['input']): Promise<{
-		readonly __typename: 'CreateNotePayload';
-		readonly object: {
+		};
+		readonly message: {
 			readonly __typename: 'Object';
 			readonly id: string;
 			readonly type: import('./index.js').ObjectType;
@@ -7950,9 +9312,11 @@ export declare class LesserGraphQLAdapter {
 									readonly triggerDetails?: string | null | undefined;
 									readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 									readonly delegatedBy?: string | null | undefined;
+									readonly delegatedByDid?: string | null | undefined;
 									readonly scopes?: ReadonlyArray<string> | null | undefined;
 									readonly constraints?: ReadonlyArray<string> | null | undefined;
-									readonly modelVersion?: string | null | undefined;
+									readonly schemaVersion?: string | null | undefined;
+									readonly modelId?: string | null | undefined;
 							  }
 							| null
 							| undefined;
@@ -8172,9 +9536,1350 @@ export declare class LesserGraphQLAdapter {
 						readonly triggerDetails?: string | null | undefined;
 						readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 						readonly delegatedBy?: string | null | undefined;
+						readonly delegatedByDid?: string | null | undefined;
 						readonly scopes?: ReadonlyArray<string> | null | undefined;
 						readonly constraints?: ReadonlyArray<string> | null | undefined;
-						readonly modelVersion?: string | null | undefined;
+						readonly schemaVersion?: string | null | undefined;
+						readonly modelId?: string | null | undefined;
+				  }
+				| null
+				| undefined;
+			readonly quoteContext?:
+				| {
+						readonly __typename: 'QuoteContext';
+						readonly quoteAllowed: boolean;
+						readonly quoteType: import('./index.js').QuoteType;
+						readonly withdrawn: boolean;
+						readonly originalAuthor: {
+							readonly __typename: 'Actor';
+							readonly id: string;
+							readonly username: string;
+							readonly domain?: string | null | undefined;
+							readonly displayName?: string | null | undefined;
+							readonly summary?: string | null | undefined;
+							readonly avatar?: string | null | undefined;
+							readonly header?: string | null | undefined;
+							readonly followers: number;
+							readonly following: number;
+							readonly statusesCount: number;
+							readonly bot: boolean;
+							readonly locked: boolean;
+							readonly updatedAt: string;
+							readonly isAgent: boolean;
+							readonly tipAddress?: string | null | undefined;
+							readonly tipChainId?: number | null | undefined;
+							readonly trustScore: number;
+							readonly agentInfo?:
+								| {
+										readonly __typename: 'Agent';
+										readonly id: string;
+										readonly agentType: import('./index.js').AgentType;
+										readonly verified: boolean;
+										readonly verifiedAt?: string | null | undefined;
+								  }
+								| null
+								| undefined;
+							readonly fields: ReadonlyArray<{
+								readonly __typename: 'Field';
+								readonly name: string;
+								readonly value: string;
+								readonly verifiedAt?: string | null | undefined;
+							}>;
+						};
+						readonly originalNote?:
+							| {
+									readonly __typename: 'Object';
+									readonly id: string;
+									readonly type: import('./index.js').ObjectType;
+							  }
+							| null
+							| undefined;
+				  }
+				| null
+				| undefined;
+			readonly communityNotes: ReadonlyArray<{
+				readonly __typename: 'CommunityNote';
+				readonly id: string;
+				readonly content: string;
+				readonly helpful: number;
+				readonly notHelpful: number;
+				readonly createdAt: string;
+				readonly author: {
+					readonly __typename: 'Actor';
+					readonly id: string;
+					readonly username: string;
+					readonly domain?: string | null | undefined;
+					readonly displayName?: string | null | undefined;
+					readonly summary?: string | null | undefined;
+					readonly avatar?: string | null | undefined;
+					readonly header?: string | null | undefined;
+					readonly followers: number;
+					readonly following: number;
+					readonly statusesCount: number;
+					readonly bot: boolean;
+					readonly locked: boolean;
+					readonly updatedAt: string;
+					readonly isAgent: boolean;
+					readonly tipAddress?: string | null | undefined;
+					readonly tipChainId?: number | null | undefined;
+					readonly trustScore: number;
+					readonly agentInfo?:
+						| {
+								readonly __typename: 'Agent';
+								readonly id: string;
+								readonly agentType: import('./index.js').AgentType;
+								readonly verified: boolean;
+								readonly verifiedAt?: string | null | undefined;
+						  }
+						| null
+						| undefined;
+					readonly fields: ReadonlyArray<{
+						readonly __typename: 'Field';
+						readonly name: string;
+						readonly value: string;
+						readonly verifiedAt?: string | null | undefined;
+					}>;
+				};
+			}>;
+			readonly actor: {
+				readonly __typename: 'Actor';
+				readonly id: string;
+				readonly username: string;
+				readonly domain?: string | null | undefined;
+				readonly displayName?: string | null | undefined;
+				readonly summary?: string | null | undefined;
+				readonly avatar?: string | null | undefined;
+				readonly header?: string | null | undefined;
+				readonly followers: number;
+				readonly following: number;
+				readonly statusesCount: number;
+				readonly bot: boolean;
+				readonly locked: boolean;
+				readonly updatedAt: string;
+				readonly isAgent: boolean;
+				readonly tipAddress?: string | null | undefined;
+				readonly tipChainId?: number | null | undefined;
+				readonly trustScore: number;
+				readonly agentInfo?:
+					| {
+							readonly __typename: 'Agent';
+							readonly id: string;
+							readonly agentType: import('./index.js').AgentType;
+							readonly verified: boolean;
+							readonly verifiedAt?: string | null | undefined;
+					  }
+					| null
+					| undefined;
+				readonly fields: ReadonlyArray<{
+					readonly __typename: 'Field';
+					readonly name: string;
+					readonly value: string;
+					readonly verifiedAt?: string | null | undefined;
+				}>;
+			};
+			readonly inReplyTo?:
+				| {
+						readonly __typename: 'Object';
+						readonly id: string;
+						readonly type: import('./index.js').ObjectType;
+						readonly actor: {
+							readonly __typename: 'Actor';
+							readonly id: string;
+							readonly username: string;
+							readonly domain?: string | null | undefined;
+							readonly displayName?: string | null | undefined;
+							readonly summary?: string | null | undefined;
+							readonly avatar?: string | null | undefined;
+							readonly header?: string | null | undefined;
+							readonly followers: number;
+							readonly following: number;
+							readonly statusesCount: number;
+							readonly bot: boolean;
+							readonly locked: boolean;
+							readonly updatedAt: string;
+							readonly isAgent: boolean;
+							readonly tipAddress?: string | null | undefined;
+							readonly tipChainId?: number | null | undefined;
+							readonly trustScore: number;
+							readonly agentInfo?:
+								| {
+										readonly __typename: 'Agent';
+										readonly id: string;
+										readonly agentType: import('./index.js').AgentType;
+										readonly verified: boolean;
+										readonly verifiedAt?: string | null | undefined;
+								  }
+								| null
+								| undefined;
+							readonly fields: ReadonlyArray<{
+								readonly __typename: 'Field';
+								readonly name: string;
+								readonly value: string;
+								readonly verifiedAt?: string | null | undefined;
+							}>;
+						};
+				  }
+				| null
+				| undefined;
+		};
+	}>;
+	acceptMessageRequest(
+		conversationId: AcceptMessageRequestMutationVariables['conversationId']
+	): Promise<{
+		readonly __typename: 'Conversation';
+		readonly id: string;
+		readonly unread: boolean;
+		readonly createdAt: string;
+		readonly updatedAt: string;
+		readonly viewerMetadata: {
+			readonly __typename: 'ConversationViewerMetadata';
+			readonly requestState: import('./index.js').DmRequestState;
+			readonly requestedAt?: string | null | undefined;
+			readonly acceptedAt?: string | null | undefined;
+			readonly declinedAt?: string | null | undefined;
+		};
+		readonly accounts: ReadonlyArray<{
+			readonly __typename: 'Actor';
+			readonly id: string;
+			readonly username: string;
+			readonly domain?: string | null | undefined;
+			readonly displayName?: string | null | undefined;
+			readonly summary?: string | null | undefined;
+			readonly avatar?: string | null | undefined;
+			readonly header?: string | null | undefined;
+			readonly followers: number;
+			readonly following: number;
+			readonly statusesCount: number;
+			readonly bot: boolean;
+			readonly locked: boolean;
+			readonly updatedAt: string;
+			readonly isAgent: boolean;
+			readonly tipAddress?: string | null | undefined;
+			readonly tipChainId?: number | null | undefined;
+			readonly trustScore: number;
+			readonly agentInfo?:
+				| {
+						readonly __typename: 'Agent';
+						readonly id: string;
+						readonly agentType: import('./index.js').AgentType;
+						readonly verified: boolean;
+						readonly verifiedAt?: string | null | undefined;
+				  }
+				| null
+				| undefined;
+			readonly fields: ReadonlyArray<{
+				readonly __typename: 'Field';
+				readonly name: string;
+				readonly value: string;
+				readonly verifiedAt?: string | null | undefined;
+			}>;
+		}>;
+		readonly lastStatus?:
+			| {
+					readonly __typename: 'Object';
+					readonly id: string;
+					readonly type: import('./index.js').ObjectType;
+					readonly content: string;
+					readonly visibility: import('./index.js').Visibility;
+					readonly sensitive: boolean;
+					readonly spoilerText?: string | null | undefined;
+					readonly createdAt: string;
+					readonly updatedAt: string;
+					readonly repliesCount: number;
+					readonly likesCount: number;
+					readonly sharesCount: number;
+					readonly boosted: boolean;
+					readonly relationshipType: import('./index.js').ObjectRelationshipType;
+					readonly contentHash: string;
+					readonly estimatedCost: number;
+					readonly moderationScore?: number | null | undefined;
+					readonly quoteUrl?: string | null | undefined;
+					readonly quoteable: boolean;
+					readonly quotePermissions: import('./index.js').QuotePermission;
+					readonly quoteCount: number;
+					readonly boostedObject?:
+						| {
+								readonly __typename: 'Object';
+								readonly id: string;
+								readonly type: import('./index.js').ObjectType;
+								readonly content: string;
+								readonly visibility: import('./index.js').Visibility;
+								readonly sensitive: boolean;
+								readonly spoilerText?: string | null | undefined;
+								readonly createdAt: string;
+								readonly updatedAt: string;
+								readonly repliesCount: number;
+								readonly likesCount: number;
+								readonly sharesCount: number;
+								readonly boosted: boolean;
+								readonly relationshipType: import('./index.js').ObjectRelationshipType;
+								readonly contentHash: string;
+								readonly estimatedCost: number;
+								readonly moderationScore?: number | null | undefined;
+								readonly quoteUrl?: string | null | undefined;
+								readonly quoteable: boolean;
+								readonly quotePermissions: import('./index.js').QuotePermission;
+								readonly quoteCount: number;
+								readonly contentMap: ReadonlyArray<{
+									readonly __typename: 'ContentMap';
+									readonly language: string;
+									readonly content: string;
+								}>;
+								readonly attachments: ReadonlyArray<{
+									readonly __typename: 'Attachment';
+									readonly id: string;
+									readonly type: string;
+									readonly url: string;
+									readonly preview?: string | null | undefined;
+									readonly description?: string | null | undefined;
+									readonly blurhash?: string | null | undefined;
+									readonly width?: number | null | undefined;
+									readonly height?: number | null | undefined;
+									readonly duration?: number | null | undefined;
+								}>;
+								readonly tags: ReadonlyArray<{
+									readonly __typename: 'Tag';
+									readonly name: string;
+									readonly url: string;
+								}>;
+								readonly mentions: ReadonlyArray<{
+									readonly __typename: 'Mention';
+									readonly id: string;
+									readonly username: string;
+									readonly domain?: string | null | undefined;
+									readonly url: string;
+								}>;
+								readonly agentAttribution?:
+									| {
+											readonly __typename: 'AgentPostAttribution';
+											readonly triggerType?: string | null | undefined;
+											readonly triggerDetails?: string | null | undefined;
+											readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
+											readonly delegatedBy?: string | null | undefined;
+											readonly delegatedByDid?: string | null | undefined;
+											readonly scopes?: ReadonlyArray<string> | null | undefined;
+											readonly constraints?: ReadonlyArray<string> | null | undefined;
+											readonly schemaVersion?: string | null | undefined;
+											readonly modelId?: string | null | undefined;
+									  }
+									| null
+									| undefined;
+								readonly quoteContext?:
+									| {
+											readonly __typename: 'QuoteContext';
+											readonly quoteAllowed: boolean;
+											readonly quoteType: import('./index.js').QuoteType;
+											readonly withdrawn: boolean;
+											readonly originalAuthor: {
+												readonly __typename: 'Actor';
+												readonly id: string;
+												readonly username: string;
+												readonly domain?: string | null | undefined;
+												readonly displayName?: string | null | undefined;
+												readonly summary?: string | null | undefined;
+												readonly avatar?: string | null | undefined;
+												readonly header?: string | null | undefined;
+												readonly followers: number;
+												readonly following: number;
+												readonly statusesCount: number;
+												readonly bot: boolean;
+												readonly locked: boolean;
+												readonly updatedAt: string;
+												readonly isAgent: boolean;
+												readonly tipAddress?: string | null | undefined;
+												readonly tipChainId?: number | null | undefined;
+												readonly trustScore: number;
+												readonly agentInfo?:
+													| {
+															readonly __typename: 'Agent';
+															readonly id: string;
+															readonly agentType: import('./index.js').AgentType;
+															readonly verified: boolean;
+															readonly verifiedAt?: string | null | undefined;
+													  }
+													| null
+													| undefined;
+												readonly fields: ReadonlyArray<{
+													readonly __typename: 'Field';
+													readonly name: string;
+													readonly value: string;
+													readonly verifiedAt?: string | null | undefined;
+												}>;
+											};
+											readonly originalNote?:
+												| {
+														readonly __typename: 'Object';
+														readonly id: string;
+														readonly type: import('./index.js').ObjectType;
+												  }
+												| null
+												| undefined;
+									  }
+									| null
+									| undefined;
+								readonly communityNotes: ReadonlyArray<{
+									readonly __typename: 'CommunityNote';
+									readonly id: string;
+									readonly content: string;
+									readonly helpful: number;
+									readonly notHelpful: number;
+									readonly createdAt: string;
+									readonly author: {
+										readonly __typename: 'Actor';
+										readonly id: string;
+										readonly username: string;
+										readonly domain?: string | null | undefined;
+										readonly displayName?: string | null | undefined;
+										readonly summary?: string | null | undefined;
+										readonly avatar?: string | null | undefined;
+										readonly header?: string | null | undefined;
+										readonly followers: number;
+										readonly following: number;
+										readonly statusesCount: number;
+										readonly bot: boolean;
+										readonly locked: boolean;
+										readonly updatedAt: string;
+										readonly isAgent: boolean;
+										readonly tipAddress?: string | null | undefined;
+										readonly tipChainId?: number | null | undefined;
+										readonly trustScore: number;
+										readonly agentInfo?:
+											| {
+													readonly __typename: 'Agent';
+													readonly id: string;
+													readonly agentType: import('./index.js').AgentType;
+													readonly verified: boolean;
+													readonly verifiedAt?: string | null | undefined;
+											  }
+											| null
+											| undefined;
+										readonly fields: ReadonlyArray<{
+											readonly __typename: 'Field';
+											readonly name: string;
+											readonly value: string;
+											readonly verifiedAt?: string | null | undefined;
+										}>;
+									};
+								}>;
+								readonly actor: {
+									readonly __typename: 'Actor';
+									readonly id: string;
+									readonly username: string;
+									readonly domain?: string | null | undefined;
+									readonly displayName?: string | null | undefined;
+									readonly summary?: string | null | undefined;
+									readonly avatar?: string | null | undefined;
+									readonly header?: string | null | undefined;
+									readonly followers: number;
+									readonly following: number;
+									readonly statusesCount: number;
+									readonly bot: boolean;
+									readonly locked: boolean;
+									readonly updatedAt: string;
+									readonly isAgent: boolean;
+									readonly tipAddress?: string | null | undefined;
+									readonly tipChainId?: number | null | undefined;
+									readonly trustScore: number;
+									readonly agentInfo?:
+										| {
+												readonly __typename: 'Agent';
+												readonly id: string;
+												readonly agentType: import('./index.js').AgentType;
+												readonly verified: boolean;
+												readonly verifiedAt?: string | null | undefined;
+										  }
+										| null
+										| undefined;
+									readonly fields: ReadonlyArray<{
+										readonly __typename: 'Field';
+										readonly name: string;
+										readonly value: string;
+										readonly verifiedAt?: string | null | undefined;
+									}>;
+								};
+								readonly inReplyTo?:
+									| {
+											readonly __typename: 'Object';
+											readonly id: string;
+											readonly type: import('./index.js').ObjectType;
+											readonly actor: {
+												readonly __typename: 'Actor';
+												readonly id: string;
+												readonly username: string;
+												readonly domain?: string | null | undefined;
+												readonly displayName?: string | null | undefined;
+												readonly summary?: string | null | undefined;
+												readonly avatar?: string | null | undefined;
+												readonly header?: string | null | undefined;
+												readonly followers: number;
+												readonly following: number;
+												readonly statusesCount: number;
+												readonly bot: boolean;
+												readonly locked: boolean;
+												readonly updatedAt: string;
+												readonly isAgent: boolean;
+												readonly tipAddress?: string | null | undefined;
+												readonly tipChainId?: number | null | undefined;
+												readonly trustScore: number;
+												readonly agentInfo?:
+													| {
+															readonly __typename: 'Agent';
+															readonly id: string;
+															readonly agentType: import('./index.js').AgentType;
+															readonly verified: boolean;
+															readonly verifiedAt?: string | null | undefined;
+													  }
+													| null
+													| undefined;
+												readonly fields: ReadonlyArray<{
+													readonly __typename: 'Field';
+													readonly name: string;
+													readonly value: string;
+													readonly verifiedAt?: string | null | undefined;
+												}>;
+											};
+									  }
+									| null
+									| undefined;
+						  }
+						| null
+						| undefined;
+					readonly contentMap: ReadonlyArray<{
+						readonly __typename: 'ContentMap';
+						readonly language: string;
+						readonly content: string;
+					}>;
+					readonly attachments: ReadonlyArray<{
+						readonly __typename: 'Attachment';
+						readonly id: string;
+						readonly type: string;
+						readonly url: string;
+						readonly preview?: string | null | undefined;
+						readonly description?: string | null | undefined;
+						readonly blurhash?: string | null | undefined;
+						readonly width?: number | null | undefined;
+						readonly height?: number | null | undefined;
+						readonly duration?: number | null | undefined;
+					}>;
+					readonly tags: ReadonlyArray<{
+						readonly __typename: 'Tag';
+						readonly name: string;
+						readonly url: string;
+					}>;
+					readonly mentions: ReadonlyArray<{
+						readonly __typename: 'Mention';
+						readonly id: string;
+						readonly username: string;
+						readonly domain?: string | null | undefined;
+						readonly url: string;
+					}>;
+					readonly agentAttribution?:
+						| {
+								readonly __typename: 'AgentPostAttribution';
+								readonly triggerType?: string | null | undefined;
+								readonly triggerDetails?: string | null | undefined;
+								readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
+								readonly delegatedBy?: string | null | undefined;
+								readonly delegatedByDid?: string | null | undefined;
+								readonly scopes?: ReadonlyArray<string> | null | undefined;
+								readonly constraints?: ReadonlyArray<string> | null | undefined;
+								readonly schemaVersion?: string | null | undefined;
+								readonly modelId?: string | null | undefined;
+						  }
+						| null
+						| undefined;
+					readonly quoteContext?:
+						| {
+								readonly __typename: 'QuoteContext';
+								readonly quoteAllowed: boolean;
+								readonly quoteType: import('./index.js').QuoteType;
+								readonly withdrawn: boolean;
+								readonly originalAuthor: {
+									readonly __typename: 'Actor';
+									readonly id: string;
+									readonly username: string;
+									readonly domain?: string | null | undefined;
+									readonly displayName?: string | null | undefined;
+									readonly summary?: string | null | undefined;
+									readonly avatar?: string | null | undefined;
+									readonly header?: string | null | undefined;
+									readonly followers: number;
+									readonly following: number;
+									readonly statusesCount: number;
+									readonly bot: boolean;
+									readonly locked: boolean;
+									readonly updatedAt: string;
+									readonly isAgent: boolean;
+									readonly tipAddress?: string | null | undefined;
+									readonly tipChainId?: number | null | undefined;
+									readonly trustScore: number;
+									readonly agentInfo?:
+										| {
+												readonly __typename: 'Agent';
+												readonly id: string;
+												readonly agentType: import('./index.js').AgentType;
+												readonly verified: boolean;
+												readonly verifiedAt?: string | null | undefined;
+										  }
+										| null
+										| undefined;
+									readonly fields: ReadonlyArray<{
+										readonly __typename: 'Field';
+										readonly name: string;
+										readonly value: string;
+										readonly verifiedAt?: string | null | undefined;
+									}>;
+								};
+								readonly originalNote?:
+									| {
+											readonly __typename: 'Object';
+											readonly id: string;
+											readonly type: import('./index.js').ObjectType;
+									  }
+									| null
+									| undefined;
+						  }
+						| null
+						| undefined;
+					readonly communityNotes: ReadonlyArray<{
+						readonly __typename: 'CommunityNote';
+						readonly id: string;
+						readonly content: string;
+						readonly helpful: number;
+						readonly notHelpful: number;
+						readonly createdAt: string;
+						readonly author: {
+							readonly __typename: 'Actor';
+							readonly id: string;
+							readonly username: string;
+							readonly domain?: string | null | undefined;
+							readonly displayName?: string | null | undefined;
+							readonly summary?: string | null | undefined;
+							readonly avatar?: string | null | undefined;
+							readonly header?: string | null | undefined;
+							readonly followers: number;
+							readonly following: number;
+							readonly statusesCount: number;
+							readonly bot: boolean;
+							readonly locked: boolean;
+							readonly updatedAt: string;
+							readonly isAgent: boolean;
+							readonly tipAddress?: string | null | undefined;
+							readonly tipChainId?: number | null | undefined;
+							readonly trustScore: number;
+							readonly agentInfo?:
+								| {
+										readonly __typename: 'Agent';
+										readonly id: string;
+										readonly agentType: import('./index.js').AgentType;
+										readonly verified: boolean;
+										readonly verifiedAt?: string | null | undefined;
+								  }
+								| null
+								| undefined;
+							readonly fields: ReadonlyArray<{
+								readonly __typename: 'Field';
+								readonly name: string;
+								readonly value: string;
+								readonly verifiedAt?: string | null | undefined;
+							}>;
+						};
+					}>;
+					readonly actor: {
+						readonly __typename: 'Actor';
+						readonly id: string;
+						readonly username: string;
+						readonly domain?: string | null | undefined;
+						readonly displayName?: string | null | undefined;
+						readonly summary?: string | null | undefined;
+						readonly avatar?: string | null | undefined;
+						readonly header?: string | null | undefined;
+						readonly followers: number;
+						readonly following: number;
+						readonly statusesCount: number;
+						readonly bot: boolean;
+						readonly locked: boolean;
+						readonly updatedAt: string;
+						readonly isAgent: boolean;
+						readonly tipAddress?: string | null | undefined;
+						readonly tipChainId?: number | null | undefined;
+						readonly trustScore: number;
+						readonly agentInfo?:
+							| {
+									readonly __typename: 'Agent';
+									readonly id: string;
+									readonly agentType: import('./index.js').AgentType;
+									readonly verified: boolean;
+									readonly verifiedAt?: string | null | undefined;
+							  }
+							| null
+							| undefined;
+						readonly fields: ReadonlyArray<{
+							readonly __typename: 'Field';
+							readonly name: string;
+							readonly value: string;
+							readonly verifiedAt?: string | null | undefined;
+						}>;
+					};
+					readonly inReplyTo?:
+						| {
+								readonly __typename: 'Object';
+								readonly id: string;
+								readonly type: import('./index.js').ObjectType;
+								readonly actor: {
+									readonly __typename: 'Actor';
+									readonly id: string;
+									readonly username: string;
+									readonly domain?: string | null | undefined;
+									readonly displayName?: string | null | undefined;
+									readonly summary?: string | null | undefined;
+									readonly avatar?: string | null | undefined;
+									readonly header?: string | null | undefined;
+									readonly followers: number;
+									readonly following: number;
+									readonly statusesCount: number;
+									readonly bot: boolean;
+									readonly locked: boolean;
+									readonly updatedAt: string;
+									readonly isAgent: boolean;
+									readonly tipAddress?: string | null | undefined;
+									readonly tipChainId?: number | null | undefined;
+									readonly trustScore: number;
+									readonly agentInfo?:
+										| {
+												readonly __typename: 'Agent';
+												readonly id: string;
+												readonly agentType: import('./index.js').AgentType;
+												readonly verified: boolean;
+												readonly verifiedAt?: string | null | undefined;
+										  }
+										| null
+										| undefined;
+									readonly fields: ReadonlyArray<{
+										readonly __typename: 'Field';
+										readonly name: string;
+										readonly value: string;
+										readonly verifiedAt?: string | null | undefined;
+									}>;
+								};
+						  }
+						| null
+						| undefined;
+			  }
+			| null
+			| undefined;
+	}>;
+	declineMessageRequest(
+		conversationId: DeclineMessageRequestMutationVariables['conversationId']
+	): Promise<boolean>;
+	markConversationAsRead(id: string): Promise<{
+		readonly __typename: 'Conversation';
+		readonly id: string;
+		readonly unread: boolean;
+		readonly updatedAt: string;
+	}>;
+	deleteConversation(conversationId: string): Promise<boolean>;
+	deleteMessage(messageId: DeleteMessageMutationVariables['messageId']): Promise<boolean>;
+	getLists(): Promise<
+		readonly {
+			readonly __typename: 'List';
+			readonly id: string;
+			readonly title: string;
+			readonly repliesPolicy: import('./index.js').RepliesPolicy;
+			readonly exclusive: boolean;
+			readonly accountCount: number;
+			readonly createdAt: string;
+			readonly updatedAt: string;
+		}[]
+	>;
+	getList(id: string): Promise<
+		| {
+				readonly __typename: 'List';
+				readonly id: string;
+				readonly title: string;
+				readonly repliesPolicy: import('./index.js').RepliesPolicy;
+				readonly exclusive: boolean;
+				readonly accountCount: number;
+				readonly createdAt: string;
+				readonly updatedAt: string;
+				readonly accounts: ReadonlyArray<{
+					readonly __typename: 'Actor';
+					readonly id: string;
+					readonly username: string;
+					readonly domain?: string | null | undefined;
+					readonly displayName?: string | null | undefined;
+					readonly summary?: string | null | undefined;
+					readonly avatar?: string | null | undefined;
+					readonly header?: string | null | undefined;
+					readonly followers: number;
+					readonly following: number;
+					readonly statusesCount: number;
+					readonly bot: boolean;
+					readonly locked: boolean;
+					readonly updatedAt: string;
+					readonly isAgent: boolean;
+					readonly tipAddress?: string | null | undefined;
+					readonly tipChainId?: number | null | undefined;
+					readonly trustScore: number;
+					readonly agentInfo?:
+						| {
+								readonly __typename: 'Agent';
+								readonly id: string;
+								readonly agentType: import('./index.js').AgentType;
+								readonly verified: boolean;
+								readonly verifiedAt?: string | null | undefined;
+						  }
+						| null
+						| undefined;
+					readonly fields: ReadonlyArray<{
+						readonly __typename: 'Field';
+						readonly name: string;
+						readonly value: string;
+						readonly verifiedAt?: string | null | undefined;
+					}>;
+				}>;
+		  }
+		| null
+		| undefined
+	>;
+	getListAccounts(id: string): Promise<
+		readonly {
+			readonly __typename: 'Actor';
+			readonly id: string;
+			readonly username: string;
+			readonly domain?: string | null | undefined;
+			readonly displayName?: string | null | undefined;
+			readonly summary?: string | null | undefined;
+			readonly avatar?: string | null | undefined;
+			readonly header?: string | null | undefined;
+			readonly followers: number;
+			readonly following: number;
+			readonly statusesCount: number;
+			readonly bot: boolean;
+			readonly locked: boolean;
+			readonly updatedAt: string;
+			readonly isAgent: boolean;
+			readonly tipAddress?: string | null | undefined;
+			readonly tipChainId?: number | null | undefined;
+			readonly trustScore: number;
+			readonly agentInfo?:
+				| {
+						readonly __typename: 'Agent';
+						readonly id: string;
+						readonly agentType: import('./index.js').AgentType;
+						readonly verified: boolean;
+						readonly verifiedAt?: string | null | undefined;
+				  }
+				| null
+				| undefined;
+			readonly fields: ReadonlyArray<{
+				readonly __typename: 'Field';
+				readonly name: string;
+				readonly value: string;
+				readonly verifiedAt?: string | null | undefined;
+			}>;
+		}[]
+	>;
+	createList(input: CreateListMutationVariables['input']): Promise<{
+		readonly __typename: 'List';
+		readonly id: string;
+		readonly title: string;
+		readonly repliesPolicy: import('./index.js').RepliesPolicy;
+		readonly exclusive: boolean;
+		readonly accountCount: number;
+		readonly createdAt: string;
+		readonly updatedAt: string;
+	}>;
+	updateList(
+		id: string,
+		input: UpdateListMutationVariables['input']
+	): Promise<{
+		readonly __typename: 'List';
+		readonly id: string;
+		readonly title: string;
+		readonly repliesPolicy: import('./index.js').RepliesPolicy;
+		readonly exclusive: boolean;
+		readonly accountCount: number;
+		readonly createdAt: string;
+		readonly updatedAt: string;
+	}>;
+	deleteList(id: string): Promise<boolean>;
+	addAccountsToList(
+		id: string,
+		accountIds: string[]
+	): Promise<{
+		readonly __typename: 'List';
+		readonly id: string;
+		readonly accountCount: number;
+		readonly accounts: ReadonlyArray<{
+			readonly __typename: 'Actor';
+			readonly id: string;
+			readonly username: string;
+			readonly domain?: string | null | undefined;
+			readonly displayName?: string | null | undefined;
+			readonly summary?: string | null | undefined;
+			readonly avatar?: string | null | undefined;
+			readonly header?: string | null | undefined;
+			readonly followers: number;
+			readonly following: number;
+			readonly statusesCount: number;
+			readonly bot: boolean;
+			readonly locked: boolean;
+			readonly updatedAt: string;
+			readonly isAgent: boolean;
+			readonly tipAddress?: string | null | undefined;
+			readonly tipChainId?: number | null | undefined;
+			readonly trustScore: number;
+			readonly agentInfo?:
+				| {
+						readonly __typename: 'Agent';
+						readonly id: string;
+						readonly agentType: import('./index.js').AgentType;
+						readonly verified: boolean;
+						readonly verifiedAt?: string | null | undefined;
+				  }
+				| null
+				| undefined;
+			readonly fields: ReadonlyArray<{
+				readonly __typename: 'Field';
+				readonly name: string;
+				readonly value: string;
+				readonly verifiedAt?: string | null | undefined;
+			}>;
+		}>;
+	}>;
+	removeAccountsFromList(
+		id: string,
+		accountIds: string[]
+	): Promise<{
+		readonly __typename: 'List';
+		readonly id: string;
+		readonly accountCount: number;
+		readonly accounts: ReadonlyArray<{
+			readonly __typename: 'Actor';
+			readonly id: string;
+			readonly username: string;
+			readonly domain?: string | null | undefined;
+			readonly displayName?: string | null | undefined;
+			readonly summary?: string | null | undefined;
+			readonly avatar?: string | null | undefined;
+			readonly header?: string | null | undefined;
+			readonly followers: number;
+			readonly following: number;
+			readonly statusesCount: number;
+			readonly bot: boolean;
+			readonly locked: boolean;
+			readonly updatedAt: string;
+			readonly isAgent: boolean;
+			readonly tipAddress?: string | null | undefined;
+			readonly tipChainId?: number | null | undefined;
+			readonly trustScore: number;
+			readonly agentInfo?:
+				| {
+						readonly __typename: 'Agent';
+						readonly id: string;
+						readonly agentType: import('./index.js').AgentType;
+						readonly verified: boolean;
+						readonly verifiedAt?: string | null | undefined;
+				  }
+				| null
+				| undefined;
+			readonly fields: ReadonlyArray<{
+				readonly __typename: 'Field';
+				readonly name: string;
+				readonly value: string;
+				readonly verifiedAt?: string | null | undefined;
+			}>;
+		}>;
+	}>;
+	uploadMedia(input: UploadMediaInput): Promise<UploadMediaMutation['uploadMedia']>;
+	getMedia(id: string): Promise<
+		| {
+				readonly __typename: 'Media';
+				readonly id: string;
+				readonly type: import('./index.js').MediaType;
+				readonly url: string;
+				readonly previewUrl?: string | null | undefined;
+				readonly description?: string | null | undefined;
+				readonly sensitive: boolean;
+				readonly spoilerText?: string | null | undefined;
+				readonly mediaCategory: import('./index.js').MediaCategory;
+				readonly blurhash?: string | null | undefined;
+				readonly width?: number | null | undefined;
+				readonly height?: number | null | undefined;
+				readonly duration?: number | null | undefined;
+				readonly size: number;
+				readonly mimeType: string;
+				readonly createdAt: string;
+				readonly uploadedBy: {
+					readonly __typename: 'Actor';
+					readonly id: string;
+					readonly username: string;
+					readonly domain?: string | null | undefined;
+					readonly displayName?: string | null | undefined;
+					readonly summary?: string | null | undefined;
+					readonly avatar?: string | null | undefined;
+					readonly header?: string | null | undefined;
+					readonly followers: number;
+					readonly following: number;
+					readonly statusesCount: number;
+					readonly bot: boolean;
+					readonly locked: boolean;
+					readonly updatedAt: string;
+					readonly isAgent: boolean;
+					readonly tipAddress?: string | null | undefined;
+					readonly tipChainId?: number | null | undefined;
+					readonly trustScore: number;
+					readonly agentInfo?:
+						| {
+								readonly __typename: 'Agent';
+								readonly id: string;
+								readonly agentType: import('./index.js').AgentType;
+								readonly verified: boolean;
+								readonly verifiedAt?: string | null | undefined;
+						  }
+						| null
+						| undefined;
+					readonly fields: ReadonlyArray<{
+						readonly __typename: 'Field';
+						readonly name: string;
+						readonly value: string;
+						readonly verifiedAt?: string | null | undefined;
+					}>;
+				};
+		  }
+		| null
+		| undefined
+	>;
+	updateMedia(
+		id: string,
+		input: UpdateMediaMutationVariables['input']
+	): Promise<{
+		readonly __typename: 'Media';
+		readonly id: string;
+		readonly description?: string | null | undefined;
+		readonly sensitive: boolean;
+		readonly spoilerText?: string | null | undefined;
+		readonly mediaCategory: import('./index.js').MediaCategory;
+		readonly blurhash?: string | null | undefined;
+		readonly width?: number | null | undefined;
+		readonly height?: number | null | undefined;
+		readonly duration?: number | null | undefined;
+		readonly url: string;
+		readonly previewUrl?: string | null | undefined;
+	}>;
+	createNote(input: CreateNoteMutationVariables['input']): Promise<{
+		readonly __typename: 'CreateNotePayload';
+		readonly object: {
+			readonly __typename: 'Object';
+			readonly id: string;
+			readonly type: import('./index.js').ObjectType;
+			readonly content: string;
+			readonly visibility: import('./index.js').Visibility;
+			readonly sensitive: boolean;
+			readonly spoilerText?: string | null | undefined;
+			readonly createdAt: string;
+			readonly updatedAt: string;
+			readonly repliesCount: number;
+			readonly likesCount: number;
+			readonly sharesCount: number;
+			readonly boosted: boolean;
+			readonly relationshipType: import('./index.js').ObjectRelationshipType;
+			readonly contentHash: string;
+			readonly estimatedCost: number;
+			readonly moderationScore?: number | null | undefined;
+			readonly quoteUrl?: string | null | undefined;
+			readonly quoteable: boolean;
+			readonly quotePermissions: import('./index.js').QuotePermission;
+			readonly quoteCount: number;
+			readonly boostedObject?:
+				| {
+						readonly __typename: 'Object';
+						readonly id: string;
+						readonly type: import('./index.js').ObjectType;
+						readonly content: string;
+						readonly visibility: import('./index.js').Visibility;
+						readonly sensitive: boolean;
+						readonly spoilerText?: string | null | undefined;
+						readonly createdAt: string;
+						readonly updatedAt: string;
+						readonly repliesCount: number;
+						readonly likesCount: number;
+						readonly sharesCount: number;
+						readonly boosted: boolean;
+						readonly relationshipType: import('./index.js').ObjectRelationshipType;
+						readonly contentHash: string;
+						readonly estimatedCost: number;
+						readonly moderationScore?: number | null | undefined;
+						readonly quoteUrl?: string | null | undefined;
+						readonly quoteable: boolean;
+						readonly quotePermissions: import('./index.js').QuotePermission;
+						readonly quoteCount: number;
+						readonly contentMap: ReadonlyArray<{
+							readonly __typename: 'ContentMap';
+							readonly language: string;
+							readonly content: string;
+						}>;
+						readonly attachments: ReadonlyArray<{
+							readonly __typename: 'Attachment';
+							readonly id: string;
+							readonly type: string;
+							readonly url: string;
+							readonly preview?: string | null | undefined;
+							readonly description?: string | null | undefined;
+							readonly blurhash?: string | null | undefined;
+							readonly width?: number | null | undefined;
+							readonly height?: number | null | undefined;
+							readonly duration?: number | null | undefined;
+						}>;
+						readonly tags: ReadonlyArray<{
+							readonly __typename: 'Tag';
+							readonly name: string;
+							readonly url: string;
+						}>;
+						readonly mentions: ReadonlyArray<{
+							readonly __typename: 'Mention';
+							readonly id: string;
+							readonly username: string;
+							readonly domain?: string | null | undefined;
+							readonly url: string;
+						}>;
+						readonly agentAttribution?:
+							| {
+									readonly __typename: 'AgentPostAttribution';
+									readonly triggerType?: string | null | undefined;
+									readonly triggerDetails?: string | null | undefined;
+									readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
+									readonly delegatedBy?: string | null | undefined;
+									readonly delegatedByDid?: string | null | undefined;
+									readonly scopes?: ReadonlyArray<string> | null | undefined;
+									readonly constraints?: ReadonlyArray<string> | null | undefined;
+									readonly schemaVersion?: string | null | undefined;
+									readonly modelId?: string | null | undefined;
+							  }
+							| null
+							| undefined;
+						readonly quoteContext?:
+							| {
+									readonly __typename: 'QuoteContext';
+									readonly quoteAllowed: boolean;
+									readonly quoteType: import('./index.js').QuoteType;
+									readonly withdrawn: boolean;
+									readonly originalAuthor: {
+										readonly __typename: 'Actor';
+										readonly id: string;
+										readonly username: string;
+										readonly domain?: string | null | undefined;
+										readonly displayName?: string | null | undefined;
+										readonly summary?: string | null | undefined;
+										readonly avatar?: string | null | undefined;
+										readonly header?: string | null | undefined;
+										readonly followers: number;
+										readonly following: number;
+										readonly statusesCount: number;
+										readonly bot: boolean;
+										readonly locked: boolean;
+										readonly updatedAt: string;
+										readonly isAgent: boolean;
+										readonly tipAddress?: string | null | undefined;
+										readonly tipChainId?: number | null | undefined;
+										readonly trustScore: number;
+										readonly agentInfo?:
+											| {
+													readonly __typename: 'Agent';
+													readonly id: string;
+													readonly agentType: import('./index.js').AgentType;
+													readonly verified: boolean;
+													readonly verifiedAt?: string | null | undefined;
+											  }
+											| null
+											| undefined;
+										readonly fields: ReadonlyArray<{
+											readonly __typename: 'Field';
+											readonly name: string;
+											readonly value: string;
+											readonly verifiedAt?: string | null | undefined;
+										}>;
+									};
+									readonly originalNote?:
+										| {
+												readonly __typename: 'Object';
+												readonly id: string;
+												readonly type: import('./index.js').ObjectType;
+										  }
+										| null
+										| undefined;
+							  }
+							| null
+							| undefined;
+						readonly communityNotes: ReadonlyArray<{
+							readonly __typename: 'CommunityNote';
+							readonly id: string;
+							readonly content: string;
+							readonly helpful: number;
+							readonly notHelpful: number;
+							readonly createdAt: string;
+							readonly author: {
+								readonly __typename: 'Actor';
+								readonly id: string;
+								readonly username: string;
+								readonly domain?: string | null | undefined;
+								readonly displayName?: string | null | undefined;
+								readonly summary?: string | null | undefined;
+								readonly avatar?: string | null | undefined;
+								readonly header?: string | null | undefined;
+								readonly followers: number;
+								readonly following: number;
+								readonly statusesCount: number;
+								readonly bot: boolean;
+								readonly locked: boolean;
+								readonly updatedAt: string;
+								readonly isAgent: boolean;
+								readonly tipAddress?: string | null | undefined;
+								readonly tipChainId?: number | null | undefined;
+								readonly trustScore: number;
+								readonly agentInfo?:
+									| {
+											readonly __typename: 'Agent';
+											readonly id: string;
+											readonly agentType: import('./index.js').AgentType;
+											readonly verified: boolean;
+											readonly verifiedAt?: string | null | undefined;
+									  }
+									| null
+									| undefined;
+								readonly fields: ReadonlyArray<{
+									readonly __typename: 'Field';
+									readonly name: string;
+									readonly value: string;
+									readonly verifiedAt?: string | null | undefined;
+								}>;
+							};
+						}>;
+						readonly actor: {
+							readonly __typename: 'Actor';
+							readonly id: string;
+							readonly username: string;
+							readonly domain?: string | null | undefined;
+							readonly displayName?: string | null | undefined;
+							readonly summary?: string | null | undefined;
+							readonly avatar?: string | null | undefined;
+							readonly header?: string | null | undefined;
+							readonly followers: number;
+							readonly following: number;
+							readonly statusesCount: number;
+							readonly bot: boolean;
+							readonly locked: boolean;
+							readonly updatedAt: string;
+							readonly isAgent: boolean;
+							readonly tipAddress?: string | null | undefined;
+							readonly tipChainId?: number | null | undefined;
+							readonly trustScore: number;
+							readonly agentInfo?:
+								| {
+										readonly __typename: 'Agent';
+										readonly id: string;
+										readonly agentType: import('./index.js').AgentType;
+										readonly verified: boolean;
+										readonly verifiedAt?: string | null | undefined;
+								  }
+								| null
+								| undefined;
+							readonly fields: ReadonlyArray<{
+								readonly __typename: 'Field';
+								readonly name: string;
+								readonly value: string;
+								readonly verifiedAt?: string | null | undefined;
+							}>;
+						};
+						readonly inReplyTo?:
+							| {
+									readonly __typename: 'Object';
+									readonly id: string;
+									readonly type: import('./index.js').ObjectType;
+									readonly actor: {
+										readonly __typename: 'Actor';
+										readonly id: string;
+										readonly username: string;
+										readonly domain?: string | null | undefined;
+										readonly displayName?: string | null | undefined;
+										readonly summary?: string | null | undefined;
+										readonly avatar?: string | null | undefined;
+										readonly header?: string | null | undefined;
+										readonly followers: number;
+										readonly following: number;
+										readonly statusesCount: number;
+										readonly bot: boolean;
+										readonly locked: boolean;
+										readonly updatedAt: string;
+										readonly isAgent: boolean;
+										readonly tipAddress?: string | null | undefined;
+										readonly tipChainId?: number | null | undefined;
+										readonly trustScore: number;
+										readonly agentInfo?:
+											| {
+													readonly __typename: 'Agent';
+													readonly id: string;
+													readonly agentType: import('./index.js').AgentType;
+													readonly verified: boolean;
+													readonly verifiedAt?: string | null | undefined;
+											  }
+											| null
+											| undefined;
+										readonly fields: ReadonlyArray<{
+											readonly __typename: 'Field';
+											readonly name: string;
+											readonly value: string;
+											readonly verifiedAt?: string | null | undefined;
+										}>;
+									};
+							  }
+							| null
+							| undefined;
+				  }
+				| null
+				| undefined;
+			readonly contentMap: ReadonlyArray<{
+				readonly __typename: 'ContentMap';
+				readonly language: string;
+				readonly content: string;
+			}>;
+			readonly attachments: ReadonlyArray<{
+				readonly __typename: 'Attachment';
+				readonly id: string;
+				readonly type: string;
+				readonly url: string;
+				readonly preview?: string | null | undefined;
+				readonly description?: string | null | undefined;
+				readonly blurhash?: string | null | undefined;
+				readonly width?: number | null | undefined;
+				readonly height?: number | null | undefined;
+				readonly duration?: number | null | undefined;
+			}>;
+			readonly tags: ReadonlyArray<{
+				readonly __typename: 'Tag';
+				readonly name: string;
+				readonly url: string;
+			}>;
+			readonly mentions: ReadonlyArray<{
+				readonly __typename: 'Mention';
+				readonly id: string;
+				readonly username: string;
+				readonly domain?: string | null | undefined;
+				readonly url: string;
+			}>;
+			readonly agentAttribution?:
+				| {
+						readonly __typename: 'AgentPostAttribution';
+						readonly triggerType?: string | null | undefined;
+						readonly triggerDetails?: string | null | undefined;
+						readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
+						readonly delegatedBy?: string | null | undefined;
+						readonly delegatedByDid?: string | null | undefined;
+						readonly scopes?: ReadonlyArray<string> | null | undefined;
+						readonly constraints?: ReadonlyArray<string> | null | undefined;
+						readonly schemaVersion?: string | null | undefined;
+						readonly modelId?: string | null | undefined;
 				  }
 				| null
 				| undefined;
@@ -8505,9 +11210,11 @@ export declare class LesserGraphQLAdapter {
 									readonly triggerDetails?: string | null | undefined;
 									readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 									readonly delegatedBy?: string | null | undefined;
+									readonly delegatedByDid?: string | null | undefined;
 									readonly scopes?: ReadonlyArray<string> | null | undefined;
 									readonly constraints?: ReadonlyArray<string> | null | undefined;
-									readonly modelVersion?: string | null | undefined;
+									readonly schemaVersion?: string | null | undefined;
+									readonly modelId?: string | null | undefined;
 							  }
 							| null
 							| undefined;
@@ -8727,9 +11434,11 @@ export declare class LesserGraphQLAdapter {
 						readonly triggerDetails?: string | null | undefined;
 						readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 						readonly delegatedBy?: string | null | undefined;
+						readonly delegatedByDid?: string | null | undefined;
 						readonly scopes?: ReadonlyArray<string> | null | undefined;
 						readonly constraints?: ReadonlyArray<string> | null | undefined;
-						readonly modelVersion?: string | null | undefined;
+						readonly schemaVersion?: string | null | undefined;
+						readonly modelId?: string | null | undefined;
 				  }
 				| null
 				| undefined;
@@ -9091,9 +11800,11 @@ export declare class LesserGraphQLAdapter {
 													readonly triggerDetails?: string | null | undefined;
 													readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 													readonly delegatedBy?: string | null | undefined;
+													readonly delegatedByDid?: string | null | undefined;
 													readonly scopes?: ReadonlyArray<string> | null | undefined;
 													readonly constraints?: ReadonlyArray<string> | null | undefined;
-													readonly modelVersion?: string | null | undefined;
+													readonly schemaVersion?: string | null | undefined;
+													readonly modelId?: string | null | undefined;
 											  }
 											| null
 											| undefined;
@@ -9313,9 +12024,11 @@ export declare class LesserGraphQLAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
-										readonly modelVersion?: string | null | undefined;
+										readonly schemaVersion?: string | null | undefined;
+										readonly modelId?: string | null | undefined;
 								  }
 								| null
 								| undefined;
@@ -9565,9 +12278,11 @@ export declare class LesserGraphQLAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
-										readonly modelVersion?: string | null | undefined;
+										readonly schemaVersion?: string | null | undefined;
+										readonly modelId?: string | null | undefined;
 								  }
 								| null
 								| undefined;
@@ -9787,9 +12502,11 @@ export declare class LesserGraphQLAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
-							readonly modelVersion?: string | null | undefined;
+							readonly schemaVersion?: string | null | undefined;
+							readonly modelId?: string | null | undefined;
 					  }
 					| null
 					| undefined;
@@ -10059,9 +12776,11 @@ export declare class LesserGraphQLAdapter {
 									readonly triggerDetails?: string | null | undefined;
 									readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 									readonly delegatedBy?: string | null | undefined;
+									readonly delegatedByDid?: string | null | undefined;
 									readonly scopes?: ReadonlyArray<string> | null | undefined;
 									readonly constraints?: ReadonlyArray<string> | null | undefined;
-									readonly modelVersion?: string | null | undefined;
+									readonly schemaVersion?: string | null | undefined;
+									readonly modelId?: string | null | undefined;
 							  }
 							| null
 							| undefined;
@@ -10281,9 +13000,11 @@ export declare class LesserGraphQLAdapter {
 						readonly triggerDetails?: string | null | undefined;
 						readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 						readonly delegatedBy?: string | null | undefined;
+						readonly delegatedByDid?: string | null | undefined;
 						readonly scopes?: ReadonlyArray<string> | null | undefined;
 						readonly constraints?: ReadonlyArray<string> | null | undefined;
-						readonly modelVersion?: string | null | undefined;
+						readonly schemaVersion?: string | null | undefined;
+						readonly modelId?: string | null | undefined;
 				  }
 				| null
 				| undefined;
@@ -10555,9 +13276,11 @@ export declare class LesserGraphQLAdapter {
 									readonly triggerDetails?: string | null | undefined;
 									readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 									readonly delegatedBy?: string | null | undefined;
+									readonly delegatedByDid?: string | null | undefined;
 									readonly scopes?: ReadonlyArray<string> | null | undefined;
 									readonly constraints?: ReadonlyArray<string> | null | undefined;
-									readonly modelVersion?: string | null | undefined;
+									readonly schemaVersion?: string | null | undefined;
+									readonly modelId?: string | null | undefined;
 							  }
 							| null
 							| undefined;
@@ -10777,9 +13500,11 @@ export declare class LesserGraphQLAdapter {
 						readonly triggerDetails?: string | null | undefined;
 						readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 						readonly delegatedBy?: string | null | undefined;
+						readonly delegatedByDid?: string | null | undefined;
 						readonly scopes?: ReadonlyArray<string> | null | undefined;
 						readonly constraints?: ReadonlyArray<string> | null | undefined;
-						readonly modelVersion?: string | null | undefined;
+						readonly schemaVersion?: string | null | undefined;
+						readonly modelId?: string | null | undefined;
 				  }
 				| null
 				| undefined;
@@ -11104,9 +13829,11 @@ export declare class LesserGraphQLAdapter {
 								readonly triggerDetails?: string | null | undefined;
 								readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 								readonly delegatedBy?: string | null | undefined;
+								readonly delegatedByDid?: string | null | undefined;
 								readonly scopes?: ReadonlyArray<string> | null | undefined;
 								readonly constraints?: ReadonlyArray<string> | null | undefined;
-								readonly modelVersion?: string | null | undefined;
+								readonly schemaVersion?: string | null | undefined;
+								readonly modelId?: string | null | undefined;
 						  }
 						| null
 						| undefined;
@@ -11326,9 +14053,11 @@ export declare class LesserGraphQLAdapter {
 					readonly triggerDetails?: string | null | undefined;
 					readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 					readonly delegatedBy?: string | null | undefined;
+					readonly delegatedByDid?: string | null | undefined;
 					readonly scopes?: ReadonlyArray<string> | null | undefined;
 					readonly constraints?: ReadonlyArray<string> | null | undefined;
-					readonly modelVersion?: string | null | undefined;
+					readonly schemaVersion?: string | null | undefined;
+					readonly modelId?: string | null | undefined;
 			  }
 			| null
 			| undefined;
@@ -11591,9 +14320,11 @@ export declare class LesserGraphQLAdapter {
 								readonly triggerDetails?: string | null | undefined;
 								readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 								readonly delegatedBy?: string | null | undefined;
+								readonly delegatedByDid?: string | null | undefined;
 								readonly scopes?: ReadonlyArray<string> | null | undefined;
 								readonly constraints?: ReadonlyArray<string> | null | undefined;
-								readonly modelVersion?: string | null | undefined;
+								readonly schemaVersion?: string | null | undefined;
+								readonly modelId?: string | null | undefined;
 						  }
 						| null
 						| undefined;
@@ -11813,9 +14544,11 @@ export declare class LesserGraphQLAdapter {
 					readonly triggerDetails?: string | null | undefined;
 					readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 					readonly delegatedBy?: string | null | undefined;
+					readonly delegatedByDid?: string | null | undefined;
 					readonly scopes?: ReadonlyArray<string> | null | undefined;
 					readonly constraints?: ReadonlyArray<string> | null | undefined;
-					readonly modelVersion?: string | null | undefined;
+					readonly schemaVersion?: string | null | undefined;
+					readonly modelId?: string | null | undefined;
 			  }
 			| null
 			| undefined;
@@ -12078,9 +14811,11 @@ export declare class LesserGraphQLAdapter {
 								readonly triggerDetails?: string | null | undefined;
 								readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 								readonly delegatedBy?: string | null | undefined;
+								readonly delegatedByDid?: string | null | undefined;
 								readonly scopes?: ReadonlyArray<string> | null | undefined;
 								readonly constraints?: ReadonlyArray<string> | null | undefined;
-								readonly modelVersion?: string | null | undefined;
+								readonly schemaVersion?: string | null | undefined;
+								readonly modelId?: string | null | undefined;
 						  }
 						| null
 						| undefined;
@@ -12300,9 +15035,11 @@ export declare class LesserGraphQLAdapter {
 					readonly triggerDetails?: string | null | undefined;
 					readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 					readonly delegatedBy?: string | null | undefined;
+					readonly delegatedByDid?: string | null | undefined;
 					readonly scopes?: ReadonlyArray<string> | null | undefined;
 					readonly constraints?: ReadonlyArray<string> | null | undefined;
-					readonly modelVersion?: string | null | undefined;
+					readonly schemaVersion?: string | null | undefined;
+					readonly modelId?: string | null | undefined;
 			  }
 			| null
 			| undefined;
@@ -12566,9 +15303,11 @@ export declare class LesserGraphQLAdapter {
 								readonly triggerDetails?: string | null | undefined;
 								readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 								readonly delegatedBy?: string | null | undefined;
+								readonly delegatedByDid?: string | null | undefined;
 								readonly scopes?: ReadonlyArray<string> | null | undefined;
 								readonly constraints?: ReadonlyArray<string> | null | undefined;
-								readonly modelVersion?: string | null | undefined;
+								readonly schemaVersion?: string | null | undefined;
+								readonly modelId?: string | null | undefined;
 						  }
 						| null
 						| undefined;
@@ -12788,9 +15527,11 @@ export declare class LesserGraphQLAdapter {
 					readonly triggerDetails?: string | null | undefined;
 					readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 					readonly delegatedBy?: string | null | undefined;
+					readonly delegatedByDid?: string | null | undefined;
 					readonly scopes?: ReadonlyArray<string> | null | undefined;
 					readonly constraints?: ReadonlyArray<string> | null | undefined;
-					readonly modelVersion?: string | null | undefined;
+					readonly schemaVersion?: string | null | undefined;
+					readonly modelId?: string | null | undefined;
 			  }
 			| null
 			| undefined;
@@ -13291,6 +16032,7 @@ export declare class LesserGraphQLAdapter {
 			readonly defaultVisibility: import('./index.js').Visibility;
 			readonly indexable: boolean;
 			readonly showOnlineStatus: boolean;
+			readonly directMessagesFrom: import('./index.js').DirectMessagesFrom;
 		};
 		readonly reblogFilters: ReadonlyArray<{
 			readonly __typename: 'ReblogFilter';
@@ -13360,6 +16102,7 @@ export declare class LesserGraphQLAdapter {
 			readonly defaultVisibility: import('./index.js').Visibility;
 			readonly indexable: boolean;
 			readonly showOnlineStatus: boolean;
+			readonly directMessagesFrom: import('./index.js').DirectMessagesFrom;
 		};
 		readonly reblogFilters: ReadonlyArray<{
 			readonly __typename: 'ReblogFilter';
@@ -13729,9 +16472,11 @@ export declare class LesserGraphQLAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
-										readonly modelVersion?: string | null | undefined;
+										readonly schemaVersion?: string | null | undefined;
+										readonly modelId?: string | null | undefined;
 								  }
 								| null
 								| undefined;
@@ -13951,9 +16696,11 @@ export declare class LesserGraphQLAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
-							readonly modelVersion?: string | null | undefined;
+							readonly schemaVersion?: string | null | undefined;
+							readonly modelId?: string | null | undefined;
 					  }
 					| null
 					| undefined;
@@ -14577,9 +17324,11 @@ export declare class LesserGraphQLAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
-										readonly modelVersion?: string | null | undefined;
+										readonly schemaVersion?: string | null | undefined;
+										readonly modelId?: string | null | undefined;
 								  }
 								| null
 								| undefined;
@@ -14799,9 +17548,11 @@ export declare class LesserGraphQLAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
-							readonly modelVersion?: string | null | undefined;
+							readonly schemaVersion?: string | null | undefined;
+							readonly modelId?: string | null | undefined;
 					  }
 					| null
 					| undefined;
@@ -15077,9 +17828,11 @@ export declare class LesserGraphQLAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
-										readonly modelVersion?: string | null | undefined;
+										readonly schemaVersion?: string | null | undefined;
+										readonly modelId?: string | null | undefined;
 								  }
 								| null
 								| undefined;
@@ -15299,9 +18052,11 @@ export declare class LesserGraphQLAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
-							readonly modelVersion?: string | null | undefined;
+							readonly schemaVersion?: string | null | undefined;
+							readonly modelId?: string | null | undefined;
 					  }
 					| null
 					| undefined;
@@ -15574,9 +18329,11 @@ export declare class LesserGraphQLAdapter {
 											readonly triggerDetails?: string | null | undefined;
 											readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 											readonly delegatedBy?: string | null | undefined;
+											readonly delegatedByDid?: string | null | undefined;
 											readonly scopes?: ReadonlyArray<string> | null | undefined;
 											readonly constraints?: ReadonlyArray<string> | null | undefined;
-											readonly modelVersion?: string | null | undefined;
+											readonly schemaVersion?: string | null | undefined;
+											readonly modelId?: string | null | undefined;
 									  }
 									| null
 									| undefined;
@@ -15796,9 +18553,11 @@ export declare class LesserGraphQLAdapter {
 								readonly triggerDetails?: string | null | undefined;
 								readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 								readonly delegatedBy?: string | null | undefined;
+								readonly delegatedByDid?: string | null | undefined;
 								readonly scopes?: ReadonlyArray<string> | null | undefined;
 								readonly constraints?: ReadonlyArray<string> | null | undefined;
-								readonly modelVersion?: string | null | undefined;
+								readonly schemaVersion?: string | null | undefined;
+								readonly modelId?: string | null | undefined;
 						  }
 						| null
 						| undefined;
@@ -16291,8 +19050,457 @@ export declare class LesserGraphQLAdapter {
 	subscribeToAgentActivityUpdates(
 		variables: AgentActivityUpdatesSubscriptionVariables
 	): Observable<FetchResult<AgentActivityUpdatesSubscription>>;
+	/**
+	 * Lists drafts shared with the viewer for review.
+	 */
+	getSharedDraftReviews(variables?: SharedDraftReviewsQueryVariables): Promise<{
+		readonly __typename: 'DraftReviewConnection';
+		readonly totalCount: number;
+		readonly pageInfo: {
+			readonly __typename: 'PageInfo';
+			readonly hasNextPage: boolean;
+			readonly endCursor?: string | null | undefined;
+		};
+		readonly edges: ReadonlyArray<{
+			readonly __typename: 'DraftReviewEdge';
+			readonly cursor: string;
+			readonly node: {
+				readonly __typename: 'DraftReview';
+				readonly draftId: string;
+				readonly title?: string | null | undefined;
+				readonly subtitle?: string | null | undefined;
+				readonly excerpt?: string | null | undefined;
+				readonly contentFormat: import('./index.js').ContentFormat;
+				readonly status: import('./index.js').DraftStatus;
+				readonly scheduledAt?: string | null | undefined;
+				readonly updatedAt: string;
+				readonly createdAt: string;
+				readonly reviewStatus?: string | null | undefined;
+				readonly editorNotes?: string | null | undefined;
+				readonly generatedBy?:
+					| {
+							readonly __typename: 'Actor';
+							readonly id: string;
+							readonly username: string;
+							readonly domain?: string | null | undefined;
+							readonly displayName?: string | null | undefined;
+							readonly avatar?: string | null | undefined;
+							readonly isAgent: boolean;
+					  }
+					| null
+					| undefined;
+				readonly reviewedBy?:
+					| {
+							readonly __typename: 'Actor';
+							readonly id: string;
+							readonly username: string;
+							readonly domain?: string | null | undefined;
+							readonly displayName?: string | null | undefined;
+							readonly avatar?: string | null | undefined;
+							readonly isAgent: boolean;
+					  }
+					| null
+					| undefined;
+				readonly grant?:
+					| {
+							readonly __typename: 'DraftReviewGrant';
+							readonly grantedAt: string;
+							readonly reviewer: {
+								readonly __typename: 'Actor';
+								readonly id: string;
+								readonly username: string;
+								readonly domain?: string | null | undefined;
+								readonly displayName?: string | null | undefined;
+								readonly avatar?: string | null | undefined;
+								readonly isAgent: boolean;
+							};
+					  }
+					| null
+					| undefined;
+				readonly verdicts: ReadonlyArray<{
+					readonly __typename: 'DraftReviewVerdictRecord';
+					readonly verdict: DraftReviewVerdict;
+					readonly notes?: string | null | undefined;
+					readonly recordedAt: string;
+					readonly reviewer: {
+						readonly __typename: 'Actor';
+						readonly id: string;
+						readonly username: string;
+						readonly domain?: string | null | undefined;
+						readonly displayName?: string | null | undefined;
+						readonly avatar?: string | null | undefined;
+						readonly isAgent: boolean;
+					};
+				}>;
+			};
+		}>;
+	}>;
+	/**
+	 * Fetches a single shared draft under review.
+	 */
+	getDraftReview(id: string): Promise<
+		| {
+				readonly __typename: 'DraftReview';
+				readonly draftId: string;
+				readonly title?: string | null | undefined;
+				readonly subtitle?: string | null | undefined;
+				readonly excerpt?: string | null | undefined;
+				readonly contentFormat: import('./index.js').ContentFormat;
+				readonly status: import('./index.js').DraftStatus;
+				readonly scheduledAt?: string | null | undefined;
+				readonly updatedAt: string;
+				readonly createdAt: string;
+				readonly reviewStatus?: string | null | undefined;
+				readonly editorNotes?: string | null | undefined;
+				readonly generatedBy?:
+					| {
+							readonly __typename: 'Actor';
+							readonly id: string;
+							readonly username: string;
+							readonly domain?: string | null | undefined;
+							readonly displayName?: string | null | undefined;
+							readonly avatar?: string | null | undefined;
+							readonly isAgent: boolean;
+					  }
+					| null
+					| undefined;
+				readonly reviewedBy?:
+					| {
+							readonly __typename: 'Actor';
+							readonly id: string;
+							readonly username: string;
+							readonly domain?: string | null | undefined;
+							readonly displayName?: string | null | undefined;
+							readonly avatar?: string | null | undefined;
+							readonly isAgent: boolean;
+					  }
+					| null
+					| undefined;
+				readonly grant?:
+					| {
+							readonly __typename: 'DraftReviewGrant';
+							readonly grantedAt: string;
+							readonly reviewer: {
+								readonly __typename: 'Actor';
+								readonly id: string;
+								readonly username: string;
+								readonly domain?: string | null | undefined;
+								readonly displayName?: string | null | undefined;
+								readonly avatar?: string | null | undefined;
+								readonly isAgent: boolean;
+							};
+					  }
+					| null
+					| undefined;
+				readonly verdicts: ReadonlyArray<{
+					readonly __typename: 'DraftReviewVerdictRecord';
+					readonly verdict: DraftReviewVerdict;
+					readonly notes?: string | null | undefined;
+					readonly recordedAt: string;
+					readonly reviewer: {
+						readonly __typename: 'Actor';
+						readonly id: string;
+						readonly username: string;
+						readonly domain?: string | null | undefined;
+						readonly displayName?: string | null | undefined;
+						readonly avatar?: string | null | undefined;
+						readonly isAgent: boolean;
+					};
+				}>;
+		  }
+		| null
+		| undefined
+	>;
+	/**
+	 * Invites a reviewer to a draft.
+	 *
+	 * Throws on any failure, including a duplicate share. Callers that want to
+	 * treat "already invited" as an expected condition should use
+	 * {@link shareDraftForReviewIfAbsent}.
+	 */
+	shareDraftForReview(
+		draftId: string,
+		reviewer: string
+	): Promise<{
+		readonly __typename: 'DraftReview';
+		readonly draftId: string;
+		readonly title?: string | null | undefined;
+		readonly subtitle?: string | null | undefined;
+		readonly excerpt?: string | null | undefined;
+		readonly contentFormat: import('./index.js').ContentFormat;
+		readonly status: import('./index.js').DraftStatus;
+		readonly scheduledAt?: string | null | undefined;
+		readonly updatedAt: string;
+		readonly createdAt: string;
+		readonly reviewStatus?: string | null | undefined;
+		readonly editorNotes?: string | null | undefined;
+		readonly generatedBy?:
+			| {
+					readonly __typename: 'Actor';
+					readonly id: string;
+					readonly username: string;
+					readonly domain?: string | null | undefined;
+					readonly displayName?: string | null | undefined;
+					readonly avatar?: string | null | undefined;
+					readonly isAgent: boolean;
+			  }
+			| null
+			| undefined;
+		readonly reviewedBy?:
+			| {
+					readonly __typename: 'Actor';
+					readonly id: string;
+					readonly username: string;
+					readonly domain?: string | null | undefined;
+					readonly displayName?: string | null | undefined;
+					readonly avatar?: string | null | undefined;
+					readonly isAgent: boolean;
+			  }
+			| null
+			| undefined;
+		readonly grant?:
+			| {
+					readonly __typename: 'DraftReviewGrant';
+					readonly grantedAt: string;
+					readonly reviewer: {
+						readonly __typename: 'Actor';
+						readonly id: string;
+						readonly username: string;
+						readonly domain?: string | null | undefined;
+						readonly displayName?: string | null | undefined;
+						readonly avatar?: string | null | undefined;
+						readonly isAgent: boolean;
+					};
+			  }
+			| null
+			| undefined;
+		readonly verdicts: ReadonlyArray<{
+			readonly __typename: 'DraftReviewVerdictRecord';
+			readonly verdict: DraftReviewVerdict;
+			readonly notes?: string | null | undefined;
+			readonly recordedAt: string;
+			readonly reviewer: {
+				readonly __typename: 'Actor';
+				readonly id: string;
+				readonly username: string;
+				readonly domain?: string | null | undefined;
+				readonly displayName?: string | null | undefined;
+				readonly avatar?: string | null | undefined;
+				readonly isAgent: boolean;
+			};
+		}>;
+	}>;
+	/**
+	 * Invites a reviewer, reporting an existing grant as an expected condition
+	 * rather than a fault.
+	 *
+	 * Lesser v1.5.33 creates the grant conditionally
+	 * (`attribute_not_exists`, pkg/storage/repositories/draft_repository.go
+	 * `CreateDraftReviewGrant`) and version-conditions the regrant path. A
+	 * duplicate share therefore fails loudly, and that is deliberate: the
+	 * condition is what preserves a concurrent revocation. Two operators acting
+	 * at once must not silently resurrect access one of them just revoked.
+	 *
+	 * So this method does exactly one thing on conflict — it reports it:
+	 *
+	 * - it never re-issues the grant, and never retries;
+	 * - it never fabricates a `DraftReview`, because the share did not happen
+	 *   and the caller must not be told otherwise;
+	 * - it rethrows anything it cannot confidently identify as a duplicate.
+	 *
+	 * `already-invited` means "the server refused because a grant exists" — a
+	 * notice to show, not a success to act on. Re-enabling a revoked reviewer
+	 * is a deliberate re-share, which Lesser's regrant path already accepts.
+	 *
+	 * Recognition depends on Lesser sending a typed conflict code. At the pinned
+	 * v1.5.33 the conditional-create path sends none, so callers must still
+	 * handle a thrown error from a duplicate share; see
+	 * {@link isDraftReviewShareConflict} for the gap and its upstream status.
+	 */
+	shareDraftForReviewIfAbsent(
+		draftId: string,
+		reviewer: string
+	): Promise<ShareDraftForReviewOutcome>;
+	/**
+	 * Revokes a reviewer's invitation to a draft.
+	 */
+	revokeDraftReview(draftId: string, reviewer: string): Promise<boolean>;
+	/**
+	 * Records a reviewer verdict against a draft.
+	 *
+	 * Lesser owns review policy: it decides whether the caller may record this
+	 * verdict and what the resulting `reviewStatus` becomes. This method
+	 * forwards the submission and returns the server's updated `DraftReview`.
+	 */
+	submitDraftReview(variables: SubmitDraftReviewMutationVariables): Promise<{
+		readonly __typename: 'DraftReview';
+		readonly draftId: string;
+		readonly title?: string | null | undefined;
+		readonly subtitle?: string | null | undefined;
+		readonly excerpt?: string | null | undefined;
+		readonly contentFormat: import('./index.js').ContentFormat;
+		readonly status: import('./index.js').DraftStatus;
+		readonly scheduledAt?: string | null | undefined;
+		readonly updatedAt: string;
+		readonly createdAt: string;
+		readonly reviewStatus?: string | null | undefined;
+		readonly editorNotes?: string | null | undefined;
+		readonly generatedBy?:
+			| {
+					readonly __typename: 'Actor';
+					readonly id: string;
+					readonly username: string;
+					readonly domain?: string | null | undefined;
+					readonly displayName?: string | null | undefined;
+					readonly avatar?: string | null | undefined;
+					readonly isAgent: boolean;
+			  }
+			| null
+			| undefined;
+		readonly reviewedBy?:
+			| {
+					readonly __typename: 'Actor';
+					readonly id: string;
+					readonly username: string;
+					readonly domain?: string | null | undefined;
+					readonly displayName?: string | null | undefined;
+					readonly avatar?: string | null | undefined;
+					readonly isAgent: boolean;
+			  }
+			| null
+			| undefined;
+		readonly grant?:
+			| {
+					readonly __typename: 'DraftReviewGrant';
+					readonly grantedAt: string;
+					readonly reviewer: {
+						readonly __typename: 'Actor';
+						readonly id: string;
+						readonly username: string;
+						readonly domain?: string | null | undefined;
+						readonly displayName?: string | null | undefined;
+						readonly avatar?: string | null | undefined;
+						readonly isAgent: boolean;
+					};
+			  }
+			| null
+			| undefined;
+		readonly verdicts: ReadonlyArray<{
+			readonly __typename: 'DraftReviewVerdictRecord';
+			readonly verdict: DraftReviewVerdict;
+			readonly notes?: string | null | undefined;
+			readonly recordedAt: string;
+			readonly reviewer: {
+				readonly __typename: 'Actor';
+				readonly id: string;
+				readonly username: string;
+				readonly domain?: string | null | undefined;
+				readonly displayName?: string | null | undefined;
+				readonly avatar?: string | null | undefined;
+				readonly isAgent: boolean;
+			};
+		}>;
+	}>;
 }
 export declare function createLesserGraphQLAdapter(
 	config: LesserGraphQLAdapterConfig
 ): LesserGraphQLAdapter;
+/**
+ * Submission payload accepted by {@link createSubmitDraftReviewHandler}.
+ *
+ * Structurally identical to the `VerdictSubmission` emitted by the blog face's
+ * `Review.VerdictActions` component, so the component's `onSubmit` can be wired
+ * straight through without an adapter shim in consumer code.
+ */
+export interface DraftReviewSubmission {
+	draftId: string;
+	verdict: DraftReviewVerdict;
+	notes?: string;
+}
+/**
+ * Builds an `onSubmit` handler for the blog face's `Review.VerdictActions`.
+ *
+ * Usage:
+ *
+ * ```svelte
+ * <Review.VerdictActions
+ *   draftId={review.draftId}
+ *   onSubmit={createSubmitDraftReviewHandler(adapter)}
+ * />
+ * ```
+ *
+ * Errors propagate to the caller so the component can surface them in its
+ * confirmation dialog and let the reviewer retry.
+ */
+export declare function createSubmitDraftReviewHandler(adapter: LesserGraphQLAdapter): (
+	submission: DraftReviewSubmission
+) => Promise<{
+	readonly __typename: 'DraftReview';
+	readonly draftId: string;
+	readonly title?: string | null | undefined;
+	readonly subtitle?: string | null | undefined;
+	readonly excerpt?: string | null | undefined;
+	readonly contentFormat: import('./index.js').ContentFormat;
+	readonly status: import('./index.js').DraftStatus;
+	readonly scheduledAt?: string | null | undefined;
+	readonly updatedAt: string;
+	readonly createdAt: string;
+	readonly reviewStatus?: string | null | undefined;
+	readonly editorNotes?: string | null | undefined;
+	readonly generatedBy?:
+		| {
+				readonly __typename: 'Actor';
+				readonly id: string;
+				readonly username: string;
+				readonly domain?: string | null | undefined;
+				readonly displayName?: string | null | undefined;
+				readonly avatar?: string | null | undefined;
+				readonly isAgent: boolean;
+		  }
+		| null
+		| undefined;
+	readonly reviewedBy?:
+		| {
+				readonly __typename: 'Actor';
+				readonly id: string;
+				readonly username: string;
+				readonly domain?: string | null | undefined;
+				readonly displayName?: string | null | undefined;
+				readonly avatar?: string | null | undefined;
+				readonly isAgent: boolean;
+		  }
+		| null
+		| undefined;
+	readonly grant?:
+		| {
+				readonly __typename: 'DraftReviewGrant';
+				readonly grantedAt: string;
+				readonly reviewer: {
+					readonly __typename: 'Actor';
+					readonly id: string;
+					readonly username: string;
+					readonly domain?: string | null | undefined;
+					readonly displayName?: string | null | undefined;
+					readonly avatar?: string | null | undefined;
+					readonly isAgent: boolean;
+				};
+		  }
+		| null
+		| undefined;
+	readonly verdicts: ReadonlyArray<{
+		readonly __typename: 'DraftReviewVerdictRecord';
+		readonly verdict: DraftReviewVerdict;
+		readonly notes?: string | null | undefined;
+		readonly recordedAt: string;
+		readonly reviewer: {
+			readonly __typename: 'Actor';
+			readonly id: string;
+			readonly username: string;
+			readonly domain?: string | null | undefined;
+			readonly displayName?: string | null | undefined;
+			readonly avatar?: string | null | undefined;
+			readonly isAgent: boolean;
+		};
+	}>;
+}>;
 //# sourceMappingURL=LesserGraphQLAdapter.d.ts.map
