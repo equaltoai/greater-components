@@ -401,7 +401,7 @@ function maskSvelteMarkup(content: string): string {
 
 function executableImportShapedTokenOffset(content: string): number | undefined {
 	const pattern =
-		/(?:^|[;\n\r])\s*(?:import\s+(?:[^'"]+?\s+from\s*)?['"]|export\s+[^'"]+?\s+from\s*['"])|(?<![\w$])import\s*\(\s*['"]|@import\s+(?:url\s*\(\s*)?['"]/g;
+		/(?:^|[;\n\r])\s*(?:import\s+(?:[^'"]+?\s*from\s*)?['"]|export\s+[^'"]+?\s*from\s*['"])|(?<![\w$])import\s*\(\s*['"]|@import\s+(?:url\s*\(\s*)?['"]/g;
 
 	let match: RegExpExecArray | null;
 	while ((match = pattern.exec(content)) !== null) {
@@ -622,6 +622,18 @@ describe('greater add review (real command)', () => {
 				file: 'malformed.ts',
 				token: 'export',
 				line: 3,
+			},
+			{
+				source: "import {a}from 'malformed;",
+				file: 'malformed.ts',
+				token: 'import',
+				line: 1,
+			},
+			{
+				source: "export {a}from 'malformed;",
+				file: 'malformed.ts',
+				token: 'export',
+				line: 1,
 			},
 			{
 				source: ['<script>', "import { hidden } from 'malformed;", '</script>'].join('\n'),
