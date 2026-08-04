@@ -2,7 +2,7 @@
  * Mock Draft Review Data
  *
  * Factory functions producing `DraftReviewData` shaped exactly like the pinned
- * Lesser contract snapshot (LESSER_REF v1.5.33) returns it.
+ * Lesser contract snapshot (LESSER_REF v1.6.0) returns it.
  */
 
 import type { DraftReviewData, ReviewActorData, ReviewVerdictRecordData } from '../../src/types.js';

@@ -606,7 +606,7 @@ export interface NavigationContext {
 // ============================================================================
 //
 // These mirror the pinned Lesser contract snapshot in
-// `docs/lesser/contracts/graphql-schema.graphql` (LESSER_REF v1.5.33), which
+// `docs/lesser/contracts/graphql-schema.graphql` (LESSER_REF v1.6.0), which
 // introduced the shareable-draft review surface: `DraftReview`,
 // `DraftReviewGrant`, `DraftReviewVerdictRecord`, the `DraftReviewVerdict`
 // enum, and the `sharedDraftReviews` / `draftReview` /
