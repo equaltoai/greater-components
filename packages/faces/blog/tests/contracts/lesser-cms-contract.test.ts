@@ -40,7 +40,8 @@ const LESSER_CMS_FIELD_DIRECTIONS = {
 		createdAt: 'out-of-scope-for-mvp',
 		updatedAt: 'needs-adapter-mapping',
 		// The blog face never fetches Article and has no tombstone concept;
-		// deleted-article suppression is a server/consumer responsibility.
+		// deleted-article suppression is the consumer's responsibility. At v1.6.0
+		// the server deliberately returns tombstoned Articles with deletedAt set.
 		deletedAt: 'out-of-scope-for-mvp',
 	},
 	Draft: {
