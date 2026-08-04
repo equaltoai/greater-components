@@ -118,6 +118,7 @@ fragment ObjectContentFields on Object {
 		triggerDetails
 		memoryCitations
 		delegatedBy
+		approvedBy
 		delegatedByDid
 		scopes
 		constraints

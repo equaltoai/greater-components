@@ -23,7 +23,7 @@ export type PostVisibility = 'public' | 'unlisted' | 'private' | 'direct';
 /**
  * Quote permission levels (Lesser-specific)
  */
-export type QuotePermission = 'EVERYONE' | 'FOLLOWERS' | 'NONE';
+export type QuotePermission = 'EVERYONE' | 'FOLLOWERS' | 'MENTIONED' | 'NONE';
 
 /**
  * Quote type (Lesser-specific)

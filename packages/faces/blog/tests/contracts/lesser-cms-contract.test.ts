@@ -39,6 +39,7 @@ const LESSER_CMS_FIELD_DIRECTIONS = {
 		publishedAt: 'needs-adapter-mapping',
 		createdAt: 'out-of-scope-for-mvp',
 		updatedAt: 'needs-adapter-mapping',
+		deletedAt: 'out-of-scope-for-mvp',
 	},
 	Draft: {
 		id: 'matches-greater-field',

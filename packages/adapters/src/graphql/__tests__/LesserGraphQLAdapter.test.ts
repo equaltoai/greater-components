@@ -5,6 +5,7 @@ import {
 	createLesserGraphQLAdapter,
 } from '../LesserGraphQLAdapter';
 import { createGraphQLClient } from '../client';
+import { TimelineUpdatesDocument } from '../generated/types.js';
 
 // Mock createGraphQLClient
 vi.mock('../client', () => ({
@@ -1259,9 +1260,22 @@ describe('LesserGraphQLAdapter', () => {
 	});
 
 	describe('Subscriptions', () => {
-		it('subscribeToTimelineUpdates', () => {
-			adapter.subscribeToTimelineUpdates({} as any);
-			expect(mockApolloClient.subscribe).toHaveBeenCalled();
+		it('subscribes to actor timeline updates with the v1.6.0 selector', () => {
+			const variables = { type: 'ACTOR' as const, actorUsername: 'alice' };
+			adapter.subscribeToTimelineUpdates(variables);
+			expect(mockApolloClient.subscribe).toHaveBeenCalledWith({
+				query: TimelineUpdatesDocument,
+				variables,
+			});
+		});
+
+		it('subscribes to hashtag timeline updates with the v1.6.0 selector', () => {
+			const variables = { type: 'HASHTAG' as const, hashtag: 'fediverse' };
+			adapter.subscribeToTimelineUpdates(variables);
+			expect(mockApolloClient.subscribe).toHaveBeenCalledWith({
+				query: TimelineUpdatesDocument,
+				variables,
+			});
 		});
 
 		it('subscribeToNotificationStream', () => {

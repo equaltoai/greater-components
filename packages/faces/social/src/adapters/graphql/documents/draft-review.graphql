@@ -1,4 +1,4 @@
-# Shared-draft review operations (Lesser M2a review contract, LESSER_REF v1.5.33)
+# Shared-draft review operations (Lesser M2a review contract, LESSER_REF v1.6.0)
 #
 # Selection is scoped to exactly what the review chrome renders
 # (Review.QueueCard / Review.AttributionStrip / Review.VerdictActions), so the
@@ -40,6 +40,7 @@ fragment DraftReviewFields on DraftReview {
 	verdicts {
 		verdict
 		notes
+		contentHash
 		recordedAt
 		reviewer {
 			...ReviewActorFields

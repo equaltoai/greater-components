@@ -72,10 +72,9 @@ describe('Lesser shared-draft review contract', () => {
 	it('is pinned to a release carrying the review surface', () => {
 		const ref = readLesserRef();
 
-		// v1.5.33 is a behavioural release: its graphql-schema.graphql and
-		// openapi.yaml are byte-identical to v1.5.32, so the field assertions
-		// below are unchanged by the bump.
-		expect(ref).toContain('tag: v1.5.33');
+		// v1.6.0 adds contentHash to verdict records; the field assertions below
+		// keep the review chrome pinned to that release boundary.
+		expect(ref).toContain('tag: v1.6.0');
 		expect(ref).toMatch(/commit: [0-9a-f]{40}/);
 	});
 

@@ -1410,7 +1410,7 @@ export class LesserGraphQLAdapter implements LesserMessagesAdapter {
 	async updateQuotePermissions(
 		noteId: string,
 		quoteable: boolean,
-		permission: 'EVERYONE' | 'FOLLOWERS' | 'NONE'
+		permission: 'EVERYONE' | 'FOLLOWERS' | 'MENTIONED' | 'NONE'
 	) {
 		const data = await this.mutate(UpdateQuotePermissionsDocument, {
 			noteId,

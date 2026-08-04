@@ -55,7 +55,6 @@ type ProjectionTableFixture = {
 type ProducerFixtureCase = {
 	label: string;
 	status: LesserHostHostedGenesisConversation['status'];
-	lesserPath: string;
 	hostPath: string;
 	inProgress: boolean;
 	declarationReady: boolean;
@@ -66,10 +65,8 @@ const releasedHostedGenesisFixtureCases = [
 	{
 		label: 'in_progress',
 		status: 'in_progress',
-		lesserPath:
-			'docs/lesser/contracts/testdata/hosted-genesis/v1.0.7/hosted-genesis.conversation.in-progress.example.json',
 		hostPath:
-			'docs/lesser-host/spec/v3/fixtures/historical/host-v1.0.7/hosted-genesis.conversation.in-progress.example.json',
+			'docs/lesser-host/spec/v3/fixtures/hosted-genesis.conversation.in-progress.example.json',
 		inProgress: true,
 		declarationReady: false,
 		canPublish: false,
@@ -77,10 +74,8 @@ const releasedHostedGenesisFixtureCases = [
 	{
 		label: 'declaration_ready',
 		status: 'declaration_ready',
-		lesserPath:
-			'docs/lesser/contracts/testdata/hosted-genesis/v1.0.7/hosted-genesis.conversation.completed-declaration-ready.example.json',
 		hostPath:
-			'docs/lesser-host/spec/v3/fixtures/historical/host-v1.0.7/hosted-genesis.conversation.completed-declaration-ready.example.json',
+			'docs/lesser-host/spec/v3/fixtures/hosted-genesis.conversation.completed-declaration-ready.example.json',
 		inProgress: false,
 		declarationReady: true,
 		canPublish: true,
@@ -88,10 +83,7 @@ const releasedHostedGenesisFixtureCases = [
 	{
 		label: 'failed',
 		status: 'failed',
-		lesserPath:
-			'docs/lesser/contracts/testdata/hosted-genesis/v1.0.7/hosted-genesis.conversation.failed.example.json',
-		hostPath:
-			'docs/lesser-host/spec/v3/fixtures/historical/host-v1.0.7/hosted-genesis.conversation.failed.example.json',
+		hostPath: 'docs/lesser-host/spec/v3/fixtures/hosted-genesis.conversation.failed.example.json',
 		inProgress: false,
 		declarationReady: false,
 		canPublish: false,
@@ -223,11 +215,9 @@ const hostStatusConversations = [
 
 describe('Project 49 hosted genesis representability', () => {
 	it.each(releasedHostedGenesisFixtureCases)(
-		'consumes released Lesser v1.5.10 and vendored historical Host v1.0.7 $label fixtures through fail-closed helpers',
+		'consumes the vendored Lesser Host v1.6.0 $label fixture through fail-closed helpers',
 		(row) => {
-			const lesserFixtureText = readTextFixture(row.lesserPath);
 			const hostFixtureText = readTextFixture(row.hostPath);
-			expect(lesserFixtureText).toBe(hostFixtureText);
 
 			const hostFixture = JSON.parse(
 				hostFixtureText
@@ -261,7 +251,7 @@ describe('Project 49 hosted genesis representability', () => {
 					hostStatus: 'declaration_ready',
 					hostRequestId: 'req_hosted_genesis_02',
 					declarationsHash:
-						'sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+						'sha256:3e5139a34c53b0365fb245109661dced8596c20d2eb2c083e8f54f23e1a76138',
 					hostRegistrationId: 'reg_01jzhostedgenesis',
 					hostSoulAgentId: '0x2222222222222222222222222222222222222222222222222222222222222222',
 					declarationId: 'decl_01jzhostedgenesis',
@@ -303,7 +293,7 @@ describe('Project 49 hosted genesis representability', () => {
 		).toBe(false);
 	});
 
-	it('consumes the released Lesser v1.5.10 projection table without normalizing its sibling publishGate example', () => {
+	it('consumes the released Lesser v1.6.0 projection table without normalizing its sibling publishGate example', () => {
 		const projectedRows = new Map(lesserProjectionTable.rows.map((row) => [row.label, row]));
 		const expectedFixtureLabelByProjectionLabel = new Map([
 			['no registration', 'no registration'],
@@ -344,8 +334,8 @@ describe('Project 49 hosted genesis representability', () => {
 
 		const declarationReadyRow = projectedRows.get('declaration_ready');
 		expect(declarationReadyRow?.example.lesserGraphql.publishGate).toMatchObject({
-			canPublishHostedSoul: true,
-			reason: 'allowed:active_conversation_terminal_declaration_evidence',
+			canPublishHostedSoul: false,
+			reason: 'complete:already_published_bound',
 			requiresActiveConversationTerminalDeclarationEvidence: true,
 		});
 		expect(declarationReadyRow?.example.lesserGraphql.state['publishGate']).toBeUndefined();

@@ -19,6 +19,7 @@ const isBoolean = (value: unknown): value is boolean => typeof value === 'boolea
 const QUOTE_PERMISSIONS = new Set<LesserObjectFragment['quotePermissions']>([
 	'EVERYONE',
 	'FOLLOWERS',
+	'MENTIONED',
 	'NONE',
 ]);
 

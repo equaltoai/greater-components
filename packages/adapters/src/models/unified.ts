@@ -201,7 +201,7 @@ export interface UnifiedStatus {
 	/** Whether this can be quoted - Lesser only */
 	quoteable?: boolean;
 	/** Quote permission level - Lesser only */
-	quotePermissions?: 'EVERYONE' | 'FOLLOWERS' | 'NONE';
+	quotePermissions?: 'EVERYONE' | 'FOLLOWERS' | 'MENTIONED' | 'NONE';
 	/** Quote context - Lesser only */
 	quoteContext?: {
 		originalAuthorId: string;
