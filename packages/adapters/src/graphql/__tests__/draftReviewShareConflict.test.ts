@@ -8,7 +8,7 @@ import { createGraphQLClient } from '../client';
 import { ShareDraftForReviewDocument } from '../generated/types.js';
 
 /**
- * Lesser v1.5.33 creates a draft-review grant conditionally
+ * Lesser v1.6.0 creates a draft-review grant conditionally
  * (`IfNotExists()`, pkg/storage/repositories/draft_repository.go
  * `CreateDraftReviewGrant`) and version-conditions the regrant path. A
  * duplicate share fails loudly on purpose: the condition is what preserves a
@@ -18,13 +18,12 @@ import { ShareDraftForReviewDocument } from '../generated/types.js';
  * The client's only job is to name that condition. It must not re-issue the
  * grant, retry, or present the refusal as success.
  *
- * Classification is by `extensions.code` and nothing else. At the pinned
- * v1.5.33 the conditional-create path returns its storage error unwrapped, so
- * Lesser's presenter attaches no code and Greater rethrows instead of
- * classifying — see `docs/lesser/contracts/upstream-gaps.md`. Matching the
- * message text would close that gap by guessing: server strings are not
- * contract, so a wording change upstream would silently start reporting real
- * faults as a benign "already invited" notice.
+ * Classification is by `extensions.code` and nothing else. The upstream gap is
+ * closed at v1.6.0: Lesser now presents the conditional-create failure as
+ * `CONFLICT`, which Greater already accepts. The uncoded cases below remain
+ * defensive client assertions only; every transport result is mocked, so this
+ * test has no upstream coupling and is structurally incapable of detecting
+ * future upstream drift.
  */
 
 vi.mock('../client', () => ({
@@ -70,10 +69,9 @@ const conflictWithCode = {
 };
 
 /**
- * The same refusal as v1.5.33 actually delivers it. `CreateDraftReviewGrant`
- * returns the tabletheory error unwrapped, so `graphQLErrorPresenter` finds no
- * `*AppError` and writes no `extensions.code` — the client is left with a
- * message it must not read.
+ * A synthetic untyped refusal used to assert that the client never treats
+ * message text as contract. Lesser v1.6.0 no longer emits this shape for the
+ * conditional-create conflict.
  */
 const conflictWithoutCode = {
 	errors: [{ message: 'condition check failed: item with the same key already exists' }],
@@ -95,11 +93,7 @@ describe('isDraftReviewShareConflict', () => {
 		).toBe(true);
 	});
 
-	/**
-	 * The upstream gap, asserted as behaviour rather than papered over. When
-	 * Lesser starts coding this failure these expectations flip — that is the
-	 * signal to resync the snapshot, not a regression.
-	 */
+	/** Defensive assertion only: mocked inputs cannot trip on upstream drift. */
 	it('does not classify an uncoded conflict, however the message reads', () => {
 		expect(isDraftReviewShareConflict(conflictWithoutCode)).toBe(false);
 		expect(isDraftReviewShareConflict(new Error('ConditionalCheckFailedException'))).toBe(false);
@@ -138,7 +132,7 @@ describe('isDraftReviewShareConflict', () => {
 	});
 });
 
-describe('shareDraftForReviewIfAbsent (Lesser v1.5.33 conditional grant)', () => {
+describe('shareDraftForReviewIfAbsent (Lesser v1.6.0 conditional grant)', () => {
 	let adapter!: LesserGraphQLAdapter;
 	let mockApolloClient: { query: ReturnType<typeof vi.fn>; mutate: ReturnType<typeof vi.fn> };
 
@@ -190,9 +184,9 @@ describe('shareDraftForReviewIfAbsent (Lesser v1.5.33 conditional grant)', () =>
 	});
 
 	/**
-	 * The v1.5.33 shape. Rethrowing is the honest outcome while the code is
-	 * missing: a caller told "already invited" on the strength of a message
-	 * string could be looking at any failure at all.
+	 * Defensive synthetic case: rethrowing is required if any server returns an
+	 * untyped error, regardless of message text. This mock cannot detect Lesser
+	 * contract drift.
 	 */
 	it('rethrows an uncoded conditional-create conflict rather than guessing', async () => {
 		mockApolloClient.mutate.mockResolvedValue(conflictWithoutCode);

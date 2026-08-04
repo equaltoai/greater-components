@@ -634,13 +634,11 @@ const DRAFT_REVIEW_CONFLICT_CODES: readonly string[] = ['CONFLICT', 'ALREADY_EXI
  * Presenting a fault as an expected condition is the worse error in both
  * directions.
  *
- * Known upstream gap at the pinned v1.5.33, reported rather than worked around:
- * `CreateDraftReviewGrant` returns its storage error unwrapped, so
- * `graphQLErrorPresenter` finds no `*AppError`, attaches no `extensions.code`,
- * and that conflict is *not* recognised here. The share then surfaces as an
- * ordinary error, which is the honest outcome while the code is missing — see
- * `docs/lesser/contracts/upstream-gaps.md`. Once Lesser maps the conditional
- * failure to `CodeConflict`, this function recognises it with no change.
+ * The upstream gap is closed at the pinned v1.6.0: `CreateDraftReviewGrant`
+ * wraps a failed conditional create as `DynamoDBConditionalCheckFailed`, which
+ * maps to `CodeConflict` (`CONFLICT`) and reaches GraphQL `extensions.code`.
+ * This function already recognises that code; see
+ * `docs/lesser/contracts/upstream-gaps.md`.
  */
 export function isDraftReviewShareConflict(error: unknown): boolean {
 	const codes =
@@ -2091,7 +2089,7 @@ export class LesserGraphQLAdapter implements LesserMessagesAdapter {
 	 * Invites a reviewer, reporting an existing grant as an expected condition
 	 * rather than a fault.
 	 *
-	 * Lesser v1.5.33 creates the grant conditionally
+	 * Lesser v1.6.0 creates the grant conditionally
 	 * (`attribute_not_exists`, pkg/storage/repositories/draft_repository.go
 	 * `CreateDraftReviewGrant`) and version-conditions the regrant path. A
 	 * duplicate share therefore fails loudly, and that is deliberate: the
@@ -2109,10 +2107,9 @@ export class LesserGraphQLAdapter implements LesserMessagesAdapter {
 	 * notice to show, not a success to act on. Re-enabling a revoked reviewer
 	 * is a deliberate re-share, which Lesser's regrant path already accepts.
 	 *
-	 * Recognition depends on Lesser sending a typed conflict code. At the pinned
-	 * v1.5.33 the conditional-create path sends none, so callers must still
-	 * handle a thrown error from a duplicate share; see
-	 * {@link isDraftReviewShareConflict} for the gap and its upstream status.
+	 * Recognition depends on Lesser sending a typed conflict code. The upstream
+	 * gap is closed at the pinned v1.6.0: the conditional-create path now sends
+	 * `CONFLICT`, which {@link isDraftReviewShareConflict} already accepts.
 	 */
 	async shareDraftForReviewIfAbsent(
 		draftId: string,
