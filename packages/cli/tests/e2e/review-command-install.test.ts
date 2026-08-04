@@ -200,12 +200,13 @@ function isExecutableScriptMatch(content: string, offset: number): boolean {
 	return cursor.state === 'normal';
 }
 
-function stripHtmlComments(content: string): string {
+function stripHtmlComments(content: string, filePath?: string): string {
 	const stripped = content.split('');
 	const cursor: StripCursor = { state: 'normal', escaped: false };
 
 	for (let offset = 0; offset < content.length;) {
-		if (cursor.state === 'normal' && content.startsWith('<!--', offset)) {
+		const isSvelteMarkup = filePath?.endsWith('.svelte') === true && cursor.state === 'normal';
+		if ((isSvelteMarkup || cursor.state === 'normal') && content.startsWith('<!--', offset)) {
 			const commentEnd = content.indexOf('-->', offset + 4);
 			if (commentEnd !== -1) {
 				for (let commentOffset = offset; commentOffset < commentEnd + 3; commentOffset++) {
@@ -215,6 +216,21 @@ function stripHtmlComments(content: string): string {
 				offset = commentEnd + 3;
 				continue;
 			}
+		}
+
+		if (isSvelteMarkup) {
+			const openingTag = content.slice(offset).match(/^<(script|style)\b[^>]*>/i);
+			if (openingTag) {
+				const closingTag = new RegExp(`</${openingTag[1]}\\s*>`, 'gi');
+				closingTag.lastIndex = offset + openingTag[0].length;
+				const closingMatch = closingTag.exec(content);
+				if (closingMatch) {
+					offset = closingMatch.index + closingMatch[0].length;
+					continue;
+				}
+			}
+			offset++;
+			continue;
 		}
 
 		offset += advanceStripCursor(cursor, content, offset);
@@ -254,15 +270,8 @@ function hasExecutableImportShapedToken(content: string): boolean {
 	return false;
 }
 
-function importSpecifiers(content: string, filePath?: string): string[] {
+function recoverImportSpecifiers(executableContent: string): string[] {
 	const specifiers: string[] = [];
-	const commentStripped = stripHtmlComments(content);
-	// Svelte markup is not JavaScript: only script/style bodies may influence
-	// string and comment state for executable import matches.
-	const rawExecutableContent = filePath?.endsWith('.svelte') ? maskSvelteMarkup(content) : content;
-	const executableContent = filePath?.endsWith('.svelte')
-		? maskSvelteMarkup(commentStripped)
-		: commentStripped;
 	for (const pattern of [
 		/(?:^|[;\n\r])\s*import\s+[^'"]+?from\s*(['"])([^'"]+)\1/g,
 		/(?:^|[;\n\r])\s*import\s*(['"])([^'"]+)\1/g,
@@ -278,6 +287,18 @@ function importSpecifiers(content: string, filePath?: string): string[] {
 			}
 		}
 	}
+	return specifiers;
+}
+
+function importSpecifiers(content: string, filePath?: string): string[] {
+	const commentStripped = stripHtmlComments(content, filePath);
+	// Svelte markup is not JavaScript: only script/style bodies may influence
+	// string and comment state for executable import matches.
+	const rawExecutableContent = filePath?.endsWith('.svelte') ? maskSvelteMarkup(content) : content;
+	const executableContent = filePath?.endsWith('.svelte')
+		? maskSvelteMarkup(commentStripped)
+		: commentStripped;
+	const specifiers = recoverImportSpecifiers(executableContent);
 	if (specifiers.length === 0 && hasExecutableImportShapedToken(rawExecutableContent)) {
 		throw new Error(
 			`Import recovery found an import-shaped token but recovered no specifiers from ${filePath ?? '<unknown file>'}`
@@ -314,6 +335,7 @@ describe('greater add review (real command)', () => {
 
 	it('ignores imports inside commented-out Svelte script blocks', () => {
 		const source = [
+			"<p>Sam's post</p>",
 			'<!--',
 			'<script>',
 			"import 'decoy';",
@@ -325,6 +347,20 @@ describe('greater add review (real command)', () => {
 		].join('\n');
 
 		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual(['pkg-real']);
+	});
+
+	it('leaves no recoverable import when an apostrophe precedes only a commented Svelte script', () => {
+		const source = [
+			"<p>Sam's post</p>",
+			'<!--',
+			'<script>',
+			"import 'decoy';",
+			'</script>',
+			'-->',
+		].join('\n');
+		const executableContent = maskSvelteMarkup(stripHtmlComments(source, 'synthetic.svelte'));
+
+		expect(recoverImportSpecifiers(executableContent)).toEqual([]);
 	});
 
 	it('recovers a Svelte import after an HTML comment opener inside a script string (E1)', () => {
