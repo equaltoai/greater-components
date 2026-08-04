@@ -259,6 +259,7 @@ function importSpecifiers(content: string, filePath?: string): string[] {
 	const commentStripped = stripHtmlComments(content);
 	// Svelte markup is not JavaScript: only script/style bodies may influence
 	// string and comment state for executable import matches.
+	const rawExecutableContent = filePath?.endsWith('.svelte') ? maskSvelteMarkup(content) : content;
 	const executableContent = filePath?.endsWith('.svelte')
 		? maskSvelteMarkup(commentStripped)
 		: commentStripped;
@@ -277,7 +278,7 @@ function importSpecifiers(content: string, filePath?: string): string[] {
 			}
 		}
 	}
-	if (specifiers.length === 0 && hasExecutableImportShapedToken(executableContent)) {
+	if (specifiers.length === 0 && hasExecutableImportShapedToken(rawExecutableContent)) {
 		throw new Error(
 			`Import recovery found an import-shaped token but recovered no specifiers from ${filePath ?? '<unknown file>'}`
 		);
