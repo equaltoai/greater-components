@@ -83,8 +83,10 @@ At v1.6.0, four Quote Posts REST endpoints lost their `200` responses and are no
 - `POST /api/v1/statuses/{id}/quote`
 - `GET /api/v1/statuses/{id}/quotes`
 
-Quote Posts are therefore GraphQL-only at the pinned version. Upstream also dropped the
-`QuotePermissionsResponse`, `QuoteStatusAccount`, and `QuoteStatusSummary` schemas.
+Quote creation, listing, and permissions are therefore GraphQL-only at the pinned version; quote
+retraction (`DELETE /api/v1/statuses/{id}/quote/{quote_id}`) remains available over REST. Upstream
+also dropped the `QuotePermissionsResponse`, `QuoteStatusAccount`, `QuoteStatusSummary`, and
+`QuoteStatusSummaryList` schemas.
 
 This is Mastodon-compat-relevant because REST is the Mastodon-compat path. Greater has zero tracked
 references to the removed schemas, and its quote flows already go through GraphQL, so no adapter or
