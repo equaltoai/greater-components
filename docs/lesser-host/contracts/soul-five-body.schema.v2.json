@@ -1,0 +1,361 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://lesser.host/contracts/soul-five-body.schema.v2.json",
+    "title": "Host soul five-body hosted genesis declaration v2",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "schemaVersion": {
+            "type": "string",
+            "const": "soul-five-body-schema.v2"
+        },
+        "guidanceVersion": {
+            "type": "string",
+            "const": "soul-five-body-guidance.v2"
+        },
+        "fiveBodies": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "identity": {
+                    "$ref": "#/$defs/bodySection"
+                },
+                "philosophy": {
+                    "$ref": "#/$defs/bodySection"
+                },
+                "discipline": {
+                    "$ref": "#/$defs/bodySection"
+                },
+                "boundaries": {
+                    "$ref": "#/$defs/bodySection"
+                },
+                "soul": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "summary": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2400
+                        },
+                        "notes": {
+                            "$ref": "#/$defs/notes"
+                        },
+                        "refusals": {
+                            "type": "array",
+                            "minItems": 3,
+                            "maxItems": 8,
+                            "items": {
+                                "$ref": "#/$defs/refusal"
+                            }
+                        }
+                    },
+                    "required": [
+                        "summary",
+                        "refusals"
+                    ]
+                }
+            },
+            "required": [
+                "identity",
+                "philosophy",
+                "discipline",
+                "boundaries",
+                "soul"
+            ]
+        },
+        "capabilities": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 25,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "capability": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 64,
+                        "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+                    },
+                    "scope": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 480,
+                        "pattern": "\\S"
+                    },
+                    "claimLevel": {
+                        "type": "string",
+                        "const": "self-declared"
+                    },
+                    "lastValidated": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 64,
+                        "pattern": "^(?:|[0-9]{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01])T(?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](?:\\.[0-9]+)?(?:Z|[+-](?:[01][0-9]|2[0-3]):[0-5][0-9]))$"
+                    },
+                    "validationRef": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 256
+                    },
+                    "degradesTo": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 256
+                    }
+                },
+                "required": [
+                    "capability",
+                    "scope",
+                    "claimLevel"
+                ]
+            }
+        },
+        "transparency": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "modelProviderUncertainty": {
+                    "type": "string",
+                    "maxLength": 1200
+                },
+                "operationalNotes": {
+                    "type": "string",
+                    "maxLength": 1200
+                },
+                "selfDeclaredNotice": {
+                    "type": "string",
+                    "maxLength": 480
+                }
+            },
+            "required": [
+                "modelProviderUncertainty",
+                "operationalNotes",
+                "selfDeclaredNotice"
+            ]
+        },
+        "selfDescription": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "purpose": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 2400
+                },
+                "constraints": {
+                    "type": "string",
+                    "maxLength": 2400
+                },
+                "commitments": {
+                    "type": "string",
+                    "maxLength": 2400
+                },
+                "limitations": {
+                    "type": "string",
+                    "maxLength": 2400
+                },
+                "authoredBy": {
+                    "type": "string",
+                    "const": "agent"
+                },
+                "mintingModel": {
+                    "type": "string",
+                    "maxLength": 256
+                }
+            },
+            "required": [
+                "purpose",
+                "constraints",
+                "commitments",
+                "limitations",
+                "authoredBy",
+                "mintingModel"
+            ]
+        },
+        "boundaries": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 8,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "category": {
+                        "type": "string",
+                        "const": "refusal"
+                    },
+                    "statement": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 1200
+                    },
+                    "rationale": {
+                        "type": "string",
+                        "maxLength": 1200
+                    },
+                    "addedAt": {
+                        "type": "string",
+                        "maxLength": 64
+                    },
+                    "addedInVersion": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 32
+                    },
+                    "signature": {
+                        "type": "string",
+                        "maxLength": 128
+                    }
+                },
+                "required": [
+                    "id",
+                    "category",
+                    "statement",
+                    "rationale",
+                    "addedAt",
+                    "addedInVersion",
+                    "signature"
+                ]
+            }
+        },
+        "adversarialReview": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "version": {
+                    "type": "string",
+                    "const": "hosted-genesis-adversarial-review.v1"
+                },
+                "reviewer": {
+                    "type": "string",
+                    "const": "hosted-genesis-deterministic-review.v1"
+                },
+                "result": {
+                    "type": "string",
+                    "const": "pass"
+                },
+                "findings": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 12,
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                            "finding": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 256
+                            },
+                            "refutation": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 480
+                            },
+                            "report": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 480
+                            }
+                        },
+                        "required": [
+                            "finding",
+                            "refutation",
+                            "report"
+                        ]
+                    }
+                },
+                "report": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1200
+                }
+            },
+            "required": [
+                "version",
+                "reviewer",
+                "result",
+                "findings",
+                "report"
+            ]
+        }
+    },
+    "required": [
+        "schemaVersion",
+        "guidanceVersion",
+        "fiveBodies",
+        "capabilities",
+        "transparency",
+        "selfDescription",
+        "boundaries",
+        "adversarialReview"
+    ],
+    "$defs": {
+        "bodySection": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "summary": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2400
+                },
+                "notes": {
+                    "$ref": "#/$defs/notes"
+                }
+            },
+            "required": [
+                "summary"
+            ]
+        },
+        "notes": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 8,
+            "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 480
+            }
+        },
+        "refusal": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "bypass": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 480
+                },
+                "invariant": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 480
+                },
+                "closestSafePath": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 480
+                }
+            },
+            "required": [
+                "bypass",
+                "invariant",
+                "closestSafePath"
+            ]
+        }
+    }
+}
