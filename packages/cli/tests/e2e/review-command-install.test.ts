@@ -641,6 +641,17 @@ describe('greater add review (real command)', () => {
 		expect(importSpecifiers(source, 'nested-template.svelte')).toEqual(['./ctx.js']);
 	});
 
+	it('recovers an import declared above a lexer desync', () => {
+		const source = [
+			'<script>',
+			"import './ctx.js';",
+			'const broken = "unterminated;',
+			'</script>',
+		].join('\n');
+
+		expect(importSpecifiers(source, 'unterminated-string.svelte')).toEqual(['./ctx.js']);
+	});
+
 	it('finds a Svelte opening tag terminator after a quoted greater-than character', () => {
 		const source = ['<script data-example="a>b">', "import 'attribute-real';", '</script>'].join(
 			'\n'
