@@ -48,3 +48,22 @@ is not.
 `packages/adapters/src/graphql/__tests__/draftReviewShareConflict.test.ts` remains a defensive,
 mock-driven assertion of Greater's code-only classification. It has no coupling to upstream Lesser
 and is structurally incapable of detecting future upstream drift.
+
+---
+
+## Historical hosted-genesis cross-repo byte-agreement coverage unavailable
+
+- **Observed at:** Lesser `v1.6.0` (`858ad4f94fba055e2d0f9b6a8e0bb78dfea2c796`) and Lesser Host
+  `v1.6.0` (`01f916d5ef6f80c749779a4156ffde7cfb3a7eae`)
+- **Greater surface:** historical `host-v1.0.7` fixtures and
+  `HostedSoulBootstrapProject49Representability.test.ts`
+- **Status:** open coverage gap — re-establish when a same-version fixture pair exists
+
+The historical host-v1.0.7 cross-repo byte-agreement fixtures and the Project 49 representability
+assertion were deliberately dropped in this sync. At the v1.6.0 pins, no same-version Lesser/Host
+fixture pair exists: Lesser vendors `testdata/hosted-genesis/v1.0.6/`, while Lesser Host ships
+current-era fixtures, and the two fixture sets have diverged.
+
+The removed assertion is coverage Greater intends to re-establish when the upstream repositories
+again publish a same-version fixture pair. Greater does not restore or synthesize mismatched
+historical fixtures in the meantime.
