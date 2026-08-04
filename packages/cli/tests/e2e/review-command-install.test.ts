@@ -154,6 +154,9 @@ function canStartRegexLiteral(content: string, offset: number): boolean {
 	if (previousOffset < 0) return true;
 
 	const previous = content[previousOffset] ?? '';
+	if ((previous === '+' || previous === '-') && content[previousOffset - 1] === previous) {
+		return false;
+	}
 	if ('([{,:;=!?&|+-*%^~<>'.includes(previous)) return true;
 
 	const previousWord = content.slice(0, previousOffset + 1).match(/([A-Za-z_$][\w$]*)$/)?.[1];
@@ -552,10 +555,22 @@ describe('greater add review (real command)', () => {
 		const source = [
 			'const htmlComment = /<!--/;',
 			"const apostrophe = /'/;",
+			`const negativeRegex = -/'/.test('value');`,
 			"import 'regex-real';",
 		].join('\n');
 
 		expect(importSpecifiers(source, 'synthetic.ts')).toEqual(['regex-real']);
+	});
+
+	it('treats slashes after postfix increment and decrement as division', () => {
+		for (const { operation, specifier } of [
+			{ operation: 'i++ / total', specifier: 'after-incdiv' },
+			{ operation: 'i-- / total', specifier: 'after-decdiv' },
+		]) {
+			const source = [`const ratio = ${operation};`, `import '${specifier}';`].join('\n');
+
+			expect(importSpecifiers(source, 'synthetic.ts')).toEqual([specifier]);
+		}
 	});
 
 	it('does not truncate a Svelte script at a closing tag inside a string', () => {
