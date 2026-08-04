@@ -132,7 +132,7 @@
 		flex-direction: column;
 		gap: var(--gr-spacing-scale-3);
 		padding: var(--gr-spacing-scale-3);
-		background: var(--gr-color-surface-secondary);
+		background: var(--gr-semantic-background-secondary);
 		border-radius: var(--gr-radii-md);
 	}
 
@@ -151,12 +151,12 @@
 	.thread-controls__label {
 		flex: 1;
 		font-size: var(--gr-typography-fontSize-sm);
-		color: var(--gr-color-text-primary);
+		color: var(--gr-semantic-foreground-primary);
 	}
 
 	.thread-controls__description {
 		font-size: var(--gr-typography-fontSize-xs);
-		color: var(--gr-color-text-muted);
+		color: var(--gr-semantic-foreground-tertiary);
 		padding-left: calc(16px + var(--gr-spacing-scale-2));
 	}
 
@@ -164,6 +164,6 @@
 		display: flex;
 		justify-content: flex-end;
 		padding-top: var(--gr-spacing-scale-2);
-		border-top: 1px solid var(--gr-color-border-subtle);
+		border-top: 1px solid var(--gr-semantic-border-subtle);
 	}
 </style>

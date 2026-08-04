@@ -84,7 +84,8 @@ export async function writeComponentFiles(
 export async function writeComponentFilesWithTransform(
 	files: ComponentFile[],
 	targetDir: string,
-	config: ComponentConfig
+	config: ComponentConfig,
+	consumerRoot?: string
 ): Promise<WriteResult> {
 	const writtenFiles: string[] = [];
 	const transformResults: TransformResult[] = [];
@@ -106,7 +107,12 @@ export async function writeComponentFilesWithTransform(
 		}
 
 		// Transform imports based on file type
-		const result = transformImports(file.content, config, file.path);
+		const result = transformImports(
+			file.content,
+			config,
+			file.path,
+			consumerRoot ? { sourceFilePath: filePath, consumerRoot } : undefined
+		);
 		transformResults.push(result);
 
 		// Write the transformed content
@@ -194,11 +200,21 @@ export async function detectProjectDetails(cwd: string): Promise<ProjectDetectio
 
 	try {
 		const content = await readFile(packageJsonPath);
-		const pkg = JSON.parse(content);
+		const pkg = JSON.parse(content) as {
+			dependencies?: Record<string, string>;
+			devDependencies?: Record<string, string>;
+			peerDependencies?: Record<string, string>;
+			optionalDependencies?: Record<string, string>;
+		};
+		const declaredVersion = (name: string): string | undefined =>
+			pkg.dependencies?.[name] ||
+			pkg.devDependencies?.[name] ||
+			pkg.peerDependencies?.[name] ||
+			pkg.optionalDependencies?.[name];
 
 		// Check for TypeScript
 		result.hasTypeScript = !!(
-			pkg.devDependencies?.['typescript'] || (await fileExists(path.join(cwd, 'tsconfig.json')))
+			declaredVersion('typescript') || (await fileExists(path.join(cwd, 'tsconfig.json')))
 		);
 
 		// Check for svelte.config.js
@@ -222,11 +238,9 @@ export async function detectProjectDetails(cwd: string): Promise<ProjectDetectio
 		}
 
 		// Detect project type
-		const hasSvelteKit = !!(
-			pkg.dependencies?.['@sveltejs/kit'] || pkg.devDependencies?.['@sveltejs/kit']
-		);
-		const hasSvelte = !!(pkg.dependencies?.['svelte'] || pkg.devDependencies?.['svelte']);
-		const hasVite = !!pkg.devDependencies?.['vite'];
+		const hasSvelteKit = !!declaredVersion('@sveltejs/kit');
+		const hasSvelte = !!declaredVersion('svelte');
+		const hasVite = !!declaredVersion('vite');
 
 		if (hasSvelteKit && result.svelteConfigPath) {
 			result.type = 'sveltekit';
@@ -362,8 +376,17 @@ export async function getSvelteVersionDetails(cwd: string): Promise<SvelteVersio
 
 	try {
 		const content = await readFile(packageJsonPath);
-		const pkg = JSON.parse(content);
-		const svelteVersion = pkg.dependencies?.['svelte'] || pkg.devDependencies?.['svelte'];
+		const pkg = JSON.parse(content) as {
+			dependencies?: Record<string, string>;
+			devDependencies?: Record<string, string>;
+			peerDependencies?: Record<string, string>;
+			optionalDependencies?: Record<string, string>;
+		};
+		const svelteVersion =
+			pkg.dependencies?.['svelte'] ||
+			pkg.devDependencies?.['svelte'] ||
+			pkg.peerDependencies?.['svelte'] ||
+			pkg.optionalDependencies?.['svelte'];
 
 		if (!svelteVersion) {
 			return null;
@@ -375,9 +398,9 @@ export async function getSvelteVersionDetails(cwd: string): Promise<SvelteVersio
 			return null;
 		}
 
-		const major = parseInt(match[1], 10);
-		const minor = parseInt(match[2], 10);
-		const patch = parseInt(match[3], 10);
+		const major = parseInt(match[1]!, 10);
+		const minor = parseInt(match[2]!, 10);
+		const patch = parseInt(match[3]!, 10);
 
 		return {
 			raw: svelteVersion,

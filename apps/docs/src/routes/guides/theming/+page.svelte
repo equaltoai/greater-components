@@ -111,7 +111,7 @@
   --gr-typography-fontFamily-sans: 'Inter', system-ui, sans-serif;
   
   /* Override spacing */
-  --gr-spacing-4: 1rem;
+  --gr-spacing-scale-4: 1rem;
   
   /* Override border radius */
   --gr-radii-lg: 12px;
@@ -125,7 +125,7 @@
 		<CodeExample
 			code={`:root {
   /* Background colors */
-  --gr-semantic-background-primary: var(--gr-color-white);
+  --gr-semantic-background-primary: var(--gr-color-base-white);
   --gr-semantic-background-secondary: var(--gr-color-gray-50);
   
   /* Foreground colors */

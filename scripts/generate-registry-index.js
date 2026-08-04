@@ -11,6 +11,7 @@
  * Options:
  *   --dry-run     Print output without writing file
  *   --validate    Validate existing registry index
+ *   --check       Regenerate with stable metadata and fail if the tracked index changes
  *   --verbose     Enable verbose logging
  */
 
@@ -29,6 +30,16 @@ const rootDir = path.join(__dirname, '..');
 const SCHEMA_VERSION = '1.0.0';
 const OUTPUT_PATH = path.join(rootDir, 'registry', 'index.json');
 const PACKAGES_DIR = path.join(rootDir, 'packages');
+const REGISTRY_REQUIRED_FIELDS = [
+	'schemaVersion',
+	'generatedAt',
+	'ref',
+	'version',
+	'checksums',
+	'components',
+	'faces',
+	'shared',
+];
 
 // Package directories to scan (matching actual project structure)
 const PACKAGE_CONFIGS = {
@@ -118,6 +129,126 @@ function log(message, color = colors.reset) {
 function logVerbose(message, verbose) {
 	if (verbose) {
 		console.log(`  ${colors.cyan}→${colors.reset} ${message}`);
+	}
+}
+
+function failGitCheck(operation, error) {
+	const detail = error?.status == null ? error?.code || 'unknown error' : `exit ${error.status}`;
+	log(`❌ Unable to ${operation}: git failed (${detail})`, colors.red);
+	process.exit(1);
+}
+
+function getSanitizedGitEnvironment() {
+	return Object.fromEntries(
+		Object.entries(process.env).filter(([name]) => !name.startsWith('GIT_'))
+	);
+}
+
+function gitReportedNoRepository(error) {
+	if (error?.status !== 128) return false;
+
+	const stderr =
+		typeof error.stderr === 'string'
+			? error.stderr
+			: Buffer.isBuffer(error.stderr)
+				? error.stderr.toString('utf8')
+				: '';
+	return stderr.startsWith('fatal: not a git repository');
+}
+
+function isInsideGitWorkTree() {
+	try {
+		execFileSync('git', ['rev-parse', '--is-inside-work-tree'], {
+			cwd: rootDir,
+			encoding: 'utf8',
+			env: getSanitizedGitEnvironment(),
+			stdio: ['ignore', 'pipe', 'pipe'],
+		});
+		return true;
+	} catch (error) {
+		if (error?.code === 'ENOENT' || gitReportedNoRepository(error)) return false;
+		failGitCheck('determine whether the registry has staged changes', error);
+	}
+}
+
+function readRegistryIndexForFreshnessCheck() {
+	const content = fs.readFileSync(OUTPUT_PATH, 'utf8');
+	let index;
+
+	try {
+		index = JSON.parse(content);
+	} catch (error) {
+		const detail =
+			error instanceof Error ? error.message.replace(/[\r\n]+/g, ' ').trim() : 'invalid JSON';
+		log(`❌ Unable to parse registry/index.json: ${detail}`, colors.red);
+		process.exit(1);
+	}
+
+	if (typeof index !== 'object' || index === null || Array.isArray(index)) {
+		log(
+			'❌ Unable to parse registry/index.json: expected a non-null object with required top-level keys',
+			colors.red
+		);
+		process.exit(1);
+	}
+
+	const missingFields = REGISTRY_REQUIRED_FIELDS.filter((field) => !(field in index));
+	if (missingFields.length > 0) {
+		log(
+			`❌ Unable to parse registry/index.json: missing required top-level keys: ${missingFields.join(', ')}`,
+			colors.red
+		);
+		process.exit(1);
+	}
+
+	return index;
+}
+
+function printFallbackDiff(existingOutput, generatedOutput) {
+	const existingLines = existingOutput.split('\n');
+	const generatedLines = generatedOutput.split('\n');
+	let firstChange = 0;
+	while (
+		firstChange < existingLines.length &&
+		firstChange < generatedLines.length &&
+		existingLines[firstChange] === generatedLines[firstChange]
+	) {
+		firstChange++;
+	}
+
+	let existingEnd = existingLines.length - 1;
+	let generatedEnd = generatedLines.length - 1;
+	while (
+		existingEnd >= firstChange &&
+		generatedEnd >= firstChange &&
+		existingLines[existingEnd] === generatedLines[generatedEnd]
+	) {
+		existingEnd--;
+		generatedEnd--;
+	}
+
+	const contextStart = Math.max(0, firstChange - 3);
+	const existingContextEnd = Math.min(existingLines.length - 1, existingEnd + 3);
+	const generatedContextEnd = Math.min(generatedLines.length - 1, generatedEnd + 3);
+	const existingCount = existingContextEnd - contextStart + 1;
+	const generatedCount = generatedContextEnd - contextStart + 1;
+
+	console.error('--- registry/index.json');
+	console.error('+++ generated registry/index.json');
+	console.error(
+		`@@ -${contextStart + 1},${existingCount} +${contextStart + 1},${generatedCount} @@`
+	);
+	for (let index = contextStart; index < firstChange; index++) {
+		console.error(` ${existingLines[index]}`);
+	}
+	for (let index = firstChange; index <= existingEnd; index++) {
+		console.error(`-${existingLines[index]}`);
+	}
+	for (let index = firstChange; index <= generatedEnd; index++) {
+		console.error(`+${generatedLines[index]}`);
+	}
+	for (let index = generatedEnd + 1; index <= generatedContextEnd; index++) {
+		console.error(` ${generatedLines[index]}`);
 	}
 }
 
@@ -394,6 +525,7 @@ function resolveGitCommit(ref) {
 			['-C', rootDir, 'rev-parse', '--verify', `${ref}^{commit}`],
 			{
 				encoding: 'utf8',
+				env: getSanitizedGitEnvironment(),
 				stdio: ['ignore', 'pipe', 'ignore'],
 			}
 		).trim();
@@ -534,8 +666,8 @@ function readManifest(manifestPath) {
 /**
  * Resolve dependency version from package.json
  */
-function resolveDependencyVersion(depName, packageJson, workspaceVersions) {
-	if (!packageJson) return 'latest';
+function resolveDependencyVersion(depName, packageJson, workspaceVersions, declaredVersion) {
+	if (!packageJson) return declaredVersion || 'latest';
 
 	const allDeps = {
 		...packageJson.dependencies,
@@ -543,7 +675,7 @@ function resolveDependencyVersion(depName, packageJson, workspaceVersions) {
 		...packageJson.devDependencies,
 	};
 
-	let version = allDeps[depName] || 'latest';
+	let version = allDeps[depName] || declaredVersion || 'latest';
 
 	if (version.startsWith('workspace:')) {
 		if (workspaceVersions && workspaceVersions[depName]) {
@@ -557,13 +689,33 @@ function resolveDependencyVersion(depName, packageJson, workspaceVersions) {
 }
 
 /**
- * Map dependency names to objects with versions
+ * Split an npm dependency specifier at its final `@`, preserving a scoped package's
+ * leading `@`. Bare names retain the generator's existing package.json lookup behavior.
  */
-function mapDependencies(depNames, packageJson, workspaceVersions) {
-	return depNames.map((name) => ({
-		name,
-		version: resolveDependencyVersion(name, packageJson, workspaceVersions),
-	}));
+function parseDependencySpecifier(specifier) {
+	const rangeSeparator = specifier.lastIndexOf('@');
+	if (rangeSeparator <= 0) return { name: specifier };
+
+	return {
+		name: specifier.slice(0, rangeSeparator),
+		version: specifier.slice(rangeSeparator + 1) || undefined,
+	};
+}
+
+/**
+ * Map dependency names/specifiers to unique objects with versions. package.json is
+ * installable truth when it declares the dependency; manifest ranges are the fallback.
+ */
+function mapDependencies(depSpecifiers, packageJson, workspaceVersions) {
+	const dependencies = new Map();
+
+	for (const specifier of depSpecifiers) {
+		const { name, version } = parseDependencySpecifier(specifier);
+		if (dependencies.has(name)) continue;
+		dependencies.set(name, resolveDependencyVersion(name, packageJson, workspaceVersions, version));
+	}
+
+	return Array.from(dependencies, ([name, version]) => ({ name, version }));
 }
 
 function getWorkspaceInternalDependencies(depNames, packageJson, workspaceVersions) {
@@ -663,6 +815,7 @@ function processFace(faceName, verbose, workspaceVersions) {
 	// Combine declared and detected external deps
 	const externalDeps = new Set([
 		...declaredDeps,
+		...(manifest.dependencies?.optional || []),
 		...detectedDeps.filter((dep) => !dep.startsWith('@equaltoai/greater-components')),
 	]);
 
@@ -677,7 +830,14 @@ function processFace(faceName, verbose, workspaceVersions) {
 	);
 
 	// Filter self-dependency if packageJson has name
-	const filteredInternalDeps = Array.from(internalDeps);
+	const optionalInternalDeps = new Set(
+		(manifest.dependencies?.optional || [])
+			.map((dep) => parseDependencySpecifier(dep).name)
+			.filter((dep) => dep.startsWith('@equaltoai/greater-components'))
+	);
+	const filteredInternalDeps = Array.from(internalDeps).filter(
+		(dep) => !optionalInternalDeps.has(dep)
+	);
 	const exportedMembers = getManifestExports(manifest);
 
 	return {
@@ -819,17 +979,7 @@ function validateRegistryIndex(index) {
 	const errors = [];
 
 	// Check required fields
-	const requiredFields = [
-		'schemaVersion',
-		'generatedAt',
-		'ref',
-		'version',
-		'checksums',
-		'components',
-		'faces',
-		'shared',
-	];
-	for (const field of requiredFields) {
+	for (const field of REGISTRY_REQUIRED_FIELDS) {
 		if (!(field in index)) {
 			errors.push(`Missing required field: ${field}`);
 		}
@@ -871,6 +1021,7 @@ async function main() {
 	const args = process.argv.slice(2);
 	const dryRun = args.includes('--dry-run');
 	const validateOnly = args.includes('--validate');
+	const checkFreshness = args.includes('--check');
 	const verbose = args.includes('--verbose');
 	const refOverride = (() => {
 		const direct = args.find((arg) => arg.startsWith('--ref='));
@@ -894,6 +1045,11 @@ async function main() {
 	log('\n' + '='.repeat(60), colors.bold);
 	log('📦 Greater Components Registry Index Generator', colors.bold);
 	log('='.repeat(60) + '\n');
+
+	if (checkFreshness && !fs.existsSync(OUTPUT_PATH)) {
+		log('❌ registry/index.json is missing; run `pnpm generate-registry` to create it', colors.red);
+		process.exit(1);
+	}
 
 	// Validate existing index if requested
 	if (validateOnly) {
@@ -921,7 +1077,10 @@ async function main() {
 	const version = getVersion();
 	const ref = refOverride ?? getGitRef(version);
 	const commit = resolveRegistryCommit(ref);
-	const generatedAt = new Date().toISOString();
+	const existingGeneratedAt = checkFreshness
+		? readRegistryIndexForFreshnessCheck().generatedAt
+		: undefined;
+	const generatedAt = existingGeneratedAt ?? new Date().toISOString();
 
 	// Get workspace versions
 	const workspaceVersions = getPackageVersions();
@@ -1013,12 +1172,6 @@ async function main() {
 		log('\nGenerated index:\n');
 		console.log(JSON.stringify(registryIndex, null, 2));
 	} else {
-		// Ensure registry directory exists
-		const registryDir = path.dirname(OUTPUT_PATH);
-		if (!fs.existsSync(registryDir)) {
-			fs.mkdirSync(registryDir, { recursive: true });
-		}
-
 		let output = JSON.stringify(registryIndex);
 		try {
 			const prettier = await import('prettier');
@@ -1029,8 +1182,89 @@ async function main() {
 			output = JSON.stringify(registryIndex, null, 2) + '\n';
 		}
 
-		fs.writeFileSync(OUTPUT_PATH, output);
-		log(`✅ Registry index written to ${OUTPUT_PATH}`, colors.green);
+		if (checkFreshness) {
+			const existingOutput = fs.readFileSync(OUTPUT_PATH, 'utf8');
+			if (existingOutput !== output) {
+				try {
+					execFileSync('git', ['diff', '--no-index', '--', 'registry/index.json', '-'], {
+						cwd: rootDir,
+						env: getSanitizedGitEnvironment(),
+						input: output,
+						stdio: ['pipe', 'inherit', 'inherit'],
+					});
+				} catch (error) {
+					if (error?.code === 'ENOENT') {
+						printFallbackDiff(existingOutput, output);
+					} else if (error?.status !== 1) {
+						failGitCheck('show the stale registry index diff', error);
+					}
+				}
+				log('❌ Registry index is stale; run `pnpm generate-registry` and commit it', colors.red);
+				process.exit(1);
+			}
+
+			let hasStagedArtifactChange = false;
+			if (isInsideGitWorkTree()) {
+				try {
+					execFileSync('git', ['diff', '--cached', '--quiet', '--', 'registry/index.json'], {
+						cwd: rootDir,
+						env: getSanitizedGitEnvironment(),
+						stdio: 'ignore',
+					});
+				} catch (error) {
+					if (error?.status !== 1) {
+						failGitCheck('check the staged registry index', error);
+					}
+					hasStagedArtifactChange = true;
+				}
+			}
+
+			if (hasStagedArtifactChange) {
+				let stagedOutput = null;
+				try {
+					stagedOutput = execFileSync('git', ['show', ':registry/index.json'], {
+						cwd: rootDir,
+						encoding: 'utf8',
+						env: getSanitizedGitEnvironment(),
+						maxBuffer: 64 * 1024 * 1024,
+					});
+				} catch (error) {
+					if (error?.status !== 128) {
+						failGitCheck('read the staged registry index', error);
+					}
+				}
+
+				if (stagedOutput !== output) {
+					try {
+						execFileSync('git', ['diff', '--cached', '--', 'registry/index.json'], {
+							cwd: rootDir,
+							env: getSanitizedGitEnvironment(),
+							stdio: 'inherit',
+						});
+					} catch (error) {
+						if (error?.status !== 1) {
+							failGitCheck('show the staged registry index diff', error);
+						}
+					}
+					log(
+						'❌ Staged registry index is stale; run `pnpm generate-registry` and stage it',
+						colors.red
+					);
+					process.exit(1);
+				}
+			}
+
+			log('✅ Registry index is freshly generated', colors.green);
+		} else {
+			// Ensure registry directory exists
+			const registryDir = path.dirname(OUTPUT_PATH);
+			if (!fs.existsSync(registryDir)) {
+				fs.mkdirSync(registryDir, { recursive: true });
+			}
+
+			fs.writeFileSync(OUTPUT_PATH, output);
+			log(`✅ Registry index written to ${OUTPUT_PATH}`, colors.green);
+		}
 	}
 }
 

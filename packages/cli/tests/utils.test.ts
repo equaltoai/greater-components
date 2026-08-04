@@ -138,6 +138,28 @@ describe('file utilities', () => {
 		expect(await detectProjectType('/missing')).toBe('unknown');
 		expect(await getSvelteVersion('/missing')).toBeNull();
 	});
+
+	it('detects project tooling declared as optional dependencies', async () => {
+		const { detectProjectDetails, getSvelteVersion } = await import('../src/utils/files.js');
+		fsStore.set(
+			'/optional/package.json',
+			JSON.stringify({
+				optionalDependencies: {
+					'@sveltejs/kit': '^2.49.2',
+					svelte: '^5.55.7',
+					typescript: '^6.0.2',
+					vite: '^8.0.16',
+				},
+			})
+		);
+		fsStore.set('/optional/svelte.config.js', 'export default {}');
+
+		expect(await detectProjectDetails('/optional')).toMatchObject({
+			type: 'sveltekit',
+			hasTypeScript: true,
+		});
+		expect(await getSvelteVersion('/optional')).toBe(5);
+	});
 });
 
 describe('package utilities', () => {
@@ -189,6 +211,88 @@ describe('package utilities', () => {
 			'/repo'
 		);
 		expect(missing).toEqual([{ name: 'new', version: '2.0.0' }]);
+	});
+
+	it('treats an installed dependency at the registry floor as satisfied', async () => {
+		const { isDependencyInstalled } = await import('../src/utils/packages.js');
+		fsStore.set('/repo/package.json', JSON.stringify({ dependencies: { viem: '2.55.10' } }));
+
+		expect(await isDependencyInstalled('viem', '/repo', '^2.55.10')).toBe(true);
+	});
+
+	it.each(['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies'] as const)(
+		'classifies a consumer pin in %s as declared drift without rewriting it',
+		async (section) => {
+			const {
+				getDependencyDeclarationStatus,
+				getDependencyInstallPlan,
+				getMissingDependencies,
+				isDependencyInstalled,
+			} = await import('../src/utils/packages.js');
+			const manifest = JSON.stringify({ [section]: { viem: '^2.47.14' } });
+			fsStore.set('/repo/package.json', manifest);
+
+			expect(await getDependencyDeclarationStatus('viem', '/repo', '^2.55.10')).toMatchObject({
+				present: true,
+				installed: false,
+				declaration: '^2.47.14',
+			});
+			expect(await isDependencyInstalled('viem', '/repo', '^2.55.10')).toBe(false);
+			expect(
+				await getMissingDependencies([{ name: 'viem', version: '^2.55.10' }], '/repo')
+			).toEqual([]);
+			expect(
+				await getDependencyInstallPlan(
+					[
+						{ name: 'viem', version: '^2.55.10' },
+						{ name: 'new-package', version: '^1.2.3' },
+					],
+					'/repo'
+				)
+			).toEqual({
+				missing: [{ name: 'new-package', version: '^1.2.3' }],
+				drift: [
+					{
+						dependency: { name: 'viem', version: '^2.55.10' },
+						declaration: '^2.47.14',
+					},
+				],
+			});
+			expect(fsStore.get('/repo/package.json')).toBe(manifest);
+		}
+	);
+
+	it('treats non-semver declarations as present without installing', async () => {
+		const { getMissingDependencies, isDependencyInstalled } =
+			await import('../src/utils/packages.js');
+		const { execa } = await import('execa');
+		const declarations = {
+			'catalog-dependency': 'catalog:',
+			'workspace-dependency': 'workspace:*',
+			'aliased-dependency': 'npm:alias@^1.0.0',
+			'file-dependency': 'file:../local-package',
+			'link-dependency': 'link:../local-package',
+			'git-dependency': 'git+https://github.com/example/package.git#v1.0.0',
+		};
+		fsStore.set('/repo/package.json', JSON.stringify({ dependencies: declarations }));
+
+		const requiredDependencies = Object.keys(declarations).map((name) => ({
+			name,
+			version: '^2.55.10',
+		}));
+
+		for (const dependency of requiredDependencies) {
+			expect(await isDependencyInstalled(dependency.name, '/repo', dependency.version)).toBe(true);
+		}
+		expect(await getMissingDependencies(requiredDependencies, '/repo')).toEqual([]);
+		expect(execa).not.toHaveBeenCalled();
+	});
+
+	it('preserves name-only satisfaction when no registry range is provided', async () => {
+		const { isDependencyInstalled } = await import('../src/utils/packages.js');
+		fsStore.set('/repo/package.json', JSON.stringify({ dependencies: { viem: '2.51.3' } }));
+
+		expect(await isDependencyInstalled('viem', '/repo')).toBe(true);
 	});
 });
 

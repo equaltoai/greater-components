@@ -27,15 +27,7 @@ export type ComponentTarget = 'components' | 'utils' | 'types' | 'styles';
 
 /** Domain categories for filtering */
 export type ComponentDomain =
-	| 'social'
-	| 'blog'
-	| 'community'
-	| 'agent'
-	| 'auth'
-	| 'admin'
-	| 'chat'
-	| 'core'
-	| 'artist';
+	'social' | 'blog' | 'community' | 'agent' | 'auth' | 'admin' | 'chat' | 'core' | 'artist';
 
 export interface ComponentMetadata {
 	name: string;
@@ -180,12 +172,12 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		description: 'Protocol adapters package',
 		files: [{ path: 'greater/adapters/index.ts', content: '', type: 'utils' }],
 		dependencies: [
-			{ name: '@apollo/client', version: '^4.0.9' },
-			{ name: '@apollo/client-react-streaming', version: '^0.14.0' },
+			{ name: '@apollo/client', version: '4.2.9' },
+			{ name: '@apollo/client-react-streaming', version: '^0.14.5' },
 			{ name: '@graphql-typed-document-node/core', version: '^3.2.0' },
 			{ name: 'graphql', version: '^16.12.0' },
 			{ name: 'graphql-ws', version: '^6.0.6' },
-			{ name: 'viem', version: '^2.47.14' },
+			{ name: 'viem', version: '^2.55.10' },
 		],
 		devDependencies: [],
 		registryDependencies: [],
@@ -1700,7 +1692,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 			{ path: 'lib/components/Article/TableOfContents.svelte', content: '', type: 'component' },
 			{ path: 'lib/components/Article/RelatedPosts.svelte', content: '', type: 'component' },
 			{ path: 'lib/components/Article/ShareBar.svelte', content: '', type: 'component' },
-			{ path: 'lib/components/Article/context.ts', content: '', type: 'types' },
+			{ path: 'lib/components/Article/context.svelte.ts', content: '', type: 'types' },
 			{ path: 'lib/components/Article/date.ts', content: '', type: 'utils' },
 			{ path: 'lib/components/Article/index.ts', content: '', type: 'component' },
 			{ path: 'lib/components/Article/normalize.ts', content: '', type: 'utils' },
@@ -1785,7 +1777,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
-		registryDependencies: ['button', 'blog-types'],
+		registryDependencies: ['button', 'blog-types', 'content'],
 		tags: ['compound', 'blog', 'editor', 'markdown'],
 		version: '1.0.0',
 		domain: 'blog',

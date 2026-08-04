@@ -201,7 +201,7 @@ export interface UnifiedStatus {
 	/** Whether this can be quoted - Lesser only */
 	quoteable?: boolean;
 	/** Quote permission level - Lesser only */
-	quotePermissions?: 'EVERYONE' | 'FOLLOWERS' | 'NONE';
+	quotePermissions?: 'EVERYONE' | 'FOLLOWERS' | 'MENTIONED' | 'NONE';
 	/** Quote context - Lesser only */
 	quoteContext?: {
 		originalAuthorId: string;
@@ -532,7 +532,8 @@ export interface AdminReport {
 // Streaming operation models
 export interface StreamingUpdate {
 	/** Update type */
-	type: // Core Mastodon events
+	type:
+		// Core Mastodon events
 		| 'status'
 		| 'delete'
 		| 'notification'

@@ -21,7 +21,7 @@ import {
 	validateSvelteVersion,
 	fileExists,
 } from '../utils/files.js';
-import { detectPackageManager, isDependencyInstalled } from '../utils/packages.js';
+import { detectPackageManager, getDependencyDeclarationStatus } from '../utils/packages.js';
 import { computeChecksum } from '../utils/integrity.js';
 import { getAllComponentNames, getComponent } from '../registry/index.js';
 import { logger } from '../utils/logger.js';
@@ -286,6 +286,8 @@ export async function checkNpmDependencies(
 	const results: DiagnosticResult[] = [];
 	const installedComponents = getInstalledComponentNames(config);
 	const missingDeps: Set<string> = new Set();
+	const skippedFloorChecks = new Map<string, string>();
+	const manifestFloorDrift = new Map<string, { declaration: string; floor: string }>();
 	const pm = await detectPackageManager(cwd);
 
 	for (const componentName of installedComponents) {
@@ -293,8 +295,16 @@ export async function checkNpmDependencies(
 		if (!component) continue;
 
 		for (const dep of component.dependencies) {
-			if (!(await isDependencyInstalled(dep.name, cwd))) {
+			const status = await getDependencyDeclarationStatus(dep.name, cwd, dep.version);
+			if (!status.present) {
 				missingDeps.add(`${dep.name}@${dep.version}`);
+			} else if (!status.installed && status.declaration) {
+				manifestFloorDrift.set(dep.name, {
+					declaration: status.declaration,
+					floor: dep.version,
+				});
+			} else if (status.floorCheckSkipped && status.declaration) {
+				skippedFloorChecks.set(dep.name, status.declaration);
 			}
 		}
 	}
@@ -317,7 +327,30 @@ export async function checkNpmDependencies(
 			name: 'NPM Dependencies',
 			passed: true,
 			severity: 'info',
-			message: 'All required dependencies are installed',
+			message: 'All required dependencies are declared',
+		});
+	}
+
+	for (const [name, declaration] of skippedFloorChecks) {
+		results.push({
+			name: 'NPM Dependency Security Floor',
+			passed: true,
+			severity: 'info',
+			message: `floor check skipped: ${name} declared as ${declaration}`,
+			details:
+				'Dependency presence was verified by name only because its declaration is not semver.',
+		});
+	}
+
+	for (const [name, { declaration, floor }] of manifestFloorDrift) {
+		results.push({
+			name: 'Manifest vs Required Floors',
+			passed: false,
+			severity: 'warning',
+			message: `${name}: manifest ${declaration}; Greater requires ${floor}`,
+			details: 'The consumer-owned declaration was preserved.',
+			fix: `Review ${name} in package.json and upgrade manually if appropriate.`,
+			autoFixable: false,
 		});
 	}
 

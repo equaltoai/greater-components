@@ -247,7 +247,7 @@ Features:
 		left: 50%;
 		transform: translateX(-50%);
 		min-width: 200px;
-		background: var(--gr-color-gray-850);
+		background: var(--gr-color-gray-800);
 		border: 1px solid var(--gr-color-gray-700);
 		border-radius: var(--gr-radii-md);
 		padding: var(--gr-spacing-scale-3);

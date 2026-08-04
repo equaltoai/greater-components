@@ -6,6 +6,19 @@ import type { AiAnalysisQuery } from './graphql';
 
 export type AIAnalysis = NonNullable<AiAnalysisQuery['aiAnalysis']>;
 
+// Credential-expiry contract (Lesser v1.5.33 subscribe-time TOKEN_EXPIRED)
+export {
+	AUTH_EXPIRED_CODE,
+	UNAUTHENTICATED_CODE,
+	AuthExpiredError,
+	createSingleFlightRefresh,
+	extractServerErrorCodes,
+	hasServerErrorCode,
+	isAuthExpiredError,
+} from './authExpiry.js';
+
+export type { AuthExpiredHandler, AuthExpiredReason, TokenRefreshCallback } from './authExpiry.js';
+
 // Transport Clients
 export { WebSocketClient } from './WebSocketClient';
 export { SseClient } from './SseClient';
@@ -24,8 +37,10 @@ export {
 	getGraphQLClient,
 	closeGraphQLClient,
 	LesserGraphQLAdapter,
+	LesserGraphQLAdapterError,
 	createLesserGraphQLAdapter,
 	createSubmitDraftReviewHandler,
+	isDraftReviewShareConflict,
 	typePolicies,
 	cacheConfig,
 	evictStaleCache,
@@ -38,6 +53,8 @@ export type {
 	GraphQLClientInstance,
 	LesserGraphQLAdapterConfig,
 	DraftReviewSubmission,
+	ShareDraftForReviewOutcome,
+	SharedDraftReview,
 	TimelineVariables,
 	CreateNoteVariables,
 	ConversationMessagesVariables,
@@ -228,7 +245,7 @@ export type {
 
 // Messaging handlers (Lesser → shared/messaging)
 export { createLesserMessagesHandlers } from './messaging/index.js';
-export type { LesserMessagesHandlersConfig } from './messaging/index.js';
+export type { LesserMessagesAdapter, LesserMessagesHandlersConfig } from './messaging/index.js';
 
 // Reactive Stores (Svelte 5 Runes)
 export {
@@ -335,6 +352,7 @@ export type {
 	WebSocketEvent,
 	WebSocketEventType,
 	WebSocketEventHandler,
+	AuthExpiredEventData,
 
 	// SSE types
 	SseClientConfig,

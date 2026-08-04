@@ -200,7 +200,7 @@
 	}
 
 	.artwork-card {
-		background: var(--gr-semantic-surface-elevated);
+		background: var(--gr-semantic-background-raised);
 		border-radius: 12px;
 		overflow: hidden;
 		cursor: pointer;
@@ -280,7 +280,7 @@
 		display: flex;
 		gap: 0.5rem;
 		font-size: 0.75rem;
-		color: var(--gr-semantic-foreground-muted);
+		color: var(--gr-semantic-foreground-tertiary);
 	}
 
 	.artwork-card__stats {

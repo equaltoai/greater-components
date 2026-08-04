@@ -101,7 +101,7 @@ Implements REQ-PHIL-001: UI chrome recedes to let artwork breathe.
 	}
 
 	.gr-artist-artwork--card {
-		box-shadow: var(--gr-shadow-sm);
+		box-shadow: var(--gr-shadows-sm);
 	}
 
 	.gr-artist-artwork--detail {
@@ -115,7 +115,7 @@ Implements REQ-PHIL-001: UI chrome recedes to let artwork breathe.
 	/* REQ-PHIL-001: Interaction elements subtle until hover/focus */
 	.gr-artist-artwork:hover,
 	.gr-artist-artwork:focus-within {
-		box-shadow: var(--gr-shadow-md);
+		box-shadow: var(--gr-shadows-md);
 	}
 
 	/* Reduced motion support - REQ-A11Y-007 */

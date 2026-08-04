@@ -71,7 +71,7 @@ Features:
 		},
 		curator: {
 			label: 'Curator',
-			color: 'var(--gr-color-secondary-500)',
+			color: 'var(--gr-color-gray-500)',
 			icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z',
 			defaultTooltip: 'Recognized curator',
 		},
@@ -174,7 +174,7 @@ Features:
 	}
 
 	.artist-badge--curator {
-		background: var(--gr-color-secondary-500);
+		background: var(--gr-color-gray-500);
 	}
 
 	.artist-badge:focus {
@@ -192,7 +192,7 @@ Features:
 		background: var(--gr-color-gray-800);
 		border: 1px solid var(--gr-color-gray-700);
 		border-radius: var(--gr-radii-md);
-		box-shadow: var(--gr-shadow-lg);
+		box-shadow: var(--gr-shadows-lg);
 		white-space: nowrap;
 		z-index: 100;
 		display: flex;
@@ -201,13 +201,13 @@ Features:
 	}
 
 	.artist-badge__tooltip strong {
-		font-size: var(--gr-font-size-sm);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-sm);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: var(--gr-color-gray-100);
 	}
 
 	.artist-badge__tooltip span {
-		font-size: var(--gr-font-size-xs);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: var(--gr-color-gray-400);
 	}
 

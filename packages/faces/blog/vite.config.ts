@@ -15,6 +15,14 @@ export default defineConfig({
 		conditions: ['browser'],
 		alias: {
 			'@equaltoai/greater-components-blog': resolve(__dirname, 'src'),
+			'@equaltoai/greater-components-utils/relativeTime': resolve(
+				__dirname,
+				'../../utils/src/relativeTime.ts'
+			),
+			'@equaltoai/greater-components-utils/sanitizeHtml': resolve(
+				__dirname,
+				'../../utils/src/sanitizeHtml.ts'
+			),
 			'@equaltoai/greater-components-primitives': resolve(
 				__dirname,
 				'../../primitives/src/index.ts'

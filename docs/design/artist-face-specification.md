@@ -169,11 +169,12 @@ The platform MUST support the artistic process with:
 **Description:** Container compound component for artwork display with context.
 
 **Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `artwork` | `ArtworkData` | required | Artwork data object |
-| `config` | `ArtworkConfig` | `{}` | Display configuration |
-| `handlers` | `ArtworkHandlers` | `{}` | Event handlers |
+
+| Prop       | Type              | Default  | Description           |
+| ---------- | ----------------- | -------- | --------------------- |
+| `artwork`  | `ArtworkData`     | required | Artwork data object   |
+| `config`   | `ArtworkConfig`   | `{}`     | Display configuration |
+| `handlers` | `ArtworkHandlers` | `{}`     | Event handlers        |
 
 **Sub-components:**
 
@@ -192,11 +193,12 @@ The platform MUST support the artistic process with:
 **Description:** Compact artwork representation for grid views.
 
 **Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `artwork` | `ArtworkData` | required | Artwork data |
-| `size` | `'sm' \| 'md' \| 'lg' \| 'auto'` | `'auto'` | Card size variant |
-| `showOverlay` | `boolean` | `true` | Show info on hover |
+
+| Prop          | Type                                     | Default      | Description           |
+| ------------- | ---------------------------------------- | ------------ | --------------------- |
+| `artwork`     | `ArtworkData`                            | required     | Artwork data          |
+| `size`        | `'sm' \| 'md' \| 'lg' \| 'auto'`         | `'auto'`     | Card size variant     |
+| `showOverlay` | `boolean`                                | `true`       | Show info on hover    |
 | `aspectRatio` | `'preserve' \| '1:1' \| '4:3' \| '16:9'` | `'preserve'` | Aspect ratio handling |
 
 ---
@@ -206,15 +208,16 @@ The platform MUST support the artistic process with:
 **Description:** Full-screen immersive artwork viewing experience.
 
 **Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `artworks` | `ArtworkData[]` | required | Array of artworks |
-| `currentIndex` | `number` | `0` | Currently displayed index |
-| `background` | `'dark' \| 'black' \| 'blur'` | `'black'` | Background style |
-| `showMetadata` | `boolean` | `true` | Display metadata panel |
-| `showSocial` | `boolean` | `false` | Display social elements |
-| `enableZoom` | `boolean` | `true` | Enable pinch/scroll zoom |
-| `enablePan` | `boolean` | `true` | Enable pan on zoomed images |
+
+| Prop           | Type                          | Default   | Description                 |
+| -------------- | ----------------------------- | --------- | --------------------------- |
+| `artworks`     | `ArtworkData[]`               | required  | Array of artworks           |
+| `currentIndex` | `number`                      | `0`       | Currently displayed index   |
+| `background`   | `'dark' \| 'black' \| 'blur'` | `'black'` | Background style            |
+| `showMetadata` | `boolean`                     | `true`    | Display metadata panel      |
+| `showSocial`   | `boolean`                     | `false`   | Display social elements     |
+| `enableZoom`   | `boolean`                     | `true`    | Enable pinch/scroll zoom    |
+| `enablePan`    | `boolean`                     | `true`    | Enable pan on zoomed images |
 
 **Events:**
 
@@ -232,14 +235,15 @@ The platform MUST support the artistic process with:
 **Description:** Masonry-style grid layout for artwork display.
 
 **Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `items` | `ArtworkData[]` | `[]` | Artworks to display |
-| `columns` | `number \| 'auto'` | `'auto'` | Column count or auto-responsive |
-| `gap` | `'sm' \| 'md' \| 'lg'` | `'md'` | Gap between items |
-| `clustering` | `'none' \| 'artist' \| 'theme' \| 'smart'` | `'none'` | Smart grouping mode |
-| `virtualScrolling` | `boolean` | `true` | Enable virtual scrolling |
-| `onLoadMore` | `() => void` | - | Infinite scroll callback |
+
+| Prop               | Type                                       | Default  | Description                     |
+| ------------------ | ------------------------------------------ | -------- | ------------------------------- |
+| `items`            | `ArtworkData[]`                            | `[]`     | Artworks to display             |
+| `columns`          | `number \| 'auto'`                         | `'auto'` | Column count or auto-responsive |
+| `gap`              | `'sm' \| 'md' \| 'lg'`                     | `'md'`   | Gap between items               |
+| `clustering`       | `'none' \| 'artist' \| 'theme' \| 'smart'` | `'none'` | Smart grouping mode             |
+| `virtualScrolling` | `boolean`                                  | `true`   | Enable virtual scrolling        |
+| `onLoadMore`       | `() => void`                               | -        | Infinite scroll callback        |
 
 ---
 
@@ -248,12 +252,13 @@ The platform MUST support the artistic process with:
 **Description:** Horizontal scrolling row for curated selections.
 
 **Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `items` | `ArtworkData[]` | `[]` | Artworks to display |
-| `title` | `string` | - | Row title |
-| `showAllLink` | `string` | - | Link to full collection |
-| `cardSize` | `'sm' \| 'md' \| 'lg'` | `'md'` | Card size in row |
+
+| Prop          | Type                   | Default | Description             |
+| ------------- | ---------------------- | ------- | ----------------------- |
+| `items`       | `ArtworkData[]`        | `[]`    | Artworks to display     |
+| `title`       | `string`               | -       | Row title               |
+| `showAllLink` | `string`               | -       | Link to full collection |
+| `cardSize`    | `'sm' \| 'md' \| 'lg'` | `'md'`  | Card size in row        |
 
 ---
 
@@ -262,11 +267,12 @@ The platform MUST support the artistic process with:
 **Description:** Variable-height masonry layout respecting artwork aspect ratios.
 
 **Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `items` | `ArtworkData[]` | `[]` | Artworks to display |
-| `columnWidth` | `number` | `300` | Target column width (px) |
-| `gap` | `number` | `16` | Gap between items (px) |
+
+| Prop          | Type            | Default | Description              |
+| ------------- | --------------- | ------- | ------------------------ |
+| `items`       | `ArtworkData[]` | `[]`    | Artworks to display      |
+| `columnWidth` | `number`        | `300`   | Target column width (px) |
+| `gap`         | `number`        | `16`    | Gap between items (px)   |
 
 ---
 
@@ -277,11 +283,12 @@ The platform MUST support the artistic process with:
 **Description:** Container compound component for artist gallery/portfolio.
 
 **Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `artist` | `ArtistData` | required | Artist profile data |
-| `isOwnProfile` | `boolean` | `false` | Viewing own profile |
-| `handlers` | `ProfileHandlers` | `{}` | Event handlers |
+
+| Prop           | Type              | Default  | Description         |
+| -------------- | ----------------- | -------- | ------------------- |
+| `artist`       | `ArtistData`      | required | Artist profile data |
+| `isOwnProfile` | `boolean`         | `false`  | Viewing own profile |
+| `handlers`     | `ProfileHandlers` | `{}`     | Event handlers      |
 
 **Sub-components:**
 
@@ -303,11 +310,12 @@ The platform MUST support the artistic process with:
 **Description:** Professional verification/credential badge.
 
 **Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `type` | `'verified' \| 'educator' \| 'institution' \| 'mentor' \| 'curator'` | required | Badge type |
-| `tooltip` | `string` | - | Explanation tooltip |
-| `size` | `'sm' \| 'md'` | `'md'` | Badge size |
+
+| Prop      | Type                                                                 | Default  | Description         |
+| --------- | -------------------------------------------------------------------- | -------- | ------------------- |
+| `type`    | `'verified' \| 'educator' \| 'institution' \| 'mentor' \| 'curator'` | required | Badge type          |
+| `tooltip` | `string`                                                             | -        | Explanation tooltip |
+| `size`    | `'sm' \| 'md'`                                                       | `'md'`   | Badge size          |
 
 ---
 
@@ -316,13 +324,14 @@ The platform MUST support the artistic process with:
 **Description:** Customizable gallery section within a profile.
 
 **Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `title` | `string` | required | Section title |
-| `description` | `string` | - | Section description |
-| `items` | `ArtworkData[]` | `[]` | Artworks in section |
-| `layout` | `'grid' \| 'row' \| 'featured'` | `'grid'` | Section layout |
-| `editable` | `boolean` | `false` | Enable editing |
+
+| Prop          | Type                            | Default  | Description         |
+| ------------- | ------------------------------- | -------- | ------------------- |
+| `title`       | `string`                        | required | Section title       |
+| `description` | `string`                        | -        | Section description |
+| `items`       | `ArtworkData[]`                 | `[]`     | Artworks in section |
+| `layout`      | `'grid' \| 'row' \| 'featured'` | `'grid'` | Section layout      |
+| `editable`    | `boolean`                       | `false`  | Enable editing      |
 
 **Pre-defined Section Types:**
 
@@ -357,12 +366,13 @@ The platform MUST support the artistic process with:
 **Description:** Search artworks by color harmony.
 
 **Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `colors` | `string[]` | `[]` | Selected color values |
-| `tolerance` | `number` | `15` | Color matching tolerance (0-100) |
-| `mode` | `'any' \| 'all' \| 'dominant'` | `'any'` | Match mode |
-| `onSearch` | `(colors: string[]) => void` | - | Search callback |
+
+| Prop        | Type                           | Default | Description                      |
+| ----------- | ------------------------------ | ------- | -------------------------------- |
+| `colors`    | `string[]`                     | `[]`    | Selected color values            |
+| `tolerance` | `number`                       | `15`    | Color matching tolerance (0-100) |
+| `mode`      | `'any' \| 'all' \| 'dominant'` | `'any'` | Match mode                       |
+| `onSearch`  | `(colors: string[]) => void`   | -       | Search callback                  |
 
 ---
 
@@ -371,11 +381,12 @@ The platform MUST support the artistic process with:
 **Description:** Filter artworks by artistic style/movement.
 
 **Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `styles` | `ArtStyle[]` | AI-detected | Available styles |
-| `selected` | `string[]` | `[]` | Selected style IDs |
-| `showCount` | `boolean` | `true` | Show artwork counts |
+
+| Prop        | Type         | Default     | Description         |
+| ----------- | ------------ | ----------- | ------------------- |
+| `styles`    | `ArtStyle[]` | AI-detected | Available styles    |
+| `selected`  | `string[]`   | `[]`        | Selected style IDs  |
+| `showCount` | `boolean`    | `true`      | Show artwork counts |
 
 ---
 
@@ -384,10 +395,11 @@ The platform MUST support the artistic process with:
 **Description:** Visual mood/emotion-based discovery interface.
 
 **Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `dimensions` | `['x-axis', 'y-axis']` | `['energy', 'valence']` | Mood axes |
-| `selection` | `{x: number, y: number}` | - | Selected mood point |
+
+| Prop         | Type                     | Default                 | Description         |
+| ------------ | ------------------------ | ----------------------- | ------------------- |
+| `dimensions` | `['x-axis', 'y-axis']`   | `['energy', 'valence']` | Mood axes           |
+| `selection`  | `{x: number, y: number}` | -                       | Selected mood point |
 
 ---
 
@@ -398,10 +410,11 @@ The platform MUST support the artistic process with:
 **Description:** Themed exhibition/showcase container.
 
 **Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `exhibition` | `ExhibitionData` | required | Exhibition data |
-| `layout` | `'gallery' \| 'narrative' \| 'timeline'` | `'gallery'` | Exhibition layout |
+
+| Prop         | Type                                     | Default     | Description       |
+| ------------ | ---------------------------------------- | ----------- | ----------------- |
+| `exhibition` | `ExhibitionData`                         | required    | Exhibition data   |
+| `layout`     | `'gallery' \| 'narrative' \| 'timeline'` | `'gallery'` | Exhibition layout |
 
 **Sub-components:**
 
@@ -418,11 +431,12 @@ The platform MUST support the artistic process with:
 **Description:** Featured curator or artist spotlight card.
 
 **Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `curator` | `CuratorData` | required | Curator information |
-| `collection` | `ArtworkData[]` | `[]` | Curated selection |
-| `statement` | `string` | - | Curator statement |
+
+| Prop         | Type            | Default  | Description         |
+| ------------ | --------------- | -------- | ------------------- |
+| `curator`    | `CuratorData`   | required | Curator information |
+| `collection` | `ArtworkData[]` | `[]`     | Curated selection   |
+| `statement`  | `string`        | -        | Curator statement   |
 
 ---
 
@@ -431,11 +445,12 @@ The platform MUST support the artistic process with:
 **Description:** User-created or themed collection display.
 
 **Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `collection` | `CollectionData` | required | Collection data |
-| `preview` | `number` | `4` | Number of preview images |
-| `collaborative` | `boolean` | `false` | Multi-contributor collection |
+
+| Prop            | Type             | Default  | Description                  |
+| --------------- | ---------------- | -------- | ---------------------------- |
+| `collection`    | `CollectionData` | required | Collection data              |
+| `preview`       | `number`         | `4`      | Number of preview images     |
+| `collaborative` | `boolean`        | `false`  | Multi-contributor collection |
 
 ---
 
@@ -446,10 +461,11 @@ The platform MUST support the artistic process with:
 **Description:** Work-in-progress documentation thread.
 
 **Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `thread` | `WIPThreadData` | required | WIP thread data |
-| `handlers` | `WIPHandlers` | `{}` | Event handlers |
+
+| Prop       | Type            | Default  | Description     |
+| ---------- | --------------- | -------- | --------------- |
+| `thread`   | `WIPThreadData` | required | WIP thread data |
+| `handlers` | `WIPHandlers`   | `{}`     | Event handlers  |
 
 **Sub-components:**
 
@@ -467,10 +483,11 @@ The platform MUST support the artistic process with:
 **Description:** Structured artwork critique interface.
 
 **Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `artwork` | `ArtworkData` | required | Artwork being critiqued |
-| `config` | `CritiqueConfig` | `{}` | Critique settings |
+
+| Prop      | Type             | Default  | Description             |
+| --------- | ---------------- | -------- | ----------------------- |
+| `artwork` | `ArtworkData`    | required | Artwork being critiqued |
+| `config`  | `CritiqueConfig` | `{}`     | Critique settings       |
 
 **Sub-components:**
 
@@ -487,11 +504,12 @@ The platform MUST support the artistic process with:
 **Description:** Mood board / reference collection tool.
 
 **Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `board` | `ReferenceBoardData` | required | Board data |
-| `editable` | `boolean` | `false` | Enable editing |
-| `showSources` | `boolean` | `true` | Show artwork sources |
+
+| Prop          | Type                 | Default  | Description          |
+| ------------- | -------------------- | -------- | -------------------- |
+| `board`       | `ReferenceBoardData` | required | Board data           |
+| `editable`    | `boolean`            | `false`  | Enable editing       |
+| `showSources` | `boolean`            | `true`   | Show artwork sources |
 
 ---
 
@@ -500,10 +518,11 @@ The platform MUST support the artistic process with:
 **Description:** Commission management interface.
 
 **Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `commission` | `CommissionData` | required | Commission data |
-| `role` | `'artist' \| 'client'` | required | User role |
+
+| Prop         | Type                   | Default  | Description     |
+| ------------ | ---------------------- | -------- | --------------- |
+| `commission` | `CommissionData`       | required | Commission data |
+| `role`       | `'artist' \| 'client'` | required | User role       |
 
 **Sub-components:**
 
@@ -523,10 +542,11 @@ The platform MUST support the artistic process with:
 **Description:** Structured critique group/space.
 
 **Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `circle` | `CritiqueCircleData` | required | Circle data |
-| `membership` | `'member' \| 'moderator' \| 'viewer'` | `'viewer'` | User role |
+
+| Prop         | Type                                  | Default    | Description |
+| ------------ | ------------------------------------- | ---------- | ----------- |
+| `circle`     | `CritiqueCircleData`                  | required   | Circle data |
+| `membership` | `'member' \| 'moderator' \| 'viewer'` | `'viewer'` | User role   |
 
 **Sub-components:**
 
@@ -556,10 +576,11 @@ The platform MUST support the artistic process with:
 **Description:** Mentor-mentee connection interface.
 
 **Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `mode` | `'find-mentor' \| 'find-mentee' \| 'active'` | required | Interface mode |
-| `filters` | `MentorFilters` | `{}` | Matching criteria |
+
+| Prop      | Type                                         | Default  | Description       |
+| --------- | -------------------------------------------- | -------- | ----------------- |
+| `mode`    | `'find-mentor' \| 'find-mentee' \| 'active'` | required | Interface mode    |
+| `filters` | `MentorFilters`                              | `{}`     | Matching criteria |
 
 ---
 
@@ -570,11 +591,12 @@ The platform MUST support the artistic process with:
 **Description:** AI usage transparency badge and details.
 
 **Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `usage` | `AIUsageData` | required | AI usage details |
-| `variant` | `'badge' \| 'detailed' \| 'inline'` | `'badge'` | Display variant |
-| `expandable` | `boolean` | `true` | Show detailed breakdown |
+
+| Prop         | Type                                | Default   | Description             |
+| ------------ | ----------------------------------- | --------- | ----------------------- |
+| `usage`      | `AIUsageData`                       | required  | AI usage details        |
+| `variant`    | `'badge' \| 'detailed' \| 'inline'` | `'badge'` | Display variant         |
+| `expandable` | `boolean`                           | `true`    | Show detailed breakdown |
 
 ---
 
@@ -583,10 +605,11 @@ The platform MUST support the artistic process with:
 **Description:** Human creativity documentation for AI-assisted work.
 
 **Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `steps` | `ProcessStep[]` | `[]` | Process documentation |
-| `showAIContribution` | `boolean` | `true` | Highlight AI vs human steps |
+
+| Prop                 | Type            | Default | Description                 |
+| -------------------- | --------------- | ------- | --------------------------- |
+| `steps`              | `ProcessStep[]` | `[]`    | Process documentation       |
+| `showAIContribution` | `boolean`       | `true`  | Highlight AI vs human steps |
 
 ---
 
@@ -651,7 +674,7 @@ The platform MUST support the artistic process with:
 	/* Neutral base - recedes behind artwork */
 	--gr-artist-bg-primary: var(--gr-color-gray-950);
 	--gr-artist-bg-secondary: var(--gr-color-gray-900);
-	--gr-artist-bg-elevated: var(--gr-color-gray-850);
+	--gr-artist-bg-elevated: var(--gr-color-gray-800);
 
 	/* True black for media viewer */
 	--gr-artist-bg-immersive: #000000;

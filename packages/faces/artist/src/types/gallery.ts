@@ -21,24 +21,13 @@ export type GalleryLayoutMode = 'grid' | 'masonry' | 'row' | 'carousel' | 'justi
  * Gallery clustering modes for organizing artworks
  */
 export type GalleryClusteringMode =
-	| 'none'
-	| 'color'
-	| 'style'
-	| 'mood'
-	| 'date'
-	| 'medium'
-	| 'collection';
+	'none' | 'color' | 'style' | 'mood' | 'date' | 'medium' | 'collection';
 
 /**
  * Gallery sort options
  */
 export type GallerySortOption =
-	| 'newest'
-	| 'oldest'
-	| 'popular'
-	| 'trending'
-	| 'alphabetical'
-	| 'random';
+	'newest' | 'oldest' | 'popular' | 'trending' | 'alphabetical' | 'random';
 
 // ============================================================================
 // Gallery Configuration

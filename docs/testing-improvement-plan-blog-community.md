@@ -215,19 +215,11 @@ if (typeof runtime.$effect !== 'function') {
 }
 
 // Browser API mocks
-Object.defineProperty(window, 'matchMedia', {
-	/* ... */
-});
-Object.defineProperty(window, 'IntersectionObserver', {
-	/* ... */
-});
-Object.defineProperty(window, 'ResizeObserver', {
-	/* ... */
-});
+Object.defineProperty(window, 'matchMedia', {/* ... */});
+Object.defineProperty(window, 'IntersectionObserver', {/* ... */});
+Object.defineProperty(window, 'ResizeObserver', {/* ... */});
 Element.prototype.scrollIntoView = vi.fn();
-HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue({
-	/* ... */
-});
+HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue({/* ... */});
 ```
 
 ### 2. Mock Data Factories

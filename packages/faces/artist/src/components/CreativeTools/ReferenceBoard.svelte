@@ -131,7 +131,7 @@ Implements REQ-FR-006: Creative Tools for Artistic Process
 		position: relative;
 		width: 100%;
 		aspect-ratio: 4 / 3;
-		border-radius: var(--gr-radius-lg);
+		border-radius: var(--gr-radii-lg);
 		overflow: hidden;
 	}
 
@@ -167,14 +167,14 @@ Implements REQ-FR-006: Creative Tools for Artistic Process
 	}
 
 	.reference-board__title {
-		font-size: var(--gr-font-size-lg);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-lg);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: white;
 		margin: 0;
 	}
 
 	.reference-board__description {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-300);
 		margin: var(--gr-spacing-scale-2) 0 0 0;
 	}
@@ -205,7 +205,7 @@ Implements REQ-FR-006: Creative Tools for Artistic Process
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
-		border-radius: var(--gr-radius-sm);
+		border-radius: var(--gr-radii-sm);
 	}
 
 	.reference-board__attribution {
@@ -215,9 +215,9 @@ Implements REQ-FR-006: Creative Tools for Artistic Process
 		right: 0;
 		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
 		background: rgba(0, 0, 0, 0.7);
-		font-size: var(--gr-font-size-xs);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: var(--gr-color-gray-300);
-		border-radius: 0 0 var(--gr-radius-sm) var(--gr-radius-sm);
+		border-radius: 0 0 var(--gr-radii-sm) var(--gr-radii-sm);
 	}
 
 	.reference-board__notes {
@@ -227,9 +227,9 @@ Implements REQ-FR-006: Creative Tools for Artistic Process
 		right: 0;
 		padding: var(--gr-spacing-scale-2);
 		background: var(--gr-color-gray-800);
-		font-size: var(--gr-font-size-xs);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: var(--gr-color-gray-300);
-		border-radius: var(--gr-radius-sm);
+		border-radius: var(--gr-radii-sm);
 		margin-top: var(--gr-spacing-scale-1);
 		opacity: 0;
 		transition: opacity 0.2s;
@@ -250,7 +250,7 @@ Implements REQ-FR-006: Creative Tools for Artistic Process
 		justify-content: center;
 		background: rgba(0, 0, 0, 0.7);
 		border: none;
-		border-radius: var(--gr-radius-full);
+		border-radius: var(--gr-radii-full);
 		color: white;
 		cursor: pointer;
 		opacity: 0;
@@ -274,7 +274,7 @@ Implements REQ-FR-006: Creative Tools for Artistic Process
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
 		background: var(--gr-color-primary-600);
 		border: none;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: white;
 		cursor: pointer;
 	}

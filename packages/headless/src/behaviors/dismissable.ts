@@ -61,12 +61,7 @@ export interface DismissableConfig {
  * Reason for dismissal
  */
 export type DismissReason =
-	| 'click-outside'
-	| 'escape'
-	| 'scroll'
-	| 'resize'
-	| 'focus-outside'
-	| 'programmatic';
+	'click-outside' | 'escape' | 'scroll' | 'resize' | 'focus-outside' | 'programmatic';
 
 /**
  * Dismissable state

@@ -66,7 +66,7 @@ CommissionWorkflow.Root - Container for commission workflow
 <style>
 	.commission-workflow {
 		background: var(--gr-color-gray-900);
-		border-radius: var(--gr-radius-lg);
+		border-radius: var(--gr-radii-lg);
 		overflow: hidden;
 	}
 
@@ -118,9 +118,9 @@ CommissionWorkflow.Root - Container for commission workflow
 		align-items: center;
 		justify-content: center;
 		background: var(--gr-color-gray-700);
-		border-radius: var(--gr-radius-full);
-		font-size: var(--gr-font-size-sm);
-		font-weight: var(--gr-font-weight-semibold);
+		border-radius: var(--gr-radii-full);
+		font-size: var(--gr-typography-fontSize-sm);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: var(--gr-color-gray-300);
 		position: relative;
 		z-index: 1;
@@ -137,13 +137,13 @@ CommissionWorkflow.Root - Container for commission workflow
 	}
 
 	.commission-workflow__step-label {
-		font-size: var(--gr-font-size-xs);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: var(--gr-color-gray-400);
 	}
 
 	.commission-workflow__step.current .commission-workflow__step-label {
 		color: var(--gr-color-gray-100);
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 	}
 
 	.commission-workflow__content {

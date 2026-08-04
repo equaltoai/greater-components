@@ -181,7 +181,7 @@ CritiqueMode.Annotations - Visual annotation layer
 		padding: var(--gr-spacing-scale-3);
 		background: var(--gr-color-gray-800);
 		border: 1px solid var(--gr-color-gray-700);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		pointer-events: auto;
 		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 	}
@@ -194,14 +194,14 @@ CritiqueMode.Annotations - Visual annotation layer
 	}
 
 	.critique-annotations__author {
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		color: var(--gr-color-gray-100);
 	}
 
 	.critique-annotations__category {
 		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
-		border-radius: var(--gr-radius-sm);
-		font-size: var(--gr-font-size-xs);
+		border-radius: var(--gr-radii-sm);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: white;
 	}
 
@@ -227,7 +227,7 @@ CritiqueMode.Annotations - Visual annotation layer
 
 	.critique-annotations__content {
 		margin: 0;
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-300);
 		line-height: 1.5;
 	}

@@ -496,8 +496,8 @@
 	.badge {
 		padding: 0.2rem 0.5rem;
 		border-radius: var(--gr-radii-md);
-		background: var(--gr-semantic-action-primary-muted);
-		color: var(--gr-semantic-action-primary-foreground);
+		background: var(--gr-color-primary-100);
+		color: var(--gr-color-primary-900);
 		text-transform: uppercase;
 		font-size: 0.75rem;
 		letter-spacing: 0.08em;

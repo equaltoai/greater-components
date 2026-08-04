@@ -5,7 +5,7 @@ Article.ShareBar - Social sharing buttons
 -->
 
 <script lang="ts">
-	import { getArticleContext } from './context.js';
+	import { getArticleContext } from './context.svelte.js';
 	import { Button } from '@equaltoai/greater-components-primitives';
 	import { buildArticleShareUrl, resolveArticleShareUrl } from '../../share.js';
 

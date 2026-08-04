@@ -166,18 +166,18 @@ WorkInProgress.Comments - Threaded discussion
 	.wip-comments {
 		padding: var(--gr-spacing-scale-6);
 		background: var(--gr-color-gray-800);
-		border-radius: var(--gr-radius-lg);
+		border-radius: var(--gr-radii-lg);
 	}
 
 	.wip-comments__heading {
-		font-size: var(--gr-font-size-lg);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-lg);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: var(--gr-color-gray-100);
 		margin: 0 0 var(--gr-spacing-scale-4) 0;
 	}
 
 	.wip-comments__count {
-		font-weight: var(--gr-font-weight-normal);
+		font-weight: var(--gr-typography-fontWeight-normal);
 		color: var(--gr-color-gray-400);
 	}
 
@@ -190,9 +190,9 @@ WorkInProgress.Comments - Threaded discussion
 		padding: var(--gr-spacing-scale-3);
 		background: var(--gr-color-gray-700);
 		border: 1px solid var(--gr-color-gray-600);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: var(--gr-color-gray-100);
-		font-size: var(--gr-font-size-base);
+		font-size: var(--gr-typography-fontSize-base);
 		resize: vertical;
 	}
 
@@ -209,7 +209,7 @@ WorkInProgress.Comments - Threaded discussion
 	}
 
 	.wip-comments__version-tag {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-400);
 	}
 
@@ -217,9 +217,9 @@ WorkInProgress.Comments - Threaded discussion
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
 		background: var(--gr-color-primary-600);
 		border: none;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: white;
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		cursor: pointer;
 	}
 
@@ -237,7 +237,7 @@ WorkInProgress.Comments - Threaded discussion
 	.wip-comments__item {
 		padding: var(--gr-spacing-scale-4);
 		background: var(--gr-color-gray-700);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 	}
 
 	.wip-comments__author {
@@ -250,7 +250,7 @@ WorkInProgress.Comments - Threaded discussion
 	.wip-comments__avatar {
 		width: 32px;
 		height: 32px;
-		border-radius: var(--gr-radius-full);
+		border-radius: var(--gr-radii-full);
 		object-fit: cover;
 	}
 
@@ -266,9 +266,9 @@ WorkInProgress.Comments - Threaded discussion
 		align-items: center;
 		justify-content: center;
 		background: var(--gr-color-gray-600);
-		border-radius: var(--gr-radius-full);
+		border-radius: var(--gr-radii-full);
 		color: var(--gr-color-gray-300);
-		font-weight: var(--gr-font-weight-semibold);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 	}
 
 	.wip-comments__author-info {
@@ -277,12 +277,12 @@ WorkInProgress.Comments - Threaded discussion
 	}
 
 	.wip-comments__author-name {
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		color: var(--gr-color-gray-100);
 	}
 
 	.wip-comments__date {
-		font-size: var(--gr-font-size-xs);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: var(--gr-color-gray-400);
 	}
 
@@ -290,8 +290,8 @@ WorkInProgress.Comments - Threaded discussion
 		margin-left: auto;
 		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
 		background: var(--gr-color-primary-900);
-		border-radius: var(--gr-radius-sm);
-		font-size: var(--gr-font-size-xs);
+		border-radius: var(--gr-radii-sm);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: var(--gr-color-primary-300);
 	}
 
@@ -310,7 +310,7 @@ WorkInProgress.Comments - Threaded discussion
 		background: none;
 		border: none;
 		color: var(--gr-color-gray-400);
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		cursor: pointer;
 	}
 

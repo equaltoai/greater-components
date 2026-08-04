@@ -8,17 +8,7 @@ export type PalettePreset = 'slate' | 'stone' | 'neutral' | 'zinc' | 'gray';
 export type FontPreset = 'system' | 'sans' | 'serif' | 'mono';
 /** Color scale shade values (50-950) */
 export type ColorShade =
-	| '50'
-	| '100'
-	| '200'
-	| '300'
-	| '400'
-	| '500'
-	| '600'
-	| '700'
-	| '800'
-	| '900'
-	| '950';
+	'50' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900' | '950';
 /** A complete color scale with all shade values */
 export type ColorScale = {
 	[K in ColorShade]?: string;

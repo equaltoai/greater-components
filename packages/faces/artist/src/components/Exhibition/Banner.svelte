@@ -242,9 +242,9 @@ Features:
 		display: inline-flex;
 		align-items: center;
 		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-3);
-		border-radius: var(--gr-radius-full);
-		font-size: var(--gr-font-size-sm);
-		font-weight: var(--gr-font-weight-medium);
+		border-radius: var(--gr-radii-full);
+		font-size: var(--gr-typography-fontSize-sm);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 		width: fit-content;
@@ -271,15 +271,15 @@ Features:
 	}
 
 	.exhibition-banner__title {
-		font-size: var(--gr-font-size-4xl);
-		font-weight: var(--gr-font-weight-bold);
+		font-size: var(--gr-typography-fontSize-4xl);
+		font-weight: var(--gr-typography-fontWeight-bold);
 		line-height: 1.1;
 		color: white;
 		margin: 0;
 	}
 
 	.exhibition-banner__subtitle {
-		font-size: var(--gr-font-size-xl);
+		font-size: var(--gr-typography-fontSize-xl);
 		color: var(--gr-color-gray-300);
 		margin: 0;
 	}
@@ -293,7 +293,7 @@ Features:
 	}
 
 	.exhibition-banner__dates {
-		font-size: var(--gr-font-size-base);
+		font-size: var(--gr-typography-fontSize-base);
 	}
 
 	.exhibition-banner__curator {
@@ -305,7 +305,7 @@ Features:
 		color: var(--gr-color-gray-300);
 		cursor: pointer;
 		padding: 0;
-		font-size: var(--gr-font-size-base);
+		font-size: var(--gr-typography-fontSize-base);
 		transition: color 0.2s;
 	}
 
@@ -316,12 +316,12 @@ Features:
 	.exhibition-banner__curator-avatar {
 		width: 24px;
 		height: 24px;
-		border-radius: var(--gr-radius-full);
+		border-radius: var(--gr-radii-full);
 		object-fit: cover;
 	}
 
 	.exhibition-banner__curator strong {
-		font-weight: var(--gr-font-weight-semibold);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 	}
 
 	.exhibition-banner__verified {
@@ -332,7 +332,7 @@ Features:
 
 	.exhibition-banner__location {
 		font-style: normal;
-		font-size: var(--gr-font-size-base);
+		font-size: var(--gr-typography-fontSize-base);
 	}
 
 	.exhibition-banner__actions {
@@ -349,9 +349,9 @@ Features:
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
 		background: rgba(255, 255, 255, 0.1);
 		border: 1px solid rgba(255, 255, 255, 0.2);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: white;
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		cursor: pointer;
 		transition:
 			background 0.2s,
@@ -369,7 +369,7 @@ Features:
 	}
 
 	.exhibition-banner__count {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-400);
 	}
 
@@ -383,11 +383,11 @@ Features:
 		}
 
 		.exhibition-banner__title {
-			font-size: var(--gr-font-size-2xl);
+			font-size: var(--gr-typography-fontSize-2xl);
 		}
 
 		.exhibition-banner__subtitle {
-			font-size: var(--gr-font-size-base);
+			font-size: var(--gr-typography-fontSize-base);
 		}
 	}
 

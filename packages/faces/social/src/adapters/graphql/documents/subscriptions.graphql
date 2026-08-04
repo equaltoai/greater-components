@@ -2,8 +2,13 @@
 
 #import "./fragments.graphql"
 
-subscription TimelineUpdates($type: TimelineType!, $listId: ID) {
-	timelineUpdates(type: $type, listId: $listId) {
+subscription TimelineUpdates(
+	$type: TimelineType!
+	$actorUsername: String
+	$hashtag: String
+	$listId: ID
+) {
+	timelineUpdates(type: $type, actorUsername: $actorUsername, hashtag: $hashtag, listId: $listId) {
 		...ObjectFields
 	}
 }

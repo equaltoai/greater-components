@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import path from 'node:path';
+import { readFileSync } from 'node:fs';
 
 const fsStore = new Map<string, string>();
 const fsMock = {
@@ -522,6 +523,104 @@ describe('checkNpmDependencies extended', () => {
 		expect(results.length).toBe(1);
 		expect(results[0]?.passed).toBe(true);
 		expect(results[0]?.message).toContain('All required dependencies');
+	});
+
+	it('distinguishes a reading-only blog install from the legacy content-expanded shape', async () => {
+		const { checkNpmDependencies } = await import('../src/commands/doctor.js');
+		const registry = JSON.parse(
+			readFileSync(new URL('../../../registry/index.json', import.meta.url), 'utf8')
+		) as { faces: { blog: { includes: { shared: string[] } } } };
+
+		fsStore.set(
+			path.join('/project', 'package.json'),
+			JSON.stringify({ dependencies: { svelte: '^5.55.1' } })
+		);
+
+		const readingResults = await checkNpmDependencies('/project', {
+			...BASE_COMPONENT_CONFIG,
+			installed: [{ name: 'faces/blog' } as any],
+		});
+		const contentExpandedResults = await checkNpmDependencies('/project', {
+			...BASE_COMPONENT_CONFIG,
+			installed: [{ name: 'faces/blog' } as any, { name: 'content' } as any],
+		});
+
+		expect(registry.faces.blog.includes.shared).not.toContain('content');
+		expect(readingResults.find((result) => result.name === 'NPM Dependencies')).toMatchObject({
+			passed: true,
+			message: 'All required dependencies are declared',
+		});
+		expect(
+			contentExpandedResults.find((result) => result.name === 'NPM Dependencies')
+		).toMatchObject({
+			passed: false,
+			message: '8 missing dependencies',
+			details: expect.stringContaining('remark-parse'),
+		});
+	});
+
+	it('surfaces a name-only security-floor skip for a non-semver declaration', async () => {
+		const { checkNpmDependencies, formatResult } = await import('../src/commands/doctor.js');
+		const { getComponent } = await import('../src/registry/index.js');
+		vi.mocked(getComponent).mockReturnValue({
+			name: 'adapters',
+			files: [],
+			dependencies: [{ name: 'viem', version: '^2.55.10' }],
+		} as any);
+		fsStore.set(
+			path.join('/project', 'package.json'),
+			JSON.stringify({ dependencies: { viem: 'catalog:' } })
+		);
+
+		const results = await checkNpmDependencies('/project', {
+			...BASE_COMPONENT_CONFIG,
+			installed: [{ name: 'adapters' } as any],
+		});
+		const skipped = results.find((result) => result.name === 'NPM Dependency Security Floor');
+
+		expect(results.find((result) => result.name === 'NPM Dependencies')?.passed).toBe(true);
+		expect(skipped).toMatchObject({
+			passed: true,
+			message: 'floor check skipped: viem declared as catalog:',
+		});
+		if (!skipped) throw new Error('expected a security-floor skip diagnostic');
+		expect(formatResult(skipped)).toContain('floor check skipped: viem declared as catalog:');
+	});
+
+	it('reports manifest-vs-floor drift without treating the declaration as missing', async () => {
+		const { checkNpmDependencies, formatResult } = await import('../src/commands/doctor.js');
+		const { getComponent } = await import('../src/registry/index.js');
+		vi.mocked(getComponent).mockReturnValue({
+			name: 'adapters',
+			files: [],
+			dependencies: [{ name: 'viem', version: '^2.55.10' }],
+		} as any);
+		fsStore.set(
+			path.join('/project', 'package.json'),
+			JSON.stringify({ dependencies: { viem: '2.51.3' } })
+		);
+
+		const results = await checkNpmDependencies('/project', {
+			...BASE_COMPONENT_CONFIG,
+			installed: [{ name: 'adapters' } as any],
+		});
+
+		expect(results).toHaveLength(2);
+		expect(results[0]).toMatchObject({
+			name: 'NPM Dependencies',
+			passed: true,
+			message: 'All required dependencies are declared',
+		});
+		expect(results[1]).toMatchObject({
+			name: 'Manifest vs Required Floors',
+			passed: false,
+			severity: 'warning',
+			message: 'viem: manifest 2.51.3; Greater requires ^2.55.10',
+		});
+		expect(results[1]?.details).toContain('consumer-owned declaration was preserved');
+		expect(results.map(formatResult).join('\n')).not.toContain(
+			'All required dependencies are installed'
+		);
 	});
 });
 

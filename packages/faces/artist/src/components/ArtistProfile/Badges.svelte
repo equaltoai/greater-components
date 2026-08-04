@@ -107,7 +107,7 @@ Features:
 		border-radius: var(--gr-radii-full);
 		background: var(--gr-color-gray-800);
 		color: var(--gr-color-gray-300);
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		cursor: pointer;
 		transition:
 			background 0.2s,
@@ -133,7 +133,7 @@ Features:
 		background: var(--gr-color-gray-800);
 		border: 1px solid var(--gr-color-gray-700);
 		border-radius: var(--gr-radii-md);
-		box-shadow: var(--gr-shadow-lg);
+		box-shadow: var(--gr-shadows-lg);
 		display: flex;
 		flex-direction: column;
 		gap: var(--gr-spacing-scale-2);

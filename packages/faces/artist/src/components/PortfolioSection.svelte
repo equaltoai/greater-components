@@ -172,14 +172,14 @@ Features:
 
 	.portfolio-section__title {
 		margin: 0;
-		font-size: var(--gr-font-size-xl);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-xl);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: var(--gr-color-gray-100);
 	}
 
 	.portfolio-section__description {
 		margin: 0;
-		font-size: var(--gr-font-size-md);
+		font-size: var(--gr-typography-fontSize-base);
 		color: var(--gr-color-gray-400);
 	}
 

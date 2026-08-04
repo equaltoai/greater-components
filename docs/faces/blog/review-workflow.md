@@ -3,8 +3,8 @@
 Chrome for Lesser's shared-draft review workflow: a queue card, an attribution
 strip, and confirm-guarded verdict actions.
 
-Pinned contract: `docs/lesser/contracts/graphql-schema.graphql` at
-**LESSER_REF v1.5.32**, which introduced `DraftReview`, `DraftReviewGrant`,
+Pinned contract: `docs/lesser/contracts/graphql-schema.graphql` at **LESSER_REF v1.6.0**.
+The shareable-draft review surface was introduced in v1.5.33: `DraftReview`, `DraftReviewGrant`,
 `DraftReviewVerdictRecord`, the `DraftReviewVerdict` enum, and the
 `sharedDraftReviews` / `draftReview` / `shareDraftForReview` /
 `revokeDraftReview` / `submitDraftReview` operations.
@@ -176,10 +176,12 @@ New tokens are prefixed `--gr-blog-review-*`: card padding and radius, plus
 `approved` / `changes` / `pending` / `agent` background, foreground, and border
 triples, with light and dark values.
 
-Neutral steps are written as `var(--gr-color-neutral-N, var(--gr-color-gray-N))`
-because `--gr-color-neutral-*` is a bridge-level alias rather than a token the
-tokens package emits. Consumers that bridge their brand through
-`--gr-color-neutral-*` win; consumers that do not still render correctly.
+`neutral` is a selectable palette name, but `--gr-color-neutral-*` was never an
+emitted token family. This PR removes the never-functional, consumer-facing
+`--gr-color-neutral-N` → `--gr-color-gray-N` bridge pattern. Consumers
+bridge neutral values through the emitted `--gr-color-gray-*` family or through
+their own component-level overrides. The repository guard rejects palette names
+used as custom-property paths so the removed pattern cannot return.
 
 ## Accessibility
 

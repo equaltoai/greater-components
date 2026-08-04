@@ -5,7 +5,25 @@
 import { execa } from 'execa';
 import fs from 'fs-extra';
 import path from 'node:path';
+import { minVersion, satisfies } from 'semver';
 import type { ComponentDependency } from '../registry/index.js';
+
+export interface DependencyDeclarationStatus {
+	present: boolean;
+	installed: boolean;
+	declaration?: string;
+	floorCheckSkipped: boolean;
+}
+
+export interface DependencyManifestDrift {
+	dependency: ComponentDependency;
+	declaration: string;
+}
+
+export interface DependencyInstallPlan {
+	missing: ComponentDependency[];
+	drift: DependencyManifestDrift[];
+}
 
 /**
  * Detect package manager
@@ -80,27 +98,87 @@ export async function installDependencies(
 }
 
 /**
- * Check if dependency is installed
+ * Check if dependency is installed at a compatible version.
+ *
+ * When no required version is provided, preserve the historical name-only check.
+ * Non-semver declarations (for example workspace or git dependencies) also fall
+ * back to name-only because their resolved versions are not available here.
  */
-export async function isDependencyInstalled(packageName: string, cwd: string): Promise<boolean> {
+export async function getDependencyDeclarationStatus(
+	packageName: string,
+	cwd: string,
+	requiredVersion?: string
+): Promise<DependencyDeclarationStatus> {
 	const packageJsonPath = path.join(cwd, 'package.json');
 
 	if (!(await fs.pathExists(packageJsonPath))) {
-		return false;
+		return { present: false, installed: false, floorCheckSkipped: false };
 	}
 
 	try {
 		const content = await fs.readFile(packageJsonPath, 'utf-8');
-		const pkg = JSON.parse(content);
-
-		return !!(
+		const pkg = JSON.parse(content) as {
+			dependencies?: Record<string, string>;
+			devDependencies?: Record<string, string>;
+			peerDependencies?: Record<string, string>;
+			optionalDependencies?: Record<string, string>;
+		};
+		const installedVersion =
 			pkg.dependencies?.[packageName] ||
 			pkg.devDependencies?.[packageName] ||
-			pkg.peerDependencies?.[packageName]
-		);
+			pkg.peerDependencies?.[packageName] ||
+			pkg.optionalDependencies?.[packageName];
+
+		if (!installedVersion) {
+			return { present: false, installed: false, floorCheckSkipped: false };
+		}
+		if (!requiredVersion) {
+			return {
+				present: true,
+				installed: true,
+				declaration: installedVersion,
+				floorCheckSkipped: false,
+			};
+		}
+
+		let installedFloor;
+		try {
+			installedFloor = minVersion(installedVersion);
+		} catch {
+			return {
+				present: true,
+				installed: true,
+				declaration: installedVersion,
+				floorCheckSkipped: true,
+			};
+		}
+
+		if (!installedFloor) {
+			return {
+				present: true,
+				installed: true,
+				declaration: installedVersion,
+				floorCheckSkipped: true,
+			};
+		}
+
+		return {
+			present: true,
+			installed: satisfies(installedFloor, requiredVersion),
+			declaration: installedVersion,
+			floorCheckSkipped: false,
+		};
 	} catch {
-		return false;
+		return { present: false, installed: false, floorCheckSkipped: false };
 	}
+}
+
+export async function isDependencyInstalled(
+	packageName: string,
+	cwd: string,
+	requiredVersion?: string
+): Promise<boolean> {
+	return (await getDependencyDeclarationStatus(packageName, cwd, requiredVersion)).installed;
 }
 
 /**
@@ -110,13 +188,28 @@ export async function getMissingDependencies(
 	dependencies: ComponentDependency[],
 	cwd: string
 ): Promise<ComponentDependency[]> {
-	const missing: ComponentDependency[] = [];
+	return (await getDependencyInstallPlan(dependencies, cwd)).missing;
+}
+
+/**
+ * Separate dependencies absent from package.json from consumer-owned declarations
+ * that do not satisfy Greater's required floor. Only absent dependencies are safe
+ * for the CLI to install; package managers would otherwise rewrite the declaration.
+ */
+export async function getDependencyInstallPlan(
+	dependencies: ComponentDependency[],
+	cwd: string
+): Promise<DependencyInstallPlan> {
+	const plan: DependencyInstallPlan = { missing: [], drift: [] };
 
 	for (const dep of dependencies) {
-		if (!(await isDependencyInstalled(dep.name, cwd))) {
-			missing.push(dep);
+		const status = await getDependencyDeclarationStatus(dep.name, cwd, dep.version);
+		if (!status.present) {
+			plan.missing.push(dep);
+		} else if (!status.installed && status.declaration) {
+			plan.drift.push({ dependency: dep, declaration: status.declaration });
 		}
 	}
 
-	return missing;
+	return plan;
 }

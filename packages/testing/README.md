@@ -51,7 +51,7 @@ Install the following peer dependencies based on your testing needs:
 pnpm add -D @playwright/test playwright
 
 # For Vitest/unit testing
-pnpm add -D vitest @testing-library/svelte
+pnpm add -D vitest @testing-library/svelte@5.4.2
 
 # Additional tools
 pnpm add -D axe-core @axe-core/playwright

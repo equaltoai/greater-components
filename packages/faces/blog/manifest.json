@@ -214,12 +214,15 @@
     "internal": [
       "@equaltoai/greater-components-primitives",
       "@equaltoai/greater-components-icons",
-      "@equaltoai/greater-components-content",
       "@equaltoai/greater-components-utils",
       "@equaltoai/greater-components-headless"
     ],
     "peer": ["svelte@^5.43.6"],
-    "optional": ["@equaltoai/greater-components-auth", "@equaltoai/greater-components-search"]
+    "optional": [
+      "@equaltoai/greater-components-auth",
+      "@equaltoai/greater-components-content",
+      "@equaltoai/greater-components-search"
+    ]
   },
   "integrationPatterns": [
     "rest_api_fetch",

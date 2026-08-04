@@ -176,3 +176,12 @@ greater add
 # Add with dependencies
 greater add timeline
 ```
+
+`greater add` installs dependency declarations that are absent from `package.json`. If your
+manifest already declares a dependency below Greater's required floor, the CLI preserves the
+consumer-owned declaration and prints a `manifest vs required floors` warning. Run `greater doctor`
+to review the same drift and decide whether to upgrade manually.
+
+In vendored mode, imports between installed Greater files (including CSS `@import` paths) are
+written as relative specifiers. The copied tree therefore resolves in a standard SvelteKit/Vite
+project without adding a Greater-specific alias to `vite.config` or `tsconfig.json`.

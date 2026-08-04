@@ -22,9 +22,7 @@ export class TransportFallback implements TransportAdapter<TransportFallbackStat
 		logger: TransportLogger;
 	};
 	private currentTransport:
-		| TransportAdapter<SseClientState>
-		| TransportAdapter<HttpPollingClientState>
-		| null = null;
+		TransportAdapter<SseClientState> | TransportAdapter<HttpPollingClientState> | null = null;
 	private transportType: 'sse' | 'polling' | null = null;
 	private eventHandlers: Map<string, Set<WebSocketEventHandler>> = new Map();
 	private unsubscribers: Map<string, (() => void)[]> = new Map();

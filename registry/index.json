@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-07-31T13:35:41.086Z",
+  "generatedAt": "2026-08-04T13:49:42.175Z",
   "ref": "greater-v0.11.9",
   "version": "0.11.9",
   "checksums": {
@@ -43,7 +43,7 @@
     "packages/primitives/src/components/List.svelte.d.ts": "sha256-kQQKN8WiXDbkaE7agL85+hxnNgng+P1ry4hiGr9t8Oo=",
     "packages/primitives/src/components/ListItem.svelte": "sha256-0vEfQt33/3wnjLM2uqjG68NAu6aPg59Ma+WSNyejeeU=",
     "packages/primitives/src/components/ListItem.svelte.d.ts": "sha256-8iCtXmzYfDGJyzy0Oeji3SQkILvjs2DKUehAxf2Tj0Q=",
-    "packages/primitives/src/components/LoadingState.svelte": "sha256-tqYIlxrj0oU+sZG2QutpE/DXtavnIcQWLnxTCoNTDhk=",
+    "packages/primitives/src/components/LoadingState.svelte": "sha256-5X5DNGvshEuz865FvJSEr1B5+NCGqFA5rCugW888ukE=",
     "packages/primitives/src/components/LoadingState.svelte.d.ts": "sha256-WV7PUHfopvD282pefFKjn/IH4OX1LOjP0DPceZtOd+Y=",
     "packages/primitives/src/components/Menu/Content.svelte": "sha256-r+4GWseTy/uJ9zxga9BExqaaj3kH6VHQ/YH1cA4obpI=",
     "packages/primitives/src/components/Menu/Content.svelte.d.ts": "sha256-8LPH/e45lSk2JWojZKIW0vDe5UJGJ8Wt37Wy7xFuLOw=",
@@ -71,11 +71,11 @@
     "packages/primitives/src/components/Section.svelte.d.ts": "sha256-9UDDilE16tx/yybZPVM+ueKNxTjFvPEnpXYCIjj/G3E=",
     "packages/primitives/src/components/Select.svelte": "sha256-8DhDsFMSsxPVMDxXr62A/wCpxO29em4Mic0Nhnlv/0Q=",
     "packages/primitives/src/components/Select.svelte.d.ts": "sha256-tKJoAyGcceXGpVVJWa9kAMAAK8FIsFYQq9Epb6PAoJA=",
-    "packages/primitives/src/components/Settings/SettingsField.svelte": "sha256-4EhZblGFyVjTxI+a/NRfg9/jU6LOBVlKQNqbsHYK5ic=",
+    "packages/primitives/src/components/Settings/SettingsField.svelte": "sha256-wbVYgI463RWnLAwuu6Cz7Bd38fNH+aGnICFU50TbC1M=",
     "packages/primitives/src/components/Settings/SettingsField.svelte.d.ts": "sha256-JrJP8yNZu2/Z2v6gJ2f1bYeldHBG/sKGUiz86HgGl6g=",
-    "packages/primitives/src/components/Settings/SettingsGroup.svelte": "sha256-KpdGd92fc1qQmydKQR3QiMw4eO1refmrqQXbPl4sUmw=",
+    "packages/primitives/src/components/Settings/SettingsGroup.svelte": "sha256-CY8lw54tgqf1W3a4yJVaAsoH5BOVb8eTioM+BZapMrM=",
     "packages/primitives/src/components/Settings/SettingsGroup.svelte.d.ts": "sha256-6nFEXwjR9Sa9LdphrFckih8Li8FKyUptETzm2jzf5lU=",
-    "packages/primitives/src/components/Settings/SettingsSection.svelte": "sha256-2TFx4aCcTUHKcZV3BZLA0+zhdnfKkdFwakWW3FTVG98=",
+    "packages/primitives/src/components/Settings/SettingsSection.svelte": "sha256-mnWv/8CK2gnhjxa1bG4Lfy1QiTKayU4Rc4PfSoVeg7g=",
     "packages/primitives/src/components/Settings/SettingsSection.svelte.d.ts": "sha256-FmFkQ6WF2hed4UUIHTfHalkr+U2qldSFcJtlz4GxNPc=",
     "packages/primitives/src/components/Settings/SettingsSelect.svelte": "sha256-bEwSbR6O7XHEhXB3Q4RPTzw6wZbDsAaUYyEHd3FA5pY=",
     "packages/primitives/src/components/Settings/SettingsSelect.svelte.d.ts": "sha256-TRvourhur7CGcQdZRPTX+Ees6gntZFlLHWxPLZeKga8=",
@@ -85,7 +85,7 @@
     "packages/primitives/src/components/SimpleMenu.svelte.d.ts": "sha256-07EquhRy4JMoHjicB9BfjfYDBdNr1rMq/inS8ZRCwJc=",
     "packages/primitives/src/components/Skeleton.svelte": "sha256-TFJEllCXSb71ZCOot85ixb5YyV/HtdBFuX4X/rNnczg=",
     "packages/primitives/src/components/Skeleton.svelte.d.ts": "sha256-ytt0M4azUxBvYW4CiavpKh169gWPPS8r2bxGKO5JWSI=",
-    "packages/primitives/src/components/Spinner.svelte": "sha256-Gd5p+wZX8yGgz/Bjld083ifoW1F8BkDFMxRhIP0I1uw=",
+    "packages/primitives/src/components/Spinner.svelte": "sha256-ynD6klrR2Ly8uNJ7uQFi39SPmhFx9oc58HRyFdbiA4c=",
     "packages/primitives/src/components/Spinner.svelte.d.ts": "sha256-EY77Iok3tYG11dpuSgxeye0TMMLOJcgjR2ayUBwCexE=",
     "packages/primitives/src/components/StepIndicator.svelte": "sha256-tx1fW2x7VQ4Yt8t2yO1xJbKCuq8gJuAwfXOpa4vK0nk=",
     "packages/primitives/src/components/StepIndicator.svelte.d.ts": "sha256-1KiJEjZL6ghr29WGpaag1CF0t+cpq2aVYAVVl1T4s6A=",
@@ -101,11 +101,11 @@
     "packages/primitives/src/components/TextArea.svelte.d.ts": "sha256-5lJysohsLco2uSv6S2puAztekX+UvU4xyG85ZVkDfNY=",
     "packages/primitives/src/components/TextField.svelte": "sha256-9q6cUTxwIKrQ+JYYJM366pbkeaGUICfV86Ukn58a0TM=",
     "packages/primitives/src/components/TextField.svelte.d.ts": "sha256-rxnOju+TicsfrosnJEmaVat9pOG4ESa8J6AXnrHxK6Q=",
-    "packages/primitives/src/components/Theme/ColorHarmonyPicker.svelte": "sha256-8ETkzGWJsjXlpNQMsLoS5vrPJkdi5Ew98L6oK6/jl28=",
+    "packages/primitives/src/components/Theme/ColorHarmonyPicker.svelte": "sha256-4F43ZCvymVsdHJt+YOauMizo1Kj50ay900AYSs40xOI=",
     "packages/primitives/src/components/Theme/ColorHarmonyPicker.svelte.d.ts": "sha256-fP4M5nXdBinb/uMw0TgH8oy3Z0aG46uH0sTos81dUQA=",
-    "packages/primitives/src/components/Theme/ContrastChecker.svelte": "sha256-n7Dj6sGwmWleNjMssTBgvbTV2P6CMmr9gkaCtBfO3CQ=",
+    "packages/primitives/src/components/Theme/ContrastChecker.svelte": "sha256-gQcxrUreAHv2k3NVFY8HVRkx0LKiz/cj3ai85jTYAKM=",
     "packages/primitives/src/components/Theme/ContrastChecker.svelte.d.ts": "sha256-6zNDewWUE/j64LK6zsLrRx1k1/PTEQ+1Ar4sTQ4IzXc=",
-    "packages/primitives/src/components/Theme/ThemeWorkbench.svelte": "sha256-pYYTHvG3RC7CZFCfExdAax6BCR0gw69pQ4bvoP2COh8=",
+    "packages/primitives/src/components/Theme/ThemeWorkbench.svelte": "sha256-V3cNygL5o1lQIo2EgcE+yfq/mCkzjtFDyblVgQs62YE=",
     "packages/primitives/src/components/Theme/ThemeWorkbench.svelte.d.ts": "sha256-97U+zLtFUgPuhsrf88yd3FX9B9cJ1P8s2uujhrLEamg=",
     "packages/primitives/src/components/ThemeProvider.svelte": "sha256-N4oW20A9h10SgHiq2z5qqHrpRAdI15Mp8G3pJ5NJsJM=",
     "packages/primitives/src/components/ThemeProvider.svelte.d.ts": "sha256-Ur9ixWuA+0/308M4KyoA+4wC+/8DT5Q2SCYxACRswFw=",
@@ -117,7 +117,7 @@
     "packages/primitives/src/index.ts": "sha256-ou/opXa4LkdKEnHGRp0mOl2S1D7eZyq0EwzsTl8QqTg=",
     "packages/primitives/src/stores/preferences.d.ts": "sha256-GL7rI1+5S8FcclMz8SCqfGyjyhRjcU4FXocMVq8SCJw=",
     "packages/primitives/src/stores/preferences.ts": "sha256-VCztWHIEKWganxzse2nh21Ngv4QkwMCbB3pJvxTqrgs=",
-    "packages/primitives/src/theme.css": "sha256-uEWixXZs8vG/vqICu/80Gxs9RqSdVcOu+Rk8oy0SmvU=",
+    "packages/primitives/src/theme.css": "sha256-l1CfoRyE8ZfUzLBLUwcBRbylpRZ1pn+zcYKolbO0NuI=",
     "packages/primitives/src/transitions/fadeDown.d.ts": "sha256-FXf0D6TrZynSTiPhD0oDMMUlosk/uwgvq+VJyrfNnWI=",
     "packages/primitives/src/transitions/fadeDown.ts": "sha256-jLBp3teCghGZrIvdIjNXAvWCFrJxM1kqby0xcR1Kl/c=",
     "packages/primitives/src/transitions/fadeUp.d.ts": "sha256-qlEMPIsb+G2gXwRngGnYieiP1JeP/5iWnKw7tJhgRWU=",
@@ -134,7 +134,7 @@
     "packages/primitives/src/utils/index.ts": "sha256-NOWnOXoNpjs8s1B5Z1KLoRSfcX0mrcibISjAmmBnypQ=",
     "packages/primitives/src/utils/smoothThemeTransition.d.ts": "sha256-u79pa8xTPiTIIzNxN/0v5OERgsaL6Dvx09PdaseY+mE=",
     "packages/primitives/src/utils/smoothThemeTransition.ts": "sha256-xCytvm9VlkaiJtKstnoYlQqx0R5q1a9oaiaOj6DxOXU=",
-    "packages/headless/src/behaviors/dismissable.ts": "sha256-Mx5Qq3HWsifrlEjw7o506FQW4KwPBq10JIs1zJO3FlU=",
+    "packages/headless/src/behaviors/dismissable.ts": "sha256-DOelRDpJ1t0ySZvPscw6ylYun3S6McVlZwX7m1fpgJs=",
     "packages/headless/src/behaviors/focus-trap.ts": "sha256-+GeMXfP4M0DJapho3c8rtj2eoCaLC9uYeWZTl4EcGZ0=",
     "packages/headless/src/behaviors/index.ts": "sha256-WxAZUdTdwmuILdDVhtrZtYiU6EbrncDo7CZRpr2aJ34=",
     "packages/headless/src/behaviors/live-region.ts": "sha256-LVIM1Oq0wyEIOBxt8luplJPMniyTFQz+rmDAN1AF8y4=",
@@ -148,7 +148,7 @@
     "packages/headless/src/primitives/alert.ts": "sha256-S6CJDlMnXun1qjin8bsVhgI+Av7RJ4HEnq0pKzkaYk8=",
     "packages/headless/src/primitives/avatar.ts": "sha256-gDlnUPf/AAlcPzljQ8xbISzOuMDR6NDJUJc963OZ0t4=",
     "packages/headless/src/primitives/button.ts": "sha256-KobHQLSR6MczhmI+ByF5ReuZeaUBaekmo3F/Y2SxQ5U=",
-    "packages/headless/src/primitives/menu.ts": "sha256-qC9yAh5SDnka9IJ5lZl08yljzGhQmfIB0Sy/8iOrwJ4=",
+    "packages/headless/src/primitives/menu.ts": "sha256-hWJ2gkXpHybdJMmwivGy4jotd208CutjKSnb/0iHwC8=",
     "packages/headless/src/primitives/modal.ts": "sha256-NmkD8H0/0I+GSbzum+5+YT9ibBJObJPKixU7zpwVbVY=",
     "packages/headless/src/primitives/skeleton.ts": "sha256-bV3M+Uzy0HBsKfKnKZQFrvjqFnpUkNQY7bJxJplSs8o=",
     "packages/headless/src/primitives/spinner.ts": "sha256-bXeq5Ri/mc8Xjj/LrqyfoBPW/uqd86qHkP8AyZLkHCQ=",
@@ -777,8 +777,8 @@
     "packages/tokens/src/high-contrast.css": "sha256-KyaSWH5jFeCPS8cjgEP7soFCjWWgRnySBKMdPML6Qt8=",
     "packages/tokens/src/index.d.ts": "sha256-Y1qnSfu2QsM9WYuQC2FJzQ1CS4Y6WMCrX0jTcbNXYY0=",
     "packages/tokens/src/index.ts": "sha256-zd2ipJs9VETT56vVQP7q469Xy59r3Xaix2yC7a01+O0=",
-    "packages/tokens/src/palette-utils.d.ts": "sha256-6vS0KUYZNq7a8wfbNRnFjaLIUhweOmsMat5Ig0q+z4Q=",
-    "packages/tokens/src/palette-utils.ts": "sha256-9q8EmrYc0YrlPfofCXS8j5LrgjJWaHs8MaH/B9qPd44=",
+    "packages/tokens/src/palette-utils.d.ts": "sha256-zwi4Qjce6cSlSgoCIg0mBhITbA3UsytJ6ZOjhNw62uo=",
+    "packages/tokens/src/palette-utils.ts": "sha256-mnKFqSk8EjheNpibstT8c/01vN+01ZCvpyqGLHiN8Mg=",
     "packages/tokens/src/palettes.json": "sha256-WflA/7KP4PafZsgNDthorFo5JsPkCidCRb0XlXn3IeI=",
     "packages/tokens/src/semantic.json": "sha256-IfZp1xud0TbhzNgFwxNrqgC5zfJPTMCZzYykFt122/w=",
     "packages/tokens/src/themes.json": "sha256-MITXptD88Scjg1GdLGZO3wGO4ptk2gdbQpRETgJDwAQ=",
@@ -795,8 +795,8 @@
     "packages/utils/src/index.ts": "sha256-w+0L5rTVOAX5kprQ0LxJse8Dc4sHACp3AlcvrIWVj8I=",
     "packages/utils/src/keyboardShortcuts.d.ts": "sha256-X+hdvUkQtT3rab6RpWFUXzD9OrFFJhv2q6/izwBag7Q=",
     "packages/utils/src/keyboardShortcuts.ts": "sha256-7dBaO/E8GEkTaZCvu4tX8UcHOsFLOnmdMfKjknRYnkc=",
-    "packages/utils/src/linkifyMentions.d.ts": "sha256-Y4iI3X70RoQsIccXLUXNZ7elH38Al3wZ6ff/m5snZGc=",
-    "packages/utils/src/linkifyMentions.ts": "sha256-UYUIpydwdWZYyohprR/RlNYqlhiWgmgltb8IwaVFwh4=",
+    "packages/utils/src/linkifyMentions.d.ts": "sha256-Qd9UByPMdrv9ED1QeqveNcepPoOnGxu7KoB6pF1RqjE=",
+    "packages/utils/src/linkifyMentions.ts": "sha256-SkMfHI1UNuZweRqSH8JQ+h4ImdHujBzMPEVPNaNq/O4=",
     "packages/utils/src/performance.d.ts": "sha256-uB7zUT2vaSbzeIT2pj/QJMEsPo9dn+X5pCZKJYhyvYA=",
     "packages/utils/src/performance.ts": "sha256-LMUTDxU/I0iVXx9rNJxMtv4VtKdJ3Za0dc7/xUAIPjo=",
     "packages/utils/src/preferences.d.ts": "sha256-WcIWqFMEerZ2B53scQ6ky4aTG1A7KLRVCn5TfyQcYs8=",
@@ -804,7 +804,7 @@
     "packages/utils/src/relativeTime.d.ts": "sha256-Qn0ZcGrZhk6bQH/Q2SRgd77DvwJDjqjY9huhAwoP9Cw=",
     "packages/utils/src/relativeTime.ts": "sha256-LNKyqZAw1SBOLzbbhAi7WCTj3zOKrerlYC1WPdjbz3Y=",
     "packages/utils/src/sanitizeHtml.d.ts": "sha256-UpBs/qZXZsO3Z0e573ymN2RL9B72Xflb7Pr6GN7bQB0=",
-    "packages/utils/src/sanitizeHtml.ts": "sha256-8Up1pLPTvjsF8TbyFYKQfOjBJjJyIZ1RnnTbjY8Vjmk=",
+    "packages/utils/src/sanitizeHtml.ts": "sha256-40tPOu8TbN2fCvDIkTYysfmXrV+k8cO0ZQ3yvotppA8=",
     "packages/utils/src/theme/color-harmony.d.ts": "sha256-0+LnEDhmzDYw3+EY+9jEK/EIYuIfuKbSHA8wjExZr7E=",
     "packages/utils/src/theme/color-harmony.ts": "sha256-lVx0yr/R8QQJj5McT8v3IDiDRb9tGEjUm/QobaZvzXw=",
     "packages/utils/src/theme/contrast.d.ts": "sha256-zsityhdzJBydoWIVSgb1FKyxYiva9NPELBNHBPr1Z/Q=",
@@ -817,54 +817,71 @@
     "packages/utils/src/truncateMiddle.ts": "sha256-AVAtw8C6dJPV0rAL1zdOKRP0jaFxfiIAVFQe1BwXYYM=",
     "packages/utils/src/use-stable-id.svelte.d.ts": "sha256-KWGt/iWi44OtZFOYNzc2UhxiO3jUnNtMmsn2MzU5XTk=",
     "packages/utils/src/use-stable-id.svelte.ts": "sha256-6CETa5fah0IrZe6kp2hPOQYEGBVvZSNf2vJqdd2HoMM=",
+    "packages/adapters/src/authExpiry.d.ts": "sha256-awRLOpltRLRyWnuM5SZ9UEuiAIQdja8mXpzRfpdv9z8=",
+    "packages/adapters/src/authExpiry.ts": "sha256-SF8Y0iR/lrazZcqXuUg+ICu6/zlt3DBZkEkBMn3oOFo=",
     "packages/adapters/src/examples/TransportManagerExample.ts": "sha256-wQ7sepE4UYE23zTCihyktGomWPmEXvzYfbWPT0Aco2c=",
+    "packages/adapters/src/fetch.d.ts": "sha256-SJh+SkH0aCEC04ayoOpmdTJ4NGPh/Vmd6rE4tK4bqM8=",
     "packages/adapters/src/fetch.ts": "sha256-rZeRGln/6oHdH9fnTpk40P/M8Puesx3kgIV3LCyNquA=",
     "packages/adapters/src/fixtures/lesser.ts": "sha256-T8RxdwFIXpkNDa8eokqyDMOoaBeZYHOvv4Ydi8O6Mtw=",
     "packages/adapters/src/fixtures/mastodon.ts": "sha256-hw9cbIlcUSVl3cFy3CvbA6+W9YZggV8OwkFlqiE58Vw=",
-    "packages/adapters/src/fixtures/soul-bootstrap.ts": "sha256-FragyJY6MGXPBBLtlmFWMk86k5FueRvKohQeDkpOsuI=",
+    "packages/adapters/src/fixtures/soul-bootstrap.ts": "sha256-t/QGRLtSR5fIElZfiOu/H+Z0cJ5+sQJW7Lvj1rSPJ84=",
     "packages/adapters/src/graphql/cache.d.ts": "sha256-3YyrtfDiMSwiqju/cWC+4AprTMRm/ACRKfd46UcRr/E=",
     "packages/adapters/src/graphql/cache.ts": "sha256-l0A4zZ3Qo/gEXWbZLAvpMOK7O/qCwC0mkaF/EsRfW+4=",
-    "packages/adapters/src/graphql/client.d.ts": "sha256-pJIC62N40bdFXhryg13X0HezmJFinzT2I9n/6qK1iJo=",
-    "packages/adapters/src/graphql/client.ts": "sha256-ueB6/jmcKQu54uT72TkqdTRz+yAsTGl9mrGV+jeTRHA=",
-    "packages/adapters/src/graphql/generated/types.d.ts": "sha256-06CrbILnoClJ2Egs3gR2tZE271RgSroJXY7QxF46uLI=",
-    "packages/adapters/src/graphql/generated/types.ts": "sha256-yCYpsc3Y9cR8DNKexxXjcuWezFg3ORJuSKSmuwP7UaI=",
-    "packages/adapters/src/graphql/index.d.ts": "sha256-orLx9yyDGxzzxd5wHeLg/XKql86ntzhZSG6iUj6Tjx8=",
-    "packages/adapters/src/graphql/index.ts": "sha256-v2KVurPl1IXXRXdCjazWatn3pXPvE3NWFmIMCcI/mE8=",
-    "packages/adapters/src/graphql/LesserGraphQLAdapter.d.ts": "sha256-tS4MSxFQSiPlKqIotIdGyDRMyfu7BjJ3dpPBXfjVqtU=",
-    "packages/adapters/src/graphql/LesserGraphQLAdapter.ts": "sha256-IuqJ1AkjGy7LpKzIiz+Ra+boLnRE2FJRESdS37zQhfE=",
+    "packages/adapters/src/graphql/client.d.ts": "sha256-flla8fzNoB0zTKoCPaE4qFXaRB/hjluSlSnsJlRB5i8=",
+    "packages/adapters/src/graphql/client.ts": "sha256-G2+gPI9iro/ZIwDjifxptx9QayzFu72OzsaArsw9M1c=",
+    "packages/adapters/src/graphql/generated/types.d.ts": "sha256-TM75OuqdnLJE8W/nf0N6vLFrqjYzpGrf/7mTwhqMkMM=",
+    "packages/adapters/src/graphql/generated/types.ts": "sha256-/XNViA1lWXK9W8ysF0BvS2TPc33/ncpisllw2HrEYD0=",
+    "packages/adapters/src/graphql/index.d.ts": "sha256-Eu5nqaAHgFoa1HyMOE/cKCigJGYf8t8TxzmxibQR2Mk=",
+    "packages/adapters/src/graphql/index.ts": "sha256-330bRj505ZOWM5XTbOpFZW1n8sy2/SCbzCu9XXYvrOA=",
+    "packages/adapters/src/graphql/LesserGraphQLAdapter.d.ts": "sha256-Ygqsw+cFct65SmbG+VZOHcqr+fRWWFmxsfKXbbRH1jc=",
+    "packages/adapters/src/graphql/LesserGraphQLAdapter.ts": "sha256-R9I41qls8ilPqgUIuW3s/wfRS+2278ou9kYHxKXD+Fk=",
     "packages/adapters/src/graphql/optimistic.d.ts": "sha256-DO9Yg7q9e9k3+suvhBSBWMn+8+pVGydTpC7e70EPO1w=",
     "packages/adapters/src/graphql/optimistic.ts": "sha256-4U/b1aHeGBfl+YC+R+XaeY0Ts8hY8Er+3XfqUhSpqWY=",
     "packages/adapters/src/HttpPollingClient.d.ts": "sha256-6UbsJSk+ur6Rth93w5bnSj3HOl2teXThMIBozc0TQqI=",
     "packages/adapters/src/HttpPollingClient.ts": "sha256-3VvR+Q3A9QuT9IKrT2s2OP48Ir5wDbDiL3NFp6fhO0w=",
-    "packages/adapters/src/index.d.ts": "sha256-N9rD+C+FY2TCOW91GXIb5Cqm9lMS5na3I8MoSewctBE=",
-    "packages/adapters/src/index.ts": "sha256-I8QbWbCV62ow+5WGn16clk2wzHajnkXhHQMt6jBLAX8=",
+    "packages/adapters/src/index.d.ts": "sha256-waycgHPE3YLWC4d6wxrDt3Lx6/6W7KvSDSMORIl3cLc=",
+    "packages/adapters/src/index.ts": "sha256-xkBiSjdXZzk/ba8Cfax6AAgkIJFKn9kaI51ABAvTzZE=",
+    "packages/adapters/src/lesser/client.d.ts": "sha256-OvfIIiHaDxPj62XqfI2d2i4ql66K9tcMdsrbQ/IsLDY=",
     "packages/adapters/src/lesser/client.ts": "sha256-1zz1lpu6roGoTtOC/LIwXsT8oLHXkFV4TA8OblQ2Zhs=",
+    "packages/adapters/src/lesser/index.d.ts": "sha256-SmB0+8+CG5PWubuptHWolByy48ZWNVgD6z9LsG9W1kw=",
     "packages/adapters/src/lesser/index.ts": "sha256-/G5V2Tcie3s4/bPAszGUu+RGRRiz6nhnEXbge7XGxTw=",
     "packages/adapters/src/logger.d.ts": "sha256-EWrIRS5/xIIlNv5OLPY+Rf37HgYqrYhXxGlfPX8oNgc=",
     "packages/adapters/src/logger.ts": "sha256-4M5fy8SndwLJfyZ3TrT1Qmql2Jg0GlUatjIHPQOedhQ=",
     "packages/adapters/src/mappers/index.d.ts": "sha256-IVlngJIkK6cSnV1Yjhe/K8uy/QEhYXZyEY9UBk75tlk=",
     "packages/adapters/src/mappers/index.ts": "sha256-/fup8QkDm/L5GviUHQEWmHa+3NjOieFwMo6OKLCKToo=",
-    "packages/adapters/src/mappers/lesser/graphqlConverters.d.ts": "sha256-siPKHz6jxTh5f7FoUi9304FpiYae8w8uLjVB+RvEdrQ=",
-    "packages/adapters/src/mappers/lesser/graphqlConverters.ts": "sha256-/16itGAqYyv78t1HO3+x59rCLG/PeMu3Agv0EwngFRk=",
+    "packages/adapters/src/mappers/lesser/graphqlConverters.d.ts": "sha256-Pg3h1fC/xacdwNx6eYB3EcgKvUC2iSHOAD32lIQug3g=",
+    "packages/adapters/src/mappers/lesser/graphqlConverters.ts": "sha256-sD/u9kY6TuUFO2BDn6ssKpAlT9dQEbfrM4hgxxSkUiY=",
     "packages/adapters/src/mappers/lesser/mappers.d.ts": "sha256-nCiGCe8DqPTSXyuTkVaWSrFJ/TZQRuI9jXYqeJvJK0Q=",
     "packages/adapters/src/mappers/lesser/mappers.ts": "sha256-mzCTDQtSCIB1Y77N9qIrT3RsRIIfihk4l8EJlkGmMmU=",
-    "packages/adapters/src/mappers/lesser/types.d.ts": "sha256-YmLtvkMIU0AKzjp54SKx3PyeSbUTOUKxIoeMwWWM+ck=",
-    "packages/adapters/src/mappers/lesser/types.ts": "sha256-s20ROyPKOQRLjIWXqSVqkwDGPbeRF7G41Ia70D0orfE=",
+    "packages/adapters/src/mappers/lesser/types.d.ts": "sha256-nA8BqfVLYnFznLd9cvL1IFjJ+VUU7eppvraaIOUH828=",
+    "packages/adapters/src/mappers/lesser/types.ts": "sha256-QAI7va1qEFj46RCYz6YKysM3e3X3ZaityB/U6fKcc9I=",
     "packages/adapters/src/mappers/mastodon/mappers.d.ts": "sha256-tFQ+GW1t6rmqaXJxtSRHmqcHbE8i+RALj6XMPxTYZhA=",
     "packages/adapters/src/mappers/mastodon/mappers.ts": "sha256-azySwXrEAWqu3nuiQkR3IFQ84Z9Pr0boYFgzpqXYJtE=",
     "packages/adapters/src/mappers/mastodon/types.d.ts": "sha256-LLN8HNltLV9QnLl0tY3zOF4ovD0+sYN0UvGJIx7MH70=",
     "packages/adapters/src/mappers/mastodon/types.ts": "sha256-54WrBVIzEH/QIxzBUL6OOjfsanvpM8WNkpJjKSVFSlA=",
-    "packages/adapters/src/messaging/createLesserMessagesHandlers.ts": "sha256-QGXz+0mFl0V4NM3JeTFag+9jLk61CIBUlf8kR6mXPZk=",
-    "packages/adapters/src/messaging/index.ts": "sha256-2P3bCyR2sBhuV0GrrVnAaqGSq8dMVhA95dIJZ2s+eKw=",
-    "packages/adapters/src/models/unified.d.ts": "sha256-8Z2SFddm7Cszpe6EoB85lJVH0xW16xjo68PhJGuvmeQ=",
-    "packages/adapters/src/models/unified.ts": "sha256-KRILzc/F51pCxnEX9cvc2IG7lns7IO48k/UK489J/Vs=",
-    "packages/adapters/src/rest/generated/lesser-api.ts": "sha256-8YKhh1BeBVfU+NwuP1QvpQGcuTxXlvQkbTUkYj0I5xQ=",
+    "packages/adapters/src/messaging/createLesserMessagesHandlers.d.ts": "sha256-ofjdpiklw7PXUzMA9RBeSpGzS6pIU3pZQhtE9pol6Qk=",
+    "packages/adapters/src/messaging/createLesserMessagesHandlers.ts": "sha256-T3U/pek4JoLVDFxuGRFKz25HqOw2BZAZlXBVtav9Fn4=",
+    "packages/adapters/src/messaging/index.d.ts": "sha256-SEegWEaSJOfKMObaPo7I3y1QL8STNxm0Knn2cGq5VrI=",
+    "packages/adapters/src/messaging/index.ts": "sha256-hIJPyGpRY8EhsYDn/PnzPbahiYpTH9sgPKS5VV9H0cc=",
+    "packages/adapters/src/messaging/messagingOperations.d.ts": "sha256-9JVXXqbcFYEx18ALXp71JyttOgu+qDKEulbaDM/X08Q=",
+    "packages/adapters/src/messaging/messagingOperations.ts": "sha256-KlymQ8y2PhLoIRqvOZldwtuK+A7bJ/BSXv0WCeQrEK8=",
+    "packages/adapters/src/models/unified.d.ts": "sha256-gr6KNzGcJe0ByYS/245nF+S+sRUCBH6Uz2oPrkzGAYk=",
+    "packages/adapters/src/models/unified.ts": "sha256-quLVImKg0uJ62HWRnol/PeR/lq7tIkIqGSWCA7lRssg=",
+    "packages/adapters/src/rest/generated/lesser-api.d.ts": "sha256-2boAPQCevaAxGLqKJt0m6wpkAiKZCIKSHUolRPhx8rk=",
+    "packages/adapters/src/rest/generated/lesser-api.ts": "sha256-Ds/S29tkQX3l4AoT4TgPMdYfIWCmA3D3nu//88m2CCk=",
+    "packages/adapters/src/rest/generated/lesser-host-api.d.ts": "sha256-6BzQZn/9Ey01WhWodDo8+WnJ7szqA2g/TWbsr7KHrMk=",
     "packages/adapters/src/rest/generated/lesser-host-api.ts": "sha256-kfcOFwcF5O4WBKibOasSLWTSYqrQvh/U6kCqOxbJ/Eo=",
+    "packages/adapters/src/soul/bootstrap.d.ts": "sha256-PMZRuojFqqNoFhj5I85Cv/8b9/VBcucal6V8+lRbuZY=",
     "packages/adapters/src/soul/bootstrap.ts": "sha256-d463JIAlIQs5JE6eaewiGChBCqfQmIwXxhnGjWbWVIU=",
-    "packages/adapters/src/soul/bootstrapSigningPlan.ts": "sha256-6fzPYUdPR9k/hQDuz9jmsPg8angSevxWctnopcx3+zE=",
-    "packages/adapters/src/soul/client.ts": "sha256-AmLlG5YoBhg6PK0PXZe65Gl6GkFpJjBmFNbEt1A9Gnc=",
+    "packages/adapters/src/soul/bootstrapSigningPlan.d.ts": "sha256-UmERjI50eC+4OghfGQ9klyHHSjME26iTWiynn3f8Mxk=",
+    "packages/adapters/src/soul/bootstrapSigningPlan.ts": "sha256-eOnGL+KpHeyvG6aA/ezWE5cj7+x323r6CvF/tPdHjAI=",
+    "packages/adapters/src/soul/client.d.ts": "sha256-tP0fYcdGw+gsz0WxYKRrY76R2UWMFWwXy5mrekPPFrI=",
+    "packages/adapters/src/soul/client.ts": "sha256-bWWTjXSh0/d6FCMkczsOPDToHIeqGJb0wvHD3BTTTLs=",
+    "packages/adapters/src/soul/ens.d.ts": "sha256-zscPB4C53KUTaIhqzFplxE9AAjrBO2Rj0e63hoAVeR8=",
     "packages/adapters/src/soul/ens.ts": "sha256-CI8WkwLMw8ZXNPrN+LpQdK81vud8ecgQc3xOXFMvK2o=",
-    "packages/adapters/src/soul/hostedBootstrap.ts": "sha256-0g14qWreI+oFFNTZ4E3H6++b0A4TVVr91BC+JinzvvM=",
+    "packages/adapters/src/soul/hostedBootstrap.d.ts": "sha256-QKILMAKMXwbPreMK5nfOTdjzNngVjgEULuQf6VTSrP0=",
+    "packages/adapters/src/soul/hostedBootstrap.ts": "sha256-duNF8aLuAzsFJMsc9wMy40P3jGz1MTePH5tlZpUmHHQ=",
+    "packages/adapters/src/soul/index.d.ts": "sha256-ZdNZwlTKJV6zrsBVo+/lUF97I4RkpVcJp3sW4JPjR1U=",
     "packages/adapters/src/soul/index.ts": "sha256-rh/AJNo+HIaTnY0BIaQ/JPworClYlGbU6+uEoGHPtY4=",
     "packages/adapters/src/SseClient.d.ts": "sha256-fxMEJHoDY/ae3mkTtv9yw5N1jfD5wLSrJ4ixrJ+TYoU=",
     "packages/adapters/src/SseClient.ts": "sha256-XJ1v33MnEkm1CRobboaQ0hOpTvFjDOkd1GX6UocQ2Q4=",
@@ -872,16 +889,16 @@
     "packages/adapters/src/stores/adminStreamingStore.ts": "sha256-gOl6BUCNpoi+8bfMHjwKCMuYXOFyJ42QJkIfbtd9ij4=",
     "packages/adapters/src/stores/fetchHelpers.d.ts": "sha256-w69ObtwehydOkFq5vF6DN21PaJ2bLn8Vh+uofEiPtkI=",
     "packages/adapters/src/stores/fetchHelpers.ts": "sha256-0acOPJyN1hWjSLXD+XfJZ07rIKCU7tZcb+Dk3tyueEo=",
-    "packages/adapters/src/stores/index.d.ts": "sha256-TizATIopvpJ4bpSmQiAJaMBPAz2aVfT1Nhkwm6zChzU=",
+    "packages/adapters/src/stores/index.d.ts": "sha256-6nUaanPHW1PlYP7S66Yqei8+LlOC8PTUgWv8qa3kOhA=",
     "packages/adapters/src/stores/index.ts": "sha256-kpV9F/AgZOQEUALnXR1H8aPs0FwtU8OVqPshQLX0iwg=",
     "packages/adapters/src/stores/notificationStore.d.ts": "sha256-XdEwb/hr4cQYdXUd3Cdb48fXho9/ELcKbq3ELEDo5Hk=",
     "packages/adapters/src/stores/notificationStore.ts": "sha256-8Nfkv+8tkxUOKYKirQDI4Afr+lVmSbd84PaMoQMw4Iw=",
-    "packages/adapters/src/stores/presenceStore.d.ts": "sha256-A9+pEhr9YNk9Tbtc/MPo0gadUaHPrRNYY928TnAZ5aU=",
+    "packages/adapters/src/stores/presenceStore.d.ts": "sha256-g7SzTw0xv8fc+RixvwUROdNLBfIRALKGBE7jGUX2xKY=",
     "packages/adapters/src/stores/presenceStore.ts": "sha256-uYKL9wUZrKvy+7v5673yVu6ZNPSInphoaarYaGf8lm8=",
     "packages/adapters/src/stores/timelineStore.d.ts": "sha256-vcIpheIZwTRmn88plt5WsxwXrGRK+LtVcW63fFgJXcE=",
     "packages/adapters/src/stores/timelineStore.ts": "sha256-gANI/otmRyIH1EZ84znIgqhoTwVcd9YSJ8ECiKkHsFg=",
-    "packages/adapters/src/stores/types.d.ts": "sha256-EJsjt8cbqdi4xA+qIJ0Tx9CtYn96zQMwzete6ATsdgU=",
-    "packages/adapters/src/stores/types.ts": "sha256-6VKZNXC+zy4vFbdQXC/Bos2Xvwmx2uTAnc332aaPwa8=",
+    "packages/adapters/src/stores/types.d.ts": "sha256-UpVbjkhqJ5Ncd0G0bBqHA1jQLbrjCXyntvDS6K+YR0E=",
+    "packages/adapters/src/stores/types.ts": "sha256-uk1bKCAjZZ7a3XULE3i35wGFu0ktbSfMJuRTr+kTy5c=",
     "packages/adapters/src/stores/unifiedToNotification.d.ts": "sha256-qUqXLK/jNwUYdzdt33WPZegGdsXmzYCVdq9CTYjkCM0=",
     "packages/adapters/src/stores/unifiedToNotification.ts": "sha256-7DsC92pJlyoRFfjWXsjEzKPqcIreoe8R6vZVZnGf8GA=",
     "packages/adapters/src/stores/unifiedToTimeline.d.ts": "sha256-VuKcDFIpGUjjxUYEsVS/sT4XPUkbUHAZ6eq8LWeja7Q=",
@@ -890,13 +907,13 @@
     "packages/adapters/src/streaming/operations.d.ts": "sha256-sk0YiLDFipiJSOVzH21uqLN9kOinR9GeWmZS963PhEU=",
     "packages/adapters/src/streaming/operations.ts": "sha256-LNzloDz5LdABBAO78iDoLE1N/S/Tt8kusVwVnXHsLdY=",
     "packages/adapters/src/TransportFallback.d.ts": "sha256-zftf3Y55KeJvbibPTZ5zT4ZKVzR+5KM/3D5X0K7wTH4=",
-    "packages/adapters/src/TransportFallback.ts": "sha256-X85VSEW2chW1Owb9TbZVCO2d6inAfhKhcb3n6bpU6yI=",
+    "packages/adapters/src/TransportFallback.ts": "sha256-sf34eYUQPq1tnyNy/vI/YJgRRP0fCXLGZIaCtLIZYuU=",
     "packages/adapters/src/TransportManager.d.ts": "sha256-4h516aW53B8ZB4vd/kaYg4O5346DVZuatIHKTUeUxF4=",
     "packages/adapters/src/TransportManager.ts": "sha256-EmTpbKPJEXMBSodFUHxIJQwt0EB4rzkJgFT65veNQiU=",
-    "packages/adapters/src/types.d.ts": "sha256-yekZqSPqL3axk9y1kTrw/ul4XzXSy/0uUIaOqQVvhCc=",
-    "packages/adapters/src/types.ts": "sha256-Mi3r+kfwYnYo2tz/7p11eGvOyXIckhnS7v5GW5gnnrU=",
-    "packages/adapters/src/WebSocketClient.d.ts": "sha256-BL+G+MihfyouWCGXaKlbnJe3CxnKaoyqsB5aUu0irWg=",
-    "packages/adapters/src/WebSocketClient.ts": "sha256-bL5wFt5Cs3UHeVG+ogzUDoFM4vMSk+dWbFJqYsU+1Lg=",
+    "packages/adapters/src/types.d.ts": "sha256-Ej1mw78JZhp3u5XN6L5nt2JBOBYM/6bArpKyhmbhcM4=",
+    "packages/adapters/src/types.ts": "sha256-1wNT03lpGpffT5helP+woh7Fvo7bQpLExQOCHp/TZD4=",
+    "packages/adapters/src/WebSocketClient.d.ts": "sha256-w8EGYimZ3pmCSqOJ+KS1bj8gHmNmKH44mgKSNak3VEk=",
+    "packages/adapters/src/WebSocketClient.ts": "sha256-sb4EYwL4blJV8Ud0mhKxzep51gDDX8LMchn5K6voNP4=",
     "packages/adapters/src/WebSocketPool.d.ts": "sha256-zEJQkZxMIMeVR4oB77oGbXBYnBoq10zYvBuM2CRGaOE=",
     "packages/adapters/src/WebSocketPool.ts": "sha256-mwnjYAqsl+7arWdkR+2rVff0LpogWKIiOSOxXkB+ri8=",
     "packages/content/src/components/CodeBlock.svelte": "sha256-rOSrHh383dE4rGjCMNq/tRle1/VgHuFohiDo2kECbQ4=",
@@ -943,24 +960,24 @@
     "packages/host-platform/src/components/StackMatrix.svelte": "sha256-aMruAWkbvQmTTEXLd8Yp5kQdHegwLoj64//o2q5UGPo=",
     "packages/host-platform/src/index.ts": "sha256-hFXD84EuQLU6bKXPyTkFUwxOewMy8fkcwkVzbRpAsTg=",
     "packages/host-platform/src/styles/base.css": "sha256-razMHs+WCheiXksb3g4y90O42WAyMruExK9MiNmJbhc=",
-    "packages/host-platform/src/types.ts": "sha256-9wKDSQaj3aQ9OXIqdTbYM6O6sGbAxfpwa0I1119yBLg=",
+    "packages/host-platform/src/types.ts": "sha256-Lk1xOJfodkIOsC/+ToEfru21S6pKZCLP44VX+m5Uh1A=",
     "packages/host-platform/src/utils/formatters.ts": "sha256-kkUGG/4k60g54llCi+xp5RmnYrg8TuFqMiKgdgd01cE=",
     "packages/host-platform/src/utils/sparkline.ts": "sha256-j+qDcXr+pTHHVFNCTtly1D0gVIUpVVjq+wxCCDVkTFc=",
     "packages/faces/social/src/adapters/batcher.ts": "sha256-6PnUshOPk84U+PSnkADYzhN9SpUrvwiy+tN10HPaVeE=",
     "packages/faces/social/src/adapters/cache.ts": "sha256-32jUHLAsYoK4U0JZ6hswGUlQOmwhJ5yquqhMqyfrc4I=",
     "packages/faces/social/src/adapters/graphql/client.ts": "sha256-yor+sP4J7hzK+igh2s4mujPOUZTRDN/e3nU1eccrSyo=",
     "packages/faces/social/src/adapters/graphql/generated/possible-types.ts": "sha256-jICUa0Jvj62nX0BdiBLTWoH2TII2SjAkM3ivA4dyuyA=",
-    "packages/faces/social/src/adapters/graphql/generated/types.ts": "sha256-yCYpsc3Y9cR8DNKexxXjcuWezFg3ORJuSKSmuwP7UaI=",
+    "packages/faces/social/src/adapters/graphql/generated/types.ts": "sha256-/XNViA1lWXK9W8ysF0BvS2TPc33/ncpisllw2HrEYD0=",
     "packages/faces/social/src/adapters/graphql/index.ts": "sha256-SMi4iyLZqIOJKJyIpt2msJuQELlVAFJlnxBOdaL0ftY=",
     "packages/faces/social/src/adapters/graphql/queries.ts": "sha256-uiYJnwcQO+eaZUiTgyKJMxpeoluOuagazSLjQUdMR8M=",
-    "packages/faces/social/src/adapters/graphql/types.ts": "sha256-0GgEc9AYxNSfWTVE9POQu0haMmO+PydpLzVw90hoDls=",
+    "packages/faces/social/src/adapters/graphql/types.ts": "sha256-llQ47WLpMlEvr73zg/vDntm9SvevHx1FsBpdm6VoJyg=",
     "packages/faces/social/src/adapters/index.ts": "sha256-1GMdVzmg/KO69e+M6gIs7NNPhml1Dbd0fr1yzK6qJls=",
     "packages/faces/social/src/adapters/optimistic.ts": "sha256-W8mTwSmTnFPZ2Y49XMxeCn01YYDVBvgRD28KxnET224=",
     "packages/faces/social/src/app.d.ts": "sha256-2SefztlLM+Zcte8Kp+3UArYXJ6BL5NdQdr+IqLyOJcM=",
     "packages/faces/social/src/components/ActionBar.svelte": "sha256-X0WDW8ny1lzhigsgvl9w1B7G05f4reiMf58RFLJFMWQ=",
     "packages/faces/social/src/components/Auth/index.ts": "sha256-I2AozOALfKpQeqC0mbRy72f3JBlAwkB/NLgAqOAOsgc=",
-    "packages/faces/social/src/components/ComposeBox.svelte": "sha256-Z34YCX1uBhW5wIUDtxt8JfT45V+9V8/gXuyXBxhz2n4=",
-    "packages/faces/social/src/components/ContentRenderer.svelte": "sha256-MTdVs16n8HmyNOHT1124Nb/KqQ7M7jrUQkJgjv3BZi0=",
+    "packages/faces/social/src/components/ComposeBox.svelte": "sha256-/RHEB1i42dUcUEMi/XlEfYr2Fuh5RyWoBOINn3zr/LA=",
+    "packages/faces/social/src/components/ContentRenderer.svelte": "sha256-I1ZyUiZ5qE7yDi67V1cp2gTupzF2SfQBRCa2rlxePTQ=",
     "packages/faces/social/src/components/Filters/context.svelte.ts": "sha256-mIoBx0MkzLYNEc7GdgmJyR+uOxu0R1wuV0Z6f3TkJiU=",
     "packages/faces/social/src/components/Filters/context.ts": "sha256-/bT3CNRb56JquXkckVAd4EI0uxWYj+ZiKNmknjedu3w=",
     "packages/faces/social/src/components/Filters/Editor.svelte": "sha256-+FJIp0t2oUoZXAfj/p1KpP5YjVdD+bDAMl9i25TX7JM=",
@@ -1029,12 +1046,12 @@
     "packages/faces/social/src/components/Timeline/Item.svelte": "sha256-KKuzFKxTM1QbbBWpYPPkjnsFTG9/yCEa+CuKNbZD+c8=",
     "packages/faces/social/src/components/Timeline/LoadMore.svelte": "sha256-h2Qkk6sYP7fltXVAGeLcZNgFV0nH5cuAQcATolGFHmA=",
     "packages/faces/social/src/components/Timeline/Root.svelte": "sha256-8KMfTRWFazX5pi7k092G3nCdB7i/uqfkJoHbhkTdQRY=",
-    "packages/faces/social/src/components/TimelineVirtualized.svelte": "sha256-QiZNQ9pJOSENahpJJS3R3lRHSryo0XRkckSX0wjuv7c=",
-    "packages/faces/social/src/components/TimelineVirtualizedReactive.svelte": "sha256-8qgAHq7tcP4MUplmNH44EKx3kQfqsZcex9EAWABCBTI=",
+    "packages/faces/social/src/components/TimelineVirtualized.svelte": "sha256-Mty8DomczwTimKMKLgbfbGVAPZTvqIvNSILgF8aw+GM=",
+    "packages/faces/social/src/components/TimelineVirtualizedReactive.svelte": "sha256-lS8GwVRvUqqq3CWMSuIj3YRiZjzVcRTVaT4sMpHQ3/8=",
     "packages/faces/social/src/generics/adapters.ts": "sha256-OQGSKHoGtXkCt6TKwOhYOrkJFzx4Nzi2tEIKvyNL0KA=",
-    "packages/faces/social/src/generics/index.ts": "sha256-1J12dnWSSWFzBffByAVaxrEjo4w1wHd9Pvv9ZFHrDi0=",
+    "packages/faces/social/src/generics/index.ts": "sha256-w886Mbc4SUSsN2n5cetylyX379h1E4b6lKXG58SEte8=",
     "packages/faces/social/src/greater-components-fediverse.css": "sha256-z2CS6GdB5T5L6AFt6m83Q+Win15ckZH71V0pf8N9G34=",
-    "packages/faces/social/src/index.ts": "sha256-VBkCYU+IlH5PWWhbZ4GHKAbJmkttJaKfAqjBrIx/xqA=",
+    "packages/faces/social/src/index.ts": "sha256-yD5mXAWYCwaIp7grSEXcbMk8FnsS4la+OEl7tPkmbaA=",
     "packages/faces/social/src/lib/graphqlTimelineStore.svelte.ts": "sha256-qVUHRku1gxZ2qnFtAn7Sgg19xg9KzT3DhIjEN4g3+WA=",
     "packages/faces/social/src/lib/graphqlTimelineStore.ts": "sha256-IxoN0UERkTWyj6fe0AGgejToEe2Mez7fNYdCfT7osp8=",
     "packages/faces/social/src/lib/integration.svelte.ts": "sha256-wj5fKknER7cJg6Kdrdo6KtAq0npqkAd3pl8v12y6uMw=",
@@ -1053,30 +1070,31 @@
     "packages/faces/social/src/patterns/FederationIndicator.svelte": "sha256-Jh/v252VLN8wxarpWI6mRzP26Q38c/fl/5XuGjwWOx0=",
     "packages/faces/social/src/patterns/index.ts": "sha256-cS6dCVI4gIhHS+0gd/lIBHqUbgiJWR2/H2WLPR4JCqs=",
     "packages/faces/social/src/patterns/InstancePicker.svelte": "sha256-1eUgvR3b1ByLk0i1Mu4B4FUaCU18JQyzklPtwBDj1OU=",
-    "packages/faces/social/src/patterns/MediaComposer.svelte": "sha256-+Ul0ipKi6yYWafzpOTqGBP8xYg2VL8+/oyzXc9lia3E=",
+    "packages/faces/social/src/patterns/MediaComposer.svelte": "sha256-dzfMJm7bnHp1RlkGkS7Xzkf4t2D47b+W1DjEolQE1tg=",
     "packages/faces/social/src/patterns/ModerationTools.svelte": "sha256-dsmbk2fx7249qf+PLUrnVXg8zSNkp0W0HcIDMKtJ0xw=",
     "packages/faces/social/src/patterns/PollComposer.svelte": "sha256-r3eCnKt8/KsfDZ+z2nCjzxI5+itWfREJLIdMgU3QRWM=",
     "packages/faces/social/src/patterns/ThreadNodeView.svelte": "sha256-cI/EftbxE/eB0kJoybO2OKYg1/SPOZs9G8lXJttq1MU=",
     "packages/faces/social/src/patterns/ThreadView.svelte": "sha256-aBLxcKZgbRmyE/ryjmaIIfer5sB9GwjISTN9uldUdDQ=",
     "packages/faces/social/src/patterns/ThreadView.types.ts": "sha256-ujiFoiGKR4V2AOnsfgVHoBcdJDas4iAR2q6hzcWiGts=",
     "packages/faces/social/src/patterns/VisibilitySelector.svelte": "sha256-u0lxPUqzx59glvkW1CH+oZSEO/hOj3uOruK9w69yIvM=",
-    "packages/faces/social/src/theme.css": "sha256-wiMgWvybANnq8ikC0qHMur1K0g4iwepGGozhYuV6QCI=",
-    "packages/faces/social/src/types.ts": "sha256-Ddg+azl13+LAj3LpXKvtReBHODrcyyrwYHtXssLBOl0=",
-    "packages/faces/social/src/utils/notificationGrouping.ts": "sha256-h/6xwSoua5lvEsXzV66EhlKfxdH5VySXQs3hs7uuN5M=",
+    "packages/faces/social/src/theme.css": "sha256-jWzBOQrht8wCb7IIO2aezpPjsAtLMPGMdJqbMn3jS5Y=",
+    "packages/faces/social/src/types.ts": "sha256-LsvPeq3dcfyAB4tUl06yDjXp5FmRud3mbSddYUukApM=",
+    "packages/faces/social/src/utils/notificationGrouping.ts": "sha256-eTDsv7SGFpYPrEr54ovNYKSTCGzkEc31OmwyMk1bmAk=",
+    "packages/faces/social/src/utils/reach.ts": "sha256-a1yhABVw6Z6IeNwUcIcjhQPbmACQcT5WEb6JnJeUORY=",
     "packages/faces/blog/src/components/Article/Card.svelte": "sha256-wCmkXS0x7U6v7ClHnfyUwLxf0qJaI09wrhV3DlDCaIk=",
-    "packages/faces/blog/src/components/Article/Content.svelte": "sha256-paCAdQ5yRDaVEpY5pwfmcU6Akx1gAPOnIqSNK3WYKo0=",
-    "packages/faces/blog/src/components/Article/context.ts": "sha256-bYXS4NwSLcHdl8QnpVedTKNR94Tq1CjD+lUzj4zuwKI=",
-    "packages/faces/blog/src/components/Article/date.ts": "sha256-eX3Soy2ltg+eMjQz6s0cowt/PUVlS2tj11WYS9x6Z+8=",
-    "packages/faces/blog/src/components/Article/Footer.svelte": "sha256-4ko7rj3fBa6Wd3qPjppbqGxBXukvBrz50TgFFqMobkk=",
-    "packages/faces/blog/src/components/Article/Header.svelte": "sha256-T79P0Colz9PfzGJpw//7sY7PNwqaXo2B6zk/1nPLfJw=",
-    "packages/faces/blog/src/components/Article/index.ts": "sha256-OQmVd0L2/zY4hGqgC9y5eeOPTrkZCru/O1sdN+r5IQk=",
+    "packages/faces/blog/src/components/Article/Content.svelte": "sha256-413QA/MuY8zUIuafbf6bZnhBkI/dUJEPfoq16Tr7Xfc=",
+    "packages/faces/blog/src/components/Article/context.svelte.ts": "sha256-bYXS4NwSLcHdl8QnpVedTKNR94Tq1CjD+lUzj4zuwKI=",
+    "packages/faces/blog/src/components/Article/date.ts": "sha256-xrAo3YHkDeEHEaqH22Ezv/QWPuMPKcSz5bqk3brnnOY=",
+    "packages/faces/blog/src/components/Article/Footer.svelte": "sha256-hfM4IWmoOXUlwPU04MiJkaNnPwykq5a0PQvsuhByfn4=",
+    "packages/faces/blog/src/components/Article/Header.svelte": "sha256-79OpRsaaMgpdVQWzr/WF/w7U7X11+tCbepZ/Y7crtRg=",
+    "packages/faces/blog/src/components/Article/index.ts": "sha256-0iuzVKuEzw0lyN0IRFJWjRc4tGYTY/QMpkhyNrK3Qi4=",
     "packages/faces/blog/src/components/Article/normalize.ts": "sha256-/rcTG3AUWshRnFGt+qbzj9Qz7mqSF535NXACjW37PRk=",
     "packages/faces/blog/src/components/Article/Reader.svelte": "sha256-jKSgDp9ZTFhnX0qKnEs31dfZYtyuQrq3rmfo4pL1Usw=",
-    "packages/faces/blog/src/components/Article/ReadingProgress.svelte": "sha256-vCMh+fX213ceffrhwZK2hi0lOUqLLmOxvw8zTJgmzk8=",
+    "packages/faces/blog/src/components/Article/ReadingProgress.svelte": "sha256-ISJhocglhnvUANh+zhza3uPaZxHQibQKRqNXs/EpgUI=",
     "packages/faces/blog/src/components/Article/RelatedPosts.svelte": "sha256-nkEuNxlnEchAjNQ5rYqJJy1u6g3aftV+y1+A9ondI1c=",
-    "packages/faces/blog/src/components/Article/Root.svelte": "sha256-+ktqxdP4Cvnk4KyfvraFwZlbQaJMFPUYXh3HZ/A6Rf8=",
-    "packages/faces/blog/src/components/Article/ShareBar.svelte": "sha256-oRg1QiMI2D1kLzoCBdhpWgrPzsjfLsLiCj1dBOpG4yQ=",
-    "packages/faces/blog/src/components/Article/TableOfContents.svelte": "sha256-fTxMvfc0vJH5HDuIkoeHayNGCmgAtg1eu/Q7Oj8CPAk=",
+    "packages/faces/blog/src/components/Article/Root.svelte": "sha256-zndTVKMK7eivdWD52edOvzFYu9OEgiVMF7y6I5jo7lw=",
+    "packages/faces/blog/src/components/Article/ShareBar.svelte": "sha256-PH8mP5aBGI/NLO4Yyb/xY3bC+SCCLXzPharxKWbigW0=",
+    "packages/faces/blog/src/components/Article/TableOfContents.svelte": "sha256-HZXSef/OvIqZiO1LrZ4QF/LC75qTYfpE25PmweciDLo=",
     "packages/faces/blog/src/components/Author/Card.svelte": "sha256-rzRX39i8O6a3g/BMFDgL+UjTaTRYT1xxpcXzwmhGH+w=",
     "packages/faces/blog/src/components/Author/context.ts": "sha256-5VQ8Gxz9gb3FgERaczyP09+CuX+59TiKIVAqWyz+FT8=",
     "packages/faces/blog/src/components/Author/index.ts": "sha256-qkV3JyAC7cWQrNU7rSN2fsU1dKdbAr6lTTYcIzkY/ys=",
@@ -1103,8 +1121,8 @@
     "packages/faces/blog/src/index.ts": "sha256-GnJM/z+KouLcZ7pk992s7hwhuI52RC0dLOFlAPo3X1o=",
     "packages/faces/blog/src/patterns/index.ts": "sha256-meoG+gNvG1Os36voxE5lVckTjWYsOZA+Tdff8i7HsDY=",
     "packages/faces/blog/src/share.ts": "sha256-zh34kdwk9EtN/we6XkorjmvX8eXNRaQQBC1YKwVOSCo=",
-    "packages/faces/blog/src/theme.css": "sha256-UdB5C8e7BX0B/ye3NZfUdL8oC0BP8e4C4uXVhVApvmc=",
-    "packages/faces/blog/src/types.ts": "sha256-gu6s/HSnTiKPb1Mhguv6H2CSrWJY9wmfBhHg9JhqXQE=",
+    "packages/faces/blog/src/theme.css": "sha256-fYq3yt538EgF8xr+J3T5d3wzjHy6IZ+BJL4N7e43mRQ=",
+    "packages/faces/blog/src/types.ts": "sha256-nudDVheVS1I765hJc6WYzOCqIoeUbkYDm0oiG92wHwI=",
     "packages/faces/community/src/components/Community/context.ts": "sha256-o7hAokh6NA8qRTQSPQx4gZSwM2yKGGWlgI9xWCCQTY8=",
     "packages/faces/community/src/components/Community/Header.svelte": "sha256-Cgg2NDuydM3itR8WioXBTqcdGuRWBeMnvmi/yfg7yCc=",
     "packages/faces/community/src/components/Community/index.ts": "sha256-O2i+BMNyHIDeaNrAk13XiIJjifx4MiVDHa1A5eSMJLg=",
@@ -1138,98 +1156,98 @@
     "packages/faces/community/src/components/Wiki/Root.svelte": "sha256-AD0jxr5r3cej0cAltug3RyPMvvsUTUu+M3TPzlWIw0M=",
     "packages/faces/community/src/index.ts": "sha256-D/NdPVN+HVexdqKLIPLgwPXti4yYZFgztf/9StwAGkY=",
     "packages/faces/community/src/patterns/index.ts": "sha256-kRP0ROU/+0oDWOAxAu8NXWhR47fPnxjpXQHgKsL6Vhw=",
-    "packages/faces/community/src/theme.css": "sha256-r80CiFwFk/4wJ5n01HKoCImBtUVtvVB7nQvx7m//+68=",
+    "packages/faces/community/src/theme.css": "sha256-Xu367ov8Nqd2lNsx+Y/qT4SGXoCjG1LS0KNwZBWPLg8=",
     "packages/faces/community/src/types.ts": "sha256-wEwXOHVZlULqUqn/FKSLoXzZlJSwTxYExJHQm7+U79I=",
     "packages/faces/artist/src/adapters/artistAdapter.ts": "sha256-LXukzcPVqCu3rH5f4+pw4kZMi54SZ2x3mfrrb0EEQYE=",
-    "packages/faces/artist/src/components/ArtistBadge.svelte": "sha256-qG53BPZJRYIWTDXeoeExOf/zQF7t3qjKb/VpQbYx0Nc=",
-    "packages/faces/artist/src/components/ArtistProfile/Actions.svelte": "sha256-7pa76OUBFbXa1lGpcMdfBkoytwgBGsOzlrNAxyggiPU=",
-    "packages/faces/artist/src/components/ArtistProfile/Avatar.svelte": "sha256-NzbV6iwngcd14T2p6yR365R6IcHas5HSZLzRpcYMlio=",
-    "packages/faces/artist/src/components/ArtistProfile/Badges.svelte": "sha256-rkfqY9DtklEqo5A98zWfwwg1JFrpxD8eQgyh1uZI2EI=",
+    "packages/faces/artist/src/components/ArtistBadge.svelte": "sha256-3TlfGT99DTRFDcgY9HkSdk5fZBHfRVmEceGjzVPfjXk=",
+    "packages/faces/artist/src/components/ArtistProfile/Actions.svelte": "sha256-sOOUzW1iJycxni2rIqXwxf/pqjw9bCWMdYAJqlloFbQ=",
+    "packages/faces/artist/src/components/ArtistProfile/Avatar.svelte": "sha256-+o/2Gn9alzhKzk80KGXFlqC53qwyCbb4bVgiR2nIwkA=",
+    "packages/faces/artist/src/components/ArtistProfile/Badges.svelte": "sha256-K4N8W2gwLxCw82Xzz0e4leA2C8onukzPy2llwUDk97I=",
     "packages/faces/artist/src/components/ArtistProfile/context.ts": "sha256-Vxvqu77bG9FK/1rCi/B8Vso00XfEuBwx//fNYLsvM2Y=",
-    "packages/faces/artist/src/components/ArtistProfile/Edit.svelte": "sha256-W8VnvXojaqQYaCAnz3yHz5vMCdmKfeKa7czPnUF0ZNk=",
+    "packages/faces/artist/src/components/ArtistProfile/Edit.svelte": "sha256-eABoBCLIIJlgkGJKR/FFh+TIGzQtH4zfDeqIBq6hZcw=",
     "packages/faces/artist/src/components/ArtistProfile/HeroBanner.svelte": "sha256-YfDHneHv0T0aFx3TR0dhI60HmK8eJWnXzUAjLOXqbhs=",
     "packages/faces/artist/src/components/ArtistProfile/index.ts": "sha256-pfgnf444dYQ7qmQ2RjzOi5sistCeDyIgaGEUcJKTUmY=",
-    "packages/faces/artist/src/components/ArtistProfile/Name.svelte": "sha256-vSEFf5RApu6Pb8aavOHfs1/xPvzJ0z9oGqomZg4Ohk8=",
+    "packages/faces/artist/src/components/ArtistProfile/Name.svelte": "sha256-7Ossgee5QcU0Oavm/e0MSUpdutnnhlpyt3d7cmlXE9g=",
     "packages/faces/artist/src/components/ArtistProfile/Root.svelte": "sha256-x4s6zVF88DGpNzRV2MvVXEMo6xqBDLxaV7uYPLAg6Rc=",
     "packages/faces/artist/src/components/ArtistProfile/Sections.svelte": "sha256-ExdxdakWSdIFNITFW7R/bysBlEZKaVqi1hc0IO3TmrM=",
-    "packages/faces/artist/src/components/ArtistProfile/Statement.svelte": "sha256-hzZNF1l16cP/3fDTEibuDQNYAAPGnk6JWGyPvt684L4=",
-    "packages/faces/artist/src/components/ArtistProfile/Stats.svelte": "sha256-lmWkQfmu1ZaCw4GHuw5907iqTFxAI1WNg5zgL6PttGM=",
-    "packages/faces/artist/src/components/ArtistProfile/Timeline.svelte": "sha256-pYTXPUJ+ObxLhvbKiAFqwRvXbbSx8nOd6Jiy+OETlME=",
+    "packages/faces/artist/src/components/ArtistProfile/Statement.svelte": "sha256-epgOhRxqncV9OYdJL3piPVNGw/ejz0LmYMF0nE8d0xY=",
+    "packages/faces/artist/src/components/ArtistProfile/Stats.svelte": "sha256-WjQoc0ZnPqjjP7BmSl42FAO3rQSnzgCn3y8SVldQTGc=",
+    "packages/faces/artist/src/components/ArtistProfile/Timeline.svelte": "sha256-+BRkP1rJP77HhR9uiRDmBdBlOWiLNGy4UyCu7PcOzqQ=",
     "packages/faces/artist/src/components/ArtistTimeline/index.ts": "sha256-DKtEBn2hsKq9aQQC3Se3sAH4Qyv9bcq9qftg00h6FZg=",
-    "packages/faces/artist/src/components/ArtistTimeline.svelte": "sha256-B/A9t/xM8UdSV5+UaDVkYrU3KAKSH3CsPzhSeMs5HAM=",
-    "packages/faces/artist/src/components/Artwork/Actions.svelte": "sha256-6NHpKElejn6kEoBexel/w0ylSnQh/1fEIaOEW6/eg/8=",
-    "packages/faces/artist/src/components/Artwork/AIDisclosure.svelte": "sha256-EiOQG1Z1mH8tUt9VkO7kwAusrd6+6UMXytlzbZ90+rE=",
-    "packages/faces/artist/src/components/Artwork/Attribution.svelte": "sha256-i0Z0EtdJJuHakz4+QEn20xhbJkxOF8+Yz1dnRvVuO+8=",
+    "packages/faces/artist/src/components/ArtistTimeline.svelte": "sha256-FYbnJQKo8qV4KM7egvi/8AUaogBNxG2QesYUjectmIg=",
+    "packages/faces/artist/src/components/Artwork/Actions.svelte": "sha256-GXBihIIw90V8/1CHiBRmKHbnpg4tWXcPFEHXoG0l9E0=",
+    "packages/faces/artist/src/components/Artwork/AIDisclosure.svelte": "sha256-mKG4lYa/h2wVkzcdN45ERgJqOPvnlNBp1EwRaf0gWtc=",
+    "packages/faces/artist/src/components/Artwork/Attribution.svelte": "sha256-iy9ZVZP3pHxfJFbF9n1OiVxQszetpSlYfRJ6f2xj91s=",
     "packages/faces/artist/src/components/Artwork/context.ts": "sha256-wTQwllHHORte9qG/MNa8phOYDn1yZX0b1ApKyy26Uf8=",
     "packages/faces/artist/src/components/Artwork/Image.svelte": "sha256-16FmETvACjAjLAjV1NY0XDP50bafUmrj1IZ8nK/b63Y=",
     "packages/faces/artist/src/components/Artwork/index.ts": "sha256-Qoc+aLbbdwGiCI/sjnGqayeThQ1Wati1s9CHCQkVOmE=",
     "packages/faces/artist/src/components/Artwork/Metadata.svelte": "sha256-QmuYTap/58i88jvx/eofhTcQnEHcIXt6EYwxAu1yTXc=",
-    "packages/faces/artist/src/components/Artwork/Root.svelte": "sha256-AsY2nREK/iZhP7sk59k+8zCnOLUon1h/l9BqPfmNuLw=",
+    "packages/faces/artist/src/components/Artwork/Root.svelte": "sha256-m5+e8lFDk34c/JaKz9DT/gfwruoVIsnsRE7DtEFPdUY=",
     "packages/faces/artist/src/components/Artwork/Stats.svelte": "sha256-n5dU2nSqUvYkRiSFx9sxzWIKG7lKF1X4PaTpNsLadh0=",
     "packages/faces/artist/src/components/Artwork/Title.svelte": "sha256-ZqcJ9jNHOcU2ZjhGwu1mCYLnYKFghKQvlwoJx6hmF6s=",
     "packages/faces/artist/src/components/ArtworkCard/index.ts": "sha256-8WCCY+eNFMdUvZNHixwavoehS1ynoJij5DJstYi79J4=",
-    "packages/faces/artist/src/components/ArtworkCard.svelte": "sha256-MS4Wcg+g66WM87w7HcZPIiIyXJt/EEKzwdlvvEzHPZU=",
+    "packages/faces/artist/src/components/ArtworkCard.svelte": "sha256-Yabh3XZN9QVOMhH/YmUZloUerB8ZL4C8nCjLnGlmE1A=",
     "packages/faces/artist/src/components/Community/Collaboration/context.ts": "sha256-QEdyLJ9WFTGa/cmoiJtkEfuX0/s1fWmC9sbuiYIzeIU=",
-    "packages/faces/artist/src/components/Community/Collaboration/Contributors.svelte": "sha256-P/n79mIPTkpty2X4Mg+64yBYF/BtW1yTWrkDC/D3LZs=",
-    "packages/faces/artist/src/components/Community/Collaboration/Gallery.svelte": "sha256-/RYq9tSCsjsmuM7IL7L3+6+2bXd8ARITouWp+JNd3F8=",
+    "packages/faces/artist/src/components/Community/Collaboration/Contributors.svelte": "sha256-byU1FYZHFhXxY9vryXXW1WKclHjJsyaOYFAEDWOhDfo=",
+    "packages/faces/artist/src/components/Community/Collaboration/Gallery.svelte": "sha256-/dcx08laVXaTpBHpKkCP5oIo/PSRyUEmEJY4bAJH0ng=",
     "packages/faces/artist/src/components/Community/Collaboration/index.ts": "sha256-LD47twjpIz7jBrAgBygJBOqaRrygYMiwxL3EByBZwr8=",
-    "packages/faces/artist/src/components/Community/Collaboration/Project.svelte": "sha256-Usf0KTzcPDbnFReVqkqYix8VeULsuhCQAJR8gLkhJ9Q=",
-    "packages/faces/artist/src/components/Community/Collaboration/Root.svelte": "sha256-eJaMTTDC/rMN+YScBKuDVo3A3rK3+FJwAI00uOlcOwc=",
-    "packages/faces/artist/src/components/Community/Collaboration/Split.svelte": "sha256-d9P27znvPovnuPxpRTCZ/+5mSpS5bOFuHEgvbsEUdiE=",
-    "packages/faces/artist/src/components/Community/Collaboration/Uploads.svelte": "sha256-WwwD/ClhFQ7xUxBW2YhdZivvzcDiY1OhjAe+UiaAq/s=",
+    "packages/faces/artist/src/components/Community/Collaboration/Project.svelte": "sha256-2HWBYUQM23InbhDh9QXetuuV/JcSO5BBVPGY8cvvzb0=",
+    "packages/faces/artist/src/components/Community/Collaboration/Root.svelte": "sha256-BheESqoCZmhsSIo00vffjQGLM/cpEEwtj83lPvQMf2U=",
+    "packages/faces/artist/src/components/Community/Collaboration/Split.svelte": "sha256-aDKwRcAPogLqMMNIOLLkZh9bbQofaW3kHo3D3DOz7x4=",
+    "packages/faces/artist/src/components/Community/Collaboration/Uploads.svelte": "sha256-ZZLxfVPrANi+QVrfkJzPuVulailOF8yk9/pesaLhK44=",
     "packages/faces/artist/src/components/Community/CritiqueCircle/context.ts": "sha256-KKeh9QWH9RxqUTF1/wNINIcZmMbCjY6cZcuG+mp65Dk=",
-    "packages/faces/artist/src/components/Community/CritiqueCircle/History.svelte": "sha256-AZDAtMI/5ESEK2slbvvDYmgaeYiTA6A+5RDwXVPaOkQ=",
+    "packages/faces/artist/src/components/Community/CritiqueCircle/History.svelte": "sha256-oAilcCkpyYFG7KOy4rQXvQj9sMmkJTjqdJFHbht7yWQ=",
     "packages/faces/artist/src/components/Community/CritiqueCircle/index.ts": "sha256-Wf06sNkXwzfkhlGDmU2OCGb+VgiIzyTDwmtKKGuUVxM=",
-    "packages/faces/artist/src/components/Community/CritiqueCircle/Members.svelte": "sha256-u/08R3dK10AV/TG9YjViyhlgsqJliI51w+qnCtYMVfM=",
-    "packages/faces/artist/src/components/Community/CritiqueCircle/Queue.svelte": "sha256-fRoYzLMWiHT18kOG8Ce7IFT3wViF22LpH/eiBrrxVYI=",
-    "packages/faces/artist/src/components/Community/CritiqueCircle/Root.svelte": "sha256-biSdTXDweeojYo5pPGtEBVslPPoWsf2Q2GfDOVa4yag=",
-    "packages/faces/artist/src/components/Community/CritiqueCircle/Session.svelte": "sha256-8c2V6NIVSYJDBk7ufR+DL2KZBh/mRz8d+MRvssyLm5c=",
+    "packages/faces/artist/src/components/Community/CritiqueCircle/Members.svelte": "sha256-2xKfbNUfQOG13Svn3izuPcoToLTtg7j4VFLWptb9ZJM=",
+    "packages/faces/artist/src/components/Community/CritiqueCircle/Queue.svelte": "sha256-IBrL4pIXnJaFCJ5UEhnE9/ZG/jH2DF9YS+IHUKbAqBI=",
+    "packages/faces/artist/src/components/Community/CritiqueCircle/Root.svelte": "sha256-ZNNy21hjtVEkl1aCtv1GsHE9C5Yx/Q7g9C+lbtvOPvw=",
+    "packages/faces/artist/src/components/Community/CritiqueCircle/Session.svelte": "sha256-LPWACgi7Gbc8nFSq41W4AQM3FYlXRusbnDuLUf2hpPc=",
     "packages/faces/artist/src/components/Community/index.ts": "sha256-00qFnvewCbWY8jI0P059nE3ttb7eAhSNgCYGL01rfKY=",
-    "packages/faces/artist/src/components/Community/MentorMatch.svelte": "sha256-EdYtXqoDyeCxkXRME8nd1zbIOlnxi3Zfeg6PA9gRuj4=",
+    "packages/faces/artist/src/components/Community/MentorMatch.svelte": "sha256-ZbnsJlFgU2XZUgxkuU5icH7nOaZNr4dAGqrPEPm5lqo=",
     "packages/faces/artist/src/components/CreativeTools/CommissionWorkflow/context.ts": "sha256-R9ijQmlffxBqrnWvVeSiHW6YDFQa1ea2eqWv6flUCDQ=",
     "packages/faces/artist/src/components/CreativeTools/CommissionWorkflow/index.ts": "sha256-Ude6a5Dkm8hgNJcS10v82biPxZcBkjwAun5weaOW6XE=",
-    "packages/faces/artist/src/components/CreativeTools/CommissionWorkflow/Root.svelte": "sha256-osLVZxumZpihG3NcIaELrUidBrU18t3uGIPsJ3QYXRA=",
-    "packages/faces/artist/src/components/CreativeTools/CritiqueMode/Annotations.svelte": "sha256-lBAzmOfgEIt4OZeJKqMkWeWZ5vXLToQbY1yeB6C6uhU=",
+    "packages/faces/artist/src/components/CreativeTools/CommissionWorkflow/Root.svelte": "sha256-cF2353xQqY8022zzRQVowqy/9M1u6quIQxWURxBwf6A=",
+    "packages/faces/artist/src/components/CreativeTools/CritiqueMode/Annotations.svelte": "sha256-qWr8tKXWAZWxr/Crn+bbKp0YEXso0lBorI8jbOVIdRQ=",
     "packages/faces/artist/src/components/CreativeTools/CritiqueMode/context.svelte.ts": "sha256-tbM984cw0gFEx4IrnKF8nqlt/D4tevKoyHJRWJGHwUs=",
-    "packages/faces/artist/src/components/CreativeTools/CritiqueMode/Image.svelte": "sha256-tCUhfglTIm3LrDgbEsiof138EIyS0ireaibruyqZOJk=",
+    "packages/faces/artist/src/components/CreativeTools/CritiqueMode/Image.svelte": "sha256-OlwboGTlU0AEnai5rRRUWi6aVdqDEURMoBBScXIj3lE=",
     "packages/faces/artist/src/components/CreativeTools/CritiqueMode/index.ts": "sha256-8zvKduPLqsyw1U+bTbgcZPO1TvFADJTe7QGGThIbi8w=",
-    "packages/faces/artist/src/components/CreativeTools/CritiqueMode/Root.svelte": "sha256-zWSzOVJZFsIEous2G4mmvN0udnCrYOooa9V60Bzu54U=",
+    "packages/faces/artist/src/components/CreativeTools/CritiqueMode/Root.svelte": "sha256-Hm85y/EjPOzybm7H+UU7o++Ma4s7dE96ExapXgeps6Y=",
     "packages/faces/artist/src/components/CreativeTools/index.ts": "sha256-k4ES89dOEN9BSr+vDJB/T8e3pFBBIfDCjhpvhuRQpdk=",
-    "packages/faces/artist/src/components/CreativeTools/ReferenceBoard.svelte": "sha256-eQKto7WkGbkx0Q5nMaguLyAmIjzACO5zMZEN20gnx3U=",
-    "packages/faces/artist/src/components/CreativeTools/WorkInProgress/Comments.svelte": "sha256-3JXevwhEHWBdsFTVK2+Lguou3J95POLVRlczZuQWUT4=",
-    "packages/faces/artist/src/components/CreativeTools/WorkInProgress/Compare.svelte": "sha256-bgiNkEepbqwyOVPr6EF1Iau38KpY6ASwxQ0f4Q1EoKw=",
+    "packages/faces/artist/src/components/CreativeTools/ReferenceBoard.svelte": "sha256-QPD9WET3+yzo62oUPXxLyGXebtJRvd2u+YQOomx5YZM=",
+    "packages/faces/artist/src/components/CreativeTools/WorkInProgress/Comments.svelte": "sha256-Tkh+59HauEr7ztZd1999hfoCyhG3Nlv74tsjSqXyeLY=",
+    "packages/faces/artist/src/components/CreativeTools/WorkInProgress/Compare.svelte": "sha256-AFDfrisy0k/3zcj0OynwTWZ41FifaEp35kgKYP1Pb6s=",
     "packages/faces/artist/src/components/CreativeTools/WorkInProgress/context.ts": "sha256-8Zd6GmpThnIWmb9CH56/StobzctTMji/JoWt3i/H6cM=",
-    "packages/faces/artist/src/components/CreativeTools/WorkInProgress/Header.svelte": "sha256-xmDA+ut3ziurGiSNiBZQ1/U5uxdK3ZYNZtiinKikZqM=",
+    "packages/faces/artist/src/components/CreativeTools/WorkInProgress/Header.svelte": "sha256-DKdtm/8WcjNrGSwxBHB3nCCUWvJ7WDlrIvDNsc+Vvuo=",
     "packages/faces/artist/src/components/CreativeTools/WorkInProgress/index.ts": "sha256-pk1Xb6TTW/tWzKLkSi/1OA8xIygdZW+51hY3n0VKVr8=",
-    "packages/faces/artist/src/components/CreativeTools/WorkInProgress/Root.svelte": "sha256-ICpqNdFY7MxmVNKSYdFx6D9DQCCfVc88sf1RBhx9U7s=",
-    "packages/faces/artist/src/components/CreativeTools/WorkInProgress/Timeline.svelte": "sha256-DMEujjAuY0Hc4NnwS4gve+umQTW0ApeInsnXlyK/tRk=",
-    "packages/faces/artist/src/components/CreativeTools/WorkInProgress/VersionCard.svelte": "sha256-Gtjx1bJOQmQ0CxEBtd4XPfpo7gBoXsqaIjthOKeQIww=",
-    "packages/faces/artist/src/components/CreativeTools/WorkInProgress/VersionList.svelte": "sha256-O5GpZtonGVpW/cEFUP6U19Uy+PD3kNg6xLuFpB4rYTw=",
-    "packages/faces/artist/src/components/Curation/CollectionCard.svelte": "sha256-PGcyPaAOadAqFqu+MMmiS8dbaqrmuU9JbN2ul76qELw=",
-    "packages/faces/artist/src/components/Curation/CuratorSpotlight.svelte": "sha256-8d/WNTkzj9Ba8wBpGgopib7YJ8opK+rcWN0RHRNLeZw=",
+    "packages/faces/artist/src/components/CreativeTools/WorkInProgress/Root.svelte": "sha256-oyV6rHbIyfyaQyifLE5tyJDLEXn8wRdSDIO1K4F7v3c=",
+    "packages/faces/artist/src/components/CreativeTools/WorkInProgress/Timeline.svelte": "sha256-JlI0kiKiXUwbITUybV6kiF5S9qhuCHXFX+mgpSy42dM=",
+    "packages/faces/artist/src/components/CreativeTools/WorkInProgress/VersionCard.svelte": "sha256-VOZFqbyRHWQf85AcLPUyLGc/O3DzCXs4tdP0oespqD4=",
+    "packages/faces/artist/src/components/CreativeTools/WorkInProgress/VersionList.svelte": "sha256-+URJr1ZAOtRdV0/i6qlSWdrH+X6yvYqK0bNrpP6eU7E=",
+    "packages/faces/artist/src/components/Curation/CollectionCard.svelte": "sha256-Cnfobyk1CQwJQW14KwbV7X+iOYi98RoPQJf543omVpc=",
+    "packages/faces/artist/src/components/Curation/CuratorSpotlight.svelte": "sha256-eDZLXCCt6psjmfNML0pV1DLWDlbwMTDsozLWeDvWSTo=",
     "packages/faces/artist/src/components/Curation/index.ts": "sha256-1vq/qrI6or+ttgber5naiRmReFJkhwUxHlpFsWGzCek=",
-    "packages/faces/artist/src/components/Discovery/ColorPaletteSearch.svelte": "sha256-Xi6oFMVk6Wm7vUd3lD7oa9Q8Lb/BJW0P6/H97XjNK+Y=",
+    "packages/faces/artist/src/components/Discovery/ColorPaletteSearch.svelte": "sha256-q76j6QXjep71JSbbYyK8DLEQrUVHZQhLbhms4MQUi5A=",
     "packages/faces/artist/src/components/Discovery/context.ts": "sha256-8EA1S0ZI9DI6V4kmFfAsTpGc+ZZl9ix2PrKyzGNJHzE=",
-    "packages/faces/artist/src/components/Discovery/Filters.svelte": "sha256-C6Gg3KovL5pvkUxJuG1qRDHhLUbIv5d1EpevBAt3LN4=",
+    "packages/faces/artist/src/components/Discovery/Filters.svelte": "sha256-oQBufW6eZL69u982cJWzCjyS0rv5nOr+s4aAxZ12VI4=",
     "packages/faces/artist/src/components/Discovery/index.ts": "sha256-GmxoEt2RCD/14+zA53zyonBvryAxRNvKDtcObwSS3gk=",
-    "packages/faces/artist/src/components/Discovery/MoodMap.svelte": "sha256-KbwefaVI+7T0N+6tsTt9AAY4xMVFQgzOZxAth2Hxzp4=",
-    "packages/faces/artist/src/components/Discovery/Results.svelte": "sha256-CMh7RKHmCgwXLOdCd3XHjXLH+6k/TKUEKHOn78l6ST4=",
+    "packages/faces/artist/src/components/Discovery/MoodMap.svelte": "sha256-BhIigrlpBSsB+b7M92ULUGhBzgZW0s9mI8y5kXQJbCg=",
+    "packages/faces/artist/src/components/Discovery/Results.svelte": "sha256-GKwMizeYpHnXlnLb4oSXpwCrBJIgn1hm1ZtF2v1wLms=",
     "packages/faces/artist/src/components/Discovery/Root.svelte": "sha256-dNkq8ac7E3O+kCKFG7eMKxl7LQK2JPvSckJ1OSEfP+E=",
-    "packages/faces/artist/src/components/Discovery/SearchBar.svelte": "sha256-lMRBNFIiJfHtJJk6cdeHmGKDtU9kmKBFezN5GhGhQMI=",
-    "packages/faces/artist/src/components/Discovery/StyleFilter.svelte": "sha256-d1MgJmt5fIz0P4q9weM37ieMSGL+ogoPJQd2P9B5x3w=",
-    "packages/faces/artist/src/components/Discovery/Suggestions.svelte": "sha256-IF4yQh0ycEgPbMhywsm75mYOsyGfLEq0erYM+iHUe1M=",
-    "packages/faces/artist/src/components/Exhibition/Artists.svelte": "sha256-5A/wRo52Im2UOSQawUaxiXlfcLmYfFJZhenk8PTn2AA=",
-    "packages/faces/artist/src/components/Exhibition/Banner.svelte": "sha256-XVlCqqRNlghw/uK4E/DUovdBkYNWXfF96vwyjOH6ATI=",
+    "packages/faces/artist/src/components/Discovery/SearchBar.svelte": "sha256-IQP/LTR1wxi/wGG9PdrlGa6dZFcPDLLFo1F5lMcxu2o=",
+    "packages/faces/artist/src/components/Discovery/StyleFilter.svelte": "sha256-ASLbcNnA/GpOlLHlQkwAkWNLOAkb/a48ppCw320Bwmo=",
+    "packages/faces/artist/src/components/Discovery/Suggestions.svelte": "sha256-1kuE40t3EdQqh2SOIpflDbdndKbfjQNEoT06odLaGiM=",
+    "packages/faces/artist/src/components/Exhibition/Artists.svelte": "sha256-cfhVtMt3BCvLQt0H2t6VOZVCF2l17vKIm783PMr+gUQ=",
+    "packages/faces/artist/src/components/Exhibition/Banner.svelte": "sha256-s7iOY8s+rZbuioxBo2g05nOdCs35pTGjdSdlRIb8MTg=",
     "packages/faces/artist/src/components/Exhibition/context.ts": "sha256-eEIqGzUQTy2AysfjLx8V3xxFQyYHgxMyvB33Njax75Q=",
-    "packages/faces/artist/src/components/Exhibition/Gallery.svelte": "sha256-KagBu5RO8pT1MMgUV3/LYOQqmo3Qe63e5hcwe3vm7qU=",
+    "packages/faces/artist/src/components/Exhibition/Gallery.svelte": "sha256-T25MYwyyNV/5MjIWk56wE6s8JJ8x9otu7pqC+b0JZgk=",
     "packages/faces/artist/src/components/Exhibition/index.ts": "sha256-MpFzvHAMrEHVweaj4EH7Hbucc0CCekdOup9RvQrkphM=",
-    "packages/faces/artist/src/components/Exhibition/Navigation.svelte": "sha256-lxni4/ilGD9XdVaqjMf5tR+RaakHZ0swALXqnMsKmtQ=",
+    "packages/faces/artist/src/components/Exhibition/Navigation.svelte": "sha256-clFx3F5+m5rTLc/oIt2pFMoUSXe8/Y7mXI+JO6rHuRk=",
     "packages/faces/artist/src/components/Exhibition/Root.svelte": "sha256-Ant5SzqIwlwRGLyymvjlgaJmT9e3UFgP6qnsNMDTn3s=",
-    "packages/faces/artist/src/components/Exhibition/Statement.svelte": "sha256-G3qErsX5l/hvvqLDWF67OkpTCIKvTBDuNpTQsX6Yk/Q=",
-    "packages/faces/artist/src/components/Gallery/Grid.svelte": "sha256-kf4FVv8KlQeefU/c5w5nQ9Yi5nDCFC5SMZqPOaP+oMY=",
+    "packages/faces/artist/src/components/Exhibition/Statement.svelte": "sha256-iqYx77J0bGCizJiNznF2HmJ2NfeJArAb+RYTRuhtSvg=",
+    "packages/faces/artist/src/components/Gallery/Grid.svelte": "sha256-OnXMc+P9qFksXsAhyZ7ep2Dald7QsVjDAvdiJWOIkGQ=",
     "packages/faces/artist/src/components/Gallery/index.ts": "sha256-rYMDfLbGNR270GGjvP4NWqB0CqqAZdcyt0UXcGWkKhI=",
     "packages/faces/artist/src/components/Gallery/Masonry.svelte": "sha256-NyUB6vZzd+XXwfuN52CA9vuHXflqFgzYXeDNu92XAVE=",
-    "packages/faces/artist/src/components/Gallery/Row.svelte": "sha256-Qiew1xGetP1K+WS21oZ1agdEmKi9LsRBAieY5Kp7wnI=",
+    "packages/faces/artist/src/components/Gallery/Row.svelte": "sha256-WjaaJmcoWLbH6LG4JUICF4gB9mezy0X0wQGdJEMhFXg=",
     "packages/faces/artist/src/components/Gallery/utils.ts": "sha256-MWRqnG3+fBwNKjEbUhXniQbEclq65u1G6UoV0CEkBIw=",
     "packages/faces/artist/src/components/MediaViewer/context.ts": "sha256-CVMtVTefKJPvBsdLmUO5IzG5HKYyykydKqAmC3aUcOo=",
     "packages/faces/artist/src/components/MediaViewer/index.ts": "sha256-rLjVUZqKX9Jyi4uuUzwro0InzlVgYitp40q3YFlpzRY=",
@@ -1237,19 +1255,19 @@
     "packages/faces/artist/src/components/MediaViewer/Navigation.svelte": "sha256-d+xVTVNoM896cPJWitkBcvQ6MBrn7KHx/j/jvPlTGEc=",
     "packages/faces/artist/src/components/MediaViewer/Root.svelte": "sha256-xj7dC00b9R6i0IAzTRQXWUFXO5FDGlEs26IKnwy7PPI=",
     "packages/faces/artist/src/components/MediaViewer/ZoomControls.svelte": "sha256-wby9XJ+JRj327wE2bBhEjdn6NWzOjYEQTMgm5RtnYUw=",
-    "packages/faces/artist/src/components/Monetization/DirectPurchase.svelte": "sha256-3BpwuXm3ovquQpFs8kDAdUcL9JxFG8Bndx4pdgGpPMw=",
+    "packages/faces/artist/src/components/Monetization/DirectPurchase.svelte": "sha256-BoIKe2Z8CxaCviFanCTaXEZ54Xuuv/Um4KmSk7TZe/4=",
     "packages/faces/artist/src/components/Monetization/index.ts": "sha256-rMMEbtBMXVx3TTbc2PDVol0M9qPQFSzVvwbBxSCKMPE=",
-    "packages/faces/artist/src/components/Monetization/InstitutionalTools.svelte": "sha256-NCTPifwVDooZIZlsymYLmErufgWVbwy/ACiOCovDKJE=",
-    "packages/faces/artist/src/components/Monetization/PremiumBadge.svelte": "sha256-OlD5NK8Cn60BxvjGKFum5K6t0IHMGMwUfHnVFcGap6U=",
-    "packages/faces/artist/src/components/Monetization/ProtectionTools.svelte": "sha256-rysyZIi+oqMl1fi2bNHBXK5RwhlmNU2N9/e4sq7W30E=",
-    "packages/faces/artist/src/components/Monetization/TipJar.svelte": "sha256-bznNJglJA73ucUNwsoGiZVwhrc+Bcl3DjnJJIevAhkI=",
-    "packages/faces/artist/src/components/PortfolioSection.svelte": "sha256-2gQ8aAOEGOFh5zmos3E3nPHlzIQ684yQspSAW1aYrpg=",
-    "packages/faces/artist/src/components/Transparency/AIDisclosure.svelte": "sha256-XVkIqnZTTR72FHOcaD+sbdHVNz2z1MGOA0YCsaEIi/c=",
-    "packages/faces/artist/src/components/Transparency/AIOptOutControls.svelte": "sha256-HgTv5l3PeM3z3IlS1+6yGUAepSKljHQiVRIqj1bAat0=",
-    "packages/faces/artist/src/components/Transparency/EthicalSourcingBadge.svelte": "sha256-nsyVlNo4GVsbJcJSqwgaeAYgxZTpgOP3TWPiWK1A3Ok=",
+    "packages/faces/artist/src/components/Monetization/InstitutionalTools.svelte": "sha256-7Cw+5iarprciA2vEQ8k9U3s3uoIVBw3LE1kHOnjafKc=",
+    "packages/faces/artist/src/components/Monetization/PremiumBadge.svelte": "sha256-5qymZj5uHo1ZKg0lNelFRSgjpSTJMDHTrHLeiXY3QQI=",
+    "packages/faces/artist/src/components/Monetization/ProtectionTools.svelte": "sha256-4973UNFdO7rOKulh7Efjj6OWkoAhqwjU47O3yi26gQk=",
+    "packages/faces/artist/src/components/Monetization/TipJar.svelte": "sha256-YsUF/EWswwFsZ9yXif180YvnT/YCVcqBI2blqtRVDzI=",
+    "packages/faces/artist/src/components/PortfolioSection.svelte": "sha256-hhPy6Cb3PXgKLeJkyYTw40VLoH34Wwdo80KrP9hpu5s=",
+    "packages/faces/artist/src/components/Transparency/AIDisclosure.svelte": "sha256-c5Itj0u/5YJVvzdMxxcB9XDchau0MUMAjdpIxhXQKSc=",
+    "packages/faces/artist/src/components/Transparency/AIOptOutControls.svelte": "sha256-jUsq31PAG0m6jyiYeiXzBrHboBbf6qBD0Iwd7+Fa7Os=",
+    "packages/faces/artist/src/components/Transparency/EthicalSourcingBadge.svelte": "sha256-s6rlFNcS2R02jRB6bYkW7q/x9oCIAmQ4rAxozprUCSw=",
     "packages/faces/artist/src/components/Transparency/index.ts": "sha256-8ZrN45E4iiVNIYHPwZ7QIe+MbkF5KnPJUwhRt+jmr84=",
-    "packages/faces/artist/src/components/Transparency/ProcessDocumentation.svelte": "sha256-wdmeVWpN9Bz4uM0RQmYPcNU9pmB0bCZToXmEnBlrZQE=",
-    "packages/faces/artist/src/index.ts": "sha256-Shz4a6ue182siqnPFyZQbVPn2yDpsYOMKQwWLwPzkas=",
+    "packages/faces/artist/src/components/Transparency/ProcessDocumentation.svelte": "sha256-0729mNwUmP+scGFCSQEfaCsFREYb6AO9/vZtrXzBh2k=",
+    "packages/faces/artist/src/index.ts": "sha256-/0ZhuioYTEf7cIFGwhXmQVYnxyxbu9dn7IEDgF93/uE=",
     "packages/faces/artist/src/patterns/commission.ts": "sha256-W4uqIqDNrZG0LP0bdJuO4FBdPBQQ9yi1J1ulB8k/YQ0=",
     "packages/faces/artist/src/patterns/critique.ts": "sha256-23BJkElNZtHAuW0OM1tc6xPM9tAW/HSqB9fL0gR8V9s=",
     "packages/faces/artist/src/patterns/discovery.ts": "sha256-ZeCHZ4ss2jiiB1ynb+ngvszKCq+kRhsmsv1XGrGKymo=",
@@ -1273,7 +1291,7 @@
     "packages/faces/artist/src/styles/_performance.css": "sha256-9XsyR0986G83LGliMuOu3/TxMczIvqB2ZVlkAKrpAZE=",
     "packages/faces/artist/src/styles/_reduced-motion.css": "sha256-17rBtaCyQXfHE6m/3hSzMyMHoTrOnWAfN/kewvWfRTw=",
     "packages/faces/artist/src/styles/index.css": "sha256-8KiG6c5rEq1fvbrTXphWrQuHV4VlL+pkwQY9sVBAAXs=",
-    "packages/faces/artist/src/subscriptions/index.ts": "sha256-EJ53g8RCsC3gqnL6HC3xLysDOtrrtXVRkkfhZMooikM=",
+    "packages/faces/artist/src/subscriptions/index.svelte.ts": "sha256-jdnMco0jYV6wboUCOG3GzkDDrPnP7aysUqCor8FVP/E=",
     "packages/faces/artist/src/theme.css": "sha256-V8BN09El7jnzXMS8YPfaCWpdT4CMB4yiYokAQJkEw+A=",
     "packages/faces/artist/src/types/artist.ts": "sha256-U+FG7wDcMqNCSQuoHIM1qTn5rUn9lmblAsQOz/xn5Vo=",
     "packages/faces/artist/src/types/artwork.ts": "sha256-zl5/8g3JdxD0ideYKA4sRyqtVBXjkVk6JICmWSdmcfA=",
@@ -1281,10 +1299,10 @@
     "packages/faces/artist/src/types/creative-tools.ts": "sha256-i1kt4Wflf6JRjeAUUCNyouyj2XbhlxDFMJ80BhI/B2g=",
     "packages/faces/artist/src/types/curation.ts": "sha256-BOWhIMJqdafaE+GJmsUm1nFsPKaiQdgofBDbuhTBj4o=",
     "packages/faces/artist/src/types/discovery.ts": "sha256-qr0cDLUjmqefyFpzLZrocYQ6F+QS0I3rfhJejhH6y2k=",
-    "packages/faces/artist/src/types/gallery.ts": "sha256-rFd4IPm0iRG7+j2i3Wg+FlwvrY0RZ8iAs1Io+bpS7OY=",
-    "packages/faces/artist/src/types/index.ts": "sha256-oDpl9/uQRFWVZSIco+wW9tQ5RgbRIImaO812k3a4+mw=",
+    "packages/faces/artist/src/types/gallery.ts": "sha256-HnmGyRcGSqcLw/OChIjxzQRMZuL7lzX+KiK26VYhaJQ=",
+    "packages/faces/artist/src/types/index.ts": "sha256-WYRCEF4a5dbQUgBftycSeq2j30YWpB1vUBpM8bANkCc=",
     "packages/faces/artist/src/types/monetization.ts": "sha256-rRXME8jGs8/TUVW92d/2BrhxjSVsh0fKPjwgxegERYY=",
-    "packages/faces/artist/src/types/transparency.ts": "sha256-pGnyUrACIEliotvU6KxyxkC2dxf2Ac4ye1dXPPcxhGE=",
+    "packages/faces/artist/src/types/transparency.ts": "sha256-mRAAaEVKVknHIG6Wqjn4kasXy11HOVWQcaGEOJUkGLE=",
     "packages/faces/artist/src/utils/a11y-testing.ts": "sha256-x2PAd7y0P08HhAEbdmqDlpDeDLjZE7syIUhfTqgn/nQ=",
     "packages/faces/artist/src/utils/accessibility.ts": "sha256-OYOVyURiIBwWJTdIjzRp4As+ikGMc4cFjs6VnjiJlXk=",
     "packages/faces/artist/src/utils/cspSafeStyles.ts": "sha256-A0sV4vQaD+nAucaO6P2K+Ogjz5s5Q/7wOqR+ZXun6Vs=",
@@ -1299,9 +1317,9 @@
     "packages/faces/agent/src/GraduationApprovalThread.svelte": "sha256-hIri46kxR2b+fgLhjTENVbidFA+ahjJzS0kqepYIDdQ=",
     "packages/faces/agent/src/IdentityNexus.svelte": "sha256-VFuuEtiD61FAcPVkSdxRwp1D4D7QTv5fwwwqFBUkOP0=",
     "packages/faces/agent/src/index.ts": "sha256-UIP068rPypWZdSCBUq7GmnDP3fLN/Jbkqn6ROiLjtuI=",
-    "packages/faces/agent/src/internal/AgentFaceFrame.svelte": "sha256-cXb00ztqbcDNvYODM0n6nqOreEAIQjdil8EMSlTBmro=",
+    "packages/faces/agent/src/internal/AgentFaceFrame.svelte": "sha256-zZiTwyRfd/PVGOVOOf9UNOP8W3D6IZIOrtzXw7N0WWc=",
     "packages/faces/agent/src/NexusDashboard.svelte": "sha256-eqgmEHmrIb6wjn8qotTFwK5s0RmrC7hZDLvG4i8yhh8=",
-    "packages/faces/agent/src/SoulRequestCenter.svelte": "sha256-A5pL9lb/lP0CKhuG8gvcOjcBLc5tfY65aPNEa656zP4=",
+    "packages/faces/agent/src/SoulRequestCenter.svelte": "sha256-uz2a6bq0NYWALB/bF+6QseaC6SsmND8X5NfCrA4ybG0=",
     "packages/faces/agent/src/theme.css": "sha256-FsJB9imFWOyYfnWaZZnTw3Vw10nofdARPmC5fU5dlRo=",
     "packages/faces/agent/src/types.ts": "sha256-jT27z4WRCcXVEIVlR33DsbDZsYsxaw4XUAPhM1r0Ww0=",
     "packages/shared/auth/src/BackupCodes.svelte": "sha256-pSuAGwmoGpDFNpo10avTzrdpYe7OsoB8o/c+7dCai9s=",
@@ -1323,7 +1341,7 @@
     "packages/shared/compose/src/Autocomplete.ts": "sha256-0g4x1IP5ZVVwqzPXKpnur41DXa2RyuZVq6OqUCEUOks=",
     "packages/shared/compose/src/AutocompleteMenu.svelte": "sha256-8f7vu/UMrrJ/jVa2uHqKKimeBo6c4Nvt2f/vl3UoHVs=",
     "packages/shared/compose/src/CharacterCount.svelte": "sha256-6ilkFAP8ktA2kn9yA3sALGJosUnHrayH4VGILmm5KkM=",
-    "packages/shared/compose/src/context.ts": "sha256-qH/t8avdRmFRdlhvJ0Ydd8kZUOk80lThPdXCIN3duBo=",
+    "packages/shared/compose/src/context.ts": "sha256-R1Uq5AdLu02xqvbMbGLpJZQ8MmSO0oqaq6fmnldy+3o=",
     "packages/shared/compose/src/DraftManager.ts": "sha256-uWZ2sm/Sb3vzYGs3CJmW/zeGWs7l9Lu9HMfRKFt489M=",
     "packages/shared/compose/src/DraftSaver.svelte": "sha256-2vZgRCkfSyKT7hmuE8fG9WpSJ0M/e3gYYZeRANa/dN0=",
     "packages/shared/compose/src/Editor.svelte": "sha256-o8Ax3GAjHZP/1GmYDrfG9aeAvN4/0OznF/ijBzSuBbc=",
@@ -1336,7 +1354,7 @@
     "packages/shared/compose/src/Root.svelte": "sha256-Z7GshOaltslRFeDPbFETYAYy6USpvW7L004QTeTMGSQ=",
     "packages/shared/compose/src/Submit.svelte": "sha256-vlQapz78vCRaXRojfrudP/4yY/DTyHDQ9bxueJwLD0U=",
     "packages/shared/compose/src/ThreadComposer.svelte": "sha256-bRhMDOb4iz0fSOxf0PAeWtvYiLfIPfbdvH02acdlj18=",
-    "packages/shared/compose/src/ThreadControls.svelte": "sha256-78UTTyLXw4Kj1UPVhpiBATrkWBx8Pnhh1LYugLhG7Vs=",
+    "packages/shared/compose/src/ThreadControls.svelte": "sha256-kxy7aSYsM7bTh87fRAeeh3EzRIUDGlAZtsan3xOAWmA=",
     "packages/shared/compose/src/types.ts": "sha256-8ovFbZvdAJ0m03hrxIOeAPd9aimhX2mAt/DQ8HZcby0=",
     "packages/shared/compose/src/UnicodeCounter.ts": "sha256-NSa7uxa1qqByrpywxeCI1RQG0BZZYujkKCMYgVI74z0=",
     "packages/shared/compose/src/VisibilitySelect.svelte": "sha256-9PPOYRyxlhF5e5hQfs8P7PT8LSlqpepJqI1l3xEiG8Y=",
@@ -1347,25 +1365,25 @@
     "packages/shared/notifications/src/Group.svelte": "sha256-I3Y/QVHVhUTQeDv2ZyKwUj0HVr3FcSHYC98w4804dYw=",
     "packages/shared/notifications/src/index.ts": "sha256-9eyj5MyjNqtWPLeX+bcvu7t8DovelyOy2RQR+MipSS0=",
     "packages/shared/notifications/src/Item.svelte": "sha256-EPrur6uZrlYm4lBpJHwrK73LWU5eBv9b2TpINVcyAJc=",
-    "packages/shared/notifications/src/LesserNotificationItem.svelte": "sha256-5t6c2CfohfEah6P4wmk1L/5YhAuEo8gQb2X7klRAxJU=",
+    "packages/shared/notifications/src/LesserNotificationItem.svelte": "sha256-qyxo3OYA+Q+9onHRiI0qpU8ZTq2+sd3sRoYPu9tRXSc=",
     "packages/shared/notifications/src/mockData.ts": "sha256-tWv3AiO1o7SmeNGzMHafe7/4WXW6ZtqeO8RuzUvhZ48=",
     "packages/shared/notifications/src/NotificationFilters.svelte": "sha256-YRHkSnWW/euDHafGWKskxQOlyiNoDvh/6lcmWIKBZuw=",
-    "packages/shared/notifications/src/PushNotificationSettings.svelte": "sha256-MYvWpZYHiO5upPP766MIcRro77YJvyQt7aB9yCozK/c=",
+    "packages/shared/notifications/src/PushNotificationSettings.svelte": "sha256-BsS7pPFiFveL0qDCkusce2s/duT/PEFdiSO/4qPFiC8=",
     "packages/shared/notifications/src/Root.svelte": "sha256-3HnRKd8wRgk9RcZ6p5U1cm9iKWjko7jlDYhJVPo0uvM=",
-    "packages/shared/notifications/src/types.ts": "sha256-YbQx40aYyaXTZIgrC0AbOyRxX6NAiym9v4s8BCLpIuI=",
+    "packages/shared/notifications/src/types.ts": "sha256-/+DJPC4o++q8ZIAKj94oSuvNOKJjheZofvke+VNJXgI=",
     "packages/shared/notifications/src/utils/notificationGrouping.ts": "sha256-anq0l4YvXEJ+0XAk/whfRxrSeSyN2PC098wpFr9btBc=",
     "packages/shared/notifications/src/WorkflowNotificationItem.svelte": "sha256-TjqrKn4zuIpDrOdG6kCDN9/EOFYbtk06tyGuTNkNdjc=",
     "packages/shared/search/src/ActorResult.svelte": "sha256-RpYCEGRK7sgDSUn11ndhdbFdb0Cx8+im9XH9y/79hhs=",
     "packages/shared/search/src/Bar.svelte": "sha256-g4snrnmzDkEt8TWrq0ZDRTJGKUovIdGFStqB7NPLOxU=",
     "packages/shared/search/src/context.svelte.ts": "sha256-8zhR96FWRkozhMg02nNp9OtMn9jxzOPxaeyE9W6IYr4=",
-    "packages/shared/search/src/FederatedSearch.svelte": "sha256-Jy6Ij6I5xU0eG0Dv9zNCBwqy2TANBc5QV4FsJ79x8QU=",
+    "packages/shared/search/src/FederatedSearch.svelte": "sha256-jqpniKak6r74kf8Br6j842yy+x/jgx1TnIOJd/a4+AQ=",
     "packages/shared/search/src/Filters.svelte": "sha256-4Ha34dyxhBjuqj/sMe7o1lUQyrAdMStzcfPcokzWK94=",
     "packages/shared/search/src/index.ts": "sha256-7WZurB6DwxvbIeSUaTEzOZxi5uMOST6XSNNjucI8YD4=",
     "packages/shared/search/src/NoteResult.svelte": "sha256-axVJL7piT03mEF1+RPlKPYZSTTHCgVvZa+h1sIkJWxE=",
     "packages/shared/search/src/Results.svelte": "sha256-ZTgcoB8HmzoLGnkwfS9/gaz+/ITLPIgFLnJWJDd/Zzk=",
     "packages/shared/search/src/Root.svelte": "sha256-/9ZGb8r/4y0b+shvGlmOdo5ANPFqfWjpqQSggOSQBpk=",
     "packages/shared/search/src/TagResult.svelte": "sha256-HxW5fPk+WPfsOR5QUMFC6tVNgSufQKLbTm5paEL1ypk=",
-    "packages/shared/admin/src/Agents/AgentAttribution.svelte": "sha256-YlmpAdn0vNauTDOItbOSqcb/w9u8OsuJEqSi2aPP9Oo=",
+    "packages/shared/admin/src/Agents/AgentAttribution.svelte": "sha256-nBGwEy3HySL9zaivcmsHNtHUwowZby4C2TFrtHvSNRA=",
     "packages/shared/admin/src/Agents/AgentBadge.svelte": "sha256-4kHvblc7JyIHEmS54toH8xMxfykb1y2aRopKPDEOvjk=",
     "packages/shared/admin/src/Agents/AgentDirectory.svelte": "sha256-j8+GwnC6Nw/Tnce1fTvZGIauK2dW54K3Q6UojEv6O/c=",
     "packages/shared/admin/src/Agents/index.ts": "sha256-AeYdVBEjQMSPjkOhzSW6HRbuQx7v4EiPl39ZAoMG8jQ=",
@@ -1407,29 +1425,30 @@
     "packages/shared/chat/src/ChatInput.svelte": "sha256-lU6LPsynBURd6Mb4hNJ4SiRIQ5EtrFVChV4KbrvWGOo=",
     "packages/shared/chat/src/ChatMessage.svelte": "sha256-PpUf+DIw5R0FvGV4g9b4qHU8hrZQceQ9al/ha3R1y20=",
     "packages/shared/chat/src/ChatMessageAction.svelte": "sha256-pEcRybpKjXTvpfBEUzEK5ZsqQFY7Mequc8wdLyCBHso=",
-    "packages/shared/chat/src/ChatMessages.svelte": "sha256-QB0ljSSirBW556RPlFF3AksCrw21dxW8tjoFq4XYz84=",
+    "packages/shared/chat/src/ChatMessages.svelte": "sha256-M68I+kyLEwfkbYYm2aUzlyCZn8BuR86fA7TNOO0iYLU=",
     "packages/shared/chat/src/ChatSettings.svelte": "sha256-3KK1ivBHd/qrP6ODHkeWCSs7//0cKmMxzfvBipA9PzE=",
     "packages/shared/chat/src/ChatSuggestions.svelte": "sha256-xJJBHn5k57LVPEZMJJw4QY754aK1w3DDSl+u1RC4DMI=",
-    "packages/shared/chat/src/ChatThreadView.svelte": "sha256-znXq/fPkCGPHD/HWkIGWK7JFFXC47q3yhqHN1O5YfcY=",
+    "packages/shared/chat/src/ChatThreadView.svelte": "sha256-Yy6e1zSz+8tbPrufoDWCNLAbeMPgdbf+vHAAn6pnZS8=",
     "packages/shared/chat/src/ChatToolCall.svelte": "sha256-HlxCSmS74iaX3wSVYFTawJOqbyj6JJ4qP8ZPKtmQnH0=",
     "packages/shared/chat/src/ChatWorkflowMetadata.svelte": "sha256-cBV3VnTepiuZrlTfbOnBHDnQrasJT0cXG62rJxoJ25Y=",
     "packages/shared/chat/src/ChatWorkflowMoment.svelte": "sha256-jSO5dIYKRCuYdmLxfqd2+U0vKlMePOzrOHCK2XreAH8=",
     "packages/shared/chat/src/context.svelte.ts": "sha256-8uAnI1KAhil97NmMCf9mv9IlZ7T0TRKKxLmHQrbzX70=",
     "packages/shared/chat/src/index.ts": "sha256-cnoREudZzKi9Jn0PUM29xc1qTB7Z8j5QnIBKKyN64ps=",
-    "packages/shared/chat/src/types.ts": "sha256-Is+6F4dmZJbGDL1BvPlo+97bUZtNQrzEjdjx7IgMGak=",
+    "packages/shared/chat/src/types.ts": "sha256-Q3Y9rO+7/JqBAVG3+pZnV8lY9KZDi318Fbs70twvM9k=",
     "packages/shared/messaging/src/Composer.svelte": "sha256-mDu8POEo19GzW1+bDIWvQauxpZ7H1gTw5r4Z7UXMUnU=",
-    "packages/shared/messaging/src/context.svelte.ts": "sha256-NihRfF2shXYMQTnQbjfYGKmyhNT+881dUYxrBEGFrKk=",
-    "packages/shared/messaging/src/ConversationPicker.svelte": "sha256-GyuC58bLhCyxEV1cl8m1bykp3fKVsOKjPZ+/GeihVq8=",
-    "packages/shared/messaging/src/Conversations.svelte": "sha256-kEPIvS+0HxWGaoiU/UVG2sbMyoVQGTGWzllB3Q71lD0=",
+    "packages/shared/messaging/src/context.svelte.ts": "sha256-kyRfy1iaR4A1PtVf4c3+EIxHhrgjgBjR3XUNH9jpx7g=",
+    "packages/shared/messaging/src/ConversationPicker.svelte": "sha256-WXQCot9O4SbZ8IjGVcyuRHhQ9sL209LU3acbUTgVuAo=",
+    "packages/shared/messaging/src/Conversations.svelte": "sha256-WIOjfV5CmsCkhFyp9i0IOUMDz8ceMWrUc1Rr2box0hc=",
     "packages/shared/messaging/src/ConversationWorkflowSummary.svelte": "sha256-+mO7cS42J9G7FplGDcvuUealcYVAqx47qH4WqUkaxPU=",
     "packages/shared/messaging/src/index.ts": "sha256-51SFnggIOSpqEXRczLt8ySe8GJM2LmokXYfhkNtVcp4=",
     "packages/shared/messaging/src/MediaUpload.svelte": "sha256-5ORpNjGoJKb1SXWhVzFZ80Frxi0e6VYP1oM1ow2Oejo=",
-    "packages/shared/messaging/src/Message.svelte": "sha256-55HxJkzJIGsjHI36WPnrSgJC/ZNUFdvzFjUwpgcIFTY=",
+    "packages/shared/messaging/src/Message.svelte": "sha256-/i/rdtKRja1KMVaTH2P/Zog1062AiKfNmfY1lBUxhgY=",
     "packages/shared/messaging/src/NewConversation.svelte": "sha256-23nXlWNf5SY+FF7NBPVU5WVMWj+ywpAq3MUbyauX8rE=",
     "packages/shared/messaging/src/Root.svelte": "sha256-ayF6lgF3ZxI5MuuIcj1zCntD+iSfaS7lCkRRQx54NZY=",
+    "packages/shared/messaging/src/sanitize.ts": "sha256-pjf+ROpLOSEl8f3sLMywp44loupt8PKUlS2CgLgB8w0=",
     "packages/shared/messaging/src/Thread.svelte": "sha256-wF052p+7XJQJ2ccM+j9Za+DROrObEKmYCS+MXfBmTGU=",
     "packages/shared/messaging/src/types.ts": "sha256-hHc+ulSYjI46KKV/O+h845OcqMhB6feSn6oR7CV76JY=",
-    "packages/shared/messaging/src/UnreadIndicator.svelte": "sha256-oo+td3vo+3SQR4zYbS0PNjHDoQ8j4qEoqyMrYrK7Z5s=",
+    "packages/shared/messaging/src/UnreadIndicator.svelte": "sha256-IG65mT6Y0jrY2AKbFCIlFaRKKHj9XpUpViWd+lcCoT0=",
     "packages/shared/messaging/src/utils.ts": "sha256-n5s8ZSURaYg3TP01VFafGTH43dn04IiTwLtAKMU1Hyk=",
     "packages/shared/messaging/src/WorkflowThreadMoment.svelte": "sha256-FN/gYB5HCi3ltwxI0L3qjqep+jXwQE1zJSEAKtXnzlU=",
     "packages/shared/soul/src/AnchorAssuranceBadge.svelte": "sha256-IUAvzymXQ8r/oY6B5JmwdkHQ+mhW5aZzmMQC74KwkiE=",
@@ -1440,7 +1459,7 @@
     "packages/shared/soul/src/index.ts": "sha256-Vncqk2a362dW6wuohewE+iX9FNK1lh2YgGrozSRKOlc=",
     "packages/shared/soul/src/types.ts": "sha256-ENdFiwk3YwQDwbVqP0FM9hZpa2mVPOODZt1au2B+yl0=",
     "packages/shared/soul/src/utils.ts": "sha256-CaCSx7yKwUy5bQd0xDTYsJ9KtwYlNg2xEv5WZh0BvFk=",
-    "packages/shared/agent/src/AgentIdentityCard.svelte": "sha256-9QWSA/MhN/orzEXgxWgYPiLWssOrRVbNYIrvXz0mm40=",
+    "packages/shared/agent/src/AgentIdentityCard.svelte": "sha256-6t/BHnKwaGdxA2TML+5I8+Quax198PBVbvLtwTEjs7c=",
     "packages/shared/agent/src/AgentStateBadge.svelte": "sha256-e0ar0LCNboYOhnJJsagodHminlOlLQ7tYJYzt4ENMJA=",
     "packages/shared/agent/src/boundaries.ts": "sha256-jfxRLFtKF55AJlaKaA6D59PcVoX78vOLNmXkd2/oJbk=",
     "packages/shared/agent/src/ContinuityPanel.svelte": "sha256-pQute/nTPX6STdEB/kxaj60ew7UPK0qihODHtcVvvJM=",
@@ -1453,7 +1472,7 @@
     "packages/shared/agent/src/SoulRequestCard.svelte": "sha256-j7CsxbihBKnitw2Guv0SdoQkJWI/3ZzfMPeA7ytgVWQ=",
     "packages/shared/agent/src/stitch.ts": "sha256-vgRcHhWIsFOVhBE53F4Yt4jQTDbfdQt5cFcbMkExug8=",
     "packages/shared/agent/src/surfaces.ts": "sha256-/65lt7oXWJ1hgzzrX8OixXXZSG1XOA5J63XPZjed9xo=",
-    "packages/shared/agent/src/workflow.ts": "sha256-GWlBi98PSoG0dpg3QZ2B7UcDGdWCy6UaaESUWha1WZM="
+    "packages/shared/agent/src/workflow.ts": "sha256-/+1zlGvvCbqEdBPRkkJaqMfLHtiaFLHojIFaE0G0Vls="
   },
   "components": {
     "primitives": {
@@ -1654,8 +1673,8 @@
         },
         {
           "path": "src/components/LoadingState.svelte",
-          "checksum": "sha256-tqYIlxrj0oU+sZG2QutpE/DXtavnIcQWLnxTCoNTDhk=",
-          "size": 3103
+          "checksum": "sha256-5X5DNGvshEuz865FvJSEr1B5+NCGqFA5rCugW888ukE=",
+          "size": 3109
         },
         {
           "path": "src/components/LoadingState.svelte.d.ts",
@@ -1794,8 +1813,8 @@
         },
         {
           "path": "src/components/Settings/SettingsField.svelte",
-          "checksum": "sha256-4EhZblGFyVjTxI+a/NRfg9/jU6LOBVlKQNqbsHYK5ic=",
-          "size": 1121
+          "checksum": "sha256-wbVYgI463RWnLAwuu6Cz7Bd38fNH+aGnICFU50TbC1M=",
+          "size": 1150
         },
         {
           "path": "src/components/Settings/SettingsField.svelte.d.ts",
@@ -1804,8 +1823,8 @@
         },
         {
           "path": "src/components/Settings/SettingsGroup.svelte",
-          "checksum": "sha256-KpdGd92fc1qQmydKQR3QiMw4eO1refmrqQXbPl4sUmw=",
-          "size": 928
+          "checksum": "sha256-CY8lw54tgqf1W3a4yJVaAsoH5BOVb8eTioM+BZapMrM=",
+          "size": 945
         },
         {
           "path": "src/components/Settings/SettingsGroup.svelte.d.ts",
@@ -1814,8 +1833,8 @@
         },
         {
           "path": "src/components/Settings/SettingsSection.svelte",
-          "checksum": "sha256-2TFx4aCcTUHKcZV3BZLA0+zhdnfKkdFwakWW3FTVG98=",
-          "size": 1507
+          "checksum": "sha256-mnWv/8CK2gnhjxa1bG4Lfy1QiTKayU4Rc4PfSoVeg7g=",
+          "size": 1580
         },
         {
           "path": "src/components/Settings/SettingsSection.svelte.d.ts",
@@ -1864,8 +1883,8 @@
         },
         {
           "path": "src/components/Spinner.svelte",
-          "checksum": "sha256-Gd5p+wZX8yGgz/Bjld083ifoW1F8BkDFMxRhIP0I1uw=",
-          "size": 3253
+          "checksum": "sha256-ynD6klrR2Ly8uNJ7uQFi39SPmhFx9oc58HRyFdbiA4c=",
+          "size": 3259
         },
         {
           "path": "src/components/Spinner.svelte.d.ts",
@@ -1944,8 +1963,8 @@
         },
         {
           "path": "src/components/Theme/ColorHarmonyPicker.svelte",
-          "checksum": "sha256-8ETkzGWJsjXlpNQMsLoS5vrPJkdi5Ew98L6oK6/jl28=",
-          "size": 3925
+          "checksum": "sha256-4F43ZCvymVsdHJt+YOauMizo1Kj50ay900AYSs40xOI=",
+          "size": 3976
         },
         {
           "path": "src/components/Theme/ColorHarmonyPicker.svelte.d.ts",
@@ -1954,8 +1973,8 @@
         },
         {
           "path": "src/components/Theme/ContrastChecker.svelte",
-          "checksum": "sha256-n7Dj6sGwmWleNjMssTBgvbTV2P6CMmr9gkaCtBfO3CQ=",
-          "size": 6006
+          "checksum": "sha256-gQcxrUreAHv2k3NVFY8HVRkx0LKiz/cj3ai85jTYAKM=",
+          "size": 6050
         },
         {
           "path": "src/components/Theme/ContrastChecker.svelte.d.ts",
@@ -1964,8 +1983,8 @@
         },
         {
           "path": "src/components/Theme/ThemeWorkbench.svelte",
-          "checksum": "sha256-pYYTHvG3RC7CZFCfExdAax6BCR0gw69pQ4bvoP2COh8=",
-          "size": 4707
+          "checksum": "sha256-V3cNygL5o1lQIo2EgcE+yfq/mCkzjtFDyblVgQs62YE=",
+          "size": 4729
         },
         {
           "path": "src/components/Theme/ThemeWorkbench.svelte.d.ts",
@@ -2024,8 +2043,8 @@
         },
         {
           "path": "src/theme.css",
-          "checksum": "sha256-uEWixXZs8vG/vqICu/80Gxs9RqSdVcOu+Rk8oy0SmvU=",
-          "size": 108482
+          "checksum": "sha256-l1CfoRyE8ZfUzLBLUwcBRbylpRZ1pn+zcYKolbO0NuI=",
+          "size": 108349
         },
         {
           "path": "src/transitions/fadeDown.d.ts",
@@ -2129,8 +2148,8 @@
       "files": [
         {
           "path": "src/behaviors/dismissable.ts",
-          "checksum": "sha256-Mx5Qq3HWsifrlEjw7o506FQW4KwPBq10JIs1zJO3FlU=",
-          "size": 9318
+          "checksum": "sha256-DOelRDpJ1t0ySZvPscw6ylYun3S6McVlZwX7m1fpgJs=",
+          "size": 9311
         },
         {
           "path": "src/behaviors/focus-trap.ts",
@@ -2199,8 +2218,8 @@
         },
         {
           "path": "src/primitives/menu.ts",
-          "checksum": "sha256-qC9yAh5SDnka9IJ5lZl08yljzGhQmfIB0Sy/8iOrwJ4=",
-          "size": 15627
+          "checksum": "sha256-hWJ2gkXpHybdJMmwivGy4jotd208CutjKSnb/0iHwC8=",
+          "size": 15611
         },
         {
           "path": "src/primitives/modal.ts",
@@ -2265,8 +2284,8 @@
       ],
       "dependencies": [],
       "peerDependencies": [
-        { "name": "focus-trap", "version": "^8.0.1" },
-        { "name": "tabbable", "version": "^6.4.0" },
+        { "name": "focus-trap", "version": "^8.2.2" },
+        { "name": "tabbable", "version": "^6.5.0" },
         { "name": "svelte", "version": "^5.55.1" }
       ],
       "tags": []
@@ -5370,13 +5389,13 @@
         },
         {
           "path": "src/palette-utils.d.ts",
-          "checksum": "sha256-6vS0KUYZNq7a8wfbNRnFjaLIUhweOmsMat5Ig0q+z4Q=",
-          "size": 2838
+          "checksum": "sha256-zwi4Qjce6cSlSgoCIg0mBhITbA3UsytJ6ZOjhNw62uo=",
+          "size": 2826
         },
         {
           "path": "src/palette-utils.ts",
-          "checksum": "sha256-9q8EmrYc0YrlPfofCXS8j5LrgjJWaHs8MaH/B9qPd44=",
-          "size": 4499
+          "checksum": "sha256-mnKFqSk8EjheNpibstT8c/01vN+01ZCvpyqGLHiN8Mg=",
+          "size": 4487
         },
         {
           "path": "src/palettes.json",
@@ -5471,13 +5490,13 @@
         },
         {
           "path": "src/linkifyMentions.d.ts",
-          "checksum": "sha256-Y4iI3X70RoQsIccXLUXNZ7elH38Al3wZ6ff/m5snZGc=",
-          "size": 1844
+          "checksum": "sha256-Qd9UByPMdrv9ED1QeqveNcepPoOnGxu7KoB6pF1RqjE=",
+          "size": 3759
         },
         {
           "path": "src/linkifyMentions.ts",
-          "checksum": "sha256-UYUIpydwdWZYyohprR/RlNYqlhiWgmgltb8IwaVFwh4=",
-          "size": 5807
+          "checksum": "sha256-SkMfHI1UNuZweRqSH8JQ+h4ImdHujBzMPEVPNaNq/O4=",
+          "size": 21776
         },
         {
           "path": "src/performance.d.ts",
@@ -5516,8 +5535,8 @@
         },
         {
           "path": "src/sanitizeHtml.ts",
-          "checksum": "sha256-8Up1pLPTvjsF8TbyFYKQfOjBJjJyIZ1RnnTbjY8Vjmk=",
-          "size": 4250
+          "checksum": "sha256-40tPOu8TbN2fCvDIkTYysfmXrV+k8cO0ZQ3yvotppA8=",
+          "size": 7395
         },
         {
           "path": "src/theme/color-harmony.d.ts",
@@ -5601,9 +5620,24 @@
       "type": "adapters",
       "files": [
         {
+          "path": "src/authExpiry.d.ts",
+          "checksum": "sha256-awRLOpltRLRyWnuM5SZ9UEuiAIQdja8mXpzRfpdv9z8=",
+          "size": 6367
+        },
+        {
+          "path": "src/authExpiry.ts",
+          "checksum": "sha256-SF8Y0iR/lrazZcqXuUg+ICu6/zlt3DBZkEkBMn3oOFo=",
+          "size": 10415
+        },
+        {
           "path": "src/examples/TransportManagerExample.ts",
           "checksum": "sha256-wQ7sepE4UYE23zTCihyktGomWPmEXvzYfbWPT0Aco2c=",
           "size": 7585
+        },
+        {
+          "path": "src/fetch.d.ts",
+          "checksum": "sha256-SJh+SkH0aCEC04ayoOpmdTJ4NGPh/Vmd6rE4tK4bqM8=",
+          "size": 212
         },
         {
           "path": "src/fetch.ts",
@@ -5622,8 +5656,8 @@
         },
         {
           "path": "src/fixtures/soul-bootstrap.ts",
-          "checksum": "sha256-FragyJY6MGXPBBLtlmFWMk86k5FueRvKohQeDkpOsuI=",
-          "size": 43303
+          "checksum": "sha256-t/QGRLtSR5fIElZfiOu/H+Z0cJ5+sQJW7Lvj1rSPJ84=",
+          "size": 43415
         },
         {
           "path": "src/graphql/cache.d.ts",
@@ -5637,43 +5671,43 @@
         },
         {
           "path": "src/graphql/client.d.ts",
-          "checksum": "sha256-pJIC62N40bdFXhryg13X0HezmJFinzT2I9n/6qK1iJo=",
-          "size": 1745
+          "checksum": "sha256-flla8fzNoB0zTKoCPaE4qFXaRB/hjluSlSnsJlRB5i8=",
+          "size": 3017
         },
         {
           "path": "src/graphql/client.ts",
-          "checksum": "sha256-ueB6/jmcKQu54uT72TkqdTRz+yAsTGl9mrGV+jeTRHA=",
-          "size": 12781
+          "checksum": "sha256-G2+gPI9iro/ZIwDjifxptx9QayzFu72OzsaArsw9M1c=",
+          "size": 29248
         },
         {
           "path": "src/graphql/generated/types.d.ts",
-          "checksum": "sha256-06CrbILnoClJ2Egs3gR2tZE271RgSroJXY7QxF46uLI=",
-          "size": 1084927
+          "checksum": "sha256-TM75OuqdnLJE8W/nf0N6vLFrqjYzpGrf/7mTwhqMkMM=",
+          "size": 1934777
         },
         {
           "path": "src/graphql/generated/types.ts",
-          "checksum": "sha256-yCYpsc3Y9cR8DNKexxXjcuWezFg3ORJuSKSmuwP7UaI=",
-          "size": 2622787
+          "checksum": "sha256-/XNViA1lWXK9W8ysF0BvS2TPc33/ncpisllw2HrEYD0=",
+          "size": 2630180
         },
         {
           "path": "src/graphql/index.d.ts",
-          "checksum": "sha256-orLx9yyDGxzzxd5wHeLg/XKql86ntzhZSG6iUj6Tjx8=",
-          "size": 731
+          "checksum": "sha256-Eu5nqaAHgFoa1HyMOE/cKCigJGYf8t8TxzmxibQR2Mk=",
+          "size": 1005
         },
         {
           "path": "src/graphql/index.ts",
-          "checksum": "sha256-v2KVurPl1IXXRXdCjazWatn3pXPvE3NWFmIMCcI/mE8=",
-          "size": 867
+          "checksum": "sha256-330bRj505ZOWM5XTbOpFZW1n8sy2/SCbzCu9XXYvrOA=",
+          "size": 973
         },
         {
           "path": "src/graphql/LesserGraphQLAdapter.d.ts",
-          "checksum": "sha256-tS4MSxFQSiPlKqIotIdGyDRMyfu7BjJ3dpPBXfjVqtU=",
-          "size": 586425
+          "checksum": "sha256-Ygqsw+cFct65SmbG+VZOHcqr+fRWWFmxsfKXbbRH1jc=",
+          "size": 709884
         },
         {
           "path": "src/graphql/LesserGraphQLAdapter.ts",
-          "checksum": "sha256-IuqJ1AkjGy7LpKzIiz+Ra+boLnRE2FJRESdS37zQhfE=",
-          "size": 59579
+          "checksum": "sha256-R9I41qls8ilPqgUIuW3s/wfRS+2278ou9kYHxKXD+Fk=",
+          "size": 65026
         },
         {
           "path": "src/graphql/optimistic.d.ts",
@@ -5697,18 +5731,28 @@
         },
         {
           "path": "src/index.d.ts",
-          "checksum": "sha256-N9rD+C+FY2TCOW91GXIb5Cqm9lMS5na3I8MoSewctBE=",
-          "size": 5860
+          "checksum": "sha256-waycgHPE3YLWC4d6wxrDt3Lx6/6W7KvSDSMORIl3cLc=",
+          "size": 12124
         },
         {
           "path": "src/index.ts",
-          "checksum": "sha256-I8QbWbCV62ow+5WGn16clk2wzHajnkXhHQMt6jBLAX8=",
-          "size": 13189
+          "checksum": "sha256-xkBiSjdXZzk/ba8Cfax6AAgkIJFKn9kaI51ABAvTzZE=",
+          "size": 13712
+        },
+        {
+          "path": "src/lesser/client.d.ts",
+          "checksum": "sha256-OvfIIiHaDxPj62XqfI2d2i4ql66K9tcMdsrbQ/IsLDY=",
+          "size": 1555
         },
         {
           "path": "src/lesser/client.ts",
           "checksum": "sha256-1zz1lpu6roGoTtOC/LIwXsT8oLHXkFV4TA8OblQ2Zhs=",
           "size": 4929
+        },
+        {
+          "path": "src/lesser/index.d.ts",
+          "checksum": "sha256-SmB0+8+CG5PWubuptHWolByy48ZWNVgD6z9LsG9W1kw=",
+          "size": 383
         },
         {
           "path": "src/lesser/index.ts",
@@ -5737,13 +5781,13 @@
         },
         {
           "path": "src/mappers/lesser/graphqlConverters.d.ts",
-          "checksum": "sha256-siPKHz6jxTh5f7FoUi9304FpiYae8w8uLjVB+RvEdrQ=",
-          "size": 2120
+          "checksum": "sha256-Pg3h1fC/xacdwNx6eYB3EcgKvUC2iSHOAD32lIQug3g=",
+          "size": 2304
         },
         {
           "path": "src/mappers/lesser/graphqlConverters.ts",
-          "checksum": "sha256-/16itGAqYyv78t1HO3+x59rCLG/PeMu3Agv0EwngFRk=",
-          "size": 23933
+          "checksum": "sha256-sD/u9kY6TuUFO2BDn6ssKpAlT9dQEbfrM4hgxxSkUiY=",
+          "size": 23947
         },
         {
           "path": "src/mappers/lesser/mappers.d.ts",
@@ -5757,13 +5801,13 @@
         },
         {
           "path": "src/mappers/lesser/types.d.ts",
-          "checksum": "sha256-YmLtvkMIU0AKzjp54SKx3PyeSbUTOUKxIoeMwWWM+ck=",
-          "size": 15487
+          "checksum": "sha256-nA8BqfVLYnFznLd9cvL1IFjJ+VUU7eppvraaIOUH828=",
+          "size": 16345
         },
         {
           "path": "src/mappers/lesser/types.ts",
-          "checksum": "sha256-s20ROyPKOQRLjIWXqSVqkwDGPbeRF7G41Ia70D0orfE=",
-          "size": 18607
+          "checksum": "sha256-QAI7va1qEFj46RCYz6YKysM3e3X3ZaityB/U6fKcc9I=",
+          "size": 18625
         },
         {
           "path": "src/mappers/mastodon/mappers.d.ts",
@@ -5786,29 +5830,59 @@
           "size": 8699
         },
         {
+          "path": "src/messaging/createLesserMessagesHandlers.d.ts",
+          "checksum": "sha256-ofjdpiklw7PXUzMA9RBeSpGzS6pIU3pZQhtE9pol6Qk=",
+          "size": 3926
+        },
+        {
           "path": "src/messaging/createLesserMessagesHandlers.ts",
-          "checksum": "sha256-QGXz+0mFl0V4NM3JeTFag+9jLk61CIBUlf8kR6mXPZk=",
-          "size": 9856
+          "checksum": "sha256-T3U/pek4JoLVDFxuGRFKz25HqOw2BZAZlXBVtav9Fn4=",
+          "size": 10690
+        },
+        {
+          "path": "src/messaging/index.d.ts",
+          "checksum": "sha256-SEegWEaSJOfKMObaPo7I3y1QL8STNxm0Knn2cGq5VrI=",
+          "size": 231
         },
         {
           "path": "src/messaging/index.ts",
-          "checksum": "sha256-2P3bCyR2sBhuV0GrrVnAaqGSq8dMVhA95dIJZ2s+eKw=",
-          "size": 169
+          "checksum": "sha256-hIJPyGpRY8EhsYDn/PnzPbahiYpTH9sgPKS5VV9H0cc=",
+          "size": 195
+        },
+        {
+          "path": "src/messaging/messagingOperations.d.ts",
+          "checksum": "sha256-9JVXXqbcFYEx18ALXp71JyttOgu+qDKEulbaDM/X08Q=",
+          "size": 3781
+        },
+        {
+          "path": "src/messaging/messagingOperations.ts",
+          "checksum": "sha256-KlymQ8y2PhLoIRqvOZldwtuK+A7bJ/BSXv0WCeQrEK8=",
+          "size": 8924
         },
         {
           "path": "src/models/unified.d.ts",
-          "checksum": "sha256-8Z2SFddm7Cszpe6EoB85lJVH0xW16xjo68PhJGuvmeQ=",
-          "size": 14514
+          "checksum": "sha256-gr6KNzGcJe0ByYS/245nF+S+sRUCBH6Uz2oPrkzGAYk=",
+          "size": 15108
         },
         {
           "path": "src/models/unified.ts",
-          "checksum": "sha256-KRILzc/F51pCxnEX9cvc2IG7lns7IO48k/UK489J/Vs=",
-          "size": 15938
+          "checksum": "sha256-quLVImKg0uJ62HWRnol/PeR/lq7tIkIqGSWCA7lRssg=",
+          "size": 15954
+        },
+        {
+          "path": "src/rest/generated/lesser-api.d.ts",
+          "checksum": "sha256-2boAPQCevaAxGLqKJt0m6wpkAiKZCIKSHUolRPhx8rk=",
+          "size": 584767
         },
         {
           "path": "src/rest/generated/lesser-api.ts",
-          "checksum": "sha256-8YKhh1BeBVfU+NwuP1QvpQGcuTxXlvQkbTUkYj0I5xQ=",
-          "size": 586090
+          "checksum": "sha256-Ds/S29tkQX3l4AoT4TgPMdYfIWCmA3D3nu//88m2CCk=",
+          "size": 584728
+        },
+        {
+          "path": "src/rest/generated/lesser-host-api.d.ts",
+          "checksum": "sha256-6BzQZn/9Ey01WhWodDo8+WnJ7szqA2g/TWbsr7KHrMk=",
+          "size": 242388
         },
         {
           "path": "src/rest/generated/lesser-host-api.ts",
@@ -5816,19 +5890,39 @@
           "size": 242344
         },
         {
+          "path": "src/soul/bootstrap.d.ts",
+          "checksum": "sha256-PMZRuojFqqNoFhj5I85Cv/8b9/VBcucal6V8+lRbuZY=",
+          "size": 7960
+        },
+        {
           "path": "src/soul/bootstrap.ts",
           "checksum": "sha256-d463JIAlIQs5JE6eaewiGChBCqfQmIwXxhnGjWbWVIU=",
           "size": 22175
         },
         {
+          "path": "src/soul/bootstrapSigningPlan.d.ts",
+          "checksum": "sha256-UmERjI50eC+4OghfGQ9klyHHSjME26iTWiynn3f8Mxk=",
+          "size": 4563
+        },
+        {
           "path": "src/soul/bootstrapSigningPlan.ts",
-          "checksum": "sha256-6fzPYUdPR9k/hQDuz9jmsPg8angSevxWctnopcx3+zE=",
-          "size": 22145
+          "checksum": "sha256-eOnGL+KpHeyvG6aA/ezWE5cj7+x323r6CvF/tPdHjAI=",
+          "size": 22134
+        },
+        {
+          "path": "src/soul/client.d.ts",
+          "checksum": "sha256-tP0fYcdGw+gsz0WxYKRrY76R2UWMFWwXy5mrekPPFrI=",
+          "size": 7359
         },
         {
           "path": "src/soul/client.ts",
-          "checksum": "sha256-AmLlG5YoBhg6PK0PXZe65Gl6GkFpJjBmFNbEt1A9Gnc=",
-          "size": 18446
+          "checksum": "sha256-bWWTjXSh0/d6FCMkczsOPDToHIeqGJb0wvHD3BTTTLs=",
+          "size": 18441
+        },
+        {
+          "path": "src/soul/ens.d.ts",
+          "checksum": "sha256-zscPB4C53KUTaIhqzFplxE9AAjrBO2Rj0e63hoAVeR8=",
+          "size": 293
         },
         {
           "path": "src/soul/ens.ts",
@@ -5836,9 +5930,19 @@
           "size": 854
         },
         {
+          "path": "src/soul/hostedBootstrap.d.ts",
+          "checksum": "sha256-QKILMAKMXwbPreMK5nfOTdjzNngVjgEULuQf6VTSrP0=",
+          "size": 16618
+        },
+        {
           "path": "src/soul/hostedBootstrap.ts",
-          "checksum": "sha256-0g14qWreI+oFFNTZ4E3H6++b0A4TVVr91BC+JinzvvM=",
-          "size": 58302
+          "checksum": "sha256-duNF8aLuAzsFJMsc9wMy40P3jGz1MTePH5tlZpUmHHQ=",
+          "size": 58291
+        },
+        {
+          "path": "src/soul/index.d.ts",
+          "checksum": "sha256-ZdNZwlTKJV6zrsBVo+/lUF97I4RkpVcJp3sW4JPjR1U=",
+          "size": 5267
         },
         {
           "path": "src/soul/index.ts",
@@ -5877,8 +5981,8 @@
         },
         {
           "path": "src/stores/index.d.ts",
-          "checksum": "sha256-TizATIopvpJ4bpSmQiAJaMBPAz2aVfT1Nhkwm6zChzU=",
-          "size": 312
+          "checksum": "sha256-6nUaanPHW1PlYP7S66Yqei8+LlOC8PTUgWv8qa3kOhA=",
+          "size": 390
         },
         {
           "path": "src/stores/index.ts",
@@ -5897,8 +6001,8 @@
         },
         {
           "path": "src/stores/presenceStore.d.ts",
-          "checksum": "sha256-A9+pEhr9YNk9Tbtc/MPo0gadUaHPrRNYY928TnAZ5aU=",
-          "size": 352
+          "checksum": "sha256-g7SzTw0xv8fc+RixvwUROdNLBfIRALKGBE7jGUX2xKY=",
+          "size": 755
         },
         {
           "path": "src/stores/presenceStore.ts",
@@ -5917,13 +6021,13 @@
         },
         {
           "path": "src/stores/types.d.ts",
-          "checksum": "sha256-EJsjt8cbqdi4xA+qIJ0Tx9CtYn96zQMwzete6ATsdgU=",
-          "size": 14427
+          "checksum": "sha256-UpVbjkhqJ5Ncd0G0bBqHA1jQLbrjCXyntvDS6K+YR0E=",
+          "size": 15900
         },
         {
           "path": "src/stores/types.ts",
-          "checksum": "sha256-6VKZNXC+zy4vFbdQXC/Bos2Xvwmx2uTAnc332aaPwa8=",
-          "size": 16082
+          "checksum": "sha256-uk1bKCAjZZ7a3XULE3i35wGFu0ktbSfMJuRTr+kTy5c=",
+          "size": 16088
         },
         {
           "path": "src/stores/unifiedToNotification.d.ts",
@@ -5967,8 +6071,8 @@
         },
         {
           "path": "src/TransportFallback.ts",
-          "checksum": "sha256-X85VSEW2chW1Owb9TbZVCO2d6inAfhKhcb3n6bpU6yI=",
-          "size": 8868
+          "checksum": "sha256-sf34eYUQPq1tnyNy/vI/YJgRRP0fCXLGZIaCtLIZYuU=",
+          "size": 8862
         },
         {
           "path": "src/TransportManager.d.ts",
@@ -5982,23 +6086,23 @@
         },
         {
           "path": "src/types.d.ts",
-          "checksum": "sha256-yekZqSPqL3axk9y1kTrw/ul4XzXSy/0uUIaOqQVvhCc=",
-          "size": 10046
+          "checksum": "sha256-Ej1mw78JZhp3u5XN6L5nt2JBOBYM/6bArpKyhmbhcM4=",
+          "size": 11639
         },
         {
           "path": "src/types.ts",
-          "checksum": "sha256-Mi3r+kfwYnYo2tz/7p11eGvOyXIckhnS7v5GW5gnnrU=",
-          "size": 10985
+          "checksum": "sha256-1wNT03lpGpffT5helP+woh7Fvo7bQpLExQOCHp/TZD4=",
+          "size": 12582
         },
         {
           "path": "src/WebSocketClient.d.ts",
-          "checksum": "sha256-BL+G+MihfyouWCGXaKlbnJe3CxnKaoyqsB5aUu0irWg=",
-          "size": 1741
+          "checksum": "sha256-w8EGYimZ3pmCSqOJ+KS1bj8gHmNmKH44mgKSNak3VEk=",
+          "size": 6140
         },
         {
           "path": "src/WebSocketClient.ts",
-          "checksum": "sha256-bL5wFt5Cs3UHeVG+ogzUDoFM4vMSk+dWbFJqYsU+1Lg=",
-          "size": 12641
+          "checksum": "sha256-sb4EYwL4blJV8Ud0mhKxzep51gDDX8LMchn5K6voNP4=",
+          "size": 24779
         },
         {
           "path": "src/WebSocketPool.d.ts",
@@ -6013,12 +6117,12 @@
       ],
       "dependencies": [],
       "peerDependencies": [
-        { "name": "@apollo/client", "version": "^4.1.7" },
+        { "name": "@apollo/client", "version": "4.2.9" },
         { "name": "@apollo/client-react-streaming", "version": "^0.14.5" },
         { "name": "@graphql-typed-document-node/core", "version": "^3.2.0" },
         { "name": "graphql", "version": "^16.13.2" },
-        { "name": "graphql-ws", "version": "^6.0.8" },
-        { "name": "viem", "version": "2.51.3" },
+        { "name": "graphql-ws", "version": "^6.2.0" },
+        { "name": "viem", "version": "^2.55.10" },
         { "name": "svelte", "version": "^5.55.1" }
       ],
       "tags": []
@@ -6053,7 +6157,7 @@
         { "name": "remark-gfm", "version": "^4.0.1" },
         { "name": "remark-parse", "version": "^11.0.0" },
         { "name": "remark-rehype", "version": "^11.1.2" },
-        { "name": "shiki", "version": "^4.0.2" },
+        { "name": "shiki", "version": "^4.3.1" },
         { "name": "unified", "version": "^11.0.5" },
         { "name": "@equaltoai/greater-components-primitives", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-tokens", "version": "0.11.9" },
@@ -6293,8 +6397,8 @@
         },
         {
           "path": "src/types.ts",
-          "checksum": "sha256-9wKDSQaj3aQ9OXIqdTbYM6O6sGbAxfpwa0I1119yBLg=",
-          "size": 6274
+          "checksum": "sha256-Lk1xOJfodkIOsC/+ToEfru21S6pKZCLP44VX+m5Uh1A=",
+          "size": 6267
         },
         {
           "path": "src/utils/formatters.ts",
@@ -6418,8 +6522,8 @@
         },
         {
           "path": "src/adapters/graphql/generated/types.ts",
-          "checksum": "sha256-yCYpsc3Y9cR8DNKexxXjcuWezFg3ORJuSKSmuwP7UaI=",
-          "size": 2622787
+          "checksum": "sha256-/XNViA1lWXK9W8ysF0BvS2TPc33/ncpisllw2HrEYD0=",
+          "size": 2630180
         },
         {
           "path": "src/adapters/graphql/index.ts",
@@ -6433,8 +6537,8 @@
         },
         {
           "path": "src/adapters/graphql/types.ts",
-          "checksum": "sha256-0GgEc9AYxNSfWTVE9POQu0haMmO+PydpLzVw90hoDls=",
-          "size": 12566
+          "checksum": "sha256-llQ47WLpMlEvr73zg/vDntm9SvevHx1FsBpdm6VoJyg=",
+          "size": 12548
         },
         {
           "path": "src/adapters/index.ts",
@@ -6463,13 +6567,13 @@
         },
         {
           "path": "src/components/ComposeBox.svelte",
-          "checksum": "sha256-Z34YCX1uBhW5wIUDtxt8JfT45V+9V8/gXuyXBxhz2n4=",
-          "size": 14364
+          "checksum": "sha256-/RHEB1i42dUcUEMi/XlEfYr2Fuh5RyWoBOINn3zr/LA=",
+          "size": 18403
         },
         {
           "path": "src/components/ContentRenderer.svelte",
-          "checksum": "sha256-MTdVs16n8HmyNOHT1124Nb/KqQ7M7jrUQkJgjv3BZi0=",
-          "size": 4369
+          "checksum": "sha256-I1ZyUiZ5qE7yDi67V1cp2gTupzF2SfQBRCa2rlxePTQ=",
+          "size": 3038
         },
         {
           "path": "src/components/Filters/context.svelte.ts",
@@ -6813,13 +6917,13 @@
         },
         {
           "path": "src/components/TimelineVirtualized.svelte",
-          "checksum": "sha256-QiZNQ9pJOSENahpJJS3R3lRHSryo0XRkckSX0wjuv7c=",
-          "size": 5823
+          "checksum": "sha256-Mty8DomczwTimKMKLgbfbGVAPZTvqIvNSILgF8aw+GM=",
+          "size": 5818
         },
         {
           "path": "src/components/TimelineVirtualizedReactive.svelte",
-          "checksum": "sha256-8qgAHq7tcP4MUplmNH44EKx3kQfqsZcex9EAWABCBTI=",
-          "size": 12392
+          "checksum": "sha256-lS8GwVRvUqqq3CWMSuIj3YRiZjzVcRTVaT4sMpHQ3/8=",
+          "size": 12387
         },
         {
           "path": "src/generics/adapters.ts",
@@ -6828,8 +6932,8 @@
         },
         {
           "path": "src/generics/index.ts",
-          "checksum": "sha256-1J12dnWSSWFzBffByAVaxrEjo4w1wHd9Pvv9ZFHrDi0=",
-          "size": 17981
+          "checksum": "sha256-w886Mbc4SUSsN2n5cetylyX379h1E4b6lKXG58SEte8=",
+          "size": 18039
         },
         {
           "path": "src/greater-components-fediverse.css",
@@ -6838,8 +6942,8 @@
         },
         {
           "path": "src/index.ts",
-          "checksum": "sha256-VBkCYU+IlH5PWWhbZ4GHKAbJmkttJaKfAqjBrIx/xqA=",
-          "size": 14223
+          "checksum": "sha256-yD5mXAWYCwaIp7grSEXcbMk8FnsS4la+OEl7tPkmbaA=",
+          "size": 14705
         },
         {
           "path": "src/lib/graphqlTimelineStore.svelte.ts",
@@ -6933,8 +7037,8 @@
         },
         {
           "path": "src/patterns/MediaComposer.svelte",
-          "checksum": "sha256-+Ul0ipKi6yYWafzpOTqGBP8xYg2VL8+/oyzXc9lia3E=",
-          "size": 21821
+          "checksum": "sha256-dzfMJm7bnHp1RlkGkS7Xzkf4t2D47b+W1DjEolQE1tg=",
+          "size": 26286
         },
         {
           "path": "src/patterns/ModerationTools.svelte",
@@ -6968,18 +7072,23 @@
         },
         {
           "path": "src/theme.css",
-          "checksum": "sha256-wiMgWvybANnq8ikC0qHMur1K0g4iwepGGozhYuV6QCI=",
-          "size": 310684
+          "checksum": "sha256-jWzBOQrht8wCb7IIO2aezpPjsAtLMPGMdJqbMn3jS5Y=",
+          "size": 315681
         },
         {
           "path": "src/types.ts",
-          "checksum": "sha256-Ddg+azl13+LAj3LpXKvtReBHODrcyyrwYHtXssLBOl0=",
-          "size": 12293
+          "checksum": "sha256-LsvPeq3dcfyAB4tUl06yDjXp5FmRud3mbSddYUukApM=",
+          "size": 12689
         },
         {
           "path": "src/utils/notificationGrouping.ts",
-          "checksum": "sha256-h/6xwSoua5lvEsXzV66EhlKfxdH5VySXQs3hs7uuN5M=",
-          "size": 8747
+          "checksum": "sha256-eTDsv7SGFpYPrEr54ovNYKSTCGzkEc31OmwyMk1bmAk=",
+          "size": 8739
+        },
+        {
+          "path": "src/utils/reach.ts",
+          "checksum": "sha256-a1yhABVw6Z6IeNwUcIcjhQPbmACQcT5WEb6JnJeUORY=",
+          "size": 6880
         }
       ],
       "styles": {
@@ -7014,7 +7123,7 @@
         { "name": "@equaltoai/greater-components-tokens", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-utils", "version": "0.11.9" },
         { "name": "@graphql-typed-document-node/core", "version": "^3.2.0" },
-        { "name": "@tanstack/svelte-virtual", "version": "^3.13.23" },
+        { "name": "@tanstack/svelte-virtual", "version": "^3.13.35" },
         { "name": "svelte", "version": "^5.55.1" }
       ],
       "types": [
@@ -7128,7 +7237,7 @@
       ],
       "includes": {
         "primitives": [],
-        "shared": ["primitives", "icons", "content", "utils", "headless"],
+        "shared": ["primitives", "icons", "utils", "headless"],
         "patterns": [],
         "components": []
       },
@@ -7140,33 +7249,33 @@
         },
         {
           "path": "src/components/Article/Content.svelte",
-          "checksum": "sha256-paCAdQ5yRDaVEpY5pwfmcU6Akx1gAPOnIqSNK3WYKo0=",
-          "size": 1697
+          "checksum": "sha256-413QA/MuY8zUIuafbf6bZnhBkI/dUJEPfoq16Tr7Xfc=",
+          "size": 1717
         },
         {
-          "path": "src/components/Article/context.ts",
+          "path": "src/components/Article/context.svelte.ts",
           "checksum": "sha256-bYXS4NwSLcHdl8QnpVedTKNR94Tq1CjD+lUzj4zuwKI=",
           "size": 3179
         },
         {
           "path": "src/components/Article/date.ts",
-          "checksum": "sha256-eX3Soy2ltg+eMjQz6s0cowt/PUVlS2tj11WYS9x6Z+8=",
-          "size": 609
+          "checksum": "sha256-xrAo3YHkDeEHEaqH22Ezv/QWPuMPKcSz5bqk3brnnOY=",
+          "size": 622
         },
         {
           "path": "src/components/Article/Footer.svelte",
-          "checksum": "sha256-4ko7rj3fBa6Wd3qPjppbqGxBXukvBrz50TgFFqMobkk=",
-          "size": 1049
+          "checksum": "sha256-hfM4IWmoOXUlwPU04MiJkaNnPwykq5a0PQvsuhByfn4=",
+          "size": 1056
         },
         {
           "path": "src/components/Article/Header.svelte",
-          "checksum": "sha256-T79P0Colz9PfzGJpw//7sY7PNwqaXo2B6zk/1nPLfJw=",
-          "size": 1449
+          "checksum": "sha256-79OpRsaaMgpdVQWzr/WF/w7U7X11+tCbepZ/Y7crtRg=",
+          "size": 1456
         },
         {
           "path": "src/components/Article/index.ts",
-          "checksum": "sha256-OQmVd0L2/zY4hGqgC9y5eeOPTrkZCru/O1sdN+r5IQk=",
-          "size": 2572
+          "checksum": "sha256-0iuzVKuEzw0lyN0IRFJWjRc4tGYTY/QMpkhyNrK3Qi4=",
+          "size": 2579
         },
         {
           "path": "src/components/Article/normalize.ts",
@@ -7180,8 +7289,8 @@
         },
         {
           "path": "src/components/Article/ReadingProgress.svelte",
-          "checksum": "sha256-vCMh+fX213ceffrhwZK2hi0lOUqLLmOxvw8zTJgmzk8=",
-          "size": 1600
+          "checksum": "sha256-ISJhocglhnvUANh+zhza3uPaZxHQibQKRqNXs/EpgUI=",
+          "size": 1607
         },
         {
           "path": "src/components/Article/RelatedPosts.svelte",
@@ -7190,18 +7299,18 @@
         },
         {
           "path": "src/components/Article/Root.svelte",
-          "checksum": "sha256-+ktqxdP4Cvnk4KyfvraFwZlbQaJMFPUYXh3HZ/A6Rf8=",
-          "size": 1684
+          "checksum": "sha256-zndTVKMK7eivdWD52edOvzFYu9OEgiVMF7y6I5jo7lw=",
+          "size": 1691
         },
         {
           "path": "src/components/Article/ShareBar.svelte",
-          "checksum": "sha256-oRg1QiMI2D1kLzoCBdhpWgrPzsjfLsLiCj1dBOpG4yQ=",
-          "size": 1673
+          "checksum": "sha256-PH8mP5aBGI/NLO4Yyb/xY3bC+SCCLXzPharxKWbigW0=",
+          "size": 1680
         },
         {
           "path": "src/components/Article/TableOfContents.svelte",
-          "checksum": "sha256-fTxMvfc0vJH5HDuIkoeHayNGCmgAtg1eu/Q7Oj8CPAk=",
-          "size": 1235
+          "checksum": "sha256-HZXSef/OvIqZiO1LrZ4QF/LC75qTYfpE25PmweciDLo=",
+          "size": 1242
         },
         {
           "path": "src/components/Author/Card.svelte",
@@ -7335,13 +7444,13 @@
         },
         {
           "path": "src/theme.css",
-          "checksum": "sha256-UdB5C8e7BX0B/ye3NZfUdL8oC0BP8e4C4uXVhVApvmc=",
-          "size": 30921
+          "checksum": "sha256-fYq3yt538EgF8xr+J3T5d3wzjHy6IZ+BJL4N7e43mRQ=",
+          "size": 33078
         },
         {
           "path": "src/types.ts",
-          "checksum": "sha256-gu6s/HSnTiKPb1Mhguv6H2CSrWJY9wmfBhHg9JhqXQE=",
-          "size": 22729
+          "checksum": "sha256-nudDVheVS1I765hJc6WYzOCqIoeUbkYDm0oiG92wHwI=",
+          "size": 22737
         }
       ],
       "styles": {
@@ -7349,7 +7458,6 @@
         "tokens": "@equaltoai/greater-components/tokens/theme.css"
       },
       "dependencies": [
-        { "name": "content", "version": "0.11.9" },
         { "name": "headless", "version": "0.11.9" },
         { "name": "icons", "version": "0.11.9" },
         { "name": "primitives", "version": "0.11.9" },
@@ -7624,8 +7732,8 @@
         },
         {
           "path": "src/theme.css",
-          "checksum": "sha256-r80CiFwFk/4wJ5n01HKoCImBtUVtvVB7nQvx7m//+68=",
-          "size": 24498
+          "checksum": "sha256-Xu367ov8Nqd2lNsx+Y/qT4SGXoCjG1LS0KNwZBWPLg8=",
+          "size": 25710
         },
         {
           "path": "src/types.ts",
@@ -7759,23 +7867,23 @@
         },
         {
           "path": "src/components/ArtistBadge.svelte",
-          "checksum": "sha256-qG53BPZJRYIWTDXeoeExOf/zQF7t3qjKb/VpQbYx0Nc=",
-          "size": 5230
+          "checksum": "sha256-3TlfGT99DTRFDcgY9HkSdk5fZBHfRVmEceGjzVPfjXk=",
+          "size": 5251
         },
         {
           "path": "src/components/ArtistProfile/Actions.svelte",
-          "checksum": "sha256-7pa76OUBFbXa1lGpcMdfBkoytwgBGsOzlrNAxyggiPU=",
-          "size": 5805
+          "checksum": "sha256-sOOUzW1iJycxni2rIqXwxf/pqjw9bCWMdYAJqlloFbQ=",
+          "size": 5847
         },
         {
           "path": "src/components/ArtistProfile/Avatar.svelte",
-          "checksum": "sha256-NzbV6iwngcd14T2p6yR365R6IcHas5HSZLzRpcYMlio=",
-          "size": 4023
+          "checksum": "sha256-+o/2Gn9alzhKzk80KGXFlqC53qwyCbb4bVgiR2nIwkA=",
+          "size": 4034
         },
         {
           "path": "src/components/ArtistProfile/Badges.svelte",
-          "checksum": "sha256-rkfqY9DtklEqo5A98zWfwwg1JFrpxD8eQgyh1uZI2EI=",
-          "size": 3405
+          "checksum": "sha256-K4N8W2gwLxCw82Xzz0e4leA2C8onukzPy2llwUDk97I=",
+          "size": 3416
         },
         {
           "path": "src/components/ArtistProfile/context.ts",
@@ -7784,8 +7892,8 @@
         },
         {
           "path": "src/components/ArtistProfile/Edit.svelte",
-          "checksum": "sha256-W8VnvXojaqQYaCAnz3yHz5vMCdmKfeKa7czPnUF0ZNk=",
-          "size": 4191
+          "checksum": "sha256-eABoBCLIIJlgkGJKR/FFh+TIGzQtH4zfDeqIBq6hZcw=",
+          "size": 4211
         },
         {
           "path": "src/components/ArtistProfile/HeroBanner.svelte",
@@ -7799,8 +7907,8 @@
         },
         {
           "path": "src/components/ArtistProfile/Name.svelte",
-          "checksum": "sha256-vSEFf5RApu6Pb8aavOHfs1/xPvzJ0z9oGqomZg4Ohk8=",
-          "size": 4015
+          "checksum": "sha256-7Ossgee5QcU0Oavm/e0MSUpdutnnhlpyt3d7cmlXE9g=",
+          "size": 4047
         },
         {
           "path": "src/components/ArtistProfile/Root.svelte",
@@ -7814,18 +7922,18 @@
         },
         {
           "path": "src/components/ArtistProfile/Statement.svelte",
-          "checksum": "sha256-hzZNF1l16cP/3fDTEibuDQNYAAPGnk6JWGyPvt684L4=",
-          "size": 4720
+          "checksum": "sha256-epgOhRxqncV9OYdJL3piPVNGw/ejz0LmYMF0nE8d0xY=",
+          "size": 4760
         },
         {
           "path": "src/components/ArtistProfile/Stats.svelte",
-          "checksum": "sha256-lmWkQfmu1ZaCw4GHuw5907iqTFxAI1WNg5zgL6PttGM=",
-          "size": 3544
+          "checksum": "sha256-WjQoc0ZnPqjjP7BmSl42FAO3rQSnzgCn3y8SVldQTGc=",
+          "size": 3574
         },
         {
           "path": "src/components/ArtistProfile/Timeline.svelte",
-          "checksum": "sha256-pYTXPUJ+ObxLhvbKiAFqwRvXbbSx8nOd6Jiy+OETlME=",
-          "size": 4701
+          "checksum": "sha256-+BRkP1rJP77HhR9uiRDmBdBlOWiLNGy4UyCu7PcOzqQ=",
+          "size": 4741
         },
         {
           "path": "src/components/ArtistTimeline/index.ts",
@@ -7834,22 +7942,22 @@
         },
         {
           "path": "src/components/ArtistTimeline.svelte",
-          "checksum": "sha256-B/A9t/xM8UdSV5+UaDVkYrU3KAKSH3CsPzhSeMs5HAM=",
-          "size": 9656
+          "checksum": "sha256-FYbnJQKo8qV4KM7egvi/8AUaogBNxG2QesYUjectmIg=",
+          "size": 9726
         },
         {
           "path": "src/components/Artwork/Actions.svelte",
-          "checksum": "sha256-6NHpKElejn6kEoBexel/w0ylSnQh/1fEIaOEW6/eg/8=",
+          "checksum": "sha256-GXBihIIw90V8/1CHiBRmKHbnpg4tWXcPFEHXoG0l9E0=",
           "size": 6406
         },
         {
           "path": "src/components/Artwork/AIDisclosure.svelte",
-          "checksum": "sha256-EiOQG1Z1mH8tUt9VkO7kwAusrd6+6UMXytlzbZ90+rE=",
+          "checksum": "sha256-mKG4lYa/h2wVkzcdN45ERgJqOPvnlNBp1EwRaf0gWtc=",
           "size": 5726
         },
         {
           "path": "src/components/Artwork/Attribution.svelte",
-          "checksum": "sha256-i0Z0EtdJJuHakz4+QEn20xhbJkxOF8+Yz1dnRvVuO+8=",
+          "checksum": "sha256-iy9ZVZP3pHxfJFbF9n1OiVxQszetpSlYfRJ6f2xj91s=",
           "size": 4869
         },
         {
@@ -7874,8 +7982,8 @@
         },
         {
           "path": "src/components/Artwork/Root.svelte",
-          "checksum": "sha256-AsY2nREK/iZhP7sk59k+8zCnOLUon1h/l9BqPfmNuLw=",
-          "size": 2999
+          "checksum": "sha256-m5+e8lFDk34c/JaKz9DT/gfwruoVIsnsRE7DtEFPdUY=",
+          "size": 3001
         },
         {
           "path": "src/components/Artwork/Stats.svelte",
@@ -7894,8 +8002,8 @@
         },
         {
           "path": "src/components/ArtworkCard.svelte",
-          "checksum": "sha256-MS4Wcg+g66WM87w7HcZPIiIyXJt/EEKzwdlvvEzHPZU=",
-          "size": 9562
+          "checksum": "sha256-Yabh3XZN9QVOMhH/YmUZloUerB8ZL4C8nCjLnGlmE1A=",
+          "size": 9563
         },
         {
           "path": "src/components/Community/Collaboration/context.ts",
@@ -7904,13 +8012,13 @@
         },
         {
           "path": "src/components/Community/Collaboration/Contributors.svelte",
-          "checksum": "sha256-P/n79mIPTkpty2X4Mg+64yBYF/BtW1yTWrkDC/D3LZs=",
-          "size": 5694
+          "checksum": "sha256-byU1FYZHFhXxY9vryXXW1WKclHjJsyaOYFAEDWOhDfo=",
+          "size": 5758
         },
         {
           "path": "src/components/Community/Collaboration/Gallery.svelte",
-          "checksum": "sha256-/RYq9tSCsjsmuM7IL7L3+6+2bXd8ARITouWp+JNd3F8=",
-          "size": 6151
+          "checksum": "sha256-/dcx08laVXaTpBHpKkCP5oIo/PSRyUEmEJY4bAJH0ng=",
+          "size": 6208
         },
         {
           "path": "src/components/Community/Collaboration/index.ts",
@@ -7919,23 +8027,23 @@
         },
         {
           "path": "src/components/Community/Collaboration/Project.svelte",
-          "checksum": "sha256-Usf0KTzcPDbnFReVqkqYix8VeULsuhCQAJR8gLkhJ9Q=",
-          "size": 5298
+          "checksum": "sha256-2HWBYUQM23InbhDh9QXetuuV/JcSO5BBVPGY8cvvzb0=",
+          "size": 5385
         },
         {
           "path": "src/components/Community/Collaboration/Root.svelte",
-          "checksum": "sha256-eJaMTTDC/rMN+YScBKuDVo3A3rK3+FJwAI00uOlcOwc=",
-          "size": 6270
+          "checksum": "sha256-BheESqoCZmhsSIo00vffjQGLM/cpEEwtj83lPvQMf2U=",
+          "size": 6326
         },
         {
           "path": "src/components/Community/Collaboration/Split.svelte",
-          "checksum": "sha256-d9P27znvPovnuPxpRTCZ/+5mSpS5bOFuHEgvbsEUdiE=",
-          "size": 10300
+          "checksum": "sha256-aDKwRcAPogLqMMNIOLLkZh9bbQofaW3kHo3D3DOz7x4=",
+          "size": 10432
         },
         {
           "path": "src/components/Community/Collaboration/Uploads.svelte",
-          "checksum": "sha256-WwwD/ClhFQ7xUxBW2YhdZivvzcDiY1OhjAe+UiaAq/s=",
-          "size": 7084
+          "checksum": "sha256-ZZLxfVPrANi+QVrfkJzPuVulailOF8yk9/pesaLhK44=",
+          "size": 7141
         },
         {
           "path": "src/components/Community/CritiqueCircle/context.ts",
@@ -7944,8 +8052,8 @@
         },
         {
           "path": "src/components/Community/CritiqueCircle/History.svelte",
-          "checksum": "sha256-AZDAtMI/5ESEK2slbvvDYmgaeYiTA6A+5RDwXVPaOkQ=",
-          "size": 8664
+          "checksum": "sha256-oAilcCkpyYFG7KOy4rQXvQj9sMmkJTjqdJFHbht7yWQ=",
+          "size": 8726
         },
         {
           "path": "src/components/Community/CritiqueCircle/index.ts",
@@ -7954,23 +8062,23 @@
         },
         {
           "path": "src/components/Community/CritiqueCircle/Members.svelte",
-          "checksum": "sha256-u/08R3dK10AV/TG9YjViyhlgsqJliI51w+qnCtYMVfM=",
-          "size": 7377
+          "checksum": "sha256-2xKfbNUfQOG13Svn3izuPcoToLTtg7j4VFLWptb9ZJM=",
+          "size": 7449
         },
         {
           "path": "src/components/Community/CritiqueCircle/Queue.svelte",
-          "checksum": "sha256-fRoYzLMWiHT18kOG8Ce7IFT3wViF22LpH/eiBrrxVYI=",
-          "size": 7809
+          "checksum": "sha256-IBrL4pIXnJaFCJ5UEhnE9/ZG/jH2DF9YS+IHUKbAqBI=",
+          "size": 7942
         },
         {
           "path": "src/components/Community/CritiqueCircle/Root.svelte",
-          "checksum": "sha256-biSdTXDweeojYo5pPGtEBVslPPoWsf2Q2GfDOVa4yag=",
-          "size": 5643
+          "checksum": "sha256-ZNNy21hjtVEkl1aCtv1GsHE9C5Yx/Q7g9C+lbtvOPvw=",
+          "size": 5689
         },
         {
           "path": "src/components/Community/CritiqueCircle/Session.svelte",
-          "checksum": "sha256-8c2V6NIVSYJDBk7ufR+DL2KZBh/mRz8d+MRvssyLm5c=",
-          "size": 9409
+          "checksum": "sha256-LPWACgi7Gbc8nFSq41W4AQM3FYlXRusbnDuLUf2hpPc=",
+          "size": 9599
         },
         {
           "path": "src/components/Community/index.ts",
@@ -7979,8 +8087,8 @@
         },
         {
           "path": "src/components/Community/MentorMatch.svelte",
-          "checksum": "sha256-EdYtXqoDyeCxkXRME8nd1zbIOlnxi3Zfeg6PA9gRuj4=",
-          "size": 11272
+          "checksum": "sha256-ZbnsJlFgU2XZUgxkuU5icH7nOaZNr4dAGqrPEPm5lqo=",
+          "size": 11444
         },
         {
           "path": "src/components/CreativeTools/CommissionWorkflow/context.ts",
@@ -7994,13 +8102,13 @@
         },
         {
           "path": "src/components/CreativeTools/CommissionWorkflow/Root.svelte",
-          "checksum": "sha256-osLVZxumZpihG3NcIaELrUidBrU18t3uGIPsJ3QYXRA=",
-          "size": 3680
+          "checksum": "sha256-cF2353xQqY8022zzRQVowqy/9M1u6quIQxWURxBwf6A=",
+          "size": 3718
         },
         {
           "path": "src/components/CreativeTools/CritiqueMode/Annotations.svelte",
-          "checksum": "sha256-lBAzmOfgEIt4OZeJKqMkWeWZ5vXLToQbY1yeB6C6uhU=",
-          "size": 6035
+          "checksum": "sha256-qWr8tKXWAZWxr/Crn+bbKp0YEXso0lBorI8jbOVIdRQ=",
+          "size": 6063
         },
         {
           "path": "src/components/CreativeTools/CritiqueMode/context.svelte.ts",
@@ -8009,8 +8117,8 @@
         },
         {
           "path": "src/components/CreativeTools/CritiqueMode/Image.svelte",
-          "checksum": "sha256-tCUhfglTIm3LrDgbEsiof138EIyS0ireaibruyqZOJk=",
-          "size": 4565
+          "checksum": "sha256-OlwboGTlU0AEnai5rRRUWi6aVdqDEURMoBBScXIj3lE=",
+          "size": 4573
         },
         {
           "path": "src/components/CreativeTools/CritiqueMode/index.ts",
@@ -8019,8 +8127,8 @@
         },
         {
           "path": "src/components/CreativeTools/CritiqueMode/Root.svelte",
-          "checksum": "sha256-zWSzOVJZFsIEous2G4mmvN0udnCrYOooa9V60Bzu54U=",
-          "size": 1640
+          "checksum": "sha256-Hm85y/EjPOzybm7H+UU7o++Ma4s7dE96ExapXgeps6Y=",
+          "size": 1639
         },
         {
           "path": "src/components/CreativeTools/index.ts",
@@ -8029,18 +8137,18 @@
         },
         {
           "path": "src/components/CreativeTools/ReferenceBoard.svelte",
-          "checksum": "sha256-eQKto7WkGbkx0Q5nMaguLyAmIjzACO5zMZEN20gnx3U=",
-          "size": 6571
+          "checksum": "sha256-QPD9WET3+yzo62oUPXxLyGXebtJRvd2u+YQOomx5YZM=",
+          "size": 6614
         },
         {
           "path": "src/components/CreativeTools/WorkInProgress/Comments.svelte",
-          "checksum": "sha256-3JXevwhEHWBdsFTVK2+Lguou3J95POLVRlczZuQWUT4=",
-          "size": 8021
+          "checksum": "sha256-Tkh+59HauEr7ztZd1999hfoCyhG3Nlv74tsjSqXyeLY=",
+          "size": 8124
         },
         {
           "path": "src/components/CreativeTools/WorkInProgress/Compare.svelte",
-          "checksum": "sha256-bgiNkEepbqwyOVPr6EF1Iau38KpY6ASwxQ0f4Q1EoKw=",
-          "size": 13065
+          "checksum": "sha256-AFDfrisy0k/3zcj0OynwTWZ41FifaEp35kgKYP1Pb6s=",
+          "size": 13087
         },
         {
           "path": "src/components/CreativeTools/WorkInProgress/context.ts",
@@ -8049,8 +8157,8 @@
         },
         {
           "path": "src/components/CreativeTools/WorkInProgress/Header.svelte",
-          "checksum": "sha256-xmDA+ut3ziurGiSNiBZQ1/U5uxdK3ZYNZtiinKikZqM=",
-          "size": 5374
+          "checksum": "sha256-DKdtm/8WcjNrGSwxBHB3nCCUWvJ7WDlrIvDNsc+Vvuo=",
+          "size": 5441
         },
         {
           "path": "src/components/CreativeTools/WorkInProgress/index.ts",
@@ -8059,33 +8167,33 @@
         },
         {
           "path": "src/components/CreativeTools/WorkInProgress/Root.svelte",
-          "checksum": "sha256-ICpqNdFY7MxmVNKSYdFx6D9DQCCfVc88sf1RBhx9U7s=",
-          "size": 2830
+          "checksum": "sha256-oyV6rHbIyfyaQyifLE5tyJDLEXn8wRdSDIO1K4F7v3c=",
+          "size": 2829
         },
         {
           "path": "src/components/CreativeTools/WorkInProgress/Timeline.svelte",
-          "checksum": "sha256-DMEujjAuY0Hc4NnwS4gve+umQTW0ApeInsnXlyK/tRk=",
-          "size": 4869
+          "checksum": "sha256-JlI0kiKiXUwbITUybV6kiF5S9qhuCHXFX+mgpSy42dM=",
+          "size": 4908
         },
         {
           "path": "src/components/CreativeTools/WorkInProgress/VersionCard.svelte",
-          "checksum": "sha256-Gtjx1bJOQmQ0CxEBtd4XPfpo7gBoXsqaIjthOKeQIww=",
-          "size": 5757
+          "checksum": "sha256-VOZFqbyRHWQf85AcLPUyLGc/O3DzCXs4tdP0oespqD4=",
+          "size": 5786
         },
         {
           "path": "src/components/CreativeTools/WorkInProgress/VersionList.svelte",
-          "checksum": "sha256-O5GpZtonGVpW/cEFUP6U19Uy+PD3kNg6xLuFpB4rYTw=",
-          "size": 4280
+          "checksum": "sha256-+URJr1ZAOtRdV0/i6qlSWdrH+X6yvYqK0bNrpP6eU7E=",
+          "size": 4338
         },
         {
           "path": "src/components/Curation/CollectionCard.svelte",
-          "checksum": "sha256-PGcyPaAOadAqFqu+MMmiS8dbaqrmuU9JbN2ul76qELw=",
-          "size": 12831
+          "checksum": "sha256-Cnfobyk1CQwJQW14KwbV7X+iOYi98RoPQJf543omVpc=",
+          "size": 12906
         },
         {
           "path": "src/components/Curation/CuratorSpotlight.svelte",
-          "checksum": "sha256-8d/WNTkzj9Ba8wBpGgopib7YJ8opK+rcWN0RHRNLeZw=",
-          "size": 11750
+          "checksum": "sha256-eDZLXCCt6psjmfNML0pV1DLWDlbwMTDsozLWeDvWSTo=",
+          "size": 11893
         },
         {
           "path": "src/components/Curation/index.ts",
@@ -8094,8 +8202,8 @@
         },
         {
           "path": "src/components/Discovery/ColorPaletteSearch.svelte",
-          "checksum": "sha256-Xi6oFMVk6Wm7vUd3lD7oa9Q8Lb/BJW0P6/H97XjNK+Y=",
-          "size": 13976
+          "checksum": "sha256-q76j6QXjep71JSbbYyK8DLEQrUVHZQhLbhms4MQUi5A=",
+          "size": 13996
         },
         {
           "path": "src/components/Discovery/context.ts",
@@ -8104,8 +8212,8 @@
         },
         {
           "path": "src/components/Discovery/Filters.svelte",
-          "checksum": "sha256-C6Gg3KovL5pvkUxJuG1qRDHhLUbIv5d1EpevBAt3LN4=",
-          "size": 16792
+          "checksum": "sha256-oQBufW6eZL69u982cJWzCjyS0rv5nOr+s4aAxZ12VI4=",
+          "size": 16822
         },
         {
           "path": "src/components/Discovery/index.ts",
@@ -8114,13 +8222,13 @@
         },
         {
           "path": "src/components/Discovery/MoodMap.svelte",
-          "checksum": "sha256-KbwefaVI+7T0N+6tsTt9AAY4xMVFQgzOZxAth2Hxzp4=",
-          "size": 9261
+          "checksum": "sha256-BhIigrlpBSsB+b7M92ULUGhBzgZW0s9mI8y5kXQJbCg=",
+          "size": 9271
         },
         {
           "path": "src/components/Discovery/Results.svelte",
-          "checksum": "sha256-CMh7RKHmCgwXLOdCd3XHjXLH+6k/TKUEKHOn78l6ST4=",
-          "size": 12026
+          "checksum": "sha256-GKwMizeYpHnXlnLb4oSXpwCrBJIgn1hm1ZtF2v1wLms=",
+          "size": 12037
         },
         {
           "path": "src/components/Discovery/Root.svelte",
@@ -8129,28 +8237,28 @@
         },
         {
           "path": "src/components/Discovery/SearchBar.svelte",
-          "checksum": "sha256-lMRBNFIiJfHtJJk6cdeHmGKDtU9kmKBFezN5GhGhQMI=",
-          "size": 13280
+          "checksum": "sha256-IQP/LTR1wxi/wGG9PdrlGa6dZFcPDLLFo1F5lMcxu2o=",
+          "size": 13313
         },
         {
           "path": "src/components/Discovery/StyleFilter.svelte",
-          "checksum": "sha256-d1MgJmt5fIz0P4q9weM37ieMSGL+ogoPJQd2P9B5x3w=",
-          "size": 7832
+          "checksum": "sha256-ASLbcNnA/GpOlLHlQkwAkWNLOAkb/a48ppCw320Bwmo=",
+          "size": 7852
         },
         {
           "path": "src/components/Discovery/Suggestions.svelte",
-          "checksum": "sha256-IF4yQh0ycEgPbMhywsm75mYOsyGfLEq0erYM+iHUe1M=",
-          "size": 7783
+          "checksum": "sha256-1kuE40t3EdQqh2SOIpflDbdndKbfjQNEoT06odLaGiM=",
+          "size": 7804
         },
         {
           "path": "src/components/Exhibition/Artists.svelte",
-          "checksum": "sha256-5A/wRo52Im2UOSQawUaxiXlfcLmYfFJZhenk8PTn2AA=",
-          "size": 6168
+          "checksum": "sha256-cfhVtMt3BCvLQt0H2t6VOZVCF2l17vKIm783PMr+gUQ=",
+          "size": 6253
         },
         {
           "path": "src/components/Exhibition/Banner.svelte",
-          "checksum": "sha256-XVlCqqRNlghw/uK4E/DUovdBkYNWXfF96vwyjOH6ATI=",
-          "size": 8936
+          "checksum": "sha256-s7iOY8s+rZbuioxBo2g05nOdCs35pTGjdSdlRIb8MTg=",
+          "size": 9063
         },
         {
           "path": "src/components/Exhibition/context.ts",
@@ -8159,8 +8267,8 @@
         },
         {
           "path": "src/components/Exhibition/Gallery.svelte",
-          "checksum": "sha256-KagBu5RO8pT1MMgUV3/LYOQqmo3Qe63e5hcwe3vm7qU=",
-          "size": 10615
+          "checksum": "sha256-T25MYwyyNV/5MjIWk56wE6s8JJ8x9otu7pqC+b0JZgk=",
+          "size": 10731
         },
         {
           "path": "src/components/Exhibition/index.ts",
@@ -8169,8 +8277,8 @@
         },
         {
           "path": "src/components/Exhibition/Navigation.svelte",
-          "checksum": "sha256-lxni4/ilGD9XdVaqjMf5tR+RaakHZ0swALXqnMsKmtQ=",
-          "size": 6492
+          "checksum": "sha256-clFx3F5+m5rTLc/oIt2pFMoUSXe8/Y7mXI+JO6rHuRk=",
+          "size": 6508
         },
         {
           "path": "src/components/Exhibition/Root.svelte",
@@ -8179,13 +8287,13 @@
         },
         {
           "path": "src/components/Exhibition/Statement.svelte",
-          "checksum": "sha256-G3qErsX5l/hvvqLDWF67OkpTCIKvTBDuNpTQsX6Yk/Q=",
-          "size": 5340
+          "checksum": "sha256-iqYx77J0bGCizJiNznF2HmJ2NfeJArAb+RYTRuhtSvg=",
+          "size": 5418
         },
         {
           "path": "src/components/Gallery/Grid.svelte",
-          "checksum": "sha256-kf4FVv8KlQeefU/c5w5nQ9Yi5nDCFC5SMZqPOaP+oMY=",
-          "size": 9022
+          "checksum": "sha256-OnXMc+P9qFksXsAhyZ7ep2Dald7QsVjDAvdiJWOIkGQ=",
+          "size": 9023
         },
         {
           "path": "src/components/Gallery/index.ts",
@@ -8199,8 +8307,8 @@
         },
         {
           "path": "src/components/Gallery/Row.svelte",
-          "checksum": "sha256-Qiew1xGetP1K+WS21oZ1agdEmKi9LsRBAieY5Kp7wnI=",
-          "size": 9402
+          "checksum": "sha256-WjaaJmcoWLbH6LG4JUICF4gB9mezy0X0wQGdJEMhFXg=",
+          "size": 9442
         },
         {
           "path": "src/components/Gallery/utils.ts",
@@ -8239,7 +8347,7 @@
         },
         {
           "path": "src/components/Monetization/DirectPurchase.svelte",
-          "checksum": "sha256-3BpwuXm3ovquQpFs8kDAdUcL9JxFG8Bndx4pdgGpPMw=",
+          "checksum": "sha256-BoIKe2Z8CxaCviFanCTaXEZ54Xuuv/Um4KmSk7TZe/4=",
           "size": 25916
         },
         {
@@ -8249,43 +8357,43 @@
         },
         {
           "path": "src/components/Monetization/InstitutionalTools.svelte",
-          "checksum": "sha256-NCTPifwVDooZIZlsymYLmErufgWVbwy/ACiOCovDKJE=",
-          "size": 7808
+          "checksum": "sha256-7Cw+5iarprciA2vEQ8k9U3s3uoIVBw3LE1kHOnjafKc=",
+          "size": 7973
         },
         {
           "path": "src/components/Monetization/PremiumBadge.svelte",
-          "checksum": "sha256-OlD5NK8Cn60BxvjGKFum5K6t0IHMGMwUfHnVFcGap6U=",
+          "checksum": "sha256-5qymZj5uHo1ZKg0lNelFRSgjpSTJMDHTrHLeiXY3QQI=",
           "size": 8094
         },
         {
           "path": "src/components/Monetization/ProtectionTools.svelte",
-          "checksum": "sha256-rysyZIi+oqMl1fi2bNHBXK5RwhlmNU2N9/e4sq7W30E=",
+          "checksum": "sha256-4973UNFdO7rOKulh7Efjj6OWkoAhqwjU47O3yi26gQk=",
           "size": 24859
         },
         {
           "path": "src/components/Monetization/TipJar.svelte",
-          "checksum": "sha256-bznNJglJA73ucUNwsoGiZVwhrc+Bcl3DjnJJIevAhkI=",
+          "checksum": "sha256-YsUF/EWswwFsZ9yXif180YvnT/YCVcqBI2blqtRVDzI=",
           "size": 19924
         },
         {
           "path": "src/components/PortfolioSection.svelte",
-          "checksum": "sha256-2gQ8aAOEGOFh5zmos3E3nPHlzIQ684yQspSAW1aYrpg=",
-          "size": 5503
+          "checksum": "sha256-hhPy6Cb3PXgKLeJkyYTw40VLoH34Wwdo80KrP9hpu5s=",
+          "size": 5535
         },
         {
           "path": "src/components/Transparency/AIDisclosure.svelte",
-          "checksum": "sha256-XVkIqnZTTR72FHOcaD+sbdHVNz2z1MGOA0YCsaEIi/c=",
-          "size": 12403
+          "checksum": "sha256-c5Itj0u/5YJVvzdMxxcB9XDchau0MUMAjdpIxhXQKSc=",
+          "size": 12413
         },
         {
           "path": "src/components/Transparency/AIOptOutControls.svelte",
-          "checksum": "sha256-HgTv5l3PeM3z3IlS1+6yGUAepSKljHQiVRIqj1bAat0=",
-          "size": 18946
+          "checksum": "sha256-jUsq31PAG0m6jyiYeiXzBrHboBbf6qBD0Iwd7+Fa7Os=",
+          "size": 18970
         },
         {
           "path": "src/components/Transparency/EthicalSourcingBadge.svelte",
-          "checksum": "sha256-nsyVlNo4GVsbJcJSqwgaeAYgxZTpgOP3TWPiWK1A3Ok=",
-          "size": 16074
+          "checksum": "sha256-s6rlFNcS2R02jRB6bYkW7q/x9oCIAmQ4rAxozprUCSw=",
+          "size": 16094
         },
         {
           "path": "src/components/Transparency/index.ts",
@@ -8294,13 +8402,13 @@
         },
         {
           "path": "src/components/Transparency/ProcessDocumentation.svelte",
-          "checksum": "sha256-wdmeVWpN9Bz4uM0RQmYPcNU9pmB0bCZToXmEnBlrZQE=",
-          "size": 16174
+          "checksum": "sha256-0729mNwUmP+scGFCSQEfaCsFREYb6AO9/vZtrXzBh2k=",
+          "size": 16178
         },
         {
           "path": "src/index.ts",
-          "checksum": "sha256-Shz4a6ue182siqnPFyZQbVPn2yDpsYOMKQwWLwPzkas=",
-          "size": 5410
+          "checksum": "sha256-/0ZhuioYTEf7cIFGwhXmQVYnxyxbu9dn7IEDgF93/uE=",
+          "size": 5426
         },
         {
           "path": "src/patterns/commission.ts",
@@ -8418,9 +8526,9 @@
           "size": 413
         },
         {
-          "path": "src/subscriptions/index.ts",
-          "checksum": "sha256-EJ53g8RCsC3gqnL6HC3xLysDOtrrtXVRkkfhZMooikM=",
-          "size": 10036
+          "path": "src/subscriptions/index.svelte.ts",
+          "checksum": "sha256-jdnMco0jYV6wboUCOG3GzkDDrPnP7aysUqCor8FVP/E=",
+          "size": 10031
         },
         {
           "path": "src/theme.css",
@@ -8459,13 +8567,13 @@
         },
         {
           "path": "src/types/gallery.ts",
-          "checksum": "sha256-rFd4IPm0iRG7+j2i3Wg+FlwvrY0RZ8iAs1Io+bpS7OY=",
-          "size": 4976
+          "checksum": "sha256-HnmGyRcGSqcLw/OChIjxzQRMZuL7lzX+KiK26VYhaJQ=",
+          "size": 4961
         },
         {
           "path": "src/types/index.ts",
-          "checksum": "sha256-oDpl9/uQRFWVZSIco+wW9tQ5RgbRIImaO812k3a4+mw=",
-          "size": 8903
+          "checksum": "sha256-WYRCEF4a5dbQUgBftycSeq2j30YWpB1vUBpM8bANkCc=",
+          "size": 8889
         },
         {
           "path": "src/types/monetization.ts",
@@ -8474,8 +8582,8 @@
         },
         {
           "path": "src/types/transparency.ts",
-          "checksum": "sha256-pGnyUrACIEliotvU6KxyxkC2dxf2Ac4ye1dXPPcxhGE=",
-          "size": 5948
+          "checksum": "sha256-mRAAaEVKVknHIG6Wqjn4kasXy11HOVWQcaGEOJUkGLE=",
+          "size": 5942
         },
         {
           "path": "src/utils/a11y-testing.ts",
@@ -8536,7 +8644,7 @@
         { "name": "utils", "version": "0.11.9" }
       ],
       "peerDependencies": [
-        { "name": "@apollo/client", "version": "^4.1.7" },
+        { "name": "@apollo/client", "version": "4.2.9" },
         { "name": "@equaltoai/greater-components-adapters", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-auth", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-headless", "version": "0.11.9" },
@@ -8633,8 +8741,8 @@
         },
         {
           "path": "src/internal/AgentFaceFrame.svelte",
-          "checksum": "sha256-cXb00ztqbcDNvYODM0n6nqOreEAIQjdil8EMSlTBmro=",
-          "size": 11469
+          "checksum": "sha256-zZiTwyRfd/PVGOVOOf9UNOP8W3D6IZIOrtzXw7N0WWc=",
+          "size": 11459
         },
         {
           "path": "src/NexusDashboard.svelte",
@@ -8643,8 +8751,8 @@
         },
         {
           "path": "src/SoulRequestCenter.svelte",
-          "checksum": "sha256-A5pL9lb/lP0CKhuG8gvcOjcBLc5tfY65aPNEa656zP4=",
-          "size": 9943
+          "checksum": "sha256-uz2a6bq0NYWALB/bF+6QseaC6SsmND8X5NfCrA4ybG0=",
+          "size": 9933
         },
         {
           "path": "src/theme.css",
@@ -8882,8 +8990,8 @@
         },
         {
           "path": "src/context.ts",
-          "checksum": "sha256-qH/t8avdRmFRdlhvJ0Ydd8kZUOk80lThPdXCIN3duBo=",
-          "size": 6410
+          "checksum": "sha256-R1Uq5AdLu02xqvbMbGLpJZQ8MmSO0oqaq6fmnldy+3o=",
+          "size": 6424
         },
         {
           "path": "src/DraftManager.ts",
@@ -8947,8 +9055,8 @@
         },
         {
           "path": "src/ThreadControls.svelte",
-          "checksum": "sha256-78UTTyLXw4Kj1UPVhpiBATrkWBx8Pnhh1LYugLhG7Vs=",
-          "size": 4184
+          "checksum": "sha256-kxy7aSYsM7bTh87fRAeeh3EzRIUDGlAZtsan3xOAWmA=",
+          "size": 4214
         },
         {
           "path": "src/types.ts",
@@ -9048,8 +9156,8 @@
         },
         {
           "path": "src/LesserNotificationItem.svelte",
-          "checksum": "sha256-5t6c2CfohfEah6P4wmk1L/5YhAuEo8gQb2X7klRAxJU=",
-          "size": 7056
+          "checksum": "sha256-qyxo3OYA+Q+9onHRiI0qpU8ZTq2+sd3sRoYPu9tRXSc=",
+          "size": 7046
         },
         {
           "path": "src/mockData.ts",
@@ -9063,8 +9171,8 @@
         },
         {
           "path": "src/PushNotificationSettings.svelte",
-          "checksum": "sha256-MYvWpZYHiO5upPP766MIcRro77YJvyQt7aB9yCozK/c=",
-          "size": 1954
+          "checksum": "sha256-BsS7pPFiFveL0qDCkusce2s/duT/PEFdiSO/4qPFiC8=",
+          "size": 1972
         },
         {
           "path": "src/Root.svelte",
@@ -9073,8 +9181,8 @@
         },
         {
           "path": "src/types.ts",
-          "checksum": "sha256-YbQx40aYyaXTZIgrC0AbOyRxX6NAiym9v4s8BCLpIuI=",
-          "size": 5524
+          "checksum": "sha256-/+DJPC4o++q8ZIAKj94oSuvNOKJjheZofvke+VNJXgI=",
+          "size": 5518
         },
         {
           "path": "src/utils/notificationGrouping.ts",
@@ -9154,8 +9262,8 @@
         },
         {
           "path": "src/FederatedSearch.svelte",
-          "checksum": "sha256-Jy6Ij6I5xU0eG0Dv9zNCBwqy2TANBc5QV4FsJ79x8QU=",
-          "size": 7272
+          "checksum": "sha256-jqpniKak6r74kf8Br6j842yy+x/jgx1TnIOJd/a4+AQ=",
+          "size": 7329
         },
         {
           "path": "src/Filters.svelte",
@@ -9241,8 +9349,8 @@
       "files": [
         {
           "path": "src/Agents/AgentAttribution.svelte",
-          "checksum": "sha256-YlmpAdn0vNauTDOItbOSqcb/w9u8OsuJEqSi2aPP9Oo=",
-          "size": 2099
+          "checksum": "sha256-nBGwEy3HySL9zaivcmsHNtHUwowZby4C2TFrtHvSNRA=",
+          "size": 2252
         },
         {
           "path": "src/Agents/AgentBadge.svelte",
@@ -9503,8 +9611,8 @@
         },
         {
           "path": "src/ChatMessages.svelte",
-          "checksum": "sha256-QB0ljSSirBW556RPlFF3AksCrw21dxW8tjoFq4XYz84=",
-          "size": 13565
+          "checksum": "sha256-M68I+kyLEwfkbYYm2aUzlyCZn8BuR86fA7TNOO0iYLU=",
+          "size": 13547
         },
         {
           "path": "src/ChatSettings.svelte",
@@ -9518,8 +9626,8 @@
         },
         {
           "path": "src/ChatThreadView.svelte",
-          "checksum": "sha256-znXq/fPkCGPHD/HWkIGWK7JFFXC47q3yhqHN1O5YfcY=",
-          "size": 8792
+          "checksum": "sha256-Yy6e1zSz+8tbPrufoDWCNLAbeMPgdbf+vHAAn6pnZS8=",
+          "size": 8907
         },
         {
           "path": "src/ChatToolCall.svelte",
@@ -9548,8 +9656,8 @@
         },
         {
           "path": "src/types.ts",
-          "checksum": "sha256-Is+6F4dmZJbGDL1BvPlo+97bUZtNQrzEjdjx7IgMGak=",
-          "size": 9403
+          "checksum": "sha256-Q3Y9rO+7/JqBAVG3+pZnV8lY9KZDi318Fbs70twvM9k=",
+          "size": 9395
         }
       ],
       "dependencies": [
@@ -9625,18 +9733,18 @@
         },
         {
           "path": "src/context.svelte.ts",
-          "checksum": "sha256-NihRfF2shXYMQTnQbjfYGKmyhNT+881dUYxrBEGFrKk=",
-          "size": 21361
+          "checksum": "sha256-kyRfy1iaR4A1PtVf4c3+EIxHhrgjgBjR3XUNH9jpx7g=",
+          "size": 21355
         },
         {
           "path": "src/ConversationPicker.svelte",
-          "checksum": "sha256-GyuC58bLhCyxEV1cl8m1bykp3fKVsOKjPZ+/GeihVq8=",
-          "size": 11412
+          "checksum": "sha256-WXQCot9O4SbZ8IjGVcyuRHhQ9sL209LU3acbUTgVuAo=",
+          "size": 11505
         },
         {
           "path": "src/Conversations.svelte",
-          "checksum": "sha256-kEPIvS+0HxWGaoiU/UVG2sbMyoVQGTGWzllB3Q71lD0=",
-          "size": 4791
+          "checksum": "sha256-WIOjfV5CmsCkhFyp9i0IOUMDz8ceMWrUc1Rr2box0hc=",
+          "size": 7485
         },
         {
           "path": "src/ConversationWorkflowSummary.svelte",
@@ -9655,8 +9763,8 @@
         },
         {
           "path": "src/Message.svelte",
-          "checksum": "sha256-55HxJkzJIGsjHI36WPnrSgJC/ZNUFdvzFjUwpgcIFTY=",
-          "size": 3835
+          "checksum": "sha256-/i/rdtKRja1KMVaTH2P/Zog1062AiKfNmfY1lBUxhgY=",
+          "size": 4054
         },
         {
           "path": "src/NewConversation.svelte",
@@ -9667,6 +9775,11 @@
           "path": "src/Root.svelte",
           "checksum": "sha256-ayF6lgF3ZxI5MuuIcj1zCntD+iSfaS7lCkRRQx54NZY=",
           "size": 1299
+        },
+        {
+          "path": "src/sanitize.ts",
+          "checksum": "sha256-pjf+ROpLOSEl8f3sLMywp44loupt8PKUlS2CgLgB8w0=",
+          "size": 7519
         },
         {
           "path": "src/Thread.svelte",
@@ -9680,8 +9793,8 @@
         },
         {
           "path": "src/UnreadIndicator.svelte",
-          "checksum": "sha256-oo+td3vo+3SQR4zYbS0PNjHDoQ8j4qEoqyMrYrK7Z5s=",
-          "size": 1271
+          "checksum": "sha256-IG65mT6Y0jrY2AKbFCIlFaRKKHj9XpUpViWd+lcCoT0=",
+          "size": 2996
         },
         {
           "path": "src/utils.ts",
@@ -9698,14 +9811,19 @@
         { "name": "compose", "version": "0.11.9" },
         { "name": "headless", "version": "0.11.9" },
         { "name": "icons", "version": "0.11.9" },
-        { "name": "primitives", "version": "0.11.9" }
+        { "name": "primitives", "version": "0.11.9" },
+        { "name": "utils", "version": "0.11.9" }
       ],
       "peerDependencies": [
         { "name": "@equaltoai/greater-components-compose", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-headless", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-icons", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-primitives", "version": "0.11.9" },
-        { "name": "svelte", "version": "^5.55.1" }
+        { "name": "@equaltoai/greater-components-utils", "version": "0.11.9" },
+        { "name": "rehype-parse", "version": "^9.0.1" },
+        { "name": "rehype-stringify", "version": "^10.0.1" },
+        { "name": "svelte", "version": "^5.55.1" },
+        { "name": "unified", "version": "^11.0.5" }
       ],
       "types": [
         "MessageParticipant",
@@ -9844,8 +9962,8 @@
       "files": [
         {
           "path": "src/AgentIdentityCard.svelte",
-          "checksum": "sha256-9QWSA/MhN/orzEXgxWgYPiLWssOrRVbNYIrvXz0mm40=",
-          "size": 4886
+          "checksum": "sha256-6t/BHnKwaGdxA2TML+5I8+Quax198PBVbvLtwTEjs7c=",
+          "size": 4876
         },
         {
           "path": "src/AgentStateBadge.svelte",
@@ -9909,8 +10027,8 @@
         },
         {
           "path": "src/workflow.ts",
-          "checksum": "sha256-GWlBi98PSoG0dpg3QZ2B7UcDGdWCy6UaaESUWha1WZM=",
-          "size": 14998
+          "checksum": "sha256-/+1zlGvvCbqEdBPRkkJaqMfLHtiaFLHojIFaE0G0Vls=",
+          "size": 14990
         }
       ],
       "dependencies": [],

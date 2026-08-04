@@ -188,7 +188,7 @@ export interface UnifiedStatus {
 	/** Whether this can be quoted - Lesser only */
 	quoteable?: boolean;
 	/** Quote permission level - Lesser only */
-	quotePermissions?: 'EVERYONE' | 'FOLLOWERS' | 'NONE';
+	quotePermissions?: 'EVERYONE' | 'FOLLOWERS' | 'MENTIONED' | 'NONE';
 	/** Quote context - Lesser only */
 	quoteContext?: {
 		originalAuthorId: string;
@@ -403,7 +403,8 @@ export interface UnifiedNotification {
 		| 'community_note'
 		| 'trust_update'
 		| 'cost_alert'
-		| 'moderation_action';
+		| 'moderation_action'
+		| 'communication_inbound';
 	/** Creation timestamp */
 	createdAt: string;
 	/** Account that triggered this notification */
@@ -446,6 +447,32 @@ export interface UnifiedNotification {
 		action: string;
 		reason: string;
 		statusId?: string;
+	};
+	/** Communication payload (for communication_inbound notifications) */
+	communication?: {
+		channel: string;
+		from: {
+			address: string;
+			displayName?: string;
+			soulAgentId?: string | null;
+		};
+		to?: {
+			address: string;
+			soulAgentId?: string | null;
+		} | null;
+		attachments: Array<{
+			id: string;
+			filename: string;
+			contentType: string;
+			sizeBytes: number;
+			sha256: string;
+		}>;
+		subject?: string | null;
+		body?: string | null;
+		receivedAt: string;
+		messageId: string;
+		inReplyTo?: string | null;
+		threadId: string;
 	};
 }
 export interface AdminReport {

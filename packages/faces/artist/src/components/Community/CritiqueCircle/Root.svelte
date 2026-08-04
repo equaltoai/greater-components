@@ -168,7 +168,7 @@ Implements REQ-COMM-001: Critique Circles
 		width: 100%;
 		background: var(--gr-color-gray-900);
 		color: var(--gr-color-gray-100);
-		border-radius: var(--gr-radius-lg);
+		border-radius: var(--gr-radii-lg);
 		overflow: hidden;
 	}
 
@@ -197,13 +197,13 @@ Implements REQ-COMM-001: Critique Circles
 	}
 
 	.critique-circle__name {
-		font-size: var(--gr-font-size-2xl);
-		font-weight: var(--gr-font-weight-bold);
+		font-size: var(--gr-typography-fontSize-2xl);
+		font-weight: var(--gr-typography-fontWeight-bold);
 		margin: 0 0 var(--gr-spacing-scale-2) 0;
 	}
 
 	.critique-circle__description {
-		font-size: var(--gr-font-size-base);
+		font-size: var(--gr-typography-fontSize-base);
 		color: var(--gr-color-gray-300);
 		margin: 0 0 var(--gr-spacing-scale-3) 0;
 	}
@@ -212,7 +212,7 @@ Implements REQ-COMM-001: Critique Circles
 		display: flex;
 		flex-wrap: wrap;
 		gap: var(--gr-spacing-scale-3);
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-400);
 	}
 
@@ -221,14 +221,14 @@ Implements REQ-COMM-001: Critique Circles
 		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
 		background: var(--gr-color-primary-900);
 		color: var(--gr-color-primary-300);
-		border-radius: var(--gr-radius-sm);
+		border-radius: var(--gr-radii-sm);
 	}
 
 	.critique-circle__private {
 		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
 		background: var(--gr-color-warning-900);
 		color: var(--gr-color-warning-300);
-		border-radius: var(--gr-radius-sm);
+		border-radius: var(--gr-radii-sm);
 	}
 
 	.critique-circle__focus-areas {
@@ -241,8 +241,8 @@ Implements REQ-COMM-001: Critique Circles
 	.critique-circle__focus-tag {
 		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
 		background: var(--gr-color-gray-700);
-		border-radius: var(--gr-radius-sm);
-		font-size: var(--gr-font-size-xs);
+		border-radius: var(--gr-radii-sm);
+		font-size: var(--gr-typography-fontSize-xs);
 	}
 
 	.critique-circle__content {

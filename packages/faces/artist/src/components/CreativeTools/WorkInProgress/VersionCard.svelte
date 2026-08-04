@@ -154,7 +154,7 @@ WorkInProgress.VersionCard - Individual version display with notes
 <style>
 	.wip-version-card {
 		background: var(--gr-color-gray-800);
-		border-radius: var(--gr-radius-lg);
+		border-radius: var(--gr-radii-lg);
 		overflow: hidden;
 	}
 
@@ -201,19 +201,19 @@ WorkInProgress.VersionCard - Individual version display with notes
 		position: absolute;
 		right: 0;
 		top: 12px;
-		font-size: var(--gr-font-size-xs);
+		font-size: var(--gr-typography-fontSize-xs);
 		color: var(--gr-color-gray-400);
 	}
 
 	.wip-version-card__commentary {
-		font-size: var(--gr-font-size-base);
+		font-size: var(--gr-typography-fontSize-base);
 		line-height: 1.6;
 		color: var(--gr-color-gray-200);
 		margin: 0;
 	}
 
 	.wip-version-card__date {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-400);
 	}
 

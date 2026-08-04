@@ -124,8 +124,7 @@
 		 * Action handlers for timeline status cards
 		 */
 		actionHandlers?:
-			| StatusCardActionHandlers
-			| ((status: Status) => StatusCardActionHandlers | undefined);
+			StatusCardActionHandlers | ((status: Status) => StatusCardActionHandlers | undefined);
 		/**
 		 * Stable browser-test hook for rendered status cards
 		 */

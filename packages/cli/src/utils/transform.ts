@@ -4,11 +4,13 @@
  *
  * - Canonicalizes legacy hyphenated packages (e.g. `@equaltoai/greater-components-utils`)
  *   to umbrella subpath imports (e.g. `@equaltoai/greater-components/utils`).
- * - Rewrites shared module imports to local CLI-installed paths based on `components.json`
- *   (e.g. `@equaltoai/greater-components-auth` → `$lib/components/auth` by default).
+ * - Rewrites shared module imports to local CLI-installed paths based on `components.json`.
+ *   During a real vendored write, local targets are emitted relative to the source file so
+ *   the copied tree does not depend on a consumer alias.
  */
 
-import type { ComponentConfig } from './config.js';
+import path from 'node:path';
+import { resolveAlias, type ComponentConfig } from './config.js';
 
 /**
  * Path mapping rule for transforming imports
@@ -34,6 +36,13 @@ export interface TransformResult {
 	transformedPaths: Array<{ from: string; to: string }>;
 	/** Whether any transformations were made */
 	hasChanges: boolean;
+}
+
+export interface TransformContext {
+	/** Absolute path of the file as written into the consumer project. */
+	sourceFilePath: string;
+	/** Absolute consumer project root used to resolve components.json paths. */
+	consumerRoot: string;
 }
 
 /**
@@ -313,9 +322,49 @@ function transformRelativeInstallPath(importPath: string, filePath?: string): st
 function transformImportPath(
 	importPath: string,
 	mappings: PathMapping[],
-	filePath?: string
+	config: ComponentConfig,
+	filePath?: string,
+	context?: TransformContext
 ): string | null {
-	return transformPath(importPath, mappings) ?? transformRelativeInstallPath(importPath, filePath);
+	const mappedPath = transformPath(importPath, mappings);
+	if (mappedPath) {
+		return toRelativeVendoredPath(mappedPath, config, context) ?? mappedPath;
+	}
+
+	return transformRelativeInstallPath(importPath, filePath);
+}
+
+function toRelativeVendoredPath(
+	mappedPath: string,
+	config: ComponentConfig,
+	context?: TransformContext
+): string | null {
+	if (config.installMode !== 'vendored' || !context) return null;
+
+	const configuredRoots = [
+		config.aliases.greater,
+		config.aliases.components,
+		config.aliases.hooks,
+		config.aliases.ui,
+		config.aliases.utils,
+		config.aliases.lib,
+	].sort((a, b) => b.length - a.length);
+
+	for (const configuredRoot of configuredRoots) {
+		if (mappedPath !== configuredRoot && !mappedPath.startsWith(`${configuredRoot}/`)) continue;
+
+		const suffix = mappedPath.slice(configuredRoot.length).replace(/^\/+/, '');
+		const targetPath = path.join(
+			resolveAlias(configuredRoot, config, context.consumerRoot),
+			suffix
+		);
+		let relativePath = path.relative(path.dirname(context.sourceFilePath), targetPath);
+		relativePath = relativePath.replace(/\\/g, '/');
+		if (!relativePath.startsWith('.')) relativePath = `./${relativePath}`;
+		return relativePath;
+	}
+
+	return null;
 }
 
 /**
@@ -417,7 +466,9 @@ function isExecutableScriptMatch(content: string, offset: number): boolean {
 function transformScriptImports(
 	content: string,
 	mappings: PathMapping[],
-	filePath?: string
+	config: ComponentConfig,
+	filePath?: string,
+	context?: TransformContext
 ): TransformResult {
 	let transformedContent = content;
 	let transformedCount = 0;
@@ -432,7 +483,7 @@ function transformScriptImports(
 			if (!isExecutableScriptMatch(beforeEsImports, statementOffset)) {
 				return match;
 			}
-			const newPath = transformImportPath(importPath, mappings, filePath);
+			const newPath = transformImportPath(importPath, mappings, config, filePath, context);
 			if (newPath) {
 				transformedCount++;
 				transformedPaths.push({ from: importPath, to: newPath });
@@ -451,7 +502,7 @@ function transformScriptImports(
 			if (!isExecutableScriptMatch(beforeSideEffectImports, statementOffset)) {
 				return match;
 			}
-			const newPath = transformImportPath(importPath, mappings, filePath);
+			const newPath = transformImportPath(importPath, mappings, config, filePath, context);
 			if (newPath) {
 				transformedCount++;
 				transformedPaths.push({ from: importPath, to: newPath });
@@ -470,7 +521,7 @@ function transformScriptImports(
 			if (!isExecutableScriptMatch(beforeDynamicImports, statementOffset)) {
 				return match;
 			}
-			const newPath = transformImportPath(importPath, mappings, filePath);
+			const newPath = transformImportPath(importPath, mappings, config, filePath, context);
 			if (newPath) {
 				transformedCount++;
 				transformedPaths.push({ from: importPath, to: newPath });
@@ -489,7 +540,7 @@ function transformScriptImports(
 			if (!isExecutableScriptMatch(beforeReExports, statementOffset)) {
 				return match;
 			}
-			const newPath = transformImportPath(importPath, mappings, filePath);
+			const newPath = transformImportPath(importPath, mappings, config, filePath, context);
 			if (newPath) {
 				transformedCount++;
 				transformedPaths.push({ from: importPath, to: newPath });
@@ -510,7 +561,12 @@ function transformScriptImports(
 /**
  * Transform CSS @import statements
  */
-function transformCssImports(content: string, mappings: PathMapping[]): TransformResult {
+function transformCssImports(
+	content: string,
+	mappings: PathMapping[],
+	config: ComponentConfig,
+	context?: TransformContext
+): TransformResult {
 	let transformedContent = content;
 	let transformedCount = 0;
 	const transformedPaths: Array<{ from: string; to: string }> = [];
@@ -518,7 +574,10 @@ function transformCssImports(content: string, mappings: PathMapping[]): Transfor
 	transformedContent = transformedContent.replace(
 		IMPORT_PATTERNS.cssImport,
 		(match, _quote, importPath) => {
-			const newPath = transformPath(importPath, mappings);
+			const mappedPath = transformPath(importPath, mappings);
+			const newPath = mappedPath
+				? (toRelativeVendoredPath(mappedPath, config, context) ?? mappedPath)
+				: null;
 			if (newPath) {
 				transformedCount++;
 				transformedPaths.push({ from: importPath, to: newPath });
@@ -624,7 +683,8 @@ export function transformSvelteImports(content: string, config: ComponentConfig)
 function transformSvelteImportsForFile(
 	content: string,
 	config: ComponentConfig,
-	filePath?: string
+	filePath?: string,
+	context?: TransformContext
 ): TransformResult {
 	const mappings = buildPathMappings(config);
 	let transformedContent = content;
@@ -635,7 +695,7 @@ function transformSvelteImportsForFile(
 	const scriptBlocks = extractScriptBlocks(content);
 	// Process in reverse order to maintain correct positions
 	for (const block of scriptBlocks.reverse()) {
-		const result = transformScriptImports(block.content, mappings, filePath);
+		const result = transformScriptImports(block.content, mappings, config, filePath, context);
 		if (result.hasChanges) {
 			const before = transformedContent.slice(0, block.start);
 			const after = transformedContent.slice(block.end);
@@ -653,7 +713,7 @@ function transformSvelteImportsForFile(
 	// Transform style blocks
 	const styleBlocks = extractStyleBlocks(transformedContent);
 	for (const block of styleBlocks.reverse()) {
-		const result = transformCssImports(block.content, mappings);
+		const result = transformCssImports(block.content, mappings, config, context);
 		if (result.hasChanges) {
 			const before = transformedContent.slice(0, block.start);
 			const after = transformedContent.slice(block.end);
@@ -682,18 +742,23 @@ function transformSvelteImportsForFile(
 export function transformTypeScriptImports(
 	content: string,
 	config: ComponentConfig,
-	filePath?: string
+	filePath?: string,
+	context?: TransformContext
 ): TransformResult {
 	const mappings = buildPathMappings(config);
-	return transformScriptImports(content, mappings, filePath);
+	return transformScriptImports(content, mappings, config, filePath, context);
 }
 
 /**
  * Transform imports in a CSS file
  */
-export function transformCssFileImports(content: string, config: ComponentConfig): TransformResult {
+export function transformCssFileImports(
+	content: string,
+	config: ComponentConfig,
+	context?: TransformContext
+): TransformResult {
 	const mappings = buildPathMappings(config);
-	return transformCssImports(content, mappings);
+	return transformCssImports(content, mappings, config, context);
 }
 
 /**
@@ -706,31 +771,32 @@ export function transformCssFileImports(content: string, config: ComponentConfig
 export function transformImports(
 	content: string,
 	config: ComponentConfig,
-	filePath?: string
+	filePath?: string,
+	context?: TransformContext
 ): TransformResult {
 	// Detect file type from extension or content
 	const ext = filePath?.split('.').pop()?.toLowerCase();
 
 	if (ext === 'svelte') {
-		return transformSvelteImportsForFile(content, config, filePath);
+		return transformSvelteImportsForFile(content, config, filePath, context);
 	}
 
 	if (ext === 'css' || ext === 'scss' || ext === 'less') {
-		return transformCssFileImports(content, config);
+		return transformCssFileImports(content, config, context);
 	}
 
 	// Trust explicit file extensions before content sniffing so JSDoc examples like
 	// `<script>` inside .ts files do not get misclassified as Svelte.
 	if (ext) {
-		return transformTypeScriptImports(content, config, filePath);
+		return transformTypeScriptImports(content, config, filePath, context);
 	}
 
 	if (content.includes('<script')) {
-		return transformSvelteImportsForFile(content, config, filePath);
+		return transformSvelteImportsForFile(content, config, filePath, context);
 	}
 
 	// Default to TypeScript/JavaScript handling for extensionless text files.
-	return transformTypeScriptImports(content, config, filePath);
+	return transformTypeScriptImports(content, config, filePath, context);
 }
 
 /**

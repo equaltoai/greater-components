@@ -102,7 +102,7 @@ Collaboration.Gallery - Collaborative gallery display
 <style>
 	.collab-gallery {
 		background: var(--gr-color-gray-800);
-		border-radius: var(--gr-radius-lg);
+		border-radius: var(--gr-radii-lg);
 		padding: var(--gr-spacing-scale-5);
 	}
 
@@ -114,8 +114,8 @@ Collaboration.Gallery - Collaborative gallery display
 	}
 
 	.collab-gallery__title {
-		font-size: var(--gr-font-size-lg);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-lg);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		margin: 0;
 	}
 
@@ -128,7 +128,7 @@ Collaboration.Gallery - Collaborative gallery display
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
 		background: var(--gr-color-gray-700);
 		border: none;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: var(--gr-color-gray-300);
 		cursor: pointer;
 		transition:
@@ -161,7 +161,7 @@ Collaboration.Gallery - Collaborative gallery display
 	.collab-gallery__item {
 		position: relative;
 		aspect-ratio: 1;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		overflow: hidden;
 	}
 
@@ -193,14 +193,14 @@ Collaboration.Gallery - Collaborative gallery display
 	}
 
 	.collab-gallery__item-name {
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
 
 	.collab-gallery__item-artist {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-300);
 	}
 
@@ -221,8 +221,8 @@ Collaboration.Gallery - Collaborative gallery display
 	}
 
 	.collab-gallery__contributor-name {
-		font-size: var(--gr-font-size-base);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-base);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		margin: 0 0 var(--gr-spacing-scale-3) 0;
 	}
 

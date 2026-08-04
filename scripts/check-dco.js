@@ -34,17 +34,40 @@ function normalizeEmail(email) {
 	return email.trim().toLowerCase();
 }
 
+/*
+ * Routed TheoryMCP GitHub App bindings have used more than one login shape.
+ * The original binding authored as `<agent>-steward[bot]`; the currently live
+ * binding authors as `<agent>-theorymcp[bot]` (for example
+ * `294850388+greater-theorymcp[bot]@users.noreply.github.com`). Both resolve to
+ * the same auditable DCO identity — the steward agent mailbox — so both binding
+ * eras are recognised here. This list is a closed allowlist: any other suffix
+ * is not a routed binding and gets no exception.
+ */
+const ROUTED_BINDING_SUFFIXES = ['steward', 'theorymcp'];
+const ROUTED_BINDING_ALTERNATION = ROUTED_BINDING_SUFFIXES.join('|');
+const ROUTED_LOGIN_PATTERN = new RegExp(
+	`^([a-z0-9](?:[a-z0-9-]*[a-z0-9])?)-(${ROUTED_BINDING_ALTERNATION})\\[bot\\]$`,
+	'i'
+);
+const ROUTED_EMAIL_PATTERN = new RegExp(
+	`^[0-9]+\\+([a-z0-9](?:[a-z0-9-]*[a-z0-9])?)-(${ROUTED_BINDING_ALTERNATION})\\[bot\\]@users\\.noreply\\.github\\.com$`,
+	'i'
+);
+
 function routedStewardAgent(commit) {
-	const loginPattern = /^([a-z0-9](?:[a-z0-9-]*[a-z0-9])?)-steward\[bot\]$/i;
-	const emailPattern =
-		/^[0-9]+\+([a-z0-9](?:[a-z0-9-]*[a-z0-9])?)-steward\[bot\]@users\.noreply\.github\.com$/i;
-	const loginMatch = commit.authorName.trim().match(loginPattern);
-	const emailMatch = commit.authorEmail.trim().match(emailPattern);
+	const loginMatch = commit.authorName.trim().match(ROUTED_LOGIN_PATTERN);
+	const emailMatch = commit.authorEmail.trim().match(ROUTED_EMAIL_PATTERN);
 	if (!loginMatch || !emailMatch) return undefined;
 
 	const loginAgent = loginMatch[1].toLowerCase();
+	const loginBinding = loginMatch[2].toLowerCase();
 	const emailAgent = emailMatch[1].toLowerCase();
-	return loginAgent === emailAgent ? loginAgent : undefined;
+	const emailBinding = emailMatch[2].toLowerCase();
+
+	// The login and the noreply address must describe the same agent AND the
+	// same binding era. A commit that mixes them is not a routed identity.
+	if (loginAgent !== emailAgent || loginBinding !== emailBinding) return undefined;
+	return loginAgent;
 }
 
 function matchesRoutedStewardSignoff(commit, signoffEmail) {
@@ -53,11 +76,12 @@ function matchesRoutedStewardSignoff(commit, signoffEmail) {
 
 	/*
 	 * Aron-approved narrow exception: routed TheoryMCP commits are authored by
-	 * the GitHub App bot (<agent>-steward[bot] / numeric+<agent>-steward[bot]
-	 * noreply email), while the auditable DCO identity is the steward agent
-	 * mailbox. Accept only that corresponding <agent>.equaltoai@theorymcp.ai
-	 * signoff. Human commits and all non-routed bots still require strict
-	 * author-email == signoff-email matching.
+	 * the GitHub App bot (<agent>-steward[bot] or <agent>-theorymcp[bot], with
+	 * the matching numeric+<login>@users.noreply.github.com address), while the
+	 * auditable DCO identity is the steward agent mailbox. Accept only that
+	 * corresponding <agent>.equaltoai@theorymcp.ai signoff. Human commits and
+	 * all non-routed bots still require strict author-email == signoff-email
+	 * matching.
 	 */
 	return normalizeEmail(signoffEmail) === `${agent}.equaltoai@theorymcp.ai`;
 }

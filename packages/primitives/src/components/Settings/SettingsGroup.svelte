@@ -31,7 +31,7 @@
 	.settings-group__label {
 		font-size: 0.875rem;
 		font-weight: 600;
-		color: var(--gr-color-text);
+		color: var(--gr-semantic-foreground-primary);
 		margin: 0;
 	}
 	.settings-group__content {

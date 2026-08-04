@@ -266,7 +266,7 @@ Supports three display variants:
 		align-items: center;
 		gap: var(--gr-spacing-scale-1);
 		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
-		background: var(--gr-color-gray-850);
+		background: var(--gr-color-gray-800);
 		border: 1px solid var(--gr-color-gray-700);
 		border-radius: var(--gr-radii-sm);
 		color: var(--gr-color-gray-400);
@@ -362,7 +362,7 @@ Supports three display variants:
 		align-items: center;
 		justify-content: center;
 		background: var(--gr-color-primary-600);
-		color: var(--gr-color-white);
+		color: var(--gr-color-base-white);
 		min-width: fit-content;
 		padding: 0 var(--gr-spacing-scale-2);
 	}
@@ -372,7 +372,7 @@ Supports three display variants:
 		align-items: center;
 		justify-content: center;
 		background: var(--gr-color-gray-600);
-		color: var(--gr-color-white);
+		color: var(--gr-color-base-white);
 		min-width: fit-content;
 		padding: 0 var(--gr-spacing-scale-2);
 	}

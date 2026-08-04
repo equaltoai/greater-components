@@ -85,9 +85,9 @@
 		flex-direction: column;
 		gap: 1rem;
 		padding: 1rem;
-		background: var(--gr-color-surface);
-		border-radius: var(--gr-radius-md);
-		border: 1px solid var(--gr-color-border);
+		background: var(--gr-semantic-background-surface);
+		border-radius: var(--gr-radii-md);
+		border: 1px solid var(--gr-semantic-border-default);
 	}
 
 	.gr-color-harmony-picker__visualization {
@@ -102,7 +102,7 @@
 		width: 60px;
 		height: 60px;
 		border-radius: 50%;
-		border: 2px solid var(--gr-color-border);
+		border: 2px solid var(--gr-semantic-border-default);
 		cursor: pointer;
 		padding: 0;
 		background: transparent;
@@ -132,7 +132,7 @@
 		width: 80px;
 		height: 80px;
 		border-width: 3px;
-		border-color: var(--gr-color-primary);
+		border-color: var(--gr-color-primary-600);
 	}
 
 	.gr-color-harmony-picker__label {
@@ -152,6 +152,6 @@
 	.gr-color-harmony-picker__info {
 		text-align: center;
 		font-size: 0.875rem;
-		color: var(--gr-color-text-muted);
+		color: var(--gr-semantic-foreground-tertiary);
 	}
 </style>

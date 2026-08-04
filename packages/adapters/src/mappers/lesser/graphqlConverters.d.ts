@@ -1,7 +1,14 @@
-import type { LesserAccountFragment, LesserObjectFragment } from './types.js';
+import type {
+	LesserAccountFragment,
+	LesserCommunicationNotificationFragment,
+	LesserObjectFragment,
+} from './types.js';
 export declare function convertGraphQLActorToLesserAccount(
 	actor: unknown
 ): LesserAccountFragment | null;
+export declare function convertGraphQLCommunicationNotificationToLesser(
+	comm: unknown
+): LesserCommunicationNotificationFragment | null;
 export declare function convertGraphQLObjectToLesser(
 	object: unknown,
 	depth?: number

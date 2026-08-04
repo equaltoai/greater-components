@@ -28,7 +28,7 @@
 
 	.demo-intro {
 		font-size: 1.1rem;
-		color: var(--gr-color-text-muted);
+		color: var(--gr-semantic-foreground-tertiary);
 		margin-bottom: 2rem;
 	}
 </style>

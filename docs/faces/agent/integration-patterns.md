@@ -6,7 +6,7 @@ For the concrete project 15 to project 9 handoff, continue with [Simulacrum Migr
 
 ## FaceTheory Hosts
 
-FaceTheory `v3.1.2` is the compatible baseline for the current Greater hosting path.
+FaceTheory `v4.0.5` is the compatible baseline for the current Greater hosting path.
 
 Use the two repo examples together:
 

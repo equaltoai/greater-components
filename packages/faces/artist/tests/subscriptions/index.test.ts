@@ -7,7 +7,7 @@ import {
 	subscribeToMyCommissions,
 	createGalleryStore,
 	createCommissionStore,
-} from '../../src/subscriptions/index';
+} from '../../src/subscriptions/index.svelte';
 import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
 
 describe('Subscriptions', () => {

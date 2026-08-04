@@ -291,7 +291,10 @@ async function updateComponent(
 					} else if (shouldBypassTransform) {
 						await writeFile(localPath, remoteContent);
 					} else {
-						const transformed = transformImports(remoteContent, config, file.path);
+						const transformed = transformImports(remoteContent, config, file.path, {
+							sourceFilePath: localPath,
+							consumerRoot: cwd,
+						});
 						await writeFile(localPath, transformed.content);
 					}
 				}
@@ -312,7 +315,10 @@ async function updateComponent(
 					} else if (shouldBypassTransform) {
 						await writeFile(localPath, remoteContent);
 					} else {
-						const transformed = transformImports(remoteContent, config, file.path);
+						const transformed = transformImports(remoteContent, config, file.path, {
+							sourceFilePath: localPath,
+							consumerRoot: cwd,
+						});
 						await writeFile(localPath, transformed.content);
 					}
 				} catch (error) {

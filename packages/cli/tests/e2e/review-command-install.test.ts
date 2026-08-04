@@ -39,6 +39,8 @@ const FIXTURE_TEMPLATE_ROOT = path.resolve(__dirname, '../fixtures/cli-fixture')
 const TMP_ROOT = path.resolve(__dirname, '../.tmp');
 const REPO_ROOT = path.resolve(CLI_ROOT, '../../');
 const TSC_BIN = path.join(REPO_ROOT, 'node_modules/.bin/tsc');
+const SVELTE_KIT_BIN = path.join(CLI_ROOT, 'node_modules/.bin/svelte-kit');
+const VITE_BIN = path.join(CLI_ROOT, 'node_modules/.bin/vite');
 
 /** Runs the CLI against this checkout instead of the network. */
 const CLI_ENV = { ...process.env, GREATER_CLI_LOCAL_REPO_ROOT: REPO_ROOT };
@@ -74,9 +76,8 @@ const REVIEW_TYPE_IMPORTERS = [
 ] as const;
 
 beforeAll(async () => {
-	if (!(await fs.pathExists(CLI_BIN))) {
-		await execa('pnpm', ['build'], { cwd: CLI_ROOT });
-	}
+	// This test executes dist/index.js, so always compile the source under test.
+	await execa('pnpm', ['build'], { cwd: CLI_ROOT });
 }, 300_000);
 
 /** Copies the fixture template, dropping the generated state `init` recreates. */
@@ -123,8 +124,618 @@ async function linkWorkspaceDependencies(root: string): Promise<void> {
 	}
 }
 
+async function getFilesRecursively(dir: string): Promise<string[]> {
+	const entries = await fs.readdir(dir, { withFileTypes: true });
+	const files: string[] = [];
+	for (const entry of entries) {
+		const fullPath = path.join(dir, entry.name);
+		if (entry.isDirectory()) files.push(...(await getFilesRecursively(fullPath)));
+		else files.push(fullPath);
+	}
+	return files;
+}
+
+type StripState =
+	'normal' | 'line-comment' | 'block-comment' | 'single' | 'double' | 'template' | 'regex';
+
+interface StripCursor {
+	state: StripState;
+	escaped: boolean;
+	regexCharacterClass: boolean;
+	templateExpressionDepths: number[];
+}
+
+function createStripCursor(): StripCursor {
+	return {
+		state: 'normal',
+		escaped: false,
+		regexCharacterClass: false,
+		templateExpressionDepths: [],
+	};
+}
+
+function canStartRegexLiteral(content: string, offset: number): boolean {
+	let previousOffset = offset - 1;
+	while (previousOffset >= 0 && /\s/.test(content[previousOffset] ?? '')) previousOffset--;
+	if (previousOffset < 0) return true;
+
+	const previous = content[previousOffset] ?? '';
+	if ((previous === '+' || previous === '-') && content[previousOffset - 1] === previous) {
+		return false;
+	}
+	if ('([{,:;=!?&|+-*%^~<>'.includes(previous)) return true;
+
+	const previousWord = content.slice(0, previousOffset + 1).match(/([A-Za-z_$][\w$]*)$/)?.[1];
+	return (
+		previousWord !== undefined &&
+		[
+			'await',
+			'case',
+			'delete',
+			'in',
+			'instanceof',
+			'of',
+			'return',
+			'throw',
+			'typeof',
+			'void',
+			'yield',
+		].includes(previousWord)
+	);
+}
+
+function advanceStripCursor(cursor: StripCursor, content: string, offset: number): number {
+	const char = content[offset] ?? '';
+	const next = content[offset + 1] ?? '';
+
+	if (cursor.state === 'line-comment') {
+		if (char === '\n' || char === '\r') cursor.state = 'normal';
+		return 1;
+	}
+
+	if (cursor.state === 'block-comment') {
+		if (char === '*' && next === '/') {
+			cursor.state = 'normal';
+			return 2;
+		}
+		return 1;
+	}
+
+	if (cursor.state === 'regex') {
+		if (cursor.escaped) {
+			cursor.escaped = false;
+			return 1;
+		}
+		if (char === '\\') {
+			cursor.escaped = true;
+			return 1;
+		}
+		if (char === '[') cursor.regexCharacterClass = true;
+		else if (char === ']') cursor.regexCharacterClass = false;
+		else if (char === '/' && !cursor.regexCharacterClass) cursor.state = 'normal';
+		return 1;
+	}
+
+	if (cursor.state === 'single' || cursor.state === 'double' || cursor.state === 'template') {
+		if (cursor.escaped) {
+			cursor.escaped = false;
+			return 1;
+		}
+		if (char === '\\') {
+			cursor.escaped = true;
+			return 1;
+		}
+		if (cursor.state === 'template' && char === '$' && next === '{') {
+			cursor.templateExpressionDepths.push(1);
+			cursor.state = 'normal';
+			return 2;
+		}
+		if (
+			(cursor.state === 'single' && char === "'") ||
+			(cursor.state === 'double' && char === '"') ||
+			(cursor.state === 'template' && char === '`')
+		) {
+			cursor.state = 'normal';
+		}
+		return 1;
+	}
+
+	const templateExpressionIndex = cursor.templateExpressionDepths.length - 1;
+	if (templateExpressionIndex >= 0) {
+		if (char === '{') {
+			cursor.templateExpressionDepths[templateExpressionIndex]++;
+			return 1;
+		}
+		if (char === '}') {
+			cursor.templateExpressionDepths[templateExpressionIndex]--;
+			if (cursor.templateExpressionDepths[templateExpressionIndex] === 0) {
+				cursor.templateExpressionDepths.pop();
+				cursor.state = 'template';
+			}
+			return 1;
+		}
+	}
+
+	if (char === '/' && next === '/') {
+		cursor.state = 'line-comment';
+		return 2;
+	}
+	if (char === '/' && next === '*') {
+		cursor.state = 'block-comment';
+		return 2;
+	}
+	if (char === '/' && canStartRegexLiteral(content, offset)) {
+		cursor.state = 'regex';
+		cursor.regexCharacterClass = false;
+	} else if (char === "'") cursor.state = 'single';
+	else if (char === '"') cursor.state = 'double';
+	else if (char === '`') cursor.state = 'template';
+	return 1;
+}
+
+function isExecutableScriptMatch(content: string, offset: number): boolean {
+	const cursor = createStripCursor();
+	for (let index = 0; index < offset;) {
+		index += advanceStripCursor(cursor, content, index);
+	}
+	return cursor.state === 'normal';
+}
+
+interface SourceRange {
+	start: number;
+	end: number;
+}
+
+interface SvelteExecutableRegion extends SourceRange {
+	tag: 'script' | 'style';
+}
+
+interface SvelteMarkupScan {
+	executableRegions: SvelteExecutableRegion[];
+}
+
+function svelteOpeningTagAt(
+	content: string,
+	offset: number
+): { tag: 'script' | 'style'; end: number } | undefined {
+	const tagMatch = content.slice(offset).match(/^<(script|style)\b/i);
+	if (!tagMatch) return undefined;
+
+	let quote: "'" | '"' | undefined;
+	let firstGreaterThan: number | undefined;
+	for (let index = offset + tagMatch[0].length; index < content.length; index++) {
+		const char = content[index] ?? '';
+		if (char === '>' && firstGreaterThan === undefined) firstGreaterThan = index;
+		if (quote) {
+			if (char === quote) quote = undefined;
+			continue;
+		}
+		if (char === "'" || char === '"') quote = char;
+		else if (char === '>') {
+			return { tag: tagMatch[1]?.toLowerCase() as 'script' | 'style', end: index + 1 };
+		}
+	}
+
+	// Invalid markup with an unterminated attribute quote still gets the base
+	// scanner's localized recovery behavior instead of hiding the whole block.
+	return firstGreaterThan === undefined
+		? undefined
+		: {
+				tag: tagMatch[1]?.toLowerCase() as 'script' | 'style',
+				end: firstGreaterThan + 1,
+			};
+}
+
+function svelteClosingTagAt(
+	content: string,
+	offset: number,
+	tag: 'script' | 'style'
+): number | undefined {
+	const match = content.slice(offset).match(new RegExp(`^</${tag}\\s*>`, 'i'));
+	return match ? offset + match[0].length : undefined;
+}
+
+function findSvelteExecutableRegion(
+	content: string,
+	bodyStart: number,
+	tag: 'script' | 'style'
+): SvelteExecutableRegion | undefined {
+	if (tag === 'style') {
+		for (let offset = bodyStart; offset < content.length; offset++) {
+			if (svelteClosingTagAt(content, offset, tag) !== undefined) {
+				return { tag, start: bodyStart, end: offset };
+			}
+		}
+		return undefined;
+	}
+
+	let structuralFallback: SvelteExecutableRegion | undefined;
+	const cursor = createStripCursor();
+	for (let offset = bodyStart; offset < content.length;) {
+		const closingEnd = svelteClosingTagAt(content, offset, tag);
+		if (closingEnd !== undefined) {
+			const region = { tag, start: bodyStart, end: offset } as const;
+			if (cursor.state === 'normal') return region;
+			structuralFallback ??= region;
+		}
+		offset += advanceStripCursor(cursor, content, offset);
+	}
+
+	// Region existence is structural: a lexer desynchronization may affect an
+	// individual later match, but it must never erase imports above that point.
+	return structuralFallback;
+}
+
+function scanSvelteMarkup(content: string): SvelteMarkupScan {
+	const executableRegions: SvelteExecutableRegion[] = [];
+
+	for (let offset = 0; offset < content.length;) {
+		if (content.startsWith('<!--', offset)) {
+			const commentEnd = content.indexOf('-->', offset + 4);
+			if (commentEnd !== -1) {
+				offset = commentEnd + 3;
+				continue;
+			}
+		}
+
+		const openingTag = svelteOpeningTagAt(content, offset);
+		if (openingTag) {
+			const region = findSvelteExecutableRegion(content, openingTag.end, openingTag.tag);
+			if (region) {
+				const closingEnd = svelteClosingTagAt(content, region.end, openingTag.tag);
+				if (closingEnd !== undefined) {
+					executableRegions.push(region);
+					offset = closingEnd;
+					continue;
+				}
+			}
+		}
+		offset++;
+	}
+	return { executableRegions };
+}
+
+function maskSvelteMarkup(content: string): string {
+	const masked = Array.from({ length: content.length }, (_, index) => {
+		const char = content[index] ?? '';
+		return char === '\n' || char === '\r' ? char : ' ';
+	});
+	for (const region of scanSvelteMarkup(content).executableRegions) {
+		for (let offset = region.start; offset < region.end; offset++) {
+			masked[offset] = content[offset] ?? '';
+		}
+	}
+
+	return masked.join('');
+}
+
+function executableImportShapedTokenOffset(content: string): number | undefined {
+	const pattern =
+		/(?:^|[;\n\r])\s*(?:import(?:\s+[^'"]+?\s*from\s*|\s*)['"]|export\s+[^'"]+?\s*from\s*['"])|(?<![\w$])import\s*\(\s*['"]|@import\s+(?:url\s*\(\s*)?['"]/g;
+
+	let match: RegExpExecArray | null;
+	while ((match = pattern.exec(content)) !== null) {
+		const statementOffset = match.index + match[0].search(/\b(?:import|export)\b|@import\b/);
+		if (isExecutableScriptMatch(content, statementOffset)) return statementOffset;
+	}
+	return undefined;
+}
+
+function recoverImportSpecifiers(executableContent: string): string[] {
+	const specifiers: string[] = [];
+	for (const pattern of [
+		/(?:^|[;\n\r])\s*import\s+[^'"]+?from\s*(['"])([^'"]+)\1/g,
+		/(?:^|[;\n\r])\s*import\s*(['"])([^'"]+)\1/g,
+		/(?:^|[;\n\r])\s*export\s+[^'"]+?from\s*(['"])([^'"]+)\1/g,
+		/(?<![\w$])import\s*\(\s*(['"])([^'"]+)\1\s*\)/g,
+		/@import\s+(?:url\s*\(\s*)?(['"])([^'"]+)\1(?:\s*\))?/g,
+	]) {
+		let match: RegExpExecArray | null;
+		while ((match = pattern.exec(executableContent)) !== null) {
+			const statementOffset = match.index + match[0].search(/\b(?:import|export)\b|@import\b/);
+			if (match[2] && isExecutableScriptMatch(executableContent, statementOffset)) {
+				specifiers.push(match[2]);
+			}
+		}
+	}
+	return specifiers;
+}
+
+function importSpecifiers(content: string, filePath?: string): string[] {
+	// Svelte markup is not JavaScript: only script/style bodies may influence
+	// string and comment state for executable import matches.
+	const executableContent = filePath?.endsWith('.svelte') ? maskSvelteMarkup(content) : content;
+	const specifiers = recoverImportSpecifiers(executableContent);
+	const importShapedTokenOffset = executableImportShapedTokenOffset(executableContent);
+	if (specifiers.length === 0 && importShapedTokenOffset !== undefined) {
+		const line = executableContent.slice(0, importShapedTokenOffset).split(/\r\n|\r|\n/).length;
+		throw new Error(
+			`Import recovery found an import-shaped token but recovered no specifiers from ${filePath ?? '<unknown file>'} at offset ${importShapedTokenOffset} (line ${line})`
+		);
+	}
+	return specifiers;
+}
+
+function resolvesOnDisk(fromFile: string, specifier: string): boolean {
+	const cleanSpecifier = specifier.replace(/[?#].*$/, '');
+	const base = path.resolve(path.dirname(fromFile), cleanSpecifier);
+	const withoutExt = base.replace(/\.(?:[cm]?[jt]s|svelte|css)$/, '');
+	return [
+		base,
+		`${withoutExt}.ts`,
+		`${withoutExt}.js`,
+		`${withoutExt}.svelte`,
+		`${withoutExt}.svelte.ts`,
+		`${withoutExt}.css`,
+		path.join(base, 'index.ts'),
+		path.join(base, 'index.js'),
+		path.join(base, 'index.svelte'),
+	].some((candidate) => fs.existsSync(candidate));
+}
+
 describe('greater add review (real command)', () => {
-	it('installs the dependency closure, rewrites type imports, and type-checks', async () => {
+	it('keeps Svelte markup apostrophes from hiding script imports in the sweep', () => {
+		const source = ["<p>Sam's post</p>", '<script>', "import 'bare-package';", '</script>'].join(
+			'\n'
+		);
+
+		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual(['bare-package']);
+	});
+
+	it('ignores imports inside commented-out Svelte script blocks', () => {
+		const source = [
+			"<p>Sam's post</p>",
+			'<!--',
+			'<script>',
+			"import 'decoy';",
+			'</script>',
+			'-->',
+			'<script>',
+			"import 'pkg-real';",
+			'</script>',
+		].join('\n');
+
+		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual(['pkg-real']);
+	});
+
+	it('leaves no recoverable import when an apostrophe precedes only a commented Svelte script', () => {
+		const source = [
+			"<p>Sam's post</p>",
+			'<!--',
+			'<script>',
+			"import 'decoy';",
+			'</script>',
+			'-->',
+		].join('\n');
+		const executableContent = maskSvelteMarkup(source);
+
+		expect(recoverImportSpecifiers(executableContent)).toEqual([]);
+	});
+
+	it('does not fail loudly for an import-shaped token in a commented-out Svelte script', () => {
+		const source = ['<!--', '<script>', "import 'decoy';", '</script>', '-->', '<p>hi</p>'].join(
+			'\n'
+		);
+
+		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual([]);
+	});
+
+	it('keeps script-local comment text inside comment-aware Svelte region scanning (E1)', () => {
+		const source = [
+			'<script>',
+			"const marker = 'escaped \\' <!--';",
+			"import 'pkg-real';",
+			'</script>',
+			'-->',
+		].join('\n');
+
+		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual(['pkg-real']);
+	});
+
+	it('keeps scanning for executable regions after an unterminated markup comment (E2)', () => {
+		const source = ['<!--', '<script>', "import 'pkg-real';", '</script>'].join('\n');
+
+		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual(['pkg-real']);
+	});
+
+	it('recovers a TypeScript import after an HTML comment opener inside a string (E3)', () => {
+		const source = ['const marker = `<!--`;', "import 'pkg-real';", "const closer = '-->';"].join(
+			'\n'
+		);
+
+		expect(importSpecifiers(source, 'synthetic.ts')).toEqual(['pkg-real']);
+	});
+
+	it('does not apply HTML comment semantics to TypeScript operators', () => {
+		const source = [
+			'const a = b <!--c;',
+			'import {',
+			'\tthing',
+			"} from 'really-real';",
+			'const d = e-->f;',
+		].join('\n');
+
+		expect(importSpecifiers(source, 'synthetic.ts')).toEqual(['really-real']);
+	});
+
+	it('keeps regex literals from desynchronizing TypeScript import recovery', () => {
+		const source = [
+			'const htmlComment = /<!--/;',
+			"const apostrophe = /'/;",
+			`const negativeRegex = -/'/.test('value');`,
+			"import 'regex-real';",
+		].join('\n');
+
+		expect(importSpecifiers(source, 'synthetic.ts')).toEqual(['regex-real']);
+	});
+
+	it('treats slashes after postfix increment and decrement as division', () => {
+		for (const { operation, specifier } of [
+			{ operation: 'i++ / total', specifier: 'after-incdiv' },
+			{ operation: 'i-- / total', specifier: 'after-decdiv' },
+		]) {
+			const source = [`const ratio = ${operation};`, `import '${specifier}';`].join('\n');
+
+			expect(importSpecifiers(source, 'synthetic.ts')).toEqual([specifier]);
+		}
+	});
+
+	it('does not truncate a Svelte script at a closing tag inside a string', () => {
+		const source = [
+			'<script>',
+			'const closingTag = "</script>";',
+			"import 'pkg-real';",
+			'</script>',
+		].join('\n');
+
+		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual(['pkg-real']);
+	});
+
+	it.each([
+		{
+			name: 'X1: recovers an import after a plain nested template',
+			source: "const value = `${items.map((item) => `${item}`).join('')}`;\nimport 'x1-real';",
+			expected: ['x1-real'],
+		},
+		{
+			name: 'X2: recovers an import after a nested template containing a closing tag',
+			source:
+				"const html = `<div>${items.map((item) => `<b>${item}</b>`).join('')}</div>`;\nimport 'x2-real';",
+			expected: ['x2-real'],
+		},
+		{
+			name: 'X3: recovers an import after a single template containing a closing tag',
+			source: "const html = `<div></b></div>`;\nimport 'x3-real';",
+			expected: ['x3-real'],
+		},
+		{
+			name: 'X4: recovers an import after a nested template containing a self-closing tag',
+			source:
+				"const html = `<div>${items.map((item) => `<br/>${item}`).join('')}</div>`;\nimport 'x4-real';",
+			expected: ['x4-real'],
+		},
+		{
+			name: 'X5: recovers a dynamic import after a nested template containing a closing tag',
+			source:
+				"const html = `<div>${items.map((item) => `<b>${item}</b>`).join('')}</div>`;\nawait import('./lazy.js');",
+			expected: ['./lazy.js'],
+		},
+		{
+			name: 'X8: recovers an import after division inside a nested template',
+			source:
+				"const html = `<div>${items.map((item) => `<b>${item / total}</b>`).join('')}</div>`;\nimport 'x8-real';",
+			expected: ['x8-real'],
+		},
+	])('$name', ({ source, expected }) => {
+		expect(importSpecifiers(source, 'nested-template.ts')).toEqual(expected);
+	});
+
+	it('X6: keeps a Svelte import before a nested template containing a closing tag', () => {
+		const source = [
+			'<script>',
+			"import './ctx.js';",
+			"const html = `<div>${items.map((item) => `<b>${item}</b>`).join('')}</div>`;",
+			'</script>',
+		].join('\n');
+
+		expect(importSpecifiers(source, 'nested-template.svelte')).toEqual(['./ctx.js']);
+	});
+
+	it('recovers an import declared above a lexer desync', () => {
+		const source = [
+			'<script>',
+			"import './ctx.js';",
+			'const broken = "unterminated;',
+			'</script>',
+		].join('\n');
+
+		expect(importSpecifiers(source, 'unterminated-string.svelte')).toEqual(['./ctx.js']);
+	});
+
+	it('finds a Svelte opening tag terminator after a quoted greater-than character', () => {
+		const source = ['<script data-example="a>b">', "import 'attribute-real';", '</script>'].join(
+			'\n'
+		);
+
+		expect(importSpecifiers(source, 'quoted-attribute.svelte')).toEqual(['attribute-real']);
+	});
+
+	it('falls back to the first greater-than for an unterminated Svelte attribute quote', () => {
+		const source = ['<script data-x="a>', "import 'attribute-fallback-real';", '</script>'].join(
+			'\n'
+		);
+
+		expect(importSpecifiers(source, 'unterminated-attribute.svelte')).toEqual([
+			'attribute-fallback-real',
+		]);
+	});
+
+	it('fails loudly when an import-shaped token yields no recovered specifier', () => {
+		const malformedStatements = [
+			{
+				source: "import { hidden } from 'malformed;",
+				file: 'malformed.ts',
+				token: 'import',
+				line: 1,
+			},
+			{
+				source: "const before = true;\nimport {\n\thidden\n} from 'malformed;",
+				file: 'malformed.ts',
+				token: 'import',
+				line: 2,
+			},
+			{
+				source: "const before = true;\n\nexport {\n\thidden\n} from 'malformed;",
+				file: 'malformed.ts',
+				token: 'export',
+				line: 3,
+			},
+			{
+				source: "import {a}from 'malformed;",
+				file: 'malformed.ts',
+				token: 'import',
+				line: 1,
+			},
+			{
+				source: "export {a}from 'malformed;",
+				file: 'malformed.ts',
+				token: 'export',
+				line: 1,
+			},
+			{
+				source: "import'malformed;",
+				file: 'malformed.ts',
+				token: 'import',
+				line: 1,
+			},
+			{
+				source: ['<script>', "import { hidden } from 'malformed;", '</script>'].join('\n'),
+				file: 'malformed-multiline.svelte',
+				token: 'import',
+				line: 2,
+			},
+			{
+				source: "<script>import { hidden } from 'malformed;</script>",
+				file: 'malformed-single-line.svelte',
+				token: 'import',
+				line: 1,
+			},
+			{
+				source: ['<style>', "@import 'malformed;", '</style>'].join('\n'),
+				file: 'malformed-style.svelte',
+				token: '@import',
+				line: 2,
+			},
+		];
+
+		for (const { source, file, token, line } of malformedStatements) {
+			expect(() => importSpecifiers(source, file)).toThrow(
+				`Import recovery found an import-shaped token but recovered no specifiers from ${file} at offset ${source.indexOf(token)} (line ${line})`
+			);
+		}
+	});
+
+	it('preserves pins and installs a relative-import tree that type-checks and builds', async () => {
 		const root = await createScratchProject();
 
 		try {
@@ -133,12 +744,23 @@ describe('greater add review (real command)', () => {
 				env: CLI_ENV,
 			});
 			expect(await fs.pathExists(path.join(root, 'components.json'))).toBe(true);
+			const packageJsonPath = path.join(root, 'package.json');
+			const manifestBeforeAdd = await fs.readFile(packageJsonPath, 'utf8');
+			expect(JSON.parse(manifestBeforeAdd).devDependencies.viem).toBe('^2.47.14');
 
 			// 2. The command under test. No `--all`: the closure below is what
 			//    `review`'s own registryDependencies must pull in on their own.
-			await execa('node', [CLI_BIN, 'add', '--yes', 'review', '--cwd', root], {
+			const addResult = await execa('node', [CLI_BIN, 'add', '--yes', 'review', '--cwd', root], {
 				env: CLI_ENV,
 			});
+
+			// Consumer-owned declarations are never package-manager rewrite targets.
+			// The adapters core requires viem ^2.55.10, while this fixture intentionally
+			// pins an older range. The complete manifest bytes must survive `add`.
+			expect(await fs.readFile(packageJsonPath, 'utf8')).toBe(manifestBeforeAdd);
+			expect(`${addResult.stdout}\n${addResult.stderr}`).toContain(
+				'viem: manifest ^2.47.14; Greater requires ^2.55.10'
+			);
 
 			// (a) Dependency closure: `blog-types` is not requested on the command
 			//     line, it is reached through `review`'s registryDependencies.
@@ -149,6 +771,43 @@ describe('greater add review (real command)', () => {
 
 			const libDir = path.join(root, 'src/lib');
 			expect(await fs.pathExists(path.join(libDir, 'blog-types.ts'))).toBe(true);
+
+			// Every Greater-internal specifier emitted by the real add pipeline is
+			// relative and resolves in the installed tree. No tsconfig/vite alias is
+			// added for Greater internals; the stock SvelteKit fixture stays untouched.
+			const unresolved: string[] = [];
+			const bareAliasTargets: string[] = [];
+			const bareGreaterPackageSpecifiers: string[] = [];
+			const bareAliasRoots = [
+				componentsJson.aliases.greater,
+				componentsJson.aliases.components,
+				componentsJson.aliases.utils,
+				componentsJson.aliases.hooks,
+				componentsJson.aliases.lib,
+				'$lib',
+			];
+			for (const file of await getFilesRecursively(libDir)) {
+				if (!/\.(?:svelte|[cm]?[jt]s|css)$/.test(file)) continue;
+				for (const specifier of importSpecifiers(await fs.readFile(file, 'utf8'), file)) {
+					if (specifier.startsWith('.') && !resolvesOnDisk(file, specifier)) {
+						unresolved.push(`${path.relative(root, file)} → ${specifier}`);
+					}
+					if (
+						bareAliasRoots.some(
+							(aliasRoot: string) =>
+								specifier === aliasRoot || specifier.startsWith(`${aliasRoot}/`)
+						)
+					) {
+						bareAliasTargets.push(`${path.relative(root, file)} → ${specifier}`);
+					}
+					if (/^@equaltoai\/greater-components(?:-|\/|$)/.test(specifier)) {
+						bareGreaterPackageSpecifiers.push(`${path.relative(root, file)} → ${specifier}`);
+					}
+				}
+			}
+			expect(unresolved).toEqual([]);
+			expect(bareAliasTargets).toEqual([]);
+			expect(bareGreaterPackageSpecifiers).toEqual([]);
 
 			// Every file the catalog claims for `review` has to land, so a catalog
 			// entry that stops installing fails here rather than in a consumer.
@@ -177,6 +836,20 @@ describe('greater add review (real command)', () => {
 			//     Relative `.svelte` specifiers are covered by the directory
 			//     listing above and by `vendored-blog-install.test.ts`.
 			await linkWorkspaceDependencies(root);
+			await fs.writeFile(
+				path.join(root, 'src/routes/+page.svelte'),
+				[
+					'<script lang="ts">',
+					"\timport QueueCard from '$lib/components/Review/QueueCard.svelte';",
+					"\timport * as greaterUtils from '$lib/greater/utils';",
+					'\tconst installedComponent = QueueCard;',
+					"\tconst className = Object.keys(greaterUtils).length ? 'greater-resolution-proof' : '';",
+					'</script>',
+					'',
+					"<p class={className}>{installedComponent ? 'vendored imports resolve' : 'missing'}</p>",
+					'',
+				].join('\n')
+			);
 
 			await fs.writeFile(
 				path.join(libDir, 'review-shims.d.ts'),
@@ -226,6 +899,47 @@ describe('greater add review (real command)', () => {
 
 			expect(unresolvedRelative).toEqual([]);
 			expect(output, 'the installed Review tree failed to type-check').toBe('');
+
+			// Standard SvelteKit + Vite build, using only the configuration `init`
+			// scaffolded in the fresh fixture.
+			await execa(SVELTE_KIT_BIN, ['sync'], { cwd: root });
+			const build = await execa(VITE_BIN, ['build'], { cwd: root, reject: false });
+			expect(build.exitCode, `fresh consumer build failed:\n${build.stdout}\n${build.stderr}`).toBe(
+				0
+			);
+		} finally {
+			await fs.remove(root);
+		}
+	}, 300_000);
+
+	it('preserves a conflicting optional dependency pin byte-for-byte', async () => {
+		const root = await createScratchProject();
+
+		try {
+			const packageJsonPath = path.join(root, 'package.json');
+			const fixtureManifest = await fs.readJson(packageJsonPath);
+			const viemPin = fixtureManifest.devDependencies.viem;
+			delete fixtureManifest.devDependencies.viem;
+			fixtureManifest.optionalDependencies = {
+				...(fixtureManifest.optionalDependencies ?? {}),
+				viem: viemPin,
+			};
+			await fs.writeJson(packageJsonPath, fixtureManifest, { spaces: 2 });
+
+			await execa('node', [CLI_BIN, 'init', '--yes', '--face', 'blog', '--cwd', root], {
+				env: CLI_ENV,
+			});
+			const manifestBeforeAdd = await fs.readFile(packageJsonPath, 'utf8');
+			expect(JSON.parse(manifestBeforeAdd).optionalDependencies.viem).toBe('^2.47.14');
+
+			const addResult = await execa('node', [CLI_BIN, 'add', '--yes', 'review', '--cwd', root], {
+				env: CLI_ENV,
+			});
+
+			expect(await fs.readFile(packageJsonPath, 'utf8')).toBe(manifestBeforeAdd);
+			expect(`${addResult.stdout}\n${addResult.stderr}`).toContain(
+				'viem: manifest ^2.47.14; Greater requires ^2.55.10'
+			);
 		} finally {
 			await fs.remove(root);
 		}

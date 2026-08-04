@@ -457,6 +457,53 @@ describe('transformCssFileImports', () => {
 	});
 });
 
+describe('vendored relative import emission', () => {
+	const config = createTestConfig({
+		aliases: {
+			...createTestConfig().aliases,
+			components: 'src/lib/components',
+			utils: 'src/lib/utils',
+			ui: 'src/lib/components/ui',
+			lib: 'src/lib',
+			hooks: 'src/lib/primitives',
+			greater: 'src/lib/greater',
+		},
+	});
+
+	it('rewrites cross-directory core and shared imports relative to the installed file', () => {
+		const result = transformImports(
+			[
+				"import { cn } from '@equaltoai/greater-components-utils';",
+				"import { session } from '@equaltoai/greater-components/shared/auth';",
+			].join('\n'),
+			config,
+			'components/Article/Card.svelte.ts',
+			{
+				sourceFilePath: '/consumer/src/lib/components/Article/Card.svelte.ts',
+				consumerRoot: '/consumer',
+			}
+		);
+
+		expect(result.content).toContain("from '../../greater/utils'");
+		expect(result.content).toContain("from '../auth'");
+		expect(result.content).not.toContain('src/lib/');
+	});
+
+	it('rewrites CSS package imports relative to the installed stylesheet', () => {
+		const result = transformImports(
+			"@import '@equaltoai/greater-components-tokens/theme.css';",
+			config,
+			'primitives/style.css',
+			{
+				sourceFilePath: '/consumer/src/lib/greater/primitives/style.css',
+				consumerRoot: '/consumer',
+			}
+		);
+
+		expect(result.content).toBe("@import '../tokens/theme.css';");
+	});
+});
+
 describe('transformSvelteImports', () => {
 	const config = createTestConfig();
 

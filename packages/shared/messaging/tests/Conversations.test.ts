@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mount, unmount, flushSync } from 'svelte';
 import Conversations from '../src/Conversations.svelte';
+import ConversationsActionsHarness from './fixtures/ConversationsActionsHarness.svelte';
 
 // Mock context
 const { mockHandlers, mockState, mockSelectConversation, mockFetchConversations } = vi.hoisted(
@@ -96,6 +97,16 @@ describe('Conversations', () => {
 		unmount(instance);
 	});
 
+	it('selects an externally controlled initial folder', async () => {
+		const target = document.createElement('div');
+		const instance = mount(Conversations, { target, props: { folder: 'REQUESTS' } });
+		await flushSync();
+
+		expect(mockFetchConversations).toHaveBeenCalledWith('REQUESTS');
+
+		unmount(instance);
+	});
+
 	it('renders conversations list', async () => {
 		mockState.conversations = [
 			{
@@ -162,6 +173,59 @@ describe('Conversations', () => {
 		unmount(instance);
 	});
 
+	it('renders a safe plain-text excerpt for server HTML previews', async () => {
+		mockState.conversations = [
+			{
+				id: 'c-html-preview',
+				participants: [{ id: 'u1', displayName: 'Alice', avatar: '' }],
+				unreadCount: 0,
+				lastMessage: {
+					content:
+						'<p>Hello <strong>world</strong></p><img src="x" onerror="alert(1)"><script>alert(2)</script>',
+					createdAt: '',
+				},
+			},
+		];
+
+		const target = document.createElement('div');
+		const instance = mount(Conversations, { target });
+		await flushSync();
+
+		const preview = target.querySelector('.messages-conversations__preview');
+		expect(preview?.textContent).toBe('Hello world');
+		expect(preview?.querySelector('strong')).toBeNull();
+		expect(preview?.querySelector('img')).toBeNull();
+		expect(preview?.innerHTML).not.toContain('onerror');
+
+		unmount(instance);
+	});
+
+	it('decodes entities and drops style text from server HTML previews', async () => {
+		mockState.conversations = [
+			{
+				id: 'c-encoded-preview',
+				participants: [{ id: 'u1', displayName: 'Alice', avatar: '' }],
+				unreadCount: 0,
+				lastMessage: {
+					content:
+						'<style>.messages-conversations{display:none}</style><p>Tom &amp; <strong>Jerry</strong></p>',
+					createdAt: '',
+				},
+			},
+		];
+
+		const target = document.createElement('div');
+		const instance = mount(Conversations, { target });
+		await flushSync();
+
+		const preview = target.querySelector('.messages-conversations__preview');
+		expect(preview?.textContent).toBe('Tom & Jerry');
+		expect(preview?.textContent).not.toContain('display:none');
+		expect(preview?.children).toHaveLength(0);
+
+		unmount(instance);
+	});
+
 	it('handles selection', async () => {
 		mockState.conversations = [
 			{
@@ -184,6 +248,75 @@ describe('Conversations', () => {
 			expect.objectContaining({ id: 'c1' })
 		);
 
+		unmount(instance);
+	});
+
+	it('renders request actions beside the card selection button', async () => {
+		mockState.conversations = [
+			{
+				id: 'c-request',
+				participants: [{ id: 'u1', displayName: 'Alice', avatar: '' }],
+				unreadCount: 0,
+			},
+		];
+
+		const target = document.createElement('div');
+		const instance = mount(ConversationsActionsHarness, {
+			target,
+			props: { folder: 'REQUESTS' },
+		});
+		await flushSync();
+
+		const card = target.querySelector('.messages-conversations__item');
+		const selectionButton = card?.querySelector('.messages-conversations__item-main');
+		const action = card?.querySelector('.request-action') as HTMLButtonElement;
+		const lateThemeRule = document.createElement('style');
+		lateThemeRule.textContent = '.messages-conversations__item { display: flex; }';
+		document.head.append(lateThemeRule);
+		expect(card?.tagName).toBe('DIV');
+		expect(selectionButton?.tagName).toBe('BUTTON');
+		expect(action?.dataset.conversationId).toBe('c-request');
+		expect(card?.hasAttribute('style')).toBe(false);
+		expect(selectionButton?.hasAttribute('style')).toBe(false);
+		expect(card?.querySelector('.messages-conversations__actions')?.hasAttribute('style')).toBe(
+			false
+		);
+		expect(getComputedStyle(card as Element).display).toBe('grid');
+		expect(getComputedStyle(selectionButton as Element).display).toBe('grid');
+		expect(
+			getComputedStyle(card?.querySelector('.messages-conversations__actions') as Element).display
+		).toBe('flex');
+
+		action.click();
+		await flushSync();
+		expect(mockSelectConversation).not.toHaveBeenCalled();
+
+		lateThemeRule.remove();
+		unmount(instance);
+	});
+
+	it('keeps the legacy single-button card when no actions snippet is supplied', async () => {
+		mockState.conversations = [
+			{
+				id: 'c-default',
+				participants: [{ id: 'u1', displayName: 'Alice', avatar: '' }],
+				unreadCount: 0,
+			},
+		];
+
+		const target = document.createElement('div');
+		const instance = mount(Conversations, { target });
+		await flushSync();
+
+		const card = target.querySelector('.messages-conversations__item');
+		const lateThemeRule = document.createElement('style');
+		lateThemeRule.textContent = '.messages-conversations__item { display: flex; }';
+		document.head.append(lateThemeRule);
+		expect(card?.tagName).toBe('BUTTON');
+		expect(card?.querySelector('.messages-conversations__item-main')).toBeNull();
+		expect(getComputedStyle(card as Element).display).toBe('flex');
+
+		lateThemeRule.remove();
 		unmount(instance);
 	});
 

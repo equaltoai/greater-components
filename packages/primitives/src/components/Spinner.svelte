@@ -172,7 +172,7 @@ Spinner component - Accessible loading indicator with configurable size and colo
 	}
 
 	.gr-spinner--gray {
-		color: var(--gr-semantic-text-secondary);
+		color: var(--gr-semantic-foreground-secondary);
 	}
 
 	/* Reduced motion */

@@ -139,6 +139,63 @@ const tests = [
 			}),
 	],
 	[
+		'routed TheoryMCP App author on the -theorymcp[bot] binding passes',
+		() =>
+			withRepo((cwd) => {
+				const base = git(cwd, ['rev-parse', 'HEAD']);
+				commit(cwd, {
+					authorName: 'greater-theorymcp[bot]',
+					authorEmail: '294850388+greater-theorymcp[bot]@users.noreply.github.com',
+					body: 'Signed-off-by: Greater steward <greater.equaltoai@theorymcp.ai>',
+				});
+
+				const result = expectDcoPass(cwd, base);
+				assert.match(result.stdout, /routed TheoryMCP App allowlist/);
+			}),
+	],
+	[
+		'routed TheoryMCP App author cannot sign off as a different agent',
+		() =>
+			withRepo((cwd) => {
+				const base = git(cwd, ['rev-parse', 'HEAD']);
+				commit(cwd, {
+					authorName: 'greater-theorymcp[bot]',
+					authorEmail: '294850388+greater-theorymcp[bot]@users.noreply.github.com',
+					body: 'Signed-off-by: Factory steward <factory.equaltoai@theorymcp.ai>',
+				});
+
+				expectDcoFail(cwd, base);
+			}),
+	],
+	[
+		'routed binding era must match between login and noreply address',
+		() =>
+			withRepo((cwd) => {
+				const base = git(cwd, ['rev-parse', 'HEAD']);
+				commit(cwd, {
+					authorName: 'greater-steward[bot]',
+					authorEmail: '294850388+greater-theorymcp[bot]@users.noreply.github.com',
+					body: 'Signed-off-by: Greater steward <greater.equaltoai@theorymcp.ai>',
+				});
+
+				expectDcoFail(cwd, base);
+			}),
+	],
+	[
+		'bot logins outside the routed binding allowlist get no agent-mailbox exception',
+		() =>
+			withRepo((cwd) => {
+				const base = git(cwd, ['rev-parse', 'HEAD']);
+				commit(cwd, {
+					authorName: 'greater-agent[bot]',
+					authorEmail: '294850388+greater-agent[bot]@users.noreply.github.com',
+					body: 'Signed-off-by: Greater steward <greater.equaltoai@theorymcp.ai>',
+				});
+
+				expectDcoFail(cwd, base);
+			}),
+	],
+	[
 		'GitHub bot numeric noreply author with canonical bot signoff passes',
 		() =>
 			withRepo((cwd) => {

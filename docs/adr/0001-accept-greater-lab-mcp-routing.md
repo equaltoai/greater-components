@@ -1,6 +1,6 @@
 # ADR 0001: Accept and document `greater_lab` MCP steward routing
 
-- **Status:** Accepted
+- **Status:** Superseded (operator decision 2026-08-02)
 - **Date:** 2026-05-30
 - **Issue:** [#716](https://github.com/equaltoai/greater-components/issues/716)
 - **Decision owner:** Aron / Greater stewardship governance
@@ -104,3 +104,19 @@ informed consent, and endpoint pinning/allowlisting outside `.mcp.json`.
   project MCP trusts `lab.theorymcp.ai` and the local client/agent boundary.
 - Production component code, adapter contracts, registry checksums, theming
   tokens, and shipped Greater CLI component source are unchanged by this ADR.
+
+## Supersession note (2026-08-02)
+
+The operator directed that the materialized agent surface be untracked
+fleet-wide. `.mcp.json`, `GEMINI.md`, and the host configuration directories are
+namespace-rendered working-tree installs that are regenerated on demand through
+`agent_local_install_plan`; the committed copy invited the configuration drift
+this ADR intended to prevent. The repository now git-ignores those installs (PR
+[#949](https://github.com/equaltoai/greater-components/pull/949)). Canonical
+routing is published by the `equaltoai` namespace at
+`https://theorymcp.ai/equaltoai/mcp`; the rendered Greater steward route uses the
+`theorymcp` alias at `https://theorymcp.ai/equaltoai/agents/greater/mcp`.
+
+The “Remove `.mcp.json` / remove `greater_lab`” alternative rejected above is
+therefore the adopted posture, with the namespace installer as the regeneration
+path instead of per-developer manual setup.

@@ -100,4 +100,8 @@ PACKAGING_PLAN.md
 .agents/
 .codex/
 .claude/
+.kimi-code/
+.theorymcp/
+GEMINI.md
+.mcp.json
 opencode.json

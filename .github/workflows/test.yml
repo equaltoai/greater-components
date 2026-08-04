@@ -57,6 +57,9 @@ jobs:
       - name: Run unit tests
         run: pnpm test:unit
 
+      - name: Run script tests
+        run: pnpm test:scripts
+
       - name: Run agent face smoke coverage
         run: pnpm smoke:agent-face
 

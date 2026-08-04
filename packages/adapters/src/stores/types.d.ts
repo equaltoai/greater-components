@@ -39,7 +39,7 @@ export interface LesserTimelineMetadata {
 	/** Is quoteable */
 	quoteable?: boolean;
 	/** Quote permission level */
-	quotePermission?: 'EVERYONE' | 'FOLLOWERS' | 'NONE';
+	quotePermission?: 'EVERYONE' | 'FOLLOWERS' | 'MENTIONED' | 'NONE';
 	/** Trust score of author */
 	authorTrustScore?: number;
 	/** AI analysis result */
@@ -100,13 +100,7 @@ export interface TimelineState {
 	};
 }
 export type TimelineSourceType =
-	| 'home'
-	| 'local'
-	| 'federated'
-	| 'direct'
-	| 'list'
-	| 'hashtag'
-	| 'actor';
+	'home' | 'local' | 'federated' | 'direct' | 'list' | 'hashtag' | 'actor';
 export interface TimelineSource {
 	type: TimelineSourceType;
 	id?: string;
@@ -396,12 +390,44 @@ export interface PresenceConfig {
 	};
 	/** Heartbeat interval in ms */
 	heartbeatInterval?: number;
-	/** User inactivity threshold in ms */
+	/** Initial location supplied by the host during SSR or bootstrapping */
+	initialLocation?: UserPresence['location'];
+	/** Explicit activity source for client-side status tracking */
+	activitySource?: PresenceActivitySource;
+	/** Explicit location source for host-provided route tracking */
+	locationSource?: PresenceLocationSource;
+	/** User inactivity threshold in ms when an activity source is attached */
 	inactivityThreshold?: number;
 	/** Presence update debounce time in ms */
 	updateDebounceMs?: number;
-	/** Enable location tracking */
+	/** @deprecated Use locationSource with createBrowserPresenceLocationSource() instead. */
 	enableLocationTracking?: boolean;
+}
+export interface PresenceActivitySource {
+	/** Subscribe to user activity events */
+	subscribe(onActivity: () => void): () => void;
+}
+export interface PresenceLocationSource {
+	/** Read the host's current location snapshot */
+	getLocation(): UserPresence['location'];
+	/** Subscribe to location changes emitted by the host */
+	subscribe?(onLocationChange: (location: UserPresence['location']) => void): () => void;
+}
+export interface BrowserPresenceActivitySourceOptions {
+	/** Event target, defaults to window when available */
+	target?: Pick<Window, 'addEventListener' | 'removeEventListener'> | null;
+	/** Activity event names to watch */
+	events?: string[];
+	/** Listener options applied to each activity subscription */
+	listenerOptions?: AddEventListenerOptions | boolean;
+}
+export interface BrowserPresenceLocationSourceOptions {
+	/** Event target, defaults to window when available */
+	target?:
+		| (Pick<Window, 'addEventListener' | 'removeEventListener'> & {
+				location: Pick<Location, 'pathname' | 'hash'>;
+		  })
+		| null;
 }
 export interface StoreFactory {
 	/** Create timeline store instance */

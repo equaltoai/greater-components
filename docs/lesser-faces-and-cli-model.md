@@ -765,17 +765,11 @@ The CLI fetches a registry index on each operation:
 		"timeline": "sha256-def456..."
 	},
 	"components": {
-		"button": {
-			/* ComponentMetadata */
-		},
-		"timeline": {
-			/* ComponentMetadata */
-		}
+		"button": {/* ComponentMetadata */},
+		"timeline": {/* ComponentMetadata */}
 	},
 	"faces": {
-		"social": {
-			/* FaceManifest */
-		}
+		"social": {/* FaceManifest */}
 	}
 }
 ```

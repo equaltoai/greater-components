@@ -194,7 +194,7 @@ Collaboration.Split - Revenue/credit split configuration
 <style>
 	.collab-split {
 		background: var(--gr-color-gray-800);
-		border-radius: var(--gr-radius-lg);
+		border-radius: var(--gr-radii-lg);
 		padding: var(--gr-spacing-scale-5);
 	}
 
@@ -206,8 +206,8 @@ Collaboration.Split - Revenue/credit split configuration
 	}
 
 	.collab-split__title {
-		font-size: var(--gr-font-size-lg);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-lg);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		margin: 0;
 	}
 
@@ -215,9 +215,9 @@ Collaboration.Split - Revenue/credit split configuration
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
 		background: var(--gr-color-primary-600);
 		border: none;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: white;
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		cursor: pointer;
 	}
 
@@ -248,12 +248,12 @@ Collaboration.Split - Revenue/credit split configuration
 	.collab-split__avatar {
 		width: 32px;
 		height: 32px;
-		border-radius: var(--gr-radius-full);
+		border-radius: var(--gr-radii-full);
 		object-fit: cover;
 	}
 
 	.collab-split__name {
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 	}
 
 	.collab-split__input-group {
@@ -267,7 +267,7 @@ Collaboration.Split - Revenue/credit split configuration
 		padding: var(--gr-spacing-scale-2);
 		background: var(--gr-color-gray-700);
 		border: 1px solid var(--gr-color-gray-600);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: var(--gr-color-gray-100);
 		text-align: center;
 	}
@@ -304,8 +304,8 @@ Collaboration.Split - Revenue/credit split configuration
 	}
 
 	.collab-split__total-value {
-		font-size: var(--gr-font-size-xl);
-		font-weight: var(--gr-font-weight-bold);
+		font-size: var(--gr-typography-fontSize-xl);
+		font-weight: var(--gr-typography-fontWeight-bold);
 	}
 
 	.collab-split__total.invalid .collab-split__total-value {
@@ -314,7 +314,7 @@ Collaboration.Split - Revenue/credit split configuration
 
 	.collab-split__error {
 		color: var(--gr-color-error-500);
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 	}
 
 	.collab-split__actions {
@@ -328,7 +328,7 @@ Collaboration.Split - Revenue/credit split configuration
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
 		background: var(--gr-color-gray-700);
 		border: none;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: var(--gr-color-gray-100);
 		cursor: pointer;
 	}
@@ -337,9 +337,9 @@ Collaboration.Split - Revenue/credit split configuration
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
 		background: var(--gr-color-success-600);
 		border: none;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: white;
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		cursor: pointer;
 	}
 
@@ -360,33 +360,33 @@ Collaboration.Split - Revenue/credit split configuration
 		gap: var(--gr-spacing-scale-3);
 		padding: var(--gr-spacing-scale-3);
 		background: var(--gr-color-gray-700);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 	}
 
 	.collab-split__split-name {
 		flex: 1;
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 	}
 
 	.collab-split__split-value {
-		font-size: var(--gr-font-size-lg);
-		font-weight: var(--gr-font-weight-bold);
+		font-size: var(--gr-typography-fontSize-lg);
+		font-weight: var(--gr-typography-fontWeight-bold);
 	}
 
 	.collab-split__confirmed {
 		color: var(--gr-color-success-500);
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 	}
 
 	.collab-split__pending {
 		color: var(--gr-color-warning-500);
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 	}
 
 	.collab-split__status {
 		margin-top: var(--gr-spacing-scale-4);
 		padding: var(--gr-spacing-scale-3);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		text-align: center;
 	}
 
@@ -411,7 +411,7 @@ Collaboration.Split - Revenue/credit split configuration
 	}
 
 	.collab-split__hint {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 	}
 
 	@media (prefers-reduced-motion: reduce) {

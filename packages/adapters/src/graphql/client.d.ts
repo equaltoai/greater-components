@@ -11,6 +11,22 @@
  */
 import { ApolloClient } from '@apollo/client';
 import { type Client } from 'graphql-ws';
+import { type AuthExpiredHandler, type TokenRefreshCallback } from '../authExpiry.js';
+declare module '@apollo/client' {
+	namespace ApolloClient {
+		namespace DeclareDefaultOptions {
+			interface WatchQuery {
+				errorPolicy?: 'none' | 'ignore' | 'all';
+			}
+			interface Query {
+				errorPolicy?: 'none' | 'ignore' | 'all';
+			}
+			interface Mutate {
+				errorPolicy?: 'none' | 'ignore' | 'all';
+			}
+		}
+	}
+}
 export interface GraphQLClientConfig {
 	/**
 	 * HTTP endpoint for queries and mutations
@@ -50,6 +66,25 @@ export interface GraphQLClientConfig {
 	 * @default 3
 	 */
 	maxRetries?: number;
+	/**
+	 * Supplies a fresh access token when Lesser reports the current one expired.
+	 *
+	 * Lesser v1.5.33 re-checks credential expiry as each `subscribe` operation
+	 * starts and answers an expired credential with a graphql-ws Error frame
+	 * carrying `extensions.code = "TOKEN_EXPIRED"`. When this callback is
+	 * configured the client refreshes once, re-dials the existing WebSocket so
+	 * `connectionParams` re-evaluates with the new token, and graphql-ws
+	 * re-establishes the active subscriptions.
+	 *
+	 * When omitted, expiry is terminal and reported through
+	 * {@link GraphQLClientConfig.onAuthExpired} — never retried silently.
+	 */
+	onTokenRefresh?: TokenRefreshCallback;
+	/**
+	 * Notified when credential expiry is terminal: no refresh callback is
+	 * configured, or refreshing produced no usable token.
+	 */
+	onAuthExpired?: AuthExpiredHandler;
 }
 export interface GraphQLClientInstance {
 	client: ApolloClient;

@@ -163,7 +163,7 @@ Features:
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		font-size: var(--gr-font-size-xl);
+		font-size: var(--gr-typography-fontSize-xl);
 		background: var(--gr-color-gray-800);
 		border-radius: 50%;
 	}
@@ -176,7 +176,7 @@ Features:
 	}
 
 	.profile-timeline__date {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-500);
 	}
 
@@ -202,7 +202,7 @@ Features:
 	.profile-timeline__engagement {
 		display: flex;
 		gap: var(--gr-spacing-scale-4);
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-500);
 	}
 
@@ -215,6 +215,6 @@ Features:
 
 	.profile-timeline__loader {
 		color: var(--gr-color-gray-500);
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 	}
 </style>

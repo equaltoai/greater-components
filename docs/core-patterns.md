@@ -827,8 +827,8 @@ VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/graphql
 <style>
 	.error-banner {
 		padding: 1rem;
-		background: var(--gr-color-danger-50);
-		border: 1px solid var(--gr-color-danger-200);
+		background: var(--gr-color-error-50);
+		border: 1px solid var(--gr-color-error-200);
 		border-radius: var(--gr-radii-md);
 		margin-bottom: 1rem;
 	}

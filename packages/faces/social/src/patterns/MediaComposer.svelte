@@ -4,13 +4,38 @@
   Provides comprehensive media upload and editing for ActivityPub posts.
   Supports images, videos, audio, focal points, alt text, and accessibility features.
   
+  ## Rejection handling
+
+  Before uploading, files are screened against `config.allowedTypes`,
+  `config.maxFileSize` and `config.maxAttachments`. Rejected files never reach
+  `handlers.onUpload`, and this component deliberately renders nothing for them:
+  surfacing a rejection to the user — the wording, the placement, and the ARIA
+  live region that announces it — is the consumer's job.
+
+  Pass `handlers.onReject` to receive them. It is called once per distinct
+  reason with every file that tripped it, and each rejected file is reported
+  exactly once under the first limit it violated. Without a handler the
+  component falls back to `console.warn`, so rejections are never silently
+  dropped, but nothing is surfaced to the user.
+
+  The defaults here are a conservative guess, not the authority. Instance media
+  policy (for example lesser's) is server-configured and is not advertised to
+  the client, so a consumer that wants the server to be the authority should
+  widen `config` and report what the server rejects.
+
   @component
   @example
   ```svelte
   <MediaComposer
     attachments={media}
     {config}
-    {handlers}
+    handlers={{
+      onUpload,
+      onReject: (files, reason) => {
+        // reason.kind: 'unsupported-type' | 'file-too-large' | 'max-attachments-reached'
+        announce(`${files.length} file(s) rejected: ${reason.kind}`);
+      },
+    }}
   />
   ```
 -->
@@ -129,11 +154,39 @@
 		enableDragDrop?: boolean;
 	}
 
+	/**
+	 * Why the client-side gate rejected a file, before any upload was attempted.
+	 *
+	 * Discriminated on `kind`, and each variant carries the limit it tripped so a
+	 * consumer can compose a message without re-deriving the component's config.
+	 * Adding a variant is a breaking change for exhaustive `switch` consumers, so
+	 * the set is deliberately small and matches the gate's own checks one-to-one.
+	 */
+	export type MediaComposerRejectionReason =
+		| { kind: 'unsupported-type'; allowedTypes: string[] }
+		| { kind: 'file-too-large'; maxFileSize: number }
+		| { kind: 'max-attachments-reached'; maxAttachments: number };
+
 	interface MediaComposerHandlers {
 		/**
 		 * Called when files are selected
 		 */
 		onUpload?: (files: File[]) => Promise<MediaComposerAttachment[]>;
+
+		/**
+		 * Called when files are rejected by the client-side gate, before upload.
+		 *
+		 * Invoked once per distinct rejection reason, in the order the reasons were
+		 * first encountered, with every file that tripped that reason. Each rejected
+		 * file is reported exactly once, under the first limit it violated.
+		 *
+		 * The component does not render or announce rejections — surfacing them
+		 * (and the wording) belongs to the consumer, which also owns whether the
+		 * server or this client gate is the real authority on media policy. When no
+		 * handler is provided the component keeps its previous `console.warn`
+		 * behavior, so rejections are never silently swallowed.
+		 */
+		onReject?: (files: File[], reason: MediaComposerRejectionReason) => void;
 
 		/**
 		 * Called when attachment is removed
@@ -221,27 +274,79 @@
 	}
 
 	/**
+	 * Report rejected files to the consumer, or fall back to the pre-`onReject`
+	 * warn behavior when the consumer has not adopted the callback.
+	 */
+	function reportRejections(rejections: { file: File; reason: MediaComposerRejectionReason }[]) {
+		const onReject = handlers.onReject;
+
+		if (!onReject) {
+			for (const { file, reason } of rejections) {
+				if (reason.kind === 'unsupported-type') {
+					console.warn(`File type ${file.type} not allowed`);
+				} else if (reason.kind === 'file-too-large') {
+					console.warn(`File ${file.name} exceeds max size`);
+				} else {
+					console.warn(`Max attachments (${reason.maxAttachments}) reached`);
+				}
+			}
+			return;
+		}
+
+		// One call per distinct reason, first-seen order, carrying every file that
+		// tripped it — a Map preserves insertion order for us.
+		const grouped = new Map<
+			MediaComposerRejectionReason['kind'],
+			{ reason: MediaComposerRejectionReason; files: File[] }
+		>();
+		for (const { file, reason } of rejections) {
+			const group = grouped.get(reason.kind);
+			if (group) group.files.push(file);
+			else grouped.set(reason.kind, { reason, files: [file] });
+		}
+
+		for (const { reason, files } of grouped.values()) {
+			try {
+				onReject(files, reason);
+			} catch (cause) {
+				// A consumer fault in the notification path must not strand the file
+				// input or discard files that passed the gate.
+				console.error('MediaComposer onReject handler threw', cause);
+			}
+		}
+	}
+
+	/**
 	 * Upload files
 	 */
 	async function uploadFiles(files: File[]) {
 		if (!files.length || uploading) return;
 
 		// Validate
-		const validFiles = files.filter((file) => {
+		const validFiles: File[] = [];
+		const rejections: { file: File; reason: MediaComposerRejectionReason }[] = [];
+
+		for (const file of files) {
 			if (!allowedTypes.includes(file.type)) {
-				console.warn(`File type ${file.type} not allowed`);
-				return false;
+				// Copy: the consumer must not be able to mutate the gate's own list.
+				rejections.push({
+					file,
+					reason: { kind: 'unsupported-type', allowedTypes: [...allowedTypes] },
+				});
+				continue;
 			}
 			if (file.size > maxFileSize) {
-				console.warn(`File ${file.name} exceeds max size`);
-				return false;
+				rejections.push({ file, reason: { kind: 'file-too-large', maxFileSize } });
+				continue;
 			}
 			if (attachments.length >= maxAttachments) {
-				console.warn(`Max attachments (${maxAttachments}) reached`);
-				return false;
+				rejections.push({ file, reason: { kind: 'max-attachments-reached', maxAttachments } });
+				continue;
 			}
-			return true;
-		});
+			validFiles.push(file);
+		}
+
+		if (rejections.length) reportRejections(rejections);
 
 		if (!validFiles.length) return;
 

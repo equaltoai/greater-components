@@ -111,6 +111,115 @@ function buildSchema(options: SanitizeOptions): Schema {
 	};
 }
 
+interface ExternalLinkOptions {
+	addRelToExternalLinks: boolean;
+	externalLinksInNewTab: boolean;
+}
+
+interface HastNode {
+	type: string;
+	children?: HastNode[];
+}
+
+interface HastElement extends HastNode {
+	type: 'element';
+	tagName: string;
+	properties: Record<string, unknown>;
+	children: HastNode[];
+}
+
+const SECURITY_TOKENS = ['noopener', 'noreferrer'];
+const SANITIZER_BASE_HOST = 'greater-sanitize.invalid';
+// Sentinel collisions are safe only because RFC 6761 reserves .invalid from delegation. A
+// resolvable sentinel would turn an internal classification into a live external-link bypass.
+if (!SANITIZER_BASE_HOST.endsWith('.invalid')) {
+	throw new Error('The sanitizer sentinel host must use the reserved .invalid TLD');
+}
+// A single host feeds both scheme variants so special-scheme shorthand is classified against
+// the union of plausible page schemes.
+const SANITIZER_BASE_URLS = ['https:', 'http:'].map(
+	(protocol) => new URL(`${protocol}//${SANITIZER_BASE_HOST}/`)
+);
+const SANITIZER_BASE_ORIGINS = new Set(SANITIZER_BASE_URLS.map(({ origin }) => origin));
+
+function relTokens(value: unknown): string[] {
+	if (Array.isArray(value)) return value.map(String).filter(Boolean);
+	if (typeof value === 'string') return value.split(/\s+/u).filter(Boolean);
+	return [];
+}
+
+function relTokensWithoutOpener(value: unknown): string[] {
+	return relTokens(value).filter((token) => token.toLowerCase() !== 'opener');
+}
+
+function isHastElement(node: HastNode): node is HastElement {
+	return node.type === 'element';
+}
+
+// Mirrors packages/shared/messaging/src/sanitize.ts; keep external-link classification aligned.
+function isExternalHttpUrl(href: string): boolean {
+	return SANITIZER_BASE_URLS.some((baseUrl) => {
+		try {
+			const resolved = new URL(href, baseUrl);
+			// Unioning both bases deliberately over-hardens same-scheme shorthand such as
+			// https:foo. Mastodon/federation emits absolute URLs, so that cost is vanishingly rare.
+			return (
+				(resolved.protocol === 'http:' || resolved.protocol === 'https:') &&
+				!SANITIZER_BASE_ORIGINS.has(resolved.origin)
+			);
+		} catch {
+			return false;
+		}
+	});
+}
+
+/** Add external-link protections before the sanitized tree is serialized. */
+function rehypeExternalLinkProperties(options: ExternalLinkOptions) {
+	return (tree: HastNode): void => {
+		function visit(node: HastNode): void {
+			if (!node.children) return;
+
+			for (const child of node.children) {
+				if (!isHastElement(child)) continue;
+
+				const href = child.properties['href'];
+				if (child.tagName === 'a' && typeof href === 'string') {
+					const isExternal = isExternalHttpUrl(href);
+					const hasTarget = 'target' in child.properties;
+					const attachesBlankTarget = isExternal && options.externalLinksInNewTab && !hasTarget;
+
+					if (isExternal && options.addRelToExternalLinks) {
+						const tokens = relTokensWithoutOpener(child.properties['rel']);
+						const normalizedTokens = new Set(tokens.map((token) => token.toLowerCase()));
+
+						for (const token of SECURITY_TOKENS) {
+							if (!normalizedTokens.has(token)) {
+								tokens.push(token);
+								normalizedTokens.add(token);
+							}
+						}
+
+						child.properties['rel'] = tokens;
+					}
+
+					if (attachesBlankTarget) {
+						if (!options.addRelToExternalLinks && 'rel' in child.properties) {
+							const tokens = relTokensWithoutOpener(child.properties['rel']);
+							if (tokens.length > 0) child.properties['rel'] = tokens;
+							else delete child.properties['rel'];
+						}
+						child.properties['target'] = '_blank';
+					}
+				}
+
+				visit(child);
+			}
+		}
+
+		visit(tree);
+	};
+}
+
 /**
  * Sanitize HTML content using rehype-sanitize with an allow-list approach.
  * Fully ESM-compatible implementation.
@@ -131,28 +240,13 @@ export function sanitizeHtml(dirty: string, options: SanitizeOptions = {}): stri
 	const processor = unified()
 		.use(rehypeParse, { fragment: true })
 		.use(rehypeSanitize, schema)
+		.use(rehypeExternalLinkProperties, {
+			addRelToExternalLinks,
+			externalLinksInNewTab,
+		})
 		.use(rehypeStringify);
 
-	let result = String(processor.processSync(dirty));
-
-	// Post-process to add rel and target to external links
-	if (addRelToExternalLinks || externalLinksInNewTab) {
-		result = result.replace(/<a\s+href="(https?:\/\/[^"]+)"([^>]*)>/g, (_match, href, rest) => {
-			let attributes = rest || '';
-
-			if (addRelToExternalLinks && !attributes.includes('rel=')) {
-				attributes += ' rel="noopener noreferrer"';
-			}
-
-			if (externalLinksInNewTab && !attributes.includes('target=')) {
-				attributes += ' target="_blank"';
-			}
-
-			return `<a href="${href}"${attributes}>`;
-		});
-	}
-
-	return result;
+	return String(processor.processSync(dirty));
 }
 
 /**

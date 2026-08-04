@@ -7,7 +7,59 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
+import fs from 'node:fs';
+import path from 'node:path';
 import { calculateContrastRatio } from '../../src/utils/highContrast';
+import { stripCssBlockComments } from '../../../../../scripts/css-source.mjs';
+
+const tokenCss = fs.readFileSync(
+	path.resolve(process.cwd(), '../../tokens/dist/theme.css'),
+	'utf8'
+);
+
+function componentStyle(relativePath: string): string {
+	const component = fs.readFileSync(path.resolve(process.cwd(), relativePath), 'utf8');
+	const style = component.match(/<style>([\s\S]*?)<\/style>/)?.[1];
+	if (!style) throw new Error(`Missing style block in ${relativePath}`);
+	return style;
+}
+
+function declarations(css: string, selector: string): string {
+	for (const match of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+		if (stripCssBlockComments(match[1] ?? '').trim() === selector) return match[2] ?? '';
+	}
+	throw new Error(`Missing CSS block for ${selector}`);
+}
+
+function declarationValue(css: string, selector: string, property: string): string {
+	const matches = Array.from(
+		declarations(css, selector).matchAll(new RegExp(`(?:^|;)\\s*${property}\\s*:\\s*([^;]+)`, 'g'))
+	);
+	const value = matches.at(-1)?.[1]?.trim();
+	if (!value) throw new Error(`Missing ${property} declaration for ${selector}`);
+	return value;
+}
+
+const emittedProperties = new Map(
+	Array.from(tokenCss.matchAll(/(--gr-[\w-]+)\s*:\s*([^;]+);/g), (match) => [
+		match[1] as string,
+		match[2]?.trim() as string,
+	])
+);
+
+function resolveValue(value: string, seen = new Set<string>()): string {
+	const trimmed = value.trim();
+	if (/^#[\da-f]{6}$/i.test(trimmed)) return trimmed.toLowerCase();
+
+	const variable = trimmed.match(/^var\(\s*(--[\w-]+)\s*(?:,\s*(.+))?\)$/s);
+	if (!variable?.[1]) throw new Error(`Unresolved CSS value: ${value}`);
+	if (seen.has(variable[1])) throw new Error(`Circular CSS variable: ${variable[1]}`);
+
+	const declared = emittedProperties.get(variable[1]);
+	if (declared) return resolveValue(declared, new Set(seen).add(variable[1]));
+	if (variable[2]) return resolveValue(variable[2], new Set(seen).add(variable[1]));
+	throw new Error(`Missing emitted token: ${variable[1]}`);
+}
 
 describe('Contrast Accessibility', () => {
 	beforeEach(() => {
@@ -15,6 +67,46 @@ describe('Contrast Accessibility', () => {
 	});
 
 	describe('Color Contrast Ratios', () => {
+		it('resolves newly-live transparency badge declarations at WCAG AA contrast', () => {
+			const optOutCss = componentStyle('src/components/Transparency/AIOptOutControls.svelte');
+			const ethicalCss = componentStyle('src/components/Transparency/EthicalSourcingBadge.svelte');
+			const processCss = componentStyle('src/components/Transparency/ProcessDocumentation.svelte');
+			const pairedCells = [
+				['opt-out low impact', optOutCss, '.gr-transparency-optout-impact-badge--low'],
+				['opt-out high impact', optOutCss, '.gr-transparency-optout-impact-badge--high'],
+				['opt-out complete impact', optOutCss, '.gr-transparency-optout-impact-badge--complete'],
+				['opt-out blocked status', optOutCss, '.gr-transparency-optout-status-badge--blocked'],
+				[
+					'hybrid process type',
+					processCss,
+					'.gr-transparency-process-step--hybrid .gr-transparency-process-step-type',
+				],
+			] as const;
+
+			for (const [name, css, selector] of pairedCells) {
+				const foreground = resolveValue(declarationValue(css, selector, 'color'));
+				const background = resolveValue(declarationValue(css, selector, 'background'));
+				expect(calculateContrastRatio(foreground, background), name).toBeGreaterThanOrEqual(4.5);
+			}
+
+			const ethicalVariants = [
+				['green', 'green'],
+				['blue', 'blue'],
+				['yellow', 'yellow'],
+				['expired', 'expired'],
+			] as const;
+			for (const [name, variant] of ethicalVariants) {
+				const main = `.gr-transparency-ethical-badge--${variant} .gr-transparency-ethical-badge-main`;
+				const status = `.gr-transparency-ethical-badge--${variant} .gr-transparency-ethical-badge-status`;
+				const foreground = resolveValue(declarationValue(ethicalCss, status, 'color'));
+				const background = resolveValue(declarationValue(ethicalCss, main, 'background'));
+				expect(
+					calculateContrastRatio(foreground, background),
+					`${name} status`
+				).toBeGreaterThanOrEqual(4.5);
+			}
+		});
+
 		it('meets WCAG AA for normal text (4.5:1)', () => {
 			// Dark text (#333333) on light background (#FFFFFF)
 			const ratio = calculateContrastRatio('#333333', '#FFFFFF');

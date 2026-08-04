@@ -445,7 +445,7 @@ export interface GenericTimelineItem<T extends ActivityPubObject = ActivityPubOb
 			/** Is quoteable */
 			quoteable?: boolean;
 			/** Quote permission level */
-			quotePermission?: 'EVERYONE' | 'FOLLOWERS' | 'NONE';
+			quotePermission?: 'EVERYONE' | 'FOLLOWERS' | 'MENTIONED' | 'NONE';
 			/** Trust score of author */
 			authorTrustScore?: number;
 			/** AI analysis result */
@@ -468,14 +468,7 @@ export interface GenericNotification<T extends ActivityPubActivity = ActivityPub
 	 * Notification type
 	 */
 	type:
-		| 'mention'
-		| 'reblog'
-		| 'favourite'
-		| 'follow'
-		| 'follow_request'
-		| 'poll'
-		| 'status'
-		| string;
+		'mention' | 'reblog' | 'favourite' | 'follow' | 'follow_request' | 'poll' | 'status' | string;
 
 	/**
 	 * Account that triggered the notification
@@ -631,7 +624,7 @@ export type TrustCategory = 'CONTENT' | 'BEHAVIOR' | 'TECHNICAL';
 /**
  * Quote permission levels
  */
-export type QuotePermission = 'EVERYONE' | 'FOLLOWERS' | 'NONE';
+export type QuotePermission = 'EVERYONE' | 'FOLLOWERS' | 'MENTIONED' | 'NONE';
 
 /**
  * Quote types
@@ -902,7 +895,12 @@ export function isQuoteable(object: ActivityPubObject): boolean {
 export function getQuotePermission(object: ActivityPubObject): QuotePermission {
 	if (hasLesserObjectExtensions(object)) {
 		const permission = object.extensions?.['quotePermissions'];
-		if (permission === 'EVERYONE' || permission === 'FOLLOWERS' || permission === 'NONE') {
+		if (
+			permission === 'EVERYONE' ||
+			permission === 'FOLLOWERS' ||
+			permission === 'MENTIONED' ||
+			permission === 'NONE'
+		) {
 			return permission;
 		}
 	}

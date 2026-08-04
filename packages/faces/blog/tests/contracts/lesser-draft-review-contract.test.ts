@@ -69,10 +69,12 @@ function readTypeBlock(schema: string, declaration: string): string[] {
 describe('Lesser shared-draft review contract', () => {
 	const schema = readLesserSchema();
 
-	it('is pinned to the release that introduced the review surface', () => {
+	it('is pinned to a release carrying the review surface', () => {
 		const ref = readLesserRef();
 
-		expect(ref).toContain('tag: v1.5.32');
+		// v1.6.0 adds contentHash to verdict records; the field assertions below
+		// keep the review chrome pinned to that release boundary.
+		expect(ref).toContain('tag: v1.6.0');
 		expect(ref).toMatch(/commit: [0-9a-f]{40}/);
 	});
 

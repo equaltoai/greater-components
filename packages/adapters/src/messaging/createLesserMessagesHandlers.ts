@@ -1,5 +1,3 @@
-import type { LesserGraphQLAdapter } from '../graphql/LesserGraphQLAdapter.js';
-import type { ActorSummaryFragment, ObjectFieldsFragment } from '../graphql/generated/types.js';
 import {
 	AcceptMessageRequestDocument,
 	ConversationMessagesDocument,
@@ -8,16 +6,18 @@ import {
 	DeleteConversationDocument,
 	DeleteMessageDocument,
 	SendMessageDocument,
-} from '../graphql/generated/types.js';
+} from './messagingOperations.js';
+import type {
+	LesserMessageActor,
+	LesserMessageConversation,
+	LesserMessageObject,
+	MessagesDocumentNode,
+} from './messagingOperations.js';
 
 export type ConversationFolder = 'INBOX' | 'REQUESTS';
 export type DmRequestState = 'PENDING' | 'ACCEPTED' | 'DECLINED';
 export type RealtimeConnectionStatus =
-	| 'idle'
-	| 'connecting'
-	| 'connected'
-	| 'disconnected'
-	| 'error';
+	'idle' | 'connecting' | 'connected' | 'disconnected' | 'error';
 
 export interface MessageParticipant {
 	id: string;
@@ -89,30 +89,52 @@ export interface MessagesHandlers {
 	onSubscribeToConversationUpdates?: (callbacks: MessagesRealtimeCallbacks) => () => void;
 }
 
+export interface LesserMessagesAdapter {
+	query: <
+		TData extends Record<string, unknown>,
+		TVariables extends Record<string, unknown> = Record<string, unknown>,
+	>(
+		document: MessagesDocumentNode<TData, TVariables>,
+		variables?: TVariables
+	) => Promise<TData>;
+	mutate: <
+		TData extends Record<string, unknown>,
+		TVariables extends Record<string, unknown> = Record<string, unknown>,
+	>(
+		document: MessagesDocumentNode<TData, TVariables>,
+		variables?: TVariables
+	) => Promise<TData>;
+	getConversations: (variables: {
+		folder?: ConversationFolder;
+		first?: number;
+		after?: string;
+	}) => Promise<ReadonlyArray<LesserMessageConversation>>;
+	getConversation: (id: string) => Promise<LesserMessageConversation | null | undefined>;
+	markConversationAsRead: (id: string) => Promise<unknown>;
+	search: (variables: {
+		query: string;
+		type: 'accounts';
+		first?: number;
+	}) => Promise<{ accounts: ReadonlyArray<LesserMessageActor> }>;
+	subscribeToConversationUpdates: () => {
+		subscribe(observer: {
+			next: (value: { data?: { conversationUpdates?: { id: string } | null } | null }) => void;
+			error: (error: unknown) => void;
+			complete: () => void;
+		}): { unsubscribe(): void };
+	};
+}
+
 export interface LesserMessagesHandlersConfig {
-	adapter: LesserGraphQLAdapter;
+	adapter: LesserMessagesAdapter;
 	pageSize?: number;
 	messagePageSize?: number;
 	searchLimit?: number;
 }
 
-type LesserConversationLike = {
-	id: string;
-	unread: boolean;
-	updatedAt: string;
-	accounts: ReadonlyArray<ActorSummaryFragment>;
-	lastStatus?: ObjectFieldsFragment | null | undefined;
-	viewerMetadata: {
-		requestState: DmRequestState;
-		requestedAt?: string | null | undefined;
-		acceptedAt?: string | null | undefined;
-		declinedAt?: string | null | undefined;
-	};
-};
+type LesserConversationLike = LesserMessageConversation;
 
-function getCanonicalParticipantId(
-	actor: Pick<ActorSummaryFragment, 'id' | 'username' | 'domain'>
-) {
+function getCanonicalParticipantId(actor: Pick<LesserMessageActor, 'id' | 'username' | 'domain'>) {
 	if (actor.domain) {
 		return actor.id;
 	}
@@ -136,11 +158,11 @@ function getCanonicalParticipantId(
 	return actor.id;
 }
 
-function getParticipantHandle(actor: Pick<ActorSummaryFragment, 'username' | 'domain'>): string {
+function getParticipantHandle(actor: Pick<LesserMessageActor, 'username' | 'domain'>): string {
 	return actor.domain ? `${actor.username}@${actor.domain}` : actor.username;
 }
 
-function mapActorToParticipant(actor: ActorSummaryFragment): MessageParticipant {
+function mapActorToParticipant(actor: LesserMessageActor): MessageParticipant {
 	return {
 		id: getCanonicalParticipantId(actor),
 		actorId: actor.id,
@@ -152,7 +174,7 @@ function mapActorToParticipant(actor: ActorSummaryFragment): MessageParticipant 
 }
 
 function mapObjectToDirectMessage(
-	object: ObjectFieldsFragment,
+	object: LesserMessageObject,
 	conversationId: string
 ): DirectMessage {
 	return {

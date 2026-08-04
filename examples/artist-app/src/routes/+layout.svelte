@@ -41,15 +41,15 @@
 		min-height: 100vh;
 		display: flex;
 		flex-direction: column;
-		background: var(--gr-semantic-surface-default);
-		color: var(--gr-semantic-foreground-default);
+		background: var(--gr-semantic-background-primary);
+		color: var(--gr-semantic-foreground-primary);
 	}
 
 	.app-header {
 		position: sticky;
 		top: 0;
 		z-index: 100;
-		background: var(--gr-semantic-surface-elevated);
+		background: var(--gr-semantic-background-raised);
 		border-bottom: 1px solid var(--gr-semantic-border-default);
 	}
 
@@ -84,7 +84,7 @@
 	}
 
 	.app-nav__links a:hover {
-		color: var(--gr-semantic-foreground-default);
+		color: var(--gr-semantic-foreground-primary);
 	}
 
 	.app-main {
@@ -98,7 +98,7 @@
 	.app-footer {
 		padding: 2rem;
 		text-align: center;
-		color: var(--gr-semantic-foreground-muted);
+		color: var(--gr-semantic-foreground-tertiary);
 		border-top: 1px solid var(--gr-semantic-border-default);
 	}
 </style>

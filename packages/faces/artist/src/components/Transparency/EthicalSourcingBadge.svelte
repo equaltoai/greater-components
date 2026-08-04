@@ -345,7 +345,7 @@ Features:
 	}
 
 	.gr-transparency-ethical-badge--clickable .gr-transparency-ethical-badge-main:hover {
-		background: var(--gr-color-gray-750);
+		background: var(--gr-color-gray-700);
 		border-color: var(--gr-color-gray-600);
 	}
 
@@ -371,23 +371,23 @@ Features:
 
 	/* Color variants */
 	.gr-transparency-ethical-badge--green .gr-transparency-ethical-badge-main {
-		border-color: var(--gr-color-green-700);
-		background: var(--gr-color-green-900);
+		border-color: var(--gr-color-success-300);
+		background: var(--gr-color-success-900);
 	}
 
 	.gr-transparency-ethical-badge--blue .gr-transparency-ethical-badge-main {
-		border-color: var(--gr-color-blue-700);
-		background: var(--gr-color-blue-900);
+		border-color: var(--gr-color-info-300);
+		background: var(--gr-color-info-900);
 	}
 
 	.gr-transparency-ethical-badge--yellow .gr-transparency-ethical-badge-main {
-		border-color: var(--gr-color-amber-700);
-		background: var(--gr-color-amber-900);
+		border-color: var(--gr-color-warning-300);
+		background: var(--gr-color-warning-900);
 	}
 
 	.gr-transparency-ethical-badge--expired .gr-transparency-ethical-badge-main {
-		border-color: var(--gr-color-red-700);
-		background: var(--gr-color-red-900);
+		border-color: var(--gr-color-error-300);
+		background: var(--gr-color-error-900);
 		opacity: 0.7;
 	}
 
@@ -434,7 +434,7 @@ Features:
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
-		gap: var(--gr-spacing-scale-0-5);
+		gap: var(--gr-spacing-scale-1);
 	}
 
 	.gr-transparency-ethical-badge-title {
@@ -460,15 +460,15 @@ Features:
 	}
 
 	.gr-transparency-ethical-badge--green .gr-transparency-ethical-badge-level {
-		color: var(--gr-color-green-400);
+		color: var(--gr-color-success-400);
 	}
 
 	.gr-transparency-ethical-badge--blue .gr-transparency-ethical-badge-level {
-		color: var(--gr-color-blue-400);
+		color: var(--gr-color-info-300);
 	}
 
 	.gr-transparency-ethical-badge--yellow .gr-transparency-ethical-badge-level {
-		color: var(--gr-color-amber-400);
+		color: var(--gr-color-warning-400);
 	}
 
 	.gr-transparency-ethical-badge-level-icon {
@@ -496,26 +496,26 @@ Features:
 	}
 
 	.gr-transparency-ethical-badge--green .gr-transparency-ethical-badge-status {
-		color: var(--gr-color-green-400);
+		color: var(--gr-color-success-400);
 	}
 
 	.gr-transparency-ethical-badge--blue .gr-transparency-ethical-badge-status {
-		color: var(--gr-color-blue-400);
+		color: var(--gr-color-info-300);
 	}
 
 	.gr-transparency-ethical-badge--yellow .gr-transparency-ethical-badge-status {
-		color: var(--gr-color-amber-400);
+		color: var(--gr-color-warning-400);
 	}
 
 	.gr-transparency-ethical-badge--expired .gr-transparency-ethical-badge-status {
-		color: var(--gr-color-red-400);
+		color: var(--gr-color-error-300);
 	}
 
 	/* Details */
 	.gr-transparency-ethical-badge-details {
 		margin-top: var(--gr-spacing-scale-2);
 		padding: var(--gr-spacing-scale-4);
-		background: var(--gr-color-gray-850);
+		background: var(--gr-color-gray-800);
 		border: 1px solid var(--gr-color-gray-700);
 		border-radius: var(--gr-radii-md);
 	}
@@ -537,7 +537,7 @@ Features:
 	.gr-transparency-ethical-badge-meta-item {
 		display: flex;
 		flex-direction: column;
-		gap: var(--gr-spacing-scale-0-5);
+		gap: var(--gr-spacing-scale-1);
 	}
 
 	.gr-transparency-ethical-badge-meta-item--full {
@@ -559,7 +559,7 @@ Features:
 	}
 
 	.gr-transparency-ethical-badge-meta dd.expired {
-		color: var(--gr-color-red-400);
+		color: var(--gr-color-error-300);
 	}
 
 	.gr-transparency-ethical-badge-org {

@@ -30,12 +30,7 @@ export const SECURITY_CONFIG = {
  * Signature verification status
  */
 export type SignatureStatus =
-	| 'valid'
-	| 'invalid'
-	| 'unsigned'
-	| 'unknown_key'
-	| 'expired'
-	| 'error';
+	'valid' | 'invalid' | 'unsigned' | 'unknown_key' | 'expired' | 'error';
 
 /**
  * Signature type (GPG or SSH)
@@ -114,13 +109,7 @@ export interface SecurityWarning {
  * Audit log entry action types
  */
 export type AuditAction =
-	| 'install'
-	| 'update'
-	| 'remove'
-	| 'verify'
-	| 'fetch'
-	| 'config_change'
-	| 'security_warning';
+	'install' | 'update' | 'remove' | 'verify' | 'fetch' | 'config_change' | 'security_warning';
 
 /**
  * Audit log entry schema

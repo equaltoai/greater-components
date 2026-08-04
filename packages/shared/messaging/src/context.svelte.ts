@@ -90,11 +90,7 @@ export interface Conversation {
 }
 
 export type RealtimeConnectionStatus =
-	| 'idle'
-	| 'connecting'
-	| 'connected'
-	| 'disconnected'
-	| 'error';
+	'idle' | 'connecting' | 'connected' | 'disconnected' | 'error';
 
 export interface ConversationRealtimeUpdate {
 	conversation: Conversation;

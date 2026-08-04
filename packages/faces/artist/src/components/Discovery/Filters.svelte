@@ -485,7 +485,7 @@ Features:
 		background: transparent;
 		border: none;
 		color: var(--gr-color-gray-100);
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		cursor: pointer;
 	}
 
@@ -509,7 +509,7 @@ Features:
 		background: var(--gr-color-primary-600);
 		border-radius: var(--gr-radii-full);
 		font-size: var(--gr-typography-fontSize-xs);
-		font-weight: var(--gr-font-weight-semibold);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 	}
 
 	.filters__chevron {
@@ -584,7 +584,7 @@ Features:
 	.filters__section-title {
 		margin: 0 0 var(--gr-spacing-scale-2);
 		font-size: var(--gr-typography-fontSize-sm);
-		font-weight: var(--gr-font-weight-semibold);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: var(--gr-color-gray-300);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;

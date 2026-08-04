@@ -5800,8 +5800,8 @@
 	flex-direction: column;
 	gap: var(--gr-spacing-scale-1);
 	padding: var(--gr-spacing-scale-3);
-	background-color: var(--gr-semantic-background-warning-subtle);
-	border: 1px solid var(--gr-semantic-border-warning);
+	background-color: var(--gr-color-warning-50);
+	border: 1px solid var(--gr-color-warning-300);
 	border-radius: var(--gr-radii-md);
 }
 
@@ -5846,6 +5846,33 @@
 
 .gr-compose-box__char-count--error {
 	color: var(--gr-semantic-action-error-default);
+}
+
+/*
+ * Submit failure surfaced inline (role="alert"). Reuses the already
+ * contrast-validated error foreground token rather than introducing a new one,
+ * so the theming contract is unchanged.
+ */
+.gr-compose-box__error {
+	padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
+	border-radius: var(--gr-radii-md);
+	border-left: 3px solid var(--gr-semantic-action-error-default);
+	background-color: var(--gr-semantic-background-secondary);
+	color: var(--gr-semantic-action-error-default);
+	font-size: var(--gr-typography-fontSize-sm);
+	font-weight: var(--gr-typography-fontWeight-medium);
+	line-height: var(--gr-typography-lineHeight-normal);
+}
+
+/*
+ * Explains why wider visibility options are disabled in a reply/quote context.
+ * Referenced by the select's aria-describedby, so it must stay in the
+ * accessibility tree — never `display: none`.
+ */
+.gr-compose-box__visibility-note {
+	font-size: var(--gr-typography-fontSize-sm);
+	line-height: var(--gr-typography-lineHeight-normal);
+	color: var(--gr-semantic-foreground-secondary);
 }
 
 .gr-compose-box__media,
@@ -6013,7 +6040,7 @@
 }
 
 .content a {
-	color: var(--color-link, #1d9bf0);
+	color: var(--color-link, #2563eb);
 	text-decoration: none;
 }
 
@@ -6022,12 +6049,52 @@
 }
 
 .content .mention {
-	color: var(--color-link, #1d9bf0);
+	color: var(--color-link, #2563eb);
 	font-weight: 500;
 }
 
 .content .hashtag {
+	color: var(--color-link, #2563eb);
+}
+
+/*
+ * Only the light default moves. `#1d9bf0` is 3.0004:1 on `#ffffff`, below the
+ * WCAG 2.1 AA 4.5:1 floor for body text, so light falls back to `#2563eb`
+ * (5.1686:1). Dark and high contrast keep the historical `#1d9bf0`, which
+ * already clears AA there (6.7105:1 on `#030712`, 6.9990:1 on `#000000`), so
+ * existing consumers see no rendered change outside light.
+ *
+ * The scopes mirror the four the token sheet itself switches on — both
+ * `data-theme` spellings plus the two `:root:not([data-theme])` media queries —
+ * so no activation path is left rendering the light default on a dark surface.
+ * The override variable keeps its position at the front of every chain.
+ */
+[data-theme='dark'] .content a,
+[data-theme='dark'] .content .mention,
+[data-theme='dark'] .content .hashtag,
+[data-theme='highContrast'] .content a,
+[data-theme='highContrast'] .content .mention,
+[data-theme='highContrast'] .content .hashtag,
+[data-theme='high-contrast'] .content a,
+[data-theme='high-contrast'] .content .mention,
+[data-theme='high-contrast'] .content .hashtag {
 	color: var(--color-link, #1d9bf0);
+}
+
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme]) .content a,
+	:root:not([data-theme]) .content .mention,
+	:root:not([data-theme]) .content .hashtag {
+		color: var(--color-link, #1d9bf0);
+	}
+}
+
+@media (prefers-contrast: high) {
+	:root:not([data-theme]) .content a,
+	:root:not([data-theme]) .content .mention,
+	:root:not([data-theme]) .content .hashtag {
+		color: var(--color-link, #1d9bf0);
+	}
 }
 
 .content blockquote {
@@ -13224,7 +13291,7 @@
 	background-color: var(--gr-semantic-background-primary);
 	border-radius: var(--gr-radii-lg);
 	overflow: hidden;
-	border: 1px solid var(--gr-semantic-border-secondary);
+	border: 1px solid var(--gr-semantic-border-subtle);
 }
 
 /* Banner */
@@ -13253,13 +13320,13 @@
 /* Content */
 .gr-profile-header__content {
 	position: relative;
-	padding: var(--gr-spacing-4) var(--gr-spacing-6);
+	padding: var(--gr-spacing-scale-4) var(--gr-spacing-scale-6);
 	margin-top: -3rem;
 }
 
 @media (max-width: 640px) {
 	.gr-profile-header__content {
-		padding: var(--gr-spacing-4);
+		padding: var(--gr-spacing-scale-4);
 		margin-top: -2rem;
 	}
 }
@@ -13269,63 +13336,63 @@
 	display: flex;
 	align-items: flex-end;
 	justify-content: space-between;
-	margin-bottom: var(--gr-spacing-4);
+	margin-bottom: var(--gr-spacing-scale-4);
 }
 
 .gr-profile-header__avatar-wrapper {
 	position: relative;
 	display: flex;
 	align-items: center;
-	gap: var(--gr-spacing-2);
+	gap: var(--gr-spacing-scale-2);
 }
 
 .gr-profile-header__avatar {
 	border: 4px solid var(--gr-semantic-background-primary);
-	box-shadow: var(--gr-shadow-lg);
+	box-shadow: var(--gr-shadows-lg);
 }
 
 /* Badges */
 .gr-profile-header__verified-badge {
 	color: var(--gr-color-success-600);
-	margin-left: var(--gr-spacing-1);
+	margin-left: var(--gr-spacing-scale-1);
 }
 
 .gr-profile-header__bot-badge {
 	display: flex;
 	align-items: center;
-	gap: var(--gr-spacing-1);
-	padding: var(--gr-spacing-1) var(--gr-spacing-2);
+	gap: var(--gr-spacing-scale-1);
+	padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
 	background-color: var(--gr-semantic-background-secondary);
 	border-radius: var(--gr-radii-full);
 	font-size: var(--gr-typography-fontSize-xs);
 	color: var(--gr-semantic-foreground-secondary);
-	border: 1px solid var(--gr-semantic-border-secondary);
+	border: 1px solid var(--gr-semantic-border-subtle);
 }
 
 .gr-profile-header__actions {
-	margin-bottom: var(--gr-spacing-2);
+	margin-bottom: var(--gr-spacing-scale-2);
 }
 
 /* Identity */
 .gr-profile-header__identity {
-	margin-bottom: var(--gr-spacing-4);
+	margin-bottom: var(--gr-spacing-scale-4);
 }
 
 .gr-profile-header__display-name {
 	display: flex;
 	align-items: center;
-	gap: var(--gr-spacing-2);
+	gap: var(--gr-spacing-scale-2);
 	font-size: var(--gr-typography-fontSize-2xl);
 	font-weight: var(--gr-typography-fontWeight-bold);
 	line-height: var(--gr-typography-lineHeight-tight);
 	color: var(--gr-semantic-foreground-primary);
-	margin: 0 0 var(--gr-spacing-1) 0;
+	margin: 0 0 var(--gr-spacing-scale-1) 0;
 }
 
 .gr-profile-header__display-name-text {
 	display: inline-flex;
 	align-items: center;
-	gap: var(--gr-spacing-1);
+	gap: var(--gr-spacing-scale-1);
 }
 
 .gr-profile-header__display-name-text img {
@@ -13352,11 +13419,11 @@
 
 /* Bio */
 .gr-profile-header__bio {
-	margin-bottom: var(--gr-spacing-4);
+	margin-bottom: var(--gr-spacing-scale-4);
 }
 
 .gr-profile-header__bio-content p {
-	margin: 0 0 var(--gr-spacing-2) 0;
+	margin: 0 0 var(--gr-spacing-scale-2) 0;
 	line-height: var(--gr-typography-lineHeight-relaxed);
 }
 
@@ -13375,8 +13442,8 @@
 
 /* Fields */
 .gr-profile-header__fields {
-	margin: 0 0 var(--gr-spacing-4) 0;
-	border: 1px solid var(--gr-semantic-border-secondary);
+	margin: 0 0 var(--gr-spacing-scale-4) 0;
+	border: 1px solid var(--gr-semantic-border-subtle);
 	border-radius: var(--gr-radii-md);
 	overflow: hidden;
 }
@@ -13384,7 +13451,7 @@
 .gr-profile-header__field {
 	display: grid;
 	grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-	border-bottom: 1px solid var(--gr-semantic-border-secondary);
+	border-bottom: 1px solid var(--gr-semantic-border-subtle);
 }
 
 .gr-profile-header__field:last-child {
@@ -13393,7 +13460,7 @@
 
 .gr-profile-header__field-name,
 .gr-profile-header__field-value {
-	padding: var(--gr-spacing-3);
+	padding: var(--gr-spacing-scale-3);
 	margin: 0;
 	font-size: var(--gr-typography-fontSize-sm);
 	line-height: var(--gr-typography-lineHeight-relaxed);
@@ -13403,7 +13470,7 @@
 	background-color: var(--gr-semantic-background-secondary);
 	color: var(--gr-semantic-foreground-secondary);
 	font-weight: var(--gr-typography-fontWeight-medium);
-	border-right: 1px solid var(--gr-semantic-border-secondary);
+	border-right: 1px solid var(--gr-semantic-border-subtle);
 	word-break: break-word;
 }
 
@@ -13432,7 +13499,7 @@
 
 .gr-profile-header__field-verified {
 	color: var(--gr-color-success-600);
-	margin-left: var(--gr-spacing-1);
+	margin-left: var(--gr-spacing-scale-1);
 }
 
 @media (max-width: 640px) {
@@ -13442,7 +13509,7 @@
 
 	.gr-profile-header__field-name {
 		border-right: none;
-		border-bottom: 1px solid var(--gr-semantic-border-secondary);
+		border-bottom: 1px solid var(--gr-semantic-border-subtle);
 	}
 }
 
@@ -13451,7 +13518,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	gap: var(--gr-spacing-4);
+	gap: var(--gr-spacing-scale-4);
 	font-size: var(--gr-typography-fontSize-sm);
 	color: var(--gr-semantic-foreground-secondary);
 }
@@ -13459,7 +13526,7 @@
 .gr-profile-header__join-date {
 	display: flex;
 	align-items: center;
-	gap: var(--gr-spacing-2);
+	gap: var(--gr-spacing-scale-2);
 }
 
 .gr-profile-header__calendar-icon {
@@ -13468,14 +13535,14 @@
 
 .gr-profile-header__counts {
 	display: flex;
-	gap: var(--gr-spacing-4);
+	gap: var(--gr-spacing-scale-4);
 	flex-wrap: wrap;
 }
 
 .gr-profile-header__count {
 	display: flex;
 	align-items: baseline;
-	gap: var(--gr-spacing-1);
+	gap: var(--gr-spacing-scale-1);
 	background: none;
 	border: none;
 	padding: 0;
@@ -13527,11 +13594,11 @@
 	.gr-profile-header__stats {
 		flex-direction: column;
 		align-items: flex-start;
-		gap: var(--gr-spacing-2);
+		gap: var(--gr-spacing-scale-2);
 	}
 
 	.gr-profile-header__counts {
-		gap: var(--gr-spacing-3);
+		gap: var(--gr-spacing-scale-3);
 	}
 }
 
@@ -14765,7 +14832,7 @@
 
 /* Content links styling */
 .status-content a {
-	color: var(--status-link-color, #1d9bf0);
+	color: var(--status-link-color, #2563eb);
 	text-decoration: none;
 }
 
@@ -14775,14 +14842,65 @@
 
 /* Mentions styling */
 .status-content .mention {
-	color: var(--status-mention-color, #1d9bf0);
+	color: var(--status-mention-color, #2563eb);
 	font-weight: 500;
 }
 
 /* Hashtags styling */
 .status-content .hashtag {
-	color: var(--status-hashtag-color, #1d9bf0);
+	color: var(--status-hashtag-color, #2563eb);
 	font-weight: 500;
+}
+
+/*
+ * Dark and high contrast keep the historical `#1d9bf0`; only the light default
+ * moves to `#2563eb` for the AA floor. See the matching note on `.content a`
+ * above for the ratios and for why these scopes mirror the token sheet's.
+ */
+[data-theme='dark'] .status-content a,
+[data-theme='highContrast'] .status-content a,
+[data-theme='high-contrast'] .status-content a {
+	color: var(--status-link-color, #1d9bf0);
+}
+
+[data-theme='dark'] .status-content .mention,
+[data-theme='highContrast'] .status-content .mention,
+[data-theme='high-contrast'] .status-content .mention {
+	color: var(--status-mention-color, #1d9bf0);
+}
+
+[data-theme='dark'] .status-content .hashtag,
+[data-theme='highContrast'] .status-content .hashtag,
+[data-theme='high-contrast'] .status-content .hashtag {
+	color: var(--status-hashtag-color, #1d9bf0);
+}
+
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme]) .status-content a {
+		color: var(--status-link-color, #1d9bf0);
+	}
+
+	:root:not([data-theme]) .status-content .mention {
+		color: var(--status-mention-color, #1d9bf0);
+	}
+
+	:root:not([data-theme]) .status-content .hashtag {
+		color: var(--status-hashtag-color, #1d9bf0);
+	}
+}
+
+@media (prefers-contrast: high) {
+	:root:not([data-theme]) .status-content a {
+		color: var(--status-link-color, #1d9bf0);
+	}
+
+	:root:not([data-theme]) .status-content .mention {
+		color: var(--status-mention-color, #1d9bf0);
+	}
+
+	:root:not([data-theme]) .status-content .hashtag {
+		color: var(--status-hashtag-color, #1d9bf0);
+	}
 }
 
 /* Compact density adjustments */
@@ -15125,6 +15243,31 @@
 }
 
 /* Status/Root.svelte Styles */
+[data-theme='dark'] .status-root {
+	--status-bg: var(--gr-semantic-background-primary, #030712);
+	--status-bg-hover: var(--gr-semantic-background-secondary, #111827);
+}
+
+[data-theme='highContrast'] .status-root,
+[data-theme='high-contrast'] .status-root {
+	--status-bg: var(--gr-semantic-background-primary, #000000);
+	--status-bg-hover: var(--gr-semantic-background-primary, #000000);
+}
+
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme]) .status-root {
+		--status-bg: var(--gr-semantic-background-primary, #030712);
+		--status-bg-hover: var(--gr-semantic-background-secondary, #111827);
+	}
+}
+
+@media (prefers-contrast: high) {
+	:root:not([data-theme]) .status-root {
+		--status-bg: var(--gr-semantic-background-primary, #000000);
+		--status-bg-hover: var(--gr-semantic-background-primary, #000000);
+	}
+}
+
 .status-root {
 	padding: var(--status-padding, 1rem);
 	border-bottom: 1px solid var(--status-border-color, #e1e8ed);

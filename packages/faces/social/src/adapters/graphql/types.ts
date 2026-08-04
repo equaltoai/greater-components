@@ -374,15 +374,7 @@ export interface LesserNote {
 export interface LesserActivity {
 	id: string;
 	type:
-		| 'Create'
-		| 'Update'
-		| 'Delete'
-		| 'Follow'
-		| 'Accept'
-		| 'Reject'
-		| 'Like'
-		| 'Announce'
-		| 'Undo';
+		'Create' | 'Update' | 'Delete' | 'Follow' | 'Accept' | 'Reject' | 'Like' | 'Announce' | 'Undo';
 	actor: string;
 	object: string | LesserNote | LesserActor;
 	published: string;

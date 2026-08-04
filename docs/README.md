@@ -39,6 +39,10 @@
 - [FaceTheory Integration](./facetheory-integration.md) – SSR-safe hosting boundaries, hydration notes, and browser-only callouts
 - [GitHub Releases](./devops/github-releases.md) – Publishing release artifacts (including the CLI)
 
+### 🔒 Security Guidance
+
+- [GHSA-96hv-2xvq-fx4p (`ws`)](./security/GHSA-96hv-2xvq-fx4p.md) – Patched workspace state and consumer override guidance
+
 ### 📦 Additional Resources
 
 - [Lesser Integration Guide](./lesser-integration-guide.md) – Comprehensive guide for using Greater Components in Lesser ActivityPub applications

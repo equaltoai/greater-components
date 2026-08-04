@@ -63,6 +63,9 @@ chrome renders under a strict CSP with no inline styles or scripts.
 
 ### Other
 
+- Contracts: deliberately dropped the historical host-v1.0.7 cross-repo byte-agreement fixtures
+  and Project 49 representability assertion because the v1.6.0 Lesser/Lesser Host pins publish no
+  same-version fixture pair; this coverage will be re-established when one exists again.
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Fix: `greater add bookmark-manager` no longer leaves a broken install. The
   entry declared only `menu`, but `BookmarkManager.svelte` imports `../types.js`,

@@ -149,11 +149,7 @@ export type EthicalVerificationLevel = 'self-declared' | 'peer-verified' | 'thir
  * Ethical sourcing category
  */
 export type EthicalSourcingCategory =
-	| 'materials'
-	| 'labor'
-	| 'environmental'
-	| 'cultural'
-	| 'ai-ethics';
+	'materials' | 'labor' | 'environmental' | 'cultural' | 'ai-ethics';
 
 /**
  * Ethical verification data

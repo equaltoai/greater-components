@@ -152,13 +152,13 @@ CritiqueCircle.Session - Active critique session display
 <style>
 	.critique-session {
 		background: var(--gr-color-gray-800);
-		border-radius: var(--gr-radius-lg);
+		border-radius: var(--gr-radii-lg);
 		padding: var(--gr-spacing-scale-5);
 	}
 
 	.critique-session__title {
-		font-size: var(--gr-font-size-lg);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-lg);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		margin: 0 0 var(--gr-spacing-scale-4) 0;
 	}
 
@@ -179,7 +179,7 @@ CritiqueCircle.Session - Active critique session display
 		max-height: 400px;
 		object-fit: contain;
 		background: var(--gr-color-gray-900);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 	}
 
 	.critique-session__artwork-info {
@@ -187,8 +187,8 @@ CritiqueCircle.Session - Active critique session display
 	}
 
 	.critique-session__artwork-title {
-		font-size: var(--gr-font-size-xl);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-xl);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		margin: 0;
 	}
 
@@ -200,12 +200,12 @@ CritiqueCircle.Session - Active critique session display
 	.critique-session__feedback-requested {
 		padding: var(--gr-spacing-scale-4);
 		background: var(--gr-color-primary-900);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 	}
 
 	.critique-session__feedback-requested h5 {
-		font-size: var(--gr-font-size-sm);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-sm);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: var(--gr-color-primary-300);
 		margin: 0 0 var(--gr-spacing-scale-2) 0;
 	}
@@ -222,7 +222,7 @@ CritiqueCircle.Session - Active critique session display
 		gap: var(--gr-spacing-scale-2);
 		padding: var(--gr-spacing-scale-3);
 		background: var(--gr-color-gray-700);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 	}
 
 	.critique-session__timer-label {
@@ -230,9 +230,9 @@ CritiqueCircle.Session - Active critique session display
 	}
 
 	.critique-session__timer-value {
-		font-size: var(--gr-font-size-2xl);
-		font-weight: var(--gr-font-weight-bold);
-		font-family: var(--gr-font-mono);
+		font-size: var(--gr-typography-fontSize-2xl);
+		font-weight: var(--gr-typography-fontWeight-bold);
+		font-family: var(--gr-typography-fontFamily-mono);
 	}
 
 	.critique-session__form {
@@ -250,8 +250,8 @@ CritiqueCircle.Session - Active critique session display
 	}
 
 	.critique-session__field label {
-		font-size: var(--gr-font-size-sm);
-		font-weight: var(--gr-font-weight-medium);
+		font-size: var(--gr-typography-fontSize-sm);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		color: var(--gr-color-gray-300);
 	}
 
@@ -259,9 +259,9 @@ CritiqueCircle.Session - Active critique session display
 		padding: var(--gr-spacing-scale-3);
 		background: var(--gr-color-gray-700);
 		border: 1px solid var(--gr-color-gray-600);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: var(--gr-color-gray-100);
-		font-size: var(--gr-font-size-base);
+		font-size: var(--gr-typography-fontSize-base);
 		resize: vertical;
 		min-height: 100px;
 	}
@@ -270,7 +270,7 @@ CritiqueCircle.Session - Active critique session display
 		display: flex;
 		align-items: center;
 		gap: var(--gr-spacing-scale-2);
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-300);
 		cursor: pointer;
 	}
@@ -279,9 +279,9 @@ CritiqueCircle.Session - Active critique session display
 		padding: var(--gr-spacing-scale-3) var(--gr-spacing-scale-5);
 		background: var(--gr-color-success-600);
 		border: none;
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		color: white;
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 		cursor: pointer;
 		transition: background 0.2s;
 	}
@@ -301,15 +301,15 @@ CritiqueCircle.Session - Active critique session display
 	}
 
 	.critique-session__critiques h5 {
-		font-size: var(--gr-font-size-base);
-		font-weight: var(--gr-font-weight-semibold);
+		font-size: var(--gr-typography-fontSize-base);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		margin: 0 0 var(--gr-spacing-scale-3) 0;
 	}
 
 	.critique-session__critique {
 		padding: var(--gr-spacing-scale-3);
 		background: var(--gr-color-gray-700);
-		border-radius: var(--gr-radius-md);
+		border-radius: var(--gr-radii-md);
 		margin-bottom: var(--gr-spacing-scale-3);
 	}
 
@@ -320,11 +320,11 @@ CritiqueCircle.Session - Active critique session display
 	}
 
 	.critique-session__critique-author {
-		font-weight: var(--gr-font-weight-medium);
+		font-weight: var(--gr-typography-fontWeight-medium);
 	}
 
 	.critique-session__critique-date {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-color-gray-400);
 	}
 
@@ -345,7 +345,7 @@ CritiqueCircle.Session - Active critique session display
 	}
 
 	.critique-session__empty-hint {
-		font-size: var(--gr-font-size-sm);
+		font-size: var(--gr-typography-fontSize-sm);
 	}
 
 	@media (prefers-reduced-motion: reduce) {

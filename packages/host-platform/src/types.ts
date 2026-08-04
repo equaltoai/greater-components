@@ -9,12 +9,7 @@
  * `aria-label` text. Status communication is never color-only.
  */
 export type FleetCardStatus =
-	| 'healthy'
-	| 'warning'
-	| 'degraded'
-	| 'offline'
-	| 'provisioning'
-	| 'unknown';
+	'healthy' | 'warning' | 'degraded' | 'offline' | 'provisioning' | 'unknown';
 
 /** Visual variant for FleetCard. */
 export type FleetCardVariant = 'default' | 'flat' | 'elevated';

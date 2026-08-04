@@ -5173,6 +5173,7 @@ export interface components {
             agent_info?: unknown;
             agent_username: string;
             bio?: string;
+            content_class?: string;
             device_label?: string;
             display_name?: string;
             expires_in?: number;
@@ -5252,6 +5253,7 @@ export interface components {
             thread?: (components["schemas"]["Status"] | null)[];
         };
         AgentPostAttribution: {
+            approved_by?: string;
             constraints?: string[];
             continuity_state?: string;
             continuity_summary?: string;
@@ -5265,6 +5267,11 @@ export interface components {
             schema_version?: string;
             scopes?: string[];
             soul_agent_id?: string;
+            trigger_details?: string;
+            trigger_type?: string;
+        };
+        AgentPostAttributionInput: {
+            memory_citations?: string[];
             trigger_details?: string;
             trigger_type?: string;
         };
@@ -5599,7 +5606,7 @@ export interface components {
             subject_type: string;
         };
         CreateStatusRequest: {
-            agent_attribution?: components["schemas"]["AgentPostAttribution"] | null;
+            agent_attribution?: components["schemas"]["AgentPostAttributionInput"] | null;
             /** @description Reply parent reference. Accepts a local status ID or a canonical remote status URL. Canonical remote URLs are resolved locally first and materialized on the create path when needed. Direct replies remain conversations-owned. */
             in_reply_to_id?: string;
             language?: string;
@@ -6427,23 +6434,6 @@ export interface components {
             data: components["schemas"]["PushSubscriptionAlerts"];
             subscription: components["schemas"]["PushSubscriptionData"];
         };
-        QuotePermissionsResponse: {
-            allow_followers: boolean;
-            allow_mentioned: boolean;
-            allow_public: boolean;
-            block_list: string[];
-        };
-        QuoteStatusAccount: {
-            id: string;
-            username?: string | null;
-        };
-        QuoteStatusSummary: {
-            account: components["schemas"]["QuoteStatusAccount"];
-            content: string;
-            created_at: string;
-            id: string;
-        };
-        QuoteStatusSummaryList: components["schemas"]["QuoteStatusSummary"][];
         /** Format: date-time */
         RFC3339DateTime: string;
         ReblogRequest: {
@@ -7511,6 +7501,7 @@ export interface components {
                     updated?: components["schemas"]["RFC3339DateTime"] | null;
                 };
                 agentAttribution?: {
+                    approved_by?: string;
                     constraints?: string[];
                     continuity_state?: string;
                     continuity_summary?: string;
@@ -8600,20 +8591,16 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["QuotePermissionsResponse"];
-                };
-            };
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
+            /** @description Quote permission reads are not implemented and no settings are retrieved. */
+            501: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
     };
     get_api_v1_accounts_by_id_statuses: {
@@ -8802,20 +8789,16 @@ export interface operations {
             };
         };
         responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["QuotePermissionsResponse"];
-                };
-            };
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
-            422: components["responses"]["UnprocessableEntity"];
-            500: components["responses"]["InternalServerError"];
+            /** @description Quote permission updates are not implemented and no settings are persisted. */
+            501: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
     };
     get_api_v1_accounts_relationships: {
@@ -14985,28 +14968,17 @@ export interface operations {
             };
         };
         responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    /** @description Request limit per window. */
-                    "X-RateLimit-Limit"?: number;
-                    /** @description Requests remaining in the current window. */
-                    "X-RateLimit-Remaining"?: number;
-                    /** @description Unix timestamp (seconds) when the current window resets. */
-                    "X-RateLimit-Reset"?: number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["QuoteStatusSummary"];
-                };
-            };
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            422: components["responses"]["UnprocessableEntity"];
             429: components["responses"]["TooManyRequests"];
-            500: components["responses"]["InternalServerError"];
+            /** @description Quote creation is not implemented; target IDs are not looked up. */
+            501: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
     };
     delete_api_v1_statuses_by_id_quote_by_quote_id: {
@@ -15053,18 +15025,14 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
-            200: {
+            400: components["responses"]["BadRequest"];
+            /** @description Quote listing is not implemented; target IDs and quote counts are not looked up. */
+            501: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["QuoteStatusSummaryList"];
-                };
+                content?: never;
             };
-            400: components["responses"]["BadRequest"];
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
         };
     };
     post_api_v1_statuses_by_id_reblog: {

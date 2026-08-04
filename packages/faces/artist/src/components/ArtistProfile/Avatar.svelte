@@ -141,7 +141,7 @@ Features:
 
 	.avatar__button:hover {
 		transform: scale(1.05);
-		box-shadow: var(--gr-shadow-lg);
+		box-shadow: var(--gr-shadows-lg);
 	}
 
 	.avatar__button:focus {
@@ -162,7 +162,7 @@ Features:
 		align-items: center;
 		justify-content: center;
 		font-size: calc(var(--avatar-size) * 0.4);
-		font-weight: var(--gr-font-weight-semibold);
+		font-weight: var(--gr-typography-fontWeight-semibold);
 		color: var(--gr-color-gray-100);
 		background: linear-gradient(135deg, var(--gr-color-primary-600), var(--gr-color-primary-800));
 	}

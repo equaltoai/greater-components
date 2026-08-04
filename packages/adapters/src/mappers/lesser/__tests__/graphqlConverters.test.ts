@@ -232,6 +232,20 @@ describe('convertGraphQLObjectToLesser edge cases', () => {
 		expect(result?.quoteContext?.quoteType).toBe('FULL');
 		expect(result?.quoteContext?.quoteAllowed).toBe(false);
 	});
+
+	it('preserves the v1.6.0 mentioned-only quote permission', () => {
+		const result = convertGraphQLObjectToLesser({
+			id: 'obj-mentioned',
+			type: 'Note',
+			content: 'hello',
+			createdAt: '2026-08-04T12:00:00Z',
+			actor: baseActor,
+			visibility: 'PUBLIC',
+			quotePermissions: 'mentioned',
+		});
+
+		expect(result?.quotePermissions).toBe('MENTIONED');
+	});
 });
 
 describe('convertGraphQLPushSubscription', () => {

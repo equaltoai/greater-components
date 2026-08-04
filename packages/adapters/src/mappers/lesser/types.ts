@@ -127,7 +127,7 @@ export interface LesserPostFragment {
 	communityNotes?: LesserCommunityNoteFragment[];
 	quoteUrl?: string;
 	quoteable?: boolean;
-	quotePermissions?: 'EVERYONE' | 'FOLLOWERS' | 'NONE';
+	quotePermissions?: 'EVERYONE' | 'FOLLOWERS' | 'MENTIONED' | 'NONE';
 	quoteContext?: LesserQuoteContextFragment;
 	quoteCount?: number;
 	aiAnalysis?: LesserAIAnalysisFragment;
@@ -340,7 +340,7 @@ export interface LesserObjectFragment {
 	// Quote Posts extensions
 	quoteUrl?: string;
 	quoteable: boolean;
-	quotePermissions: 'EVERYONE' | 'FOLLOWERS' | 'NONE';
+	quotePermissions: 'EVERYONE' | 'FOLLOWERS' | 'MENTIONED' | 'NONE';
 	quoteContext?: LesserQuoteContextFragment;
 	quoteCount?: number;
 
@@ -502,11 +502,7 @@ export interface LesserPageInfo {
 export interface LesserStreamingUpdate {
 	__typename: string;
 	eventType:
-		| 'POST_CREATED'
-		| 'POST_UPDATED'
-		| 'POST_DELETED'
-		| 'NOTIFICATION_CREATED'
-		| 'ACCOUNT_UPDATED';
+		'POST_CREATED' | 'POST_UPDATED' | 'POST_DELETED' | 'NOTIFICATION_CREATED' | 'ACCOUNT_UPDATED';
 	timestamp: string;
 	data: LesserStreamingData;
 }

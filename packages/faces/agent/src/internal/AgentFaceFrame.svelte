@@ -259,8 +259,8 @@
 	}
 
 	.agent-face-frame__nav-link--active {
-		background: color-mix(in srgb, var(--gr-color-secondary-100) 55%, white 45%);
-		color: var(--gr-color-secondary-800);
+		background: color-mix(in srgb, var(--gr-color-gray-100) 55%, white 45%);
+		color: var(--gr-color-gray-800);
 		font-weight: 700;
 	}
 
