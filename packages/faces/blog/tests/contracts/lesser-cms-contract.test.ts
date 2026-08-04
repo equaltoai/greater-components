@@ -39,6 +39,8 @@ const LESSER_CMS_FIELD_DIRECTIONS = {
 		publishedAt: 'needs-adapter-mapping',
 		createdAt: 'out-of-scope-for-mvp',
 		updatedAt: 'needs-adapter-mapping',
+		// The blog face never fetches Article and has no tombstone concept;
+		// deleted-article suppression is a server/consumer responsibility.
 		deletedAt: 'out-of-scope-for-mvp',
 	},
 	Draft: {
