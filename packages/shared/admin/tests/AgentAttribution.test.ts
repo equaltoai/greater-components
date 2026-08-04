@@ -14,4 +14,15 @@ describe('Admin.AgentAttribution', () => {
 		expect(screen.getByText('Approved By')).toBeTruthy();
 		expect(screen.getByText('owner@example.social')).toBeTruthy();
 	});
+
+	it.each([null, undefined])('omits the approval row when approvedBy is %s', (approvedBy) => {
+		render(AgentAttribution, {
+			attribution: {
+				triggerType: 'scheduled',
+				approvedBy,
+			},
+		});
+
+		expect(screen.queryByText('Approved By')).toBeNull();
+	});
 });
