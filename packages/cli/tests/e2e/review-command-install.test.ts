@@ -258,16 +258,16 @@ function maskSvelteMarkup(content: string): string {
 	return masked.join('');
 }
 
-function hasExecutableImportShapedToken(content: string): boolean {
+function executableImportShapedTokenOffset(content: string): number | undefined {
 	const pattern =
-		/(?:^|[;\n\r])\s*(?:import\s+(?:[^'"\n\r]+?\s+from\s*)?['"]|export\s+[^'"\n\r]+?\s+from\s*['"])|(?<![\w$])import\s*\(\s*['"]|@import\s+(?:url\s*\(\s*)?['"]/g;
+		/(?:^|[;\n\r])\s*(?:import\s+(?:[^'"]+?\s+from\s*)?['"]|export\s+[^'"]+?\s+from\s*['"])|(?<![\w$])import\s*\(\s*['"]|@import\s+(?:url\s*\(\s*)?['"]/g;
 
 	let match: RegExpExecArray | null;
 	while ((match = pattern.exec(content)) !== null) {
 		const statementOffset = match.index + match[0].search(/\b(?:import|export)\b|@import\b/);
-		if (isExecutableScriptMatch(content, statementOffset)) return true;
+		if (isExecutableScriptMatch(content, statementOffset)) return statementOffset;
 	}
-	return false;
+	return undefined;
 }
 
 function recoverImportSpecifiers(executableContent: string): string[] {
@@ -298,9 +298,11 @@ function importSpecifiers(content: string, filePath?: string): string[] {
 		? maskSvelteMarkup(commentStripped)
 		: commentStripped;
 	const specifiers = recoverImportSpecifiers(executableContent);
-	if (specifiers.length === 0 && hasExecutableImportShapedToken(executableContent)) {
+	const importShapedTokenOffset = executableImportShapedTokenOffset(executableContent);
+	if (specifiers.length === 0 && importShapedTokenOffset !== undefined) {
+		const line = executableContent.slice(0, importShapedTokenOffset).split(/\r\n|\r|\n/).length;
 		throw new Error(
-			`Import recovery found an import-shaped token but recovered no specifiers from ${filePath ?? '<unknown file>'}`
+			`Import recovery found an import-shaped token but recovered no specifiers from ${filePath ?? '<unknown file>'} at offset ${importShapedTokenOffset} (line ${line})`
 		);
 	}
 	return specifiers;
@@ -397,9 +399,29 @@ describe('greater add review (real command)', () => {
 	});
 
 	it('fails loudly when an import-shaped token yields no recovered specifier', () => {
-		expect(() => importSpecifiers("import { hidden } from 'malformed;", 'malformed.ts')).toThrow(
-			'Import recovery found an import-shaped token but recovered no specifiers from malformed.ts'
-		);
+		const malformedStatements = [
+			{
+				source: "import { hidden } from 'malformed;",
+				token: 'import',
+				line: 1,
+			},
+			{
+				source: "const before = true;\nimport {\n\thidden\n} from 'malformed;",
+				token: 'import',
+				line: 2,
+			},
+			{
+				source: "const before = true;\n\nexport {\n\thidden\n} from 'malformed;",
+				token: 'export',
+				line: 3,
+			},
+		];
+
+		for (const { source, token, line } of malformedStatements) {
+			expect(() => importSpecifiers(source, 'malformed.ts')).toThrow(
+				`Import recovery found an import-shaped token but recovered no specifiers from malformed.ts at offset ${source.indexOf(token)} (line ${line})`
+			);
+		}
 	});
 
 	it('preserves pins and installs a relative-import tree that type-checks and builds', async () => {
