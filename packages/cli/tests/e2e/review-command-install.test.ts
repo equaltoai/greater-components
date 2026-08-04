@@ -135,64 +135,264 @@ async function getFilesRecursively(dir: string): Promise<string[]> {
 	return files;
 }
 
-type StripState = 'normal' | 'line-comment' | 'block-comment' | 'single' | 'double' | 'template';
+type StripState =
+	'normal' | 'line-comment' | 'block-comment' | 'single' | 'double' | 'template' | 'regex';
 
-function isExecutableScriptMatch(content: string, offset: number): boolean {
-	let state: StripState = 'normal';
-	let escaped = false;
+interface StripCursor {
+	state: StripState;
+	escaped: boolean;
+	regexCharacterClass: boolean;
+	templateExpressionDepths: number[];
+}
 
-	for (let i = 0; i < offset; i++) {
-		const char = content[i] ?? '';
-		const next = content[i + 1] ?? '';
+function createStripCursor(): StripCursor {
+	return {
+		state: 'normal',
+		escaped: false,
+		regexCharacterClass: false,
+		templateExpressionDepths: [],
+	};
+}
 
-		if (state === 'line-comment') {
-			if (char === '\n') state = 'normal';
-			continue;
-		}
+function canStartRegexLiteral(content: string, offset: number): boolean {
+	let previousOffset = offset - 1;
+	while (previousOffset >= 0 && /\s/.test(content[previousOffset] ?? '')) previousOffset--;
+	if (previousOffset < 0) return true;
 
-		if (state === 'block-comment') {
-			if (char === '*' && next === '/') {
-				state = 'normal';
-				i++;
-			}
-			continue;
-		}
+	const previous = content[previousOffset] ?? '';
+	if ((previous === '+' || previous === '-') && content[previousOffset - 1] === previous) {
+		return false;
+	}
+	if ('([{,:;=!?&|+-*%^~<>'.includes(previous)) return true;
 
-		if (state === 'single' || state === 'double' || state === 'template') {
-			if (escaped) {
-				escaped = false;
-				continue;
-			}
-			if (char === '\\') {
-				escaped = true;
-				continue;
-			}
-			if (
-				(state === 'single' && char === "'") ||
-				(state === 'double' && char === '"') ||
-				(state === 'template' && char === '`')
-			) {
-				state = 'normal';
-			}
-			continue;
-		}
+	const previousWord = content.slice(0, previousOffset + 1).match(/([A-Za-z_$][\w$]*)$/)?.[1];
+	return (
+		previousWord !== undefined &&
+		[
+			'await',
+			'case',
+			'delete',
+			'in',
+			'instanceof',
+			'of',
+			'return',
+			'throw',
+			'typeof',
+			'void',
+			'yield',
+		].includes(previousWord)
+	);
+}
 
-		if (char === '/' && next === '/') {
-			state = 'line-comment';
-			i++;
-			continue;
-		}
-		if (char === '/' && next === '*') {
-			state = 'block-comment';
-			i++;
-			continue;
-		}
-		if (char === "'") state = 'single';
-		else if (char === '"') state = 'double';
-		else if (char === '`') state = 'template';
+function advanceStripCursor(cursor: StripCursor, content: string, offset: number): number {
+	const char = content[offset] ?? '';
+	const next = content[offset + 1] ?? '';
+
+	if (cursor.state === 'line-comment') {
+		if (char === '\n' || char === '\r') cursor.state = 'normal';
+		return 1;
 	}
 
-	return state === 'normal';
+	if (cursor.state === 'block-comment') {
+		if (char === '*' && next === '/') {
+			cursor.state = 'normal';
+			return 2;
+		}
+		return 1;
+	}
+
+	if (cursor.state === 'regex') {
+		if (cursor.escaped) {
+			cursor.escaped = false;
+			return 1;
+		}
+		if (char === '\\') {
+			cursor.escaped = true;
+			return 1;
+		}
+		if (char === '[') cursor.regexCharacterClass = true;
+		else if (char === ']') cursor.regexCharacterClass = false;
+		else if (char === '/' && !cursor.regexCharacterClass) cursor.state = 'normal';
+		return 1;
+	}
+
+	if (cursor.state === 'single' || cursor.state === 'double' || cursor.state === 'template') {
+		if (cursor.escaped) {
+			cursor.escaped = false;
+			return 1;
+		}
+		if (char === '\\') {
+			cursor.escaped = true;
+			return 1;
+		}
+		if (cursor.state === 'template' && char === '$' && next === '{') {
+			cursor.templateExpressionDepths.push(1);
+			cursor.state = 'normal';
+			return 2;
+		}
+		if (
+			(cursor.state === 'single' && char === "'") ||
+			(cursor.state === 'double' && char === '"') ||
+			(cursor.state === 'template' && char === '`')
+		) {
+			cursor.state = 'normal';
+		}
+		return 1;
+	}
+
+	const templateExpressionIndex = cursor.templateExpressionDepths.length - 1;
+	if (templateExpressionIndex >= 0) {
+		if (char === '{') {
+			cursor.templateExpressionDepths[templateExpressionIndex]++;
+			return 1;
+		}
+		if (char === '}') {
+			cursor.templateExpressionDepths[templateExpressionIndex]--;
+			if (cursor.templateExpressionDepths[templateExpressionIndex] === 0) {
+				cursor.templateExpressionDepths.pop();
+				cursor.state = 'template';
+			}
+			return 1;
+		}
+	}
+
+	if (char === '/' && next === '/') {
+		cursor.state = 'line-comment';
+		return 2;
+	}
+	if (char === '/' && next === '*') {
+		cursor.state = 'block-comment';
+		return 2;
+	}
+	if (char === '/' && canStartRegexLiteral(content, offset)) {
+		cursor.state = 'regex';
+		cursor.regexCharacterClass = false;
+	} else if (char === "'") cursor.state = 'single';
+	else if (char === '"') cursor.state = 'double';
+	else if (char === '`') cursor.state = 'template';
+	return 1;
+}
+
+function isExecutableScriptMatch(content: string, offset: number): boolean {
+	const cursor = createStripCursor();
+	for (let index = 0; index < offset;) {
+		index += advanceStripCursor(cursor, content, index);
+	}
+	return cursor.state === 'normal';
+}
+
+interface SourceRange {
+	start: number;
+	end: number;
+}
+
+interface SvelteExecutableRegion extends SourceRange {
+	tag: 'script' | 'style';
+}
+
+interface SvelteMarkupScan {
+	executableRegions: SvelteExecutableRegion[];
+}
+
+function svelteOpeningTagAt(
+	content: string,
+	offset: number
+): { tag: 'script' | 'style'; end: number } | undefined {
+	const tagMatch = content.slice(offset).match(/^<(script|style)\b/i);
+	if (!tagMatch) return undefined;
+
+	let quote: "'" | '"' | undefined;
+	let firstGreaterThan: number | undefined;
+	for (let index = offset + tagMatch[0].length; index < content.length; index++) {
+		const char = content[index] ?? '';
+		if (char === '>' && firstGreaterThan === undefined) firstGreaterThan = index;
+		if (quote) {
+			if (char === quote) quote = undefined;
+			continue;
+		}
+		if (char === "'" || char === '"') quote = char;
+		else if (char === '>') {
+			return { tag: tagMatch[1]?.toLowerCase() as 'script' | 'style', end: index + 1 };
+		}
+	}
+
+	// Invalid markup with an unterminated attribute quote still gets the base
+	// scanner's localized recovery behavior instead of hiding the whole block.
+	return firstGreaterThan === undefined
+		? undefined
+		: {
+				tag: tagMatch[1]?.toLowerCase() as 'script' | 'style',
+				end: firstGreaterThan + 1,
+			};
+}
+
+function svelteClosingTagAt(
+	content: string,
+	offset: number,
+	tag: 'script' | 'style'
+): number | undefined {
+	const match = content.slice(offset).match(new RegExp(`^</${tag}\\s*>`, 'i'));
+	return match ? offset + match[0].length : undefined;
+}
+
+function findSvelteExecutableRegion(
+	content: string,
+	bodyStart: number,
+	tag: 'script' | 'style'
+): SvelteExecutableRegion | undefined {
+	if (tag === 'style') {
+		for (let offset = bodyStart; offset < content.length; offset++) {
+			if (svelteClosingTagAt(content, offset, tag) !== undefined) {
+				return { tag, start: bodyStart, end: offset };
+			}
+		}
+		return undefined;
+	}
+
+	let structuralFallback: SvelteExecutableRegion | undefined;
+	const cursor = createStripCursor();
+	for (let offset = bodyStart; offset < content.length;) {
+		const closingEnd = svelteClosingTagAt(content, offset, tag);
+		if (closingEnd !== undefined) {
+			const region = { tag, start: bodyStart, end: offset } as const;
+			if (cursor.state === 'normal') return region;
+			structuralFallback ??= region;
+		}
+		offset += advanceStripCursor(cursor, content, offset);
+	}
+
+	// Region existence is structural: a lexer desynchronization may affect an
+	// individual later match, but it must never erase imports above that point.
+	return structuralFallback;
+}
+
+function scanSvelteMarkup(content: string): SvelteMarkupScan {
+	const executableRegions: SvelteExecutableRegion[] = [];
+
+	for (let offset = 0; offset < content.length;) {
+		if (content.startsWith('<!--', offset)) {
+			const commentEnd = content.indexOf('-->', offset + 4);
+			if (commentEnd !== -1) {
+				offset = commentEnd + 3;
+				continue;
+			}
+		}
+
+		const openingTag = svelteOpeningTagAt(content, offset);
+		if (openingTag) {
+			const region = findSvelteExecutableRegion(content, openingTag.end, openingTag.tag);
+			if (region) {
+				const closingEnd = svelteClosingTagAt(content, region.end, openingTag.tag);
+				if (closingEnd !== undefined) {
+					executableRegions.push(region);
+					offset = closingEnd;
+					continue;
+				}
+			}
+		}
+		offset++;
+	}
+	return { executableRegions };
 }
 
 function maskSvelteMarkup(content: string): string {
@@ -200,30 +400,29 @@ function maskSvelteMarkup(content: string): string {
 		const char = content[index] ?? '';
 		return char === '\n' || char === '\r' ? char : ' ';
 	});
-	const executableTag = /<(script|style)\b[^>]*>[\s\S]*?<\/\1\s*>/gi;
-
-	let match: RegExpExecArray | null;
-	while ((match = executableTag.exec(content)) !== null) {
-		const openingEnd = match[0].indexOf('>') + 1;
-		const closingStart = match[0].lastIndexOf('</');
-		for (let offset = openingEnd; offset < closingStart; offset++) {
-			masked[match.index + offset] = match[0][offset] ?? '';
+	for (const region of scanSvelteMarkup(content).executableRegions) {
+		for (let offset = region.start; offset < region.end; offset++) {
+			masked[offset] = content[offset] ?? '';
 		}
 	}
 
 	return masked.join('');
 }
 
-function importSpecifiers(content: string, filePath?: string): string[] {
+function executableImportShapedTokenOffset(content: string): number | undefined {
+	const pattern =
+		/(?:^|[;\n\r])\s*(?:import(?:\s+[^'"]+?\s*from\s*|\s*)['"]|export\s+[^'"]+?\s*from\s*['"])|(?<![\w$])import\s*\(\s*['"]|@import\s+(?:url\s*\(\s*)?['"]/g;
+
+	let match: RegExpExecArray | null;
+	while ((match = pattern.exec(content)) !== null) {
+		const statementOffset = match.index + match[0].search(/\b(?:import|export)\b|@import\b/);
+		if (isExecutableScriptMatch(content, statementOffset)) return statementOffset;
+	}
+	return undefined;
+}
+
+function recoverImportSpecifiers(executableContent: string): string[] {
 	const specifiers: string[] = [];
-	const commentStripped = content.replace(/<!--[\s\S]*?-->/g, (comment) =>
-		comment.replace(/[^\n]/g, ' ')
-	);
-	// Svelte markup is not JavaScript: only script/style bodies may influence
-	// string and comment state for executable import matches.
-	const executableContent = filePath?.endsWith('.svelte')
-		? maskSvelteMarkup(commentStripped)
-		: commentStripped;
 	for (const pattern of [
 		/(?:^|[;\n\r])\s*import\s+[^'"]+?from\s*(['"])([^'"]+)\1/g,
 		/(?:^|[;\n\r])\s*import\s*(['"])([^'"]+)\1/g,
@@ -238,6 +437,21 @@ function importSpecifiers(content: string, filePath?: string): string[] {
 				specifiers.push(match[2]);
 			}
 		}
+	}
+	return specifiers;
+}
+
+function importSpecifiers(content: string, filePath?: string): string[] {
+	// Svelte markup is not JavaScript: only script/style bodies may influence
+	// string and comment state for executable import matches.
+	const executableContent = filePath?.endsWith('.svelte') ? maskSvelteMarkup(content) : content;
+	const specifiers = recoverImportSpecifiers(executableContent);
+	const importShapedTokenOffset = executableImportShapedTokenOffset(executableContent);
+	if (specifiers.length === 0 && importShapedTokenOffset !== undefined) {
+		const line = executableContent.slice(0, importShapedTokenOffset).split(/\r\n|\r|\n/).length;
+		throw new Error(
+			`Import recovery found an import-shaped token but recovered no specifiers from ${filePath ?? '<unknown file>'} at offset ${importShapedTokenOffset} (line ${line})`
+		);
 	}
 	return specifiers;
 }
@@ -270,6 +484,7 @@ describe('greater add review (real command)', () => {
 
 	it('ignores imports inside commented-out Svelte script blocks', () => {
 		const source = [
+			"<p>Sam's post</p>",
 			'<!--',
 			'<script>',
 			"import 'decoy';",
@@ -281,6 +496,243 @@ describe('greater add review (real command)', () => {
 		].join('\n');
 
 		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual(['pkg-real']);
+	});
+
+	it('leaves no recoverable import when an apostrophe precedes only a commented Svelte script', () => {
+		const source = [
+			"<p>Sam's post</p>",
+			'<!--',
+			'<script>',
+			"import 'decoy';",
+			'</script>',
+			'-->',
+		].join('\n');
+		const executableContent = maskSvelteMarkup(source);
+
+		expect(recoverImportSpecifiers(executableContent)).toEqual([]);
+	});
+
+	it('does not fail loudly for an import-shaped token in a commented-out Svelte script', () => {
+		const source = ['<!--', '<script>', "import 'decoy';", '</script>', '-->', '<p>hi</p>'].join(
+			'\n'
+		);
+
+		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual([]);
+	});
+
+	it('keeps script-local comment text inside comment-aware Svelte region scanning (E1)', () => {
+		const source = [
+			'<script>',
+			"const marker = 'escaped \\' <!--';",
+			"import 'pkg-real';",
+			'</script>',
+			'-->',
+		].join('\n');
+
+		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual(['pkg-real']);
+	});
+
+	it('keeps scanning for executable regions after an unterminated markup comment (E2)', () => {
+		const source = ['<!--', '<script>', "import 'pkg-real';", '</script>'].join('\n');
+
+		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual(['pkg-real']);
+	});
+
+	it('recovers a TypeScript import after an HTML comment opener inside a string (E3)', () => {
+		const source = ['const marker = `<!--`;', "import 'pkg-real';", "const closer = '-->';"].join(
+			'\n'
+		);
+
+		expect(importSpecifiers(source, 'synthetic.ts')).toEqual(['pkg-real']);
+	});
+
+	it('does not apply HTML comment semantics to TypeScript operators', () => {
+		const source = [
+			'const a = b <!--c;',
+			'import {',
+			'\tthing',
+			"} from 'really-real';",
+			'const d = e-->f;',
+		].join('\n');
+
+		expect(importSpecifiers(source, 'synthetic.ts')).toEqual(['really-real']);
+	});
+
+	it('keeps regex literals from desynchronizing TypeScript import recovery', () => {
+		const source = [
+			'const htmlComment = /<!--/;',
+			"const apostrophe = /'/;",
+			`const negativeRegex = -/'/.test('value');`,
+			"import 'regex-real';",
+		].join('\n');
+
+		expect(importSpecifiers(source, 'synthetic.ts')).toEqual(['regex-real']);
+	});
+
+	it('treats slashes after postfix increment and decrement as division', () => {
+		for (const { operation, specifier } of [
+			{ operation: 'i++ / total', specifier: 'after-incdiv' },
+			{ operation: 'i-- / total', specifier: 'after-decdiv' },
+		]) {
+			const source = [`const ratio = ${operation};`, `import '${specifier}';`].join('\n');
+
+			expect(importSpecifiers(source, 'synthetic.ts')).toEqual([specifier]);
+		}
+	});
+
+	it('does not truncate a Svelte script at a closing tag inside a string', () => {
+		const source = [
+			'<script>',
+			'const closingTag = "</script>";',
+			"import 'pkg-real';",
+			'</script>',
+		].join('\n');
+
+		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual(['pkg-real']);
+	});
+
+	it.each([
+		{
+			name: 'X1: recovers an import after a plain nested template',
+			source: "const value = `${items.map((item) => `${item}`).join('')}`;\nimport 'x1-real';",
+			expected: ['x1-real'],
+		},
+		{
+			name: 'X2: recovers an import after a nested template containing a closing tag',
+			source:
+				"const html = `<div>${items.map((item) => `<b>${item}</b>`).join('')}</div>`;\nimport 'x2-real';",
+			expected: ['x2-real'],
+		},
+		{
+			name: 'X3: recovers an import after a single template containing a closing tag',
+			source: "const html = `<div></b></div>`;\nimport 'x3-real';",
+			expected: ['x3-real'],
+		},
+		{
+			name: 'X4: recovers an import after a nested template containing a self-closing tag',
+			source:
+				"const html = `<div>${items.map((item) => `<br/>${item}`).join('')}</div>`;\nimport 'x4-real';",
+			expected: ['x4-real'],
+		},
+		{
+			name: 'X5: recovers a dynamic import after a nested template containing a closing tag',
+			source:
+				"const html = `<div>${items.map((item) => `<b>${item}</b>`).join('')}</div>`;\nawait import('./lazy.js');",
+			expected: ['./lazy.js'],
+		},
+		{
+			name: 'X8: recovers an import after division inside a nested template',
+			source:
+				"const html = `<div>${items.map((item) => `<b>${item / total}</b>`).join('')}</div>`;\nimport 'x8-real';",
+			expected: ['x8-real'],
+		},
+	])('$name', ({ source, expected }) => {
+		expect(importSpecifiers(source, 'nested-template.ts')).toEqual(expected);
+	});
+
+	it('X6: keeps a Svelte import before a nested template containing a closing tag', () => {
+		const source = [
+			'<script>',
+			"import './ctx.js';",
+			"const html = `<div>${items.map((item) => `<b>${item}</b>`).join('')}</div>`;",
+			'</script>',
+		].join('\n');
+
+		expect(importSpecifiers(source, 'nested-template.svelte')).toEqual(['./ctx.js']);
+	});
+
+	it('recovers an import declared above a lexer desync', () => {
+		const source = [
+			'<script>',
+			"import './ctx.js';",
+			'const broken = "unterminated;',
+			'</script>',
+		].join('\n');
+
+		expect(importSpecifiers(source, 'unterminated-string.svelte')).toEqual(['./ctx.js']);
+	});
+
+	it('finds a Svelte opening tag terminator after a quoted greater-than character', () => {
+		const source = ['<script data-example="a>b">', "import 'attribute-real';", '</script>'].join(
+			'\n'
+		);
+
+		expect(importSpecifiers(source, 'quoted-attribute.svelte')).toEqual(['attribute-real']);
+	});
+
+	it('falls back to the first greater-than for an unterminated Svelte attribute quote', () => {
+		const source = ['<script data-x="a>', "import 'attribute-fallback-real';", '</script>'].join(
+			'\n'
+		);
+
+		expect(importSpecifiers(source, 'unterminated-attribute.svelte')).toEqual([
+			'attribute-fallback-real',
+		]);
+	});
+
+	it('fails loudly when an import-shaped token yields no recovered specifier', () => {
+		const malformedStatements = [
+			{
+				source: "import { hidden } from 'malformed;",
+				file: 'malformed.ts',
+				token: 'import',
+				line: 1,
+			},
+			{
+				source: "const before = true;\nimport {\n\thidden\n} from 'malformed;",
+				file: 'malformed.ts',
+				token: 'import',
+				line: 2,
+			},
+			{
+				source: "const before = true;\n\nexport {\n\thidden\n} from 'malformed;",
+				file: 'malformed.ts',
+				token: 'export',
+				line: 3,
+			},
+			{
+				source: "import {a}from 'malformed;",
+				file: 'malformed.ts',
+				token: 'import',
+				line: 1,
+			},
+			{
+				source: "export {a}from 'malformed;",
+				file: 'malformed.ts',
+				token: 'export',
+				line: 1,
+			},
+			{
+				source: "import'malformed;",
+				file: 'malformed.ts',
+				token: 'import',
+				line: 1,
+			},
+			{
+				source: ['<script>', "import { hidden } from 'malformed;", '</script>'].join('\n'),
+				file: 'malformed-multiline.svelte',
+				token: 'import',
+				line: 2,
+			},
+			{
+				source: "<script>import { hidden } from 'malformed;</script>",
+				file: 'malformed-single-line.svelte',
+				token: 'import',
+				line: 1,
+			},
+			{
+				source: ['<style>', "@import 'malformed;", '</style>'].join('\n'),
+				file: 'malformed-style.svelte',
+				token: '@import',
+				line: 2,
+			},
+		];
+
+		for (const { source, file, token, line } of malformedStatements) {
+			expect(() => importSpecifiers(source, file)).toThrow(
+				`Import recovery found an import-shaped token but recovered no specifiers from ${file} at offset ${source.indexOf(token)} (line ${line})`
+			);
+		}
 	});
 
 	it('preserves pins and installs a relative-import tree that type-checks and builds', async () => {
