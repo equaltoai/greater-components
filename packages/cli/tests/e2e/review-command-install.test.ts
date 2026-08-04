@@ -592,24 +592,45 @@ describe('greater add review (real command)', () => {
 		const malformedStatements = [
 			{
 				source: "import { hidden } from 'malformed;",
+				file: 'malformed.ts',
 				token: 'import',
 				line: 1,
 			},
 			{
 				source: "const before = true;\nimport {\n\thidden\n} from 'malformed;",
+				file: 'malformed.ts',
 				token: 'import',
 				line: 2,
 			},
 			{
 				source: "const before = true;\n\nexport {\n\thidden\n} from 'malformed;",
+				file: 'malformed.ts',
 				token: 'export',
 				line: 3,
 			},
+			{
+				source: ['<script>', "import { hidden } from 'malformed;", '</script>'].join('\n'),
+				file: 'malformed-multiline.svelte',
+				token: 'import',
+				line: 2,
+			},
+			{
+				source: "<script>import { hidden } from 'malformed;</script>",
+				file: 'malformed-single-line.svelte',
+				token: 'import',
+				line: 1,
+			},
+			{
+				source: ['<style>', "@import 'malformed;", '</style>'].join('\n'),
+				file: 'malformed-style.svelte',
+				token: '@import',
+				line: 2,
+			},
 		];
 
-		for (const { source, token, line } of malformedStatements) {
-			expect(() => importSpecifiers(source, 'malformed.ts')).toThrow(
-				`Import recovery found an import-shaped token but recovered no specifiers from malformed.ts at offset ${source.indexOf(token)} (line ${line})`
+		for (const { source, file, token, line } of malformedStatements) {
+			expect(() => importSpecifiers(source, file)).toThrow(
+				`Import recovery found an import-shaped token but recovered no specifiers from ${file} at offset ${source.indexOf(token)} (line ${line})`
 			);
 		}
 	});
