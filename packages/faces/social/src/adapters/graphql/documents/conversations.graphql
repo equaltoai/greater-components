@@ -5,6 +5,7 @@
 query Conversations($folder: ConversationFolder = INBOX, $first: Int = 20, $after: Cursor) {
 	conversations(folder: $folder, first: $first, after: $after) {
 		id
+		cursor
 		unread
 		createdAt
 		updatedAt
@@ -26,6 +27,7 @@ query Conversations($folder: ConversationFolder = INBOX, $first: Int = 20, $afte
 query Conversation($id: ID!) {
 	conversation(id: $id) {
 		id
+		cursor
 		unread
 		createdAt
 		updatedAt
@@ -63,6 +65,7 @@ query ConversationMessages($conversationId: ID!, $first: Int = 50, $after: Curso
 mutation CreateConversation($participantId: ID!) {
 	createConversation(participantId: $participantId) {
 		id
+		cursor
 		unread
 		createdAt
 		updatedAt
@@ -85,6 +88,7 @@ mutation SendMessage($conversationId: ID!, $content: String!, $mediaIds: [ID!]) 
 	sendMessage(conversationId: $conversationId, content: $content, mediaIds: $mediaIds) {
 		conversation {
 			id
+			cursor
 			unread
 			createdAt
 			updatedAt
@@ -110,6 +114,7 @@ mutation SendMessage($conversationId: ID!, $content: String!, $mediaIds: [ID!]) 
 mutation AcceptMessageRequest($conversationId: ID!) {
 	acceptMessageRequest(conversationId: $conversationId) {
 		id
+		cursor
 		unread
 		createdAt
 		updatedAt

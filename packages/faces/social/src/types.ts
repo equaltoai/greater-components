@@ -80,6 +80,7 @@ export interface AgentAttribution {
 	triggerDetails?: string | null;
 	memoryCitations?: readonly string[] | null;
 	delegatedBy?: string | null;
+	approvedBy?: string | null;
 	delegatedByDid?: string | null;
 	scopes?: readonly string[] | null;
 	constraints?: readonly string[] | null;
@@ -143,7 +144,7 @@ export interface QuoteContext {
 /**
  * Lesser-specific: Quote permission levels
  */
-export type QuotePermission = 'EVERYONE' | 'FOLLOWERS' | 'NONE';
+export type QuotePermission = 'EVERYONE' | 'FOLLOWERS' | 'MENTIONED' | 'NONE';
 
 /**
  * Lesser-specific: AI analysis results

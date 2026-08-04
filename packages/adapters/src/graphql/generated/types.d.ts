@@ -826,6 +826,7 @@ export type AgentMcpAccess = {
 };
 export type AgentPostAttribution = {
     readonly __typename: 'AgentPostAttribution';
+    readonly approvedBy?: Maybe<Scalars['String']['output']>;
     readonly constraints?: Maybe<ReadonlyArray<Scalars['String']['output']>>;
     readonly continuityState?: Maybe<Scalars['String']['output']>;
     readonly continuitySummary?: Maybe<Scalars['String']['output']>;
@@ -843,13 +844,7 @@ export type AgentPostAttribution = {
     readonly triggerType?: Maybe<Scalars['String']['output']>;
 };
 export type AgentPostAttributionInput = {
-    readonly constraints?: InputMaybe<ReadonlyArray<Scalars['String']['input']>>;
-    readonly delegatedBy?: InputMaybe<Scalars['String']['input']>;
-    readonly delegatedByDid?: InputMaybe<Scalars['String']['input']>;
     readonly memoryCitations?: InputMaybe<ReadonlyArray<Scalars['String']['input']>>;
-    readonly modelId?: InputMaybe<Scalars['String']['input']>;
-    readonly schemaVersion?: InputMaybe<Scalars['String']['input']>;
-    readonly scopes?: InputMaybe<ReadonlyArray<Scalars['String']['input']>>;
     readonly triggerDetails?: InputMaybe<Scalars['String']['input']>;
     readonly triggerType?: InputMaybe<Scalars['String']['input']>;
 };
@@ -968,6 +963,7 @@ export type Article = {
     readonly content: Scalars['String']['output'];
     readonly contentFormat: ContentFormat;
     readonly createdAt: Scalars['Time']['output'];
+    readonly deletedAt?: Maybe<Scalars['Time']['output']>;
     readonly editorNotes?: Maybe<Scalars['String']['output']>;
     readonly excerpt?: Maybe<Scalars['String']['output']>;
     readonly featuredImage?: Maybe<Media>;
@@ -1195,6 +1191,7 @@ export type Conversation = {
     readonly __typename: 'Conversation';
     readonly accounts: ReadonlyArray<Actor>;
     readonly createdAt: Scalars['Time']['output'];
+    readonly cursor?: Maybe<Scalars['Cursor']['output']>;
     readonly id: Scalars['ID']['output'];
     readonly lastStatus?: Maybe<Object>;
     readonly unread: Scalars['Boolean']['output'];
@@ -1551,6 +1548,7 @@ export type DraftReviewGrant = {
 export type DraftReviewVerdict = 'APPROVED' | 'CHANGES_REQUESTED';
 export type DraftReviewVerdictRecord = {
     readonly __typename: 'DraftReviewVerdictRecord';
+    readonly contentHash?: Maybe<Scalars['String']['output']>;
     readonly notes?: Maybe<Scalars['String']['output']>;
     readonly recordedAt: Scalars['Time']['output'];
     readonly reviewer: Actor;
@@ -4387,7 +4385,7 @@ export type QuoteEdge = {
     readonly cursor: Scalars['Cursor']['output'];
     readonly node: Object;
 };
-export type QuotePermission = 'EVERYONE' | 'FOLLOWERS' | 'NONE';
+export type QuotePermission = 'EVERYONE' | 'FOLLOWERS' | 'MENTIONED' | 'NONE';
 export type QuoteType = 'COMMENTARY' | 'FULL' | 'PARTIAL' | 'REACTION';
 export type ReadingPreferences = {
     readonly __typename: 'ReadingPreferences';
@@ -5183,6 +5181,8 @@ export type SubscriptionRelationshipUpdatesArgs = {
     actorId?: InputMaybe<Scalars['ID']['input']>;
 };
 export type SubscriptionTimelineUpdatesArgs = {
+    actorUsername?: InputMaybe<Scalars['String']['input']>;
+    hashtag?: InputMaybe<Scalars['String']['input']>;
     listId?: InputMaybe<Scalars['ID']['input']>;
     type: TimelineType;
 };
@@ -6223,6 +6223,7 @@ export type AgentMemorySearchQuery = {
                         readonly triggerDetails?: string | null | undefined;
                         readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                         readonly delegatedBy?: string | null | undefined;
+                        readonly approvedBy?: string | null | undefined;
                         readonly delegatedByDid?: string | null | undefined;
                         readonly scopes?: ReadonlyArray<string> | null | undefined;
                         readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -6421,6 +6422,7 @@ export type AgentMemorySearchQuery = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -7494,6 +7496,7 @@ export type ConversationsQuery = {
     readonly conversations: ReadonlyArray<{
         readonly __typename: 'Conversation';
         readonly id: string;
+        readonly cursor?: string | null | undefined;
         readonly unread: boolean;
         readonly createdAt: string;
         readonly updatedAt: string;
@@ -7616,6 +7619,7 @@ export type ConversationsQuery = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -7814,6 +7818,7 @@ export type ConversationsQuery = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -7987,6 +7992,7 @@ export type ConversationQuery = {
     readonly conversation?: {
         readonly __typename: 'Conversation';
         readonly id: string;
+        readonly cursor?: string | null | undefined;
         readonly unread: boolean;
         readonly createdAt: string;
         readonly updatedAt: string;
@@ -8109,6 +8115,7 @@ export type ConversationQuery = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -8307,6 +8314,7 @@ export type ConversationQuery = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -8564,6 +8572,7 @@ export type ConversationMessagesQuery = {
                         readonly triggerDetails?: string | null | undefined;
                         readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                         readonly delegatedBy?: string | null | undefined;
+                        readonly approvedBy?: string | null | undefined;
                         readonly delegatedByDid?: string | null | undefined;
                         readonly scopes?: ReadonlyArray<string> | null | undefined;
                         readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -8762,6 +8771,7 @@ export type ConversationMessagesQuery = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -8941,6 +8951,7 @@ export type CreateConversationMutation = {
     readonly createConversation: {
         readonly __typename: 'Conversation';
         readonly id: string;
+        readonly cursor?: string | null | undefined;
         readonly unread: boolean;
         readonly createdAt: string;
         readonly updatedAt: string;
@@ -9063,6 +9074,7 @@ export type CreateConversationMutation = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -9261,6 +9273,7 @@ export type CreateConversationMutation = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -9438,6 +9451,7 @@ export type SendMessageMutation = {
         readonly conversation: {
             readonly __typename: 'Conversation';
             readonly id: string;
+            readonly cursor?: string | null | undefined;
             readonly unread: boolean;
             readonly createdAt: string;
             readonly updatedAt: string;
@@ -9560,6 +9574,7 @@ export type SendMessageMutation = {
                         readonly triggerDetails?: string | null | undefined;
                         readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                         readonly delegatedBy?: string | null | undefined;
+                        readonly approvedBy?: string | null | undefined;
                         readonly delegatedByDid?: string | null | undefined;
                         readonly scopes?: ReadonlyArray<string> | null | undefined;
                         readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -9758,6 +9773,7 @@ export type SendMessageMutation = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -10001,6 +10017,7 @@ export type SendMessageMutation = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -10199,6 +10216,7 @@ export type SendMessageMutation = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -10372,6 +10390,7 @@ export type AcceptMessageRequestMutation = {
     readonly acceptMessageRequest: {
         readonly __typename: 'Conversation';
         readonly id: string;
+        readonly cursor?: string | null | undefined;
         readonly unread: boolean;
         readonly createdAt: string;
         readonly updatedAt: string;
@@ -10494,6 +10513,7 @@ export type AcceptMessageRequestMutation = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -10692,6 +10712,7 @@ export type AcceptMessageRequestMutation = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -11057,6 +11078,7 @@ export type DraftReviewFieldsFragment = {
         readonly __typename: 'DraftReviewVerdictRecord';
         readonly verdict: DraftReviewVerdict;
         readonly notes?: string | null | undefined;
+        readonly contentHash?: string | null | undefined;
         readonly recordedAt: string;
         readonly reviewer: {
             readonly __typename: 'Actor';
@@ -11134,6 +11156,7 @@ export type SharedDraftReviewsQuery = {
                     readonly __typename: 'DraftReviewVerdictRecord';
                     readonly verdict: DraftReviewVerdict;
                     readonly notes?: string | null | undefined;
+                    readonly contentHash?: string | null | undefined;
                     readonly recordedAt: string;
                     readonly reviewer: {
                         readonly __typename: 'Actor';
@@ -11202,6 +11225,7 @@ export type DraftReviewQuery = {
             readonly __typename: 'DraftReviewVerdictRecord';
             readonly verdict: DraftReviewVerdict;
             readonly notes?: string | null | undefined;
+            readonly contentHash?: string | null | undefined;
             readonly recordedAt: string;
             readonly reviewer: {
                 readonly __typename: 'Actor';
@@ -11269,6 +11293,7 @@ export type ShareDraftForReviewMutation = {
             readonly __typename: 'DraftReviewVerdictRecord';
             readonly verdict: DraftReviewVerdict;
             readonly notes?: string | null | undefined;
+            readonly contentHash?: string | null | undefined;
             readonly recordedAt: string;
             readonly reviewer: {
                 readonly __typename: 'Actor';
@@ -11345,6 +11370,7 @@ export type SubmitDraftReviewMutation = {
             readonly __typename: 'DraftReviewVerdictRecord';
             readonly verdict: DraftReviewVerdict;
             readonly notes?: string | null | undefined;
+            readonly contentHash?: string | null | undefined;
             readonly recordedAt: string;
             readonly reviewer: {
                 readonly __typename: 'Actor';
@@ -11455,6 +11481,7 @@ export type SyncThreadMutation = {
                         readonly triggerDetails?: string | null | undefined;
                         readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                         readonly delegatedBy?: string | null | undefined;
+                        readonly approvedBy?: string | null | undefined;
                         readonly delegatedByDid?: string | null | undefined;
                         readonly scopes?: ReadonlyArray<string> | null | undefined;
                         readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -11653,6 +11680,7 @@ export type SyncThreadMutation = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -11914,6 +11942,7 @@ export type SyncMissingRepliesMutation = {
                         readonly triggerDetails?: string | null | undefined;
                         readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                         readonly delegatedBy?: string | null | undefined;
+                        readonly approvedBy?: string | null | undefined;
                         readonly delegatedByDid?: string | null | undefined;
                         readonly scopes?: ReadonlyArray<string> | null | undefined;
                         readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -12112,6 +12141,7 @@ export type SyncMissingRepliesMutation = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -12369,6 +12399,7 @@ export type ThreadContextQuery = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -12567,6 +12598,7 @@ export type ThreadContextQuery = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -13093,6 +13125,7 @@ export type ObjectContentFieldsFragment = {
         readonly triggerDetails?: string | null | undefined;
         readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
         readonly delegatedBy?: string | null | undefined;
+        readonly approvedBy?: string | null | undefined;
         readonly delegatedByDid?: string | null | undefined;
         readonly scopes?: ReadonlyArray<string> | null | undefined;
         readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -13335,6 +13368,7 @@ export type ObjectFieldsFragment = {
             readonly triggerDetails?: string | null | undefined;
             readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
             readonly delegatedBy?: string | null | undefined;
+            readonly approvedBy?: string | null | undefined;
             readonly delegatedByDid?: string | null | undefined;
             readonly scopes?: ReadonlyArray<string> | null | undefined;
             readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -13533,6 +13567,7 @@ export type ObjectFieldsFragment = {
         readonly triggerDetails?: string | null | undefined;
         readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
         readonly delegatedBy?: string | null | undefined;
+        readonly approvedBy?: string | null | undefined;
         readonly delegatedByDid?: string | null | undefined;
         readonly scopes?: ReadonlyArray<string> | null | undefined;
         readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -14548,6 +14583,7 @@ export type CommunityNotesByObjectQuery = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -14746,6 +14782,7 @@ export type CommunityNotesByObjectQuery = {
             readonly triggerDetails?: string | null | undefined;
             readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
             readonly delegatedBy?: string | null | undefined;
+            readonly approvedBy?: string | null | undefined;
             readonly delegatedByDid?: string | null | undefined;
             readonly scopes?: ReadonlyArray<string> | null | undefined;
             readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -15024,6 +15061,7 @@ export type CreateNoteMutation = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -15222,6 +15260,7 @@ export type CreateNoteMutation = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -15529,6 +15568,7 @@ export type CreateQuoteNoteMutation = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -15727,6 +15767,7 @@ export type CreateQuoteNoteMutation = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -16036,6 +16077,7 @@ export type WithdrawFromQuotesMutation = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -16234,6 +16276,7 @@ export type WithdrawFromQuotesMutation = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -16489,6 +16532,7 @@ export type UpdateQuotePermissionsMutation = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -16687,6 +16731,7 @@ export type UpdateQuotePermissionsMutation = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -17006,6 +17051,7 @@ export type ShareObjectMutation = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -17204,6 +17250,7 @@ export type ShareObjectMutation = {
             readonly triggerDetails?: string | null | undefined;
             readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
             readonly delegatedBy?: string | null | undefined;
+            readonly approvedBy?: string | null | undefined;
             readonly delegatedByDid?: string | null | undefined;
             readonly scopes?: ReadonlyArray<string> | null | undefined;
             readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -17452,6 +17499,7 @@ export type UnshareObjectMutation = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -17650,6 +17698,7 @@ export type UnshareObjectMutation = {
             readonly triggerDetails?: string | null | undefined;
             readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
             readonly delegatedBy?: string | null | undefined;
+            readonly approvedBy?: string | null | undefined;
             readonly delegatedByDid?: string | null | undefined;
             readonly scopes?: ReadonlyArray<string> | null | undefined;
             readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -17898,6 +17947,7 @@ export type BookmarkObjectMutation = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -18096,6 +18146,7 @@ export type BookmarkObjectMutation = {
             readonly triggerDetails?: string | null | undefined;
             readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
             readonly delegatedBy?: string | null | undefined;
+            readonly approvedBy?: string | null | undefined;
             readonly delegatedByDid?: string | null | undefined;
             readonly scopes?: ReadonlyArray<string> | null | undefined;
             readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -18351,6 +18402,7 @@ export type PinObjectMutation = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -18549,6 +18601,7 @@ export type PinObjectMutation = {
             readonly triggerDetails?: string | null | undefined;
             readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
             readonly delegatedBy?: string | null | undefined;
+            readonly approvedBy?: string | null | undefined;
             readonly delegatedByDid?: string | null | undefined;
             readonly scopes?: ReadonlyArray<string> | null | undefined;
             readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -18834,6 +18887,7 @@ export type ObjectWithQuotesQuery = {
                             readonly triggerDetails?: string | null | undefined;
                             readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                             readonly delegatedBy?: string | null | undefined;
+                            readonly approvedBy?: string | null | undefined;
                             readonly delegatedByDid?: string | null | undefined;
                             readonly scopes?: ReadonlyArray<string> | null | undefined;
                             readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -19032,6 +19086,7 @@ export type ObjectWithQuotesQuery = {
                         readonly triggerDetails?: string | null | undefined;
                         readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                         readonly delegatedBy?: string | null | undefined;
+                        readonly approvedBy?: string | null | undefined;
                         readonly delegatedByDid?: string | null | undefined;
                         readonly scopes?: ReadonlyArray<string> | null | undefined;
                         readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -19261,6 +19316,7 @@ export type ObjectWithQuotesQuery = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -19459,6 +19515,7 @@ export type ObjectWithQuotesQuery = {
             readonly triggerDetails?: string | null | undefined;
             readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
             readonly delegatedBy?: string | null | undefined;
+            readonly approvedBy?: string | null | undefined;
             readonly delegatedByDid?: string | null | undefined;
             readonly scopes?: ReadonlyArray<string> | null | undefined;
             readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -19755,6 +19812,7 @@ export type NotificationsQuery = {
                             readonly triggerDetails?: string | null | undefined;
                             readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                             readonly delegatedBy?: string | null | undefined;
+                            readonly approvedBy?: string | null | undefined;
                             readonly delegatedByDid?: string | null | undefined;
                             readonly scopes?: ReadonlyArray<string> | null | undefined;
                             readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -19953,6 +20011,7 @@ export type NotificationsQuery = {
                         readonly triggerDetails?: string | null | undefined;
                         readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                         readonly delegatedBy?: string | null | undefined;
+                        readonly approvedBy?: string | null | undefined;
                         readonly delegatedByDid?: string | null | undefined;
                         readonly scopes?: ReadonlyArray<string> | null | undefined;
                         readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -20253,6 +20312,7 @@ export type ObjectByIdQuery = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -20451,6 +20511,7 @@ export type ObjectByIdQuery = {
             readonly triggerDetails?: string | null | undefined;
             readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
             readonly delegatedBy?: string | null | undefined;
+            readonly approvedBy?: string | null | undefined;
             readonly delegatedByDid?: string | null | undefined;
             readonly scopes?: ReadonlyArray<string> | null | undefined;
             readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -21290,6 +21351,7 @@ export type SearchQuery = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -21488,6 +21550,7 @@ export type SearchQuery = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -32555,6 +32618,8 @@ export type IncorporateSoulMutation = {
 };
 export type TimelineUpdatesSubscriptionVariables = Exact<{
     type: TimelineType;
+    actorUsername?: InputMaybe<Scalars['String']['input']>;
+    hashtag?: InputMaybe<Scalars['String']['input']>;
     listId?: InputMaybe<Scalars['ID']['input']>;
 }>;
 export type TimelineUpdatesSubscription = {
@@ -32638,6 +32703,7 @@ export type TimelineUpdatesSubscription = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -32836,6 +32902,7 @@ export type TimelineUpdatesSubscription = {
             readonly triggerDetails?: string | null | undefined;
             readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
             readonly delegatedBy?: string | null | undefined;
+            readonly approvedBy?: string | null | undefined;
             readonly delegatedByDid?: string | null | undefined;
             readonly scopes?: ReadonlyArray<string> | null | undefined;
             readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -33123,6 +33190,7 @@ export type NotificationStreamSubscription = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -33321,6 +33389,7 @@ export type NotificationStreamSubscription = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -33664,6 +33733,7 @@ export type QuoteActivitySubscription = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -33862,6 +33932,7 @@ export type QuoteActivitySubscription = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -34148,6 +34219,7 @@ export type HashtagActivitySubscription = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -34346,6 +34418,7 @@ export type HashtagActivitySubscription = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -34667,6 +34740,7 @@ export type ActivityStreamSubscription = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -34865,6 +34939,7 @@ export type ActivityStreamSubscription = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -35107,6 +35182,7 @@ export type ActivityStreamSubscription = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -35305,6 +35381,7 @@ export type ActivityStreamSubscription = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -35633,6 +35710,7 @@ export type ModerationEventsSubscription = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -35831,6 +35909,7 @@ export type ModerationEventsSubscription = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -36366,6 +36445,7 @@ export type ModerationAlertsSubscription = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -36564,6 +36644,7 @@ export type ModerationAlertsSubscription = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -36874,6 +36955,7 @@ export type ModerationQueueUpdateSubscription = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -37072,6 +37154,7 @@ export type ModerationQueueUpdateSubscription = {
                 readonly triggerDetails?: string | null | undefined;
                 readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                 readonly delegatedBy?: string | null | undefined;
+                readonly approvedBy?: string | null | undefined;
                 readonly delegatedByDid?: string | null | undefined;
                 readonly scopes?: ReadonlyArray<string> | null | undefined;
                 readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -37415,6 +37498,7 @@ export type TimelineQuery = {
                         readonly triggerDetails?: string | null | undefined;
                         readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                         readonly delegatedBy?: string | null | undefined;
+                        readonly approvedBy?: string | null | undefined;
                         readonly delegatedByDid?: string | null | undefined;
                         readonly scopes?: ReadonlyArray<string> | null | undefined;
                         readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -37613,6 +37697,7 @@ export type TimelineQuery = {
                     readonly triggerDetails?: string | null | undefined;
                     readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
                     readonly delegatedBy?: string | null | undefined;
+                    readonly approvedBy?: string | null | undefined;
                     readonly delegatedByDid?: string | null | undefined;
                     readonly scopes?: ReadonlyArray<string> | null | undefined;
                     readonly constraints?: ReadonlyArray<string> | null | undefined;

@@ -35,7 +35,23 @@ describe('Shared-draft review operations (Lesser M2a contract)', () => {
 		generatedBy: null,
 		reviewedBy: null,
 		grant: null,
-		verdicts: [],
+		verdicts: [
+			{
+				verdict: 'APPROVED',
+				notes: null,
+				contentHash: 'sha256:reviewed-content',
+				recordedAt: '2026-07-30T09:30:00.000Z',
+				reviewer: {
+					__typename: 'Actor',
+					id: 'reviewer-1',
+					username: 'reviewer',
+					domain: null,
+					displayName: 'Reviewer',
+					avatar: null,
+					isAgent: false,
+				},
+			},
+		],
 	};
 
 	beforeEach(() => {
@@ -95,6 +111,7 @@ describe('Shared-draft review operations (Lesser M2a contract)', () => {
 			expect.objectContaining({ query: DraftReviewDocument, variables: { id: 'draft-1' } })
 		);
 		expect(result?.draftId).toBe('draft-1');
+		expect(result?.verdicts[0]?.contentHash).toBe('sha256:reviewed-content');
 	});
 
 	it('invites a reviewer', async () => {

@@ -163,13 +163,11 @@ export type ShareDraftForReviewOutcome =
  * Presenting a fault as an expected condition is the worse error in both
  * directions.
  *
- * Known upstream gap at the pinned v1.5.33, reported rather than worked around:
- * `CreateDraftReviewGrant` returns its storage error unwrapped, so
- * `graphQLErrorPresenter` finds no `*AppError`, attaches no `extensions.code`,
- * and that conflict is *not* recognised here. The share then surfaces as an
- * ordinary error, which is the honest outcome while the code is missing — see
- * `docs/lesser/contracts/upstream-gaps.md`. Once Lesser maps the conditional
- * failure to `CodeConflict`, this function recognises it with no change.
+ * The upstream gap is closed at the pinned v1.6.0: `CreateDraftReviewGrant`
+ * wraps a failed conditional create as `DynamoDBConditionalCheckFailed`, which
+ * maps to `CodeConflict` (`CONFLICT`) and reaches GraphQL `extensions.code`.
+ * This function already recognises that code; see
+ * `docs/lesser/contracts/upstream-gaps.md`.
  */
 export declare function isDraftReviewShareConflict(error: unknown): boolean;
 export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
@@ -301,6 +299,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly approvedBy?: string | null | undefined;
 										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -525,6 +524,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly approvedBy?: string | null | undefined;
 							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -809,6 +809,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly approvedBy?: string | null | undefined;
 										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -1033,6 +1034,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly approvedBy?: string | null | undefined;
 							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -1318,6 +1320,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly approvedBy?: string | null | undefined;
 										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -1542,6 +1545,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly approvedBy?: string | null | undefined;
 							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -1826,6 +1830,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly approvedBy?: string | null | undefined;
 										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -2050,6 +2055,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly approvedBy?: string | null | undefined;
 							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -2335,6 +2341,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly approvedBy?: string | null | undefined;
 										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -2559,6 +2566,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly approvedBy?: string | null | undefined;
 							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -2844,6 +2852,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly approvedBy?: string | null | undefined;
 										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -3068,6 +3077,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly approvedBy?: string | null | undefined;
 							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -3353,6 +3363,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly approvedBy?: string | null | undefined;
 										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -3577,6 +3588,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly approvedBy?: string | null | undefined;
 							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -3854,6 +3866,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly approvedBy?: string | null | undefined;
 										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -4078,6 +4091,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly approvedBy?: string | null | undefined;
 							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -4839,6 +4853,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly approvedBy?: string | null | undefined;
 										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -5063,6 +5078,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly approvedBy?: string | null | undefined;
 							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -6080,6 +6096,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 									readonly triggerDetails?: string | null | undefined;
 									readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 									readonly delegatedBy?: string | null | undefined;
+									readonly approvedBy?: string | null | undefined;
 									readonly delegatedByDid?: string | null | undefined;
 									readonly scopes?: ReadonlyArray<string> | null | undefined;
 									readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -6304,6 +6321,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 						readonly triggerDetails?: string | null | undefined;
 						readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 						readonly delegatedBy?: string | null | undefined;
+						readonly approvedBy?: string | null | undefined;
 						readonly delegatedByDid?: string | null | undefined;
 						readonly scopes?: ReadonlyArray<string> | null | undefined;
 						readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -6626,6 +6644,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 													readonly triggerDetails?: string | null | undefined;
 													readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 													readonly delegatedBy?: string | null | undefined;
+													readonly approvedBy?: string | null | undefined;
 													readonly delegatedByDid?: string | null | undefined;
 													readonly scopes?: ReadonlyArray<string> | null | undefined;
 													readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -6850,6 +6869,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly approvedBy?: string | null | undefined;
 										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -7089,6 +7109,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 		| {
 				readonly __typename: 'Conversation';
 				readonly id: string;
+				readonly cursor?: string | null | undefined;
 				readonly unread: boolean;
 				readonly createdAt: string;
 				readonly updatedAt: string;
@@ -7217,6 +7238,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 													readonly triggerDetails?: string | null | undefined;
 													readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 													readonly delegatedBy?: string | null | undefined;
+													readonly approvedBy?: string | null | undefined;
 													readonly delegatedByDid?: string | null | undefined;
 													readonly scopes?: ReadonlyArray<string> | null | undefined;
 													readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -7441,6 +7463,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly approvedBy?: string | null | undefined;
 										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -7720,6 +7743,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly approvedBy?: string | null | undefined;
 										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -7944,6 +7968,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly approvedBy?: string | null | undefined;
 							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -8140,6 +8165,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 	createConversation(participantId: string): Promise<{
 		readonly __typename: 'Conversation';
 		readonly id: string;
+		readonly cursor?: string | null | undefined;
 		readonly unread: boolean;
 		readonly createdAt: string;
 		readonly updatedAt: string;
@@ -8268,6 +8294,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 											readonly triggerDetails?: string | null | undefined;
 											readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 											readonly delegatedBy?: string | null | undefined;
+											readonly approvedBy?: string | null | undefined;
 											readonly delegatedByDid?: string | null | undefined;
 											readonly scopes?: ReadonlyArray<string> | null | undefined;
 											readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -8492,6 +8519,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 								readonly triggerDetails?: string | null | undefined;
 								readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 								readonly delegatedBy?: string | null | undefined;
+								readonly approvedBy?: string | null | undefined;
 								readonly delegatedByDid?: string | null | undefined;
 								readonly scopes?: ReadonlyArray<string> | null | undefined;
 								readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -8690,6 +8718,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 		readonly conversation: {
 			readonly __typename: 'Conversation';
 			readonly id: string;
+			readonly cursor?: string | null | undefined;
 			readonly unread: boolean;
 			readonly createdAt: string;
 			readonly updatedAt: string;
@@ -8818,6 +8847,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 												readonly triggerDetails?: string | null | undefined;
 												readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 												readonly delegatedBy?: string | null | undefined;
+												readonly approvedBy?: string | null | undefined;
 												readonly delegatedByDid?: string | null | undefined;
 												readonly scopes?: ReadonlyArray<string> | null | undefined;
 												readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -9042,6 +9072,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 									readonly triggerDetails?: string | null | undefined;
 									readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 									readonly delegatedBy?: string | null | undefined;
+									readonly approvedBy?: string | null | undefined;
 									readonly delegatedByDid?: string | null | undefined;
 									readonly scopes?: ReadonlyArray<string> | null | undefined;
 									readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -9312,6 +9343,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 									readonly triggerDetails?: string | null | undefined;
 									readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 									readonly delegatedBy?: string | null | undefined;
+									readonly approvedBy?: string | null | undefined;
 									readonly delegatedByDid?: string | null | undefined;
 									readonly scopes?: ReadonlyArray<string> | null | undefined;
 									readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -9536,6 +9568,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 						readonly triggerDetails?: string | null | undefined;
 						readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 						readonly delegatedBy?: string | null | undefined;
+						readonly approvedBy?: string | null | undefined;
 						readonly delegatedByDid?: string | null | undefined;
 						readonly scopes?: ReadonlyArray<string> | null | undefined;
 						readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -9728,6 +9761,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 	): Promise<{
 		readonly __typename: 'Conversation';
 		readonly id: string;
+		readonly cursor?: string | null | undefined;
 		readonly unread: boolean;
 		readonly createdAt: string;
 		readonly updatedAt: string;
@@ -9856,6 +9890,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 											readonly triggerDetails?: string | null | undefined;
 											readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 											readonly delegatedBy?: string | null | undefined;
+											readonly approvedBy?: string | null | undefined;
 											readonly delegatedByDid?: string | null | undefined;
 											readonly scopes?: ReadonlyArray<string> | null | undefined;
 											readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -10080,6 +10115,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 								readonly triggerDetails?: string | null | undefined;
 								readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 								readonly delegatedBy?: string | null | undefined;
+								readonly approvedBy?: string | null | undefined;
 								readonly delegatedByDid?: string | null | undefined;
 								readonly scopes?: ReadonlyArray<string> | null | undefined;
 								readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -10651,6 +10687,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 									readonly triggerDetails?: string | null | undefined;
 									readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 									readonly delegatedBy?: string | null | undefined;
+									readonly approvedBy?: string | null | undefined;
 									readonly delegatedByDid?: string | null | undefined;
 									readonly scopes?: ReadonlyArray<string> | null | undefined;
 									readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -10875,6 +10912,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 						readonly triggerDetails?: string | null | undefined;
 						readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 						readonly delegatedBy?: string | null | undefined;
+						readonly approvedBy?: string | null | undefined;
 						readonly delegatedByDid?: string | null | undefined;
 						readonly scopes?: ReadonlyArray<string> | null | undefined;
 						readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -11210,6 +11248,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 									readonly triggerDetails?: string | null | undefined;
 									readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 									readonly delegatedBy?: string | null | undefined;
+									readonly approvedBy?: string | null | undefined;
 									readonly delegatedByDid?: string | null | undefined;
 									readonly scopes?: ReadonlyArray<string> | null | undefined;
 									readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -11434,6 +11473,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 						readonly triggerDetails?: string | null | undefined;
 						readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 						readonly delegatedBy?: string | null | undefined;
+						readonly approvedBy?: string | null | undefined;
 						readonly delegatedByDid?: string | null | undefined;
 						readonly scopes?: ReadonlyArray<string> | null | undefined;
 						readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -11800,6 +11840,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 													readonly triggerDetails?: string | null | undefined;
 													readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 													readonly delegatedBy?: string | null | undefined;
+													readonly approvedBy?: string | null | undefined;
 													readonly delegatedByDid?: string | null | undefined;
 													readonly scopes?: ReadonlyArray<string> | null | undefined;
 													readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -12024,6 +12065,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly approvedBy?: string | null | undefined;
 										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -12278,6 +12320,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly approvedBy?: string | null | undefined;
 										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -12502,6 +12545,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly approvedBy?: string | null | undefined;
 							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -12776,6 +12820,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 									readonly triggerDetails?: string | null | undefined;
 									readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 									readonly delegatedBy?: string | null | undefined;
+									readonly approvedBy?: string | null | undefined;
 									readonly delegatedByDid?: string | null | undefined;
 									readonly scopes?: ReadonlyArray<string> | null | undefined;
 									readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -13000,6 +13045,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 						readonly triggerDetails?: string | null | undefined;
 						readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 						readonly delegatedBy?: string | null | undefined;
+						readonly approvedBy?: string | null | undefined;
 						readonly delegatedByDid?: string | null | undefined;
 						readonly scopes?: ReadonlyArray<string> | null | undefined;
 						readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -13190,7 +13236,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 	updateQuotePermissions(
 		noteId: string,
 		quoteable: boolean,
-		permission: 'EVERYONE' | 'FOLLOWERS' | 'NONE'
+		permission: 'EVERYONE' | 'FOLLOWERS' | 'MENTIONED' | 'NONE'
 	): Promise<{
 		readonly __typename: 'UpdateQuotePermissionsPayload';
 		readonly success: boolean;
@@ -13276,6 +13322,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 									readonly triggerDetails?: string | null | undefined;
 									readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 									readonly delegatedBy?: string | null | undefined;
+									readonly approvedBy?: string | null | undefined;
 									readonly delegatedByDid?: string | null | undefined;
 									readonly scopes?: ReadonlyArray<string> | null | undefined;
 									readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -13500,6 +13547,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 						readonly triggerDetails?: string | null | undefined;
 						readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 						readonly delegatedBy?: string | null | undefined;
+						readonly approvedBy?: string | null | undefined;
 						readonly delegatedByDid?: string | null | undefined;
 						readonly scopes?: ReadonlyArray<string> | null | undefined;
 						readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -13829,6 +13877,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 								readonly triggerDetails?: string | null | undefined;
 								readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 								readonly delegatedBy?: string | null | undefined;
+								readonly approvedBy?: string | null | undefined;
 								readonly delegatedByDid?: string | null | undefined;
 								readonly scopes?: ReadonlyArray<string> | null | undefined;
 								readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -14053,6 +14102,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 					readonly triggerDetails?: string | null | undefined;
 					readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 					readonly delegatedBy?: string | null | undefined;
+					readonly approvedBy?: string | null | undefined;
 					readonly delegatedByDid?: string | null | undefined;
 					readonly scopes?: ReadonlyArray<string> | null | undefined;
 					readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -14320,6 +14370,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 								readonly triggerDetails?: string | null | undefined;
 								readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 								readonly delegatedBy?: string | null | undefined;
+								readonly approvedBy?: string | null | undefined;
 								readonly delegatedByDid?: string | null | undefined;
 								readonly scopes?: ReadonlyArray<string> | null | undefined;
 								readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -14544,6 +14595,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 					readonly triggerDetails?: string | null | undefined;
 					readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 					readonly delegatedBy?: string | null | undefined;
+					readonly approvedBy?: string | null | undefined;
 					readonly delegatedByDid?: string | null | undefined;
 					readonly scopes?: ReadonlyArray<string> | null | undefined;
 					readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -14811,6 +14863,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 								readonly triggerDetails?: string | null | undefined;
 								readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 								readonly delegatedBy?: string | null | undefined;
+								readonly approvedBy?: string | null | undefined;
 								readonly delegatedByDid?: string | null | undefined;
 								readonly scopes?: ReadonlyArray<string> | null | undefined;
 								readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -15035,6 +15088,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 					readonly triggerDetails?: string | null | undefined;
 					readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 					readonly delegatedBy?: string | null | undefined;
+					readonly approvedBy?: string | null | undefined;
 					readonly delegatedByDid?: string | null | undefined;
 					readonly scopes?: ReadonlyArray<string> | null | undefined;
 					readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -15303,6 +15357,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 								readonly triggerDetails?: string | null | undefined;
 								readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 								readonly delegatedBy?: string | null | undefined;
+								readonly approvedBy?: string | null | undefined;
 								readonly delegatedByDid?: string | null | undefined;
 								readonly scopes?: ReadonlyArray<string> | null | undefined;
 								readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -15527,6 +15582,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 					readonly triggerDetails?: string | null | undefined;
 					readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 					readonly delegatedBy?: string | null | undefined;
+					readonly approvedBy?: string | null | undefined;
 					readonly delegatedByDid?: string | null | undefined;
 					readonly scopes?: ReadonlyArray<string> | null | undefined;
 					readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -16472,6 +16528,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly approvedBy?: string | null | undefined;
 										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -16696,6 +16753,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly approvedBy?: string | null | undefined;
 							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -17324,6 +17382,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly approvedBy?: string | null | undefined;
 										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -17548,6 +17607,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly approvedBy?: string | null | undefined;
 							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -17828,6 +17888,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 										readonly triggerDetails?: string | null | undefined;
 										readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 										readonly delegatedBy?: string | null | undefined;
+										readonly approvedBy?: string | null | undefined;
 										readonly delegatedByDid?: string | null | undefined;
 										readonly scopes?: ReadonlyArray<string> | null | undefined;
 										readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -18052,6 +18113,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly triggerDetails?: string | null | undefined;
 							readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 							readonly delegatedBy?: string | null | undefined;
+							readonly approvedBy?: string | null | undefined;
 							readonly delegatedByDid?: string | null | undefined;
 							readonly scopes?: ReadonlyArray<string> | null | undefined;
 							readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -18329,6 +18391,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 											readonly triggerDetails?: string | null | undefined;
 											readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 											readonly delegatedBy?: string | null | undefined;
+											readonly approvedBy?: string | null | undefined;
 											readonly delegatedByDid?: string | null | undefined;
 											readonly scopes?: ReadonlyArray<string> | null | undefined;
 											readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -18553,6 +18616,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 								readonly triggerDetails?: string | null | undefined;
 								readonly memoryCitations?: ReadonlyArray<string> | null | undefined;
 								readonly delegatedBy?: string | null | undefined;
+								readonly approvedBy?: string | null | undefined;
 								readonly delegatedByDid?: string | null | undefined;
 								readonly scopes?: ReadonlyArray<string> | null | undefined;
 								readonly constraints?: ReadonlyArray<string> | null | undefined;
@@ -19121,6 +19185,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 					readonly __typename: 'DraftReviewVerdictRecord';
 					readonly verdict: DraftReviewVerdict;
 					readonly notes?: string | null | undefined;
+					readonly contentHash?: string | null | undefined;
 					readonly recordedAt: string;
 					readonly reviewer: {
 						readonly __typename: 'Actor';
@@ -19196,6 +19261,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 					readonly __typename: 'DraftReviewVerdictRecord';
 					readonly verdict: DraftReviewVerdict;
 					readonly notes?: string | null | undefined;
+					readonly contentHash?: string | null | undefined;
 					readonly recordedAt: string;
 					readonly reviewer: {
 						readonly __typename: 'Actor';
@@ -19278,6 +19344,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 			readonly __typename: 'DraftReviewVerdictRecord';
 			readonly verdict: DraftReviewVerdict;
 			readonly notes?: string | null | undefined;
+			readonly contentHash?: string | null | undefined;
 			readonly recordedAt: string;
 			readonly reviewer: {
 				readonly __typename: 'Actor';
@@ -19294,7 +19361,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 	 * Invites a reviewer, reporting an existing grant as an expected condition
 	 * rather than a fault.
 	 *
-	 * Lesser v1.5.33 creates the grant conditionally
+	 * Lesser v1.6.0 creates the grant conditionally
 	 * (`attribute_not_exists`, pkg/storage/repositories/draft_repository.go
 	 * `CreateDraftReviewGrant`) and version-conditions the regrant path. A
 	 * duplicate share therefore fails loudly, and that is deliberate: the
@@ -19312,10 +19379,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 	 * notice to show, not a success to act on. Re-enabling a revoked reviewer
 	 * is a deliberate re-share, which Lesser's regrant path already accepts.
 	 *
-	 * Recognition depends on Lesser sending a typed conflict code. At the pinned
-	 * v1.5.33 the conditional-create path sends none, so callers must still
-	 * handle a thrown error from a duplicate share; see
-	 * {@link isDraftReviewShareConflict} for the gap and its upstream status.
+	 * Recognition depends on Lesser sending a typed conflict code. The upstream
+	 * gap is closed at the pinned v1.6.0: the conditional-create path now sends
+	 * `CONFLICT`, which {@link isDraftReviewShareConflict} already accepts.
 	 */
 	shareDraftForReviewIfAbsent(
 		draftId: string,
@@ -19389,6 +19455,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 			readonly __typename: 'DraftReviewVerdictRecord';
 			readonly verdict: DraftReviewVerdict;
 			readonly notes?: string | null | undefined;
+			readonly contentHash?: string | null | undefined;
 			readonly recordedAt: string;
 			readonly reviewer: {
 				readonly __typename: 'Actor';
@@ -19491,6 +19558,7 @@ export declare function createSubmitDraftReviewHandler(adapter: LesserGraphQLAda
 		readonly __typename: 'DraftReviewVerdictRecord';
 		readonly verdict: DraftReviewVerdict;
 		readonly notes?: string | null | undefined;
+		readonly contentHash?: string | null | undefined;
 		readonly recordedAt: string;
 		readonly reviewer: {
 			readonly __typename: 'Actor';

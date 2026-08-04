@@ -39,7 +39,7 @@ export interface LesserTimelineMetadata {
 	/** Is quoteable */
 	quoteable?: boolean;
 	/** Quote permission level */
-	quotePermission?: 'EVERYONE' | 'FOLLOWERS' | 'NONE';
+	quotePermission?: 'EVERYONE' | 'FOLLOWERS' | 'MENTIONED' | 'NONE';
 	/** Trust score of author */
 	authorTrustScore?: number;
 	/** AI analysis result */

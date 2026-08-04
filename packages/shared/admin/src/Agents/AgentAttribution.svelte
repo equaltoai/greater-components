@@ -6,6 +6,7 @@
 		triggerDetails?: string | null;
 		memoryCitations?: string[] | null;
 		delegatedBy?: string | null;
+		approvedBy?: string | null;
 		delegatedByDid?: string | null;
 		scopes?: string[] | null;
 		constraints?: string[] | null;
@@ -33,6 +34,9 @@
 			{/if}
 			{#if attribution.delegatedBy}
 				<DefinitionItem label="Delegated By">{attribution.delegatedBy}</DefinitionItem>
+			{/if}
+			{#if attribution.approvedBy}
+				<DefinitionItem label="Approved By">{attribution.approvedBy}</DefinitionItem>
 			{/if}
 			{#if attribution.delegatedByDid}
 				<DefinitionItem label="Delegated By DID">{attribution.delegatedByDid}</DefinitionItem>
