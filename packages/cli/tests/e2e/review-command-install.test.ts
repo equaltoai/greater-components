@@ -273,8 +273,10 @@ function svelteOpeningTagAt(
 	if (!tagMatch) return undefined;
 
 	let quote: "'" | '"' | undefined;
+	let firstGreaterThan: number | undefined;
 	for (let index = offset + tagMatch[0].length; index < content.length; index++) {
 		const char = content[index] ?? '';
+		if (char === '>' && firstGreaterThan === undefined) firstGreaterThan = index;
 		if (quote) {
 			if (char === quote) quote = undefined;
 			continue;
@@ -284,7 +286,15 @@ function svelteOpeningTagAt(
 			return { tag: tagMatch[1]?.toLowerCase() as 'script' | 'style', end: index + 1 };
 		}
 	}
-	return undefined;
+
+	// Invalid markup with an unterminated attribute quote still gets the base
+	// scanner's localized recovery behavior instead of hiding the whole block.
+	return firstGreaterThan === undefined
+		? undefined
+		: {
+				tag: tagMatch[1]?.toLowerCase() as 'script' | 'style',
+				end: firstGreaterThan + 1,
+			};
 }
 
 function svelteClosingTagAt(
@@ -301,15 +311,30 @@ function findSvelteExecutableRegion(
 	bodyStart: number,
 	tag: 'script' | 'style'
 ): SvelteExecutableRegion | undefined {
+	if (tag === 'style') {
+		for (let offset = bodyStart; offset < content.length; offset++) {
+			if (svelteClosingTagAt(content, offset, tag) !== undefined) {
+				return { tag, start: bodyStart, end: offset };
+			}
+		}
+		return undefined;
+	}
+
+	let structuralFallback: SvelteExecutableRegion | undefined;
 	const cursor = createStripCursor();
 	for (let offset = bodyStart; offset < content.length;) {
-		if (cursor.state === 'normal') {
-			const closingEnd = svelteClosingTagAt(content, offset, tag);
-			if (closingEnd !== undefined) return { tag, start: bodyStart, end: offset };
+		const closingEnd = svelteClosingTagAt(content, offset, tag);
+		if (closingEnd !== undefined) {
+			const region = { tag, start: bodyStart, end: offset } as const;
+			if (cursor.state === 'normal') return region;
+			structuralFallback ??= region;
 		}
 		offset += advanceStripCursor(cursor, content, offset);
 	}
-	return undefined;
+
+	// Region existence is structural: a lexer desynchronization may affect an
+	// individual later match, but it must never erase imports above that point.
+	return structuralFallback;
 }
 
 function scanSvelteMarkup(content: string): SvelteMarkupScan {
@@ -542,6 +567,25 @@ describe('greater add review (real command)', () => {
 		].join('\n');
 
 		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual(['pkg-real']);
+	});
+
+	it('keeps imports above nested template literals in Svelte executable regions', () => {
+		const source = [
+			'<script>',
+			"import 'pkg-real';",
+			"const html = `<div>${items.map((item) => `<b>${item}</b>`).join('')}</div>`;",
+			'</script>',
+		].join('\n');
+
+		expect(importSpecifiers(source, 'nested-template.svelte')).toEqual(['pkg-real']);
+	});
+
+	it('finds a Svelte opening tag terminator after a quoted greater-than character', () => {
+		const source = ['<script data-example="a>b">', "import 'attribute-real';", '</script>'].join(
+			'\n'
+		);
+
+		expect(importSpecifiers(source, 'quoted-attribute.svelte')).toEqual(['attribute-real']);
 	});
 
 	it('fails loudly when an import-shaped token yields no recovered specifier', () => {
