@@ -264,7 +264,6 @@ interface SvelteExecutableRegion extends SourceRange {
 }
 
 interface SvelteMarkupScan {
-	comments: SourceRange[];
 	executableRegions: SvelteExecutableRegion[];
 }
 
@@ -341,14 +340,12 @@ function findSvelteExecutableRegion(
 }
 
 function scanSvelteMarkup(content: string): SvelteMarkupScan {
-	const comments: SourceRange[] = [];
 	const executableRegions: SvelteExecutableRegion[] = [];
 
 	for (let offset = 0; offset < content.length;) {
 		if (content.startsWith('<!--', offset)) {
 			const commentEnd = content.indexOf('-->', offset + 4);
 			if (commentEnd !== -1) {
-				comments.push({ start: offset, end: commentEnd + 3 });
 				offset = commentEnd + 3;
 				continue;
 			}
@@ -368,21 +365,7 @@ function scanSvelteMarkup(content: string): SvelteMarkupScan {
 		}
 		offset++;
 	}
-	return { comments, executableRegions };
-}
-
-function stripHtmlComments(content: string, filePath?: string): string {
-	if (!filePath?.endsWith('.svelte')) return content;
-
-	const stripped = content.split('');
-	for (const comment of scanSvelteMarkup(content).comments) {
-		for (let offset = comment.start; offset < comment.end; offset++) {
-			const char = content[offset] ?? '';
-			stripped[offset] = char === '\n' || char === '\r' ? char : ' ';
-		}
-	}
-
-	return stripped.join('');
+	return { executableRegions };
 }
 
 function maskSvelteMarkup(content: string): string {
@@ -432,12 +415,9 @@ function recoverImportSpecifiers(executableContent: string): string[] {
 }
 
 function importSpecifiers(content: string, filePath?: string): string[] {
-	const commentStripped = stripHtmlComments(content, filePath);
 	// Svelte markup is not JavaScript: only script/style bodies may influence
 	// string and comment state for executable import matches.
-	const executableContent = filePath?.endsWith('.svelte')
-		? maskSvelteMarkup(commentStripped)
-		: commentStripped;
+	const executableContent = filePath?.endsWith('.svelte') ? maskSvelteMarkup(content) : content;
 	const specifiers = recoverImportSpecifiers(executableContent);
 	const importShapedTokenOffset = executableImportShapedTokenOffset(executableContent);
 	if (specifiers.length === 0 && importShapedTokenOffset !== undefined) {
@@ -500,7 +480,7 @@ describe('greater add review (real command)', () => {
 			'</script>',
 			'-->',
 		].join('\n');
-		const executableContent = maskSvelteMarkup(stripHtmlComments(source, 'synthetic.svelte'));
+		const executableContent = maskSvelteMarkup(source);
 
 		expect(recoverImportSpecifiers(executableContent)).toEqual([]);
 	});
@@ -513,7 +493,7 @@ describe('greater add review (real command)', () => {
 		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual([]);
 	});
 
-	it('recovers a Svelte import after an HTML comment opener inside a script string (E1)', () => {
+	it('keeps script-local comment text inside comment-aware Svelte region scanning (E1)', () => {
 		const source = [
 			'<script>',
 			"const marker = 'escaped \\' <!--';",
@@ -525,7 +505,7 @@ describe('greater add review (real command)', () => {
 		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual(['pkg-real']);
 	});
 
-	it('recovers a Svelte import after an unterminated markup comment (E2)', () => {
+	it('keeps scanning for executable regions after an unterminated markup comment (E2)', () => {
 		const source = ['<!--', '<script>', "import 'pkg-real';", '</script>'].join('\n');
 
 		expect(importSpecifiers(source, 'synthetic.svelte')).toEqual(['pkg-real']);
