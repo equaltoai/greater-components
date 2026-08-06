@@ -324,8 +324,12 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 			{ path: 'lib/lib/graphqlTimelineStore.svelte.ts', content: '', type: 'utils' },
 			{ path: 'lib/lib/integration.ts', content: '', type: 'utils' },
 			{ path: 'lib/lib/integration.svelte.ts', content: '', type: 'utils' },
-			{ path: 'lib/lib/lesserTimelineStore.ts', content: '', type: 'utils' },
-			{ path: 'lib/lib/lesserTimelineStore.svelte.ts', content: '', type: 'utils' },
+			// `lib/lib/lesserTimelineStore.{ts,svelte.ts}` were removed from this entry in #1000.
+			// They install to the consumer's root `src/lib/` (not the managed `src/lib/greater/`
+			// tree) and have no production consumer in Greater or downstream: nothing imports
+			// `LesserTimelineStore` outside its own monorepo unit test. The monorepo source files
+			// stay in place; only registry ownership is withdrawn, so `greater update` prunes them
+			// from consumers that installed them at an earlier ref.
 			{ path: 'lib/lib/notificationStore.ts', content: '', type: 'utils' },
 			{ path: 'lib/lib/notificationStore.svelte.ts', content: '', type: 'utils' },
 			{ path: 'lib/lib/timelineStore.ts', content: '', type: 'utils' },
@@ -2156,6 +2160,23 @@ export function getAllComponentNames(): string[] {
 	Object.keys(patternRegistry).forEach((name) => names.add(name));
 
 	return Array.from(names);
+}
+
+/**
+ * Every entry across every registry (components, shared modules, patterns, faces).
+ *
+ * Used by `greater update`'s pruner to answer "does *any* registry entry still
+ * own this install path at the target ref?". Over-inclusion is the safe
+ * direction there: an entry listed here can only ever *protect* a path from
+ * being pruned, never cause one to be deleted.
+ */
+export function getAllRegistryEntries(): ComponentMetadata[] {
+	return [
+		...Object.values(componentRegistry),
+		...(Object.values(sharedModuleRegistry) as ComponentMetadata[]),
+		...(Object.values(patternRegistry) as ComponentMetadata[]),
+		...(Object.values(faceRegistry) as ComponentMetadata[]),
+	];
 }
 
 /**
