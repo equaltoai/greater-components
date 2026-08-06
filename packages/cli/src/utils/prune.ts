@@ -327,11 +327,15 @@ export function planComponentPrune(options: {
  * The exact bytes `greater add` / `greater update` would have written for a
  * source file at a given install path.
  *
- * Two renderings are produced because `add` transforms with the path *relative
- * to its install root* while `update` transforms with the full registry path.
- * Both forms are handled identically by `transform.ts` for every prefix the CLI
- * installs today, but rendering both means a file written by either command is
- * recognised as unmodified rather than mistaken for a local edit.
+ * Two transformed renderings are produced because `add` transforms with the path
+ * *relative to its install root* while `update` transforms with the full registry
+ * path. Both forms are handled identically by `transform.ts` for every prefix the
+ * CLI installs today, but rendering both means a file written by either command
+ * is recognised as unmodified rather than mistaken for a local edit.
+ *
+ * Returns `Buffer`s rather than strings so binary assets and files the registry
+ * marks `transform: false` — written verbatim, and not round-trippable through a
+ * utf-8 decode — compare exactly.
  */
 export function renderManagedBytes(
 	sourceContent: Buffer,
@@ -339,20 +343,21 @@ export function renderManagedBytes(
 	config: ComponentConfig,
 	cwd: string,
 	localPath: string
-): string[] {
+): Buffer[] {
+	// Verbatim first: binary assets and non-transformed files are written as-is.
+	const renderings: Buffer[] = [sourceContent];
+
 	const target = getInstallTarget(installPath, config, cwd);
 	const content = sourceContent.toString('utf-8');
 	const context = { sourceFilePath: localPath, consumerRoot: cwd };
 
-	const renderings = new Set<string>();
-	renderings.add(
-		transformImports(content, config, normalizeRegistryPath(installPath), context).content
-	);
-	renderings.add(transformImports(content, config, target.relativePath, context).content);
-	// Binary / explicitly non-transformed files are written verbatim.
-	renderings.add(content);
+	for (const filePath of [normalizeRegistryPath(installPath), target.relativePath]) {
+		renderings.push(
+			Buffer.from(transformImports(content, config, filePath, context).content, 'utf-8')
+		);
+	}
 
-	return [...renderings];
+	return renderings;
 }
 
 /**
@@ -445,7 +450,6 @@ export async function evaluatePruneCandidates(
 			}
 
 			const currentBytes = await fs.readFile(candidate.localPath);
-			const current = currentBytes.toString('utf-8');
 			const expected = renderManagedBytes(
 				sourceBytes,
 				candidate.installPath,
@@ -456,8 +460,7 @@ export async function evaluatePruneCandidates(
 
 			const matchesManagedBytes =
 				computeChecksum(currentBytes) === candidate.recordedChecksum ||
-				expected.includes(current) ||
-				expected.some((text) => Buffer.from(text).equals(currentBytes));
+				expected.some((bytes) => bytes.equals(currentBytes));
 
 			if (!matchesManagedBytes) {
 				results.push(

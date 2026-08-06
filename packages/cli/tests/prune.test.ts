@@ -118,14 +118,15 @@ describe('prune (issue #1000)', () => {
 	/** Write a file exactly as the CLI would have written it at the old ref. */
 	async function installManaged(installPath: string, sourcePath: string): Promise<string> {
 		const localPath = path.join(cwd, 'src/lib', installPath.replace(/^lib\/(lib\/)?/, ''));
-		const [managed] = renderManagedBytes(
+		const renderings = renderManagedBytes(
 			Buffer.from(SOURCE_BYTES[sourcePath]!, 'utf-8'),
 			installPath,
 			config,
 			cwd,
 			localPath
 		);
-		await fs.outputFile(localPath, managed!);
+		// The `update`-form rendering: the full registry path, as update.ts passes it.
+		await fs.outputFile(localPath, renderings[1]!);
 		return localPath;
 	}
 
