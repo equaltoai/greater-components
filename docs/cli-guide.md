@@ -344,6 +344,41 @@ Button has local modifications. Options:
 [3] Show diff and decide
 ```
 
+**Removing obsolete files:**
+
+When a component stops shipping a file, `greater update` removes that file from
+your project as well as writing the new file set. Only files Greater installed
+and you have not edited are removed:
+
+```
+✓ social-timeline: 12 updated, 2 pruned (greater-v0.13.0 → greater-v0.14.0)
+      - removed src/lib/lesserTimelineStore.ts (no longer part of social-timeline)
+      - removed src/lib/lesserTimelineStore.svelte.ts (no longer part of social-timeline)
+```
+
+The rules:
+
+- **Ownership comes from the registry, not from your directory listing.** Greater
+  compares the immutable `registry/index.json` at the ref recorded in your
+  `components.json` against the one at the ref you are updating to. It never
+  scans your install directories for things that "look like" Greater files.
+- **A path another component still owns is kept**, even if the component you are
+  updating dropped it.
+- **A file you edited is never deleted.** If Greater has a record of installing
+  it (that record is written by every `greater update` from v0.14.0 onward), the
+  update stops with the path and an explanation, `components.json` keeps the
+  previous ref for that component, and you decide what to do. `--force` does not
+  override this — it applies to overwriting files, not deleting them.
+- **`--dry-run` reports removals without performing them** and does not write
+  `components.json`.
+- Directories left empty by a removal are not deleted.
+
+Pruning is skipped, with a note in the summary, when the ref recorded for a
+component is not an immutable ref (a commit SHA or a `greater-vX.Y.Z` tag) — for
+example a `components.json` written by a much older CLI that recorded a package
+version. Run `greater update --ref greater-vX.Y.Z` once to record an immutable
+ref, and subsequent updates will prune normally.
+
 ---
 
 ### `greater cache`
