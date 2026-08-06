@@ -484,64 +484,81 @@ export function renderManagedBytes(
 	return renderings;
 }
 
+/** Whether `target` is neither `base` itself nor below it. Both must already be resolved. */
+function escapesDir(base: string, target: string): boolean {
+	const rel = path.relative(base, target);
+	return rel !== '' && (rel === '..' || rel.startsWith(`..${path.sep}`) || path.isAbsolute(rel));
+}
+
 /**
- * Refuse to touch anything reached through a symlink, or whose real parent
- * directory escapes the configured install root.
+ * Refuse to touch anything that does not resolve to a regular file inside the
+ * project the command was invoked on.
  *
- * `writeFile` relies on `resolvePathWithinDir` alone. Deletion is not reversible
- * the way overwriting tracked source is, so the pruner additionally resolves
- * symlinks: a path is only prunable if its real parent is still inside the real
- * install root and the entry itself is a regular file.
+ * `writeFile` relies on `resolvePathWithinDir` alone, which is lexical. Deletion
+ * is not reversible the way overwriting tracked source is, so the pruner resolves
+ * symlinks and checks containment twice over: the real install root must be
+ * inside the real project root, and the candidate's real parent must be inside
+ * that real install root. Because both are real paths, a symlink anywhere in
+ * either chain is followed before it is judged — a symlinked root, a symlinked
+ * parent of the root, and a link escaping from *within* the root are all caught,
+ * and none of them is visible to lexical containment.
  *
- * Containment is measured against the *resolved* install root, not `cwd`. A
- * consumer who symlinks their whole `$lib` elsewhere has declared that directory
- * as the install root, and `greater add` / `greater update` already write through
- * it; pruning follows the same root. What this catches is a link that escapes
- * from *within* the root — the case lexical containment alone cannot see.
+ * Both boundaries are load-bearing, for different escapes. `resolveAlias` joins
+ * the configured alias onto `cwd`, and `components.json` is project input, so an
+ * alias like `../../etc` names a root outside the project that
+ * `resolvePathWithinDir` would happily contain a file inside; that one the
+ * lexical check already sees. An alias that is lexically inside `cwd` but whose
+ * root — or any parent of it — is a symlink pointing elsewhere reaches exactly
+ * the same place while looking contained, so the project boundary has to be
+ * measured after resolution, not before.
  *
- * The install root must additionally sit inside the project the command was
- * invoked on. `resolveAlias` joins the configured alias onto `cwd`, so an alias
- * like `../../etc` yields a root outside the consumer project that
- * `resolvePathWithinDir` would happily contain a file inside. Writes already
- * follow such an alias; a delete is not recoverable, so the pruner requires the
- * declared root to be within the intended consumer boundary. A symlinked root
- * still passes — it is lexically inside `cwd`, and only its real path is not.
+ * Returns the fully-resolved path to delete. Nothing in it is an unresolved
+ * symlink, so re-pointing a directory link after this check cannot redirect the
+ * removal that follows — the caller operates on the same file this validated
+ * rather than re-walking the chain.
  */
-async function assertSafeToDelete(
+async function resolveSafeDeletionTarget(
 	candidate: PruneCandidate,
 	config: ComponentConfig,
 	cwd: string
-): Promise<void> {
+): Promise<string> {
 	const target = getInstallTarget(candidate.installPath, config, cwd);
 
-	const lexicalRoot = path.resolve(target.targetDir);
-	const rootRel = path.relative(path.resolve(cwd), lexicalRoot);
-	if (
-		rootRel !== '' &&
-		(rootRel === '..' || rootRel.startsWith(`..${path.sep}`) || path.isAbsolute(rootRel))
-	) {
+	if (escapesDir(path.resolve(cwd), path.resolve(target.targetDir))) {
 		throw new PathTraversalError(
 			`Refusing to prune outside the project: install root ${target.targetDir} is not inside ${cwd}`
 		);
 	}
 
+	const realCwd = await fs.realpath(path.resolve(cwd));
 	const realRoot = await fs.realpath(path.resolve(target.targetDir));
+
+	if (escapesDir(realCwd, realRoot)) {
+		throw new PathTraversalError(
+			`Refusing to prune outside the project: install root ${target.targetDir} resolves to ` +
+				`${realRoot}, which is not inside ${realCwd}`
+		);
+	}
+
 	const realParent = await fs.realpath(path.dirname(candidate.localPath));
 
-	const rel = path.relative(realRoot, realParent);
-	if (rel !== '' && (rel === '..' || rel.startsWith(`..${path.sep}`) || path.isAbsolute(rel))) {
+	if (escapesDir(realRoot, realParent)) {
 		throw new PathTraversalError(
 			`Invalid prune path: ${candidate.localPath} resolves outside ${target.targetDir}`
 		);
 	}
 
-	const stats = await fs.lstat(candidate.localPath);
+	const resolvedPath = path.join(realParent, path.basename(candidate.localPath));
+
+	const stats = await fs.lstat(resolvedPath);
 	if (stats.isSymbolicLink()) {
 		throw new PathTraversalError(`Refusing to prune symlink: ${candidate.localPath}`);
 	}
 	if (!stats.isFile()) {
 		throw new PathTraversalError(`Refusing to prune non-regular file: ${candidate.localPath}`);
 	}
+
+	return resolvedPath;
 }
 
 export interface EvaluatePruneOptions {
@@ -578,7 +595,7 @@ export async function evaluatePruneCandidates(
 		}
 
 		try {
-			await assertSafeToDelete(candidate, config, cwd);
+			const resolvedPath = await resolveSafeDeletionTarget(candidate, config, cwd);
 
 			const sourceBytes = await fetchSource(oldRef, candidate.sourcePath);
 			const actualSourceChecksum = computeChecksum(sourceBytes);
@@ -593,7 +610,7 @@ export async function evaluatePruneCandidates(
 				continue;
 			}
 
-			const currentBytes = await fs.readFile(candidate.localPath);
+			const currentBytes = await fs.readFile(resolvedPath);
 			const expected = renderManagedBytes(
 				sourceBytes,
 				candidate.installPath,
@@ -645,7 +662,7 @@ export async function evaluatePruneCandidates(
 			}
 
 			if (!dryRun) {
-				await fs.remove(candidate.localPath);
+				await fs.remove(resolvedPath);
 			}
 			results.push({ ...base, status: 'pruned' });
 		} catch (error) {

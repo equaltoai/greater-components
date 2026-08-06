@@ -373,7 +373,9 @@ The rules:
   deletion on its own.
 - **Nothing outside your project is ever deleted.** Pruning refuses any path
   reached through a symlink, and any install alias that resolves outside the
-  directory you ran the command in.
+  directory you ran the command in. Containment is judged after symlinks are
+  resolved, so an install root that merely looks local — a symlinked `src/lib`,
+  or a symlinked parent of it — is refused rather than followed.
 - **A file you edited is never deleted.** If Greater has a record of installing
   it (that record is written by every `greater update` from v0.14.0 onward), the
   update stops with the path and an explanation, `components.json` keeps the

@@ -432,6 +432,39 @@ describe('prune (issue #1000)', () => {
 			}
 		});
 
+		it('refuses to prune through an install root that is a symlink out of the project', async () => {
+			// The alias is the default `$lib`, so the root is lexically `<cwd>/src/lib`
+			// and passes containment against `cwd` — but the directory itself is a link
+			// to somewhere else entirely, so every file "inside" it is outside the
+			// project. Per-root containment then holds trivially: the escaped root
+			// contains the escaped file. Only resolving the root catches this.
+			const outsideDir = await fs.mkdtemp(path.join(os.tmpdir(), 'greater-prune-symroot-'));
+			await fs.ensureDir(path.join(cwd, 'src'));
+			await fs.symlink(outsideDir, path.join(cwd, 'src/lib'));
+
+			// Written through the link, so these are byte-exact managed bytes — the one
+			// thing that authorizes a delete — sitting outside the project.
+			const localPath = await installManaged(
+				'lib/lib/lesserTimelineStore.ts',
+				'packages/faces/social/src/lib/lesserTimelineStore.ts'
+			);
+			const hostFile = path.join(outsideDir, 'lesserTimelineStore.ts');
+
+			try {
+				expect(await fs.pathExists(hostFile)).toBe(true);
+
+				const results = await planAndEvaluate();
+				const result = results.find((r) => r.localPath === localPath);
+
+				expect(result?.status).toBe('error');
+				expect(result?.reason).toContain('outside the project');
+				expect(await fs.pathExists(hostFile)).toBe(true);
+			} finally {
+				await fs.remove(path.join(cwd, 'src/lib'));
+				await fs.remove(outsideDir);
+			}
+		});
+
 		it('refuses to prune a path whose real parent escapes the install root', async () => {
 			const outsideDir = await fs.mkdtemp(path.join(os.tmpdir(), 'greater-prune-escape-'));
 			await fs.outputFile(
