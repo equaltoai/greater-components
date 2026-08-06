@@ -28,8 +28,21 @@ from an entry, which is what the new update behaviour is there to handle.
   recorded in `components.json` and no longer owns at the target ref. Ownership
   is derived from the two immutable `registry/index.json` snapshots plus the
   consumer's own install-path configuration — never from a scan of the install
-  directory and never from a hand-authored removal list. A file is deleted only
-  when its bytes are identical to what the CLI wrote at the previous ref.
+  directory and never from a hand-authored removal list. Every category the
+  index carries participates in ownership (components, shared modules, faces),
+  mapped through the same source→install rule dependency resolution installs
+  with, so a file the index ships but the CLI's static catalog omits is still
+  protected. A file is deleted only when its bytes are identical to what the CLI
+  wrote at the previous ref, rendered from source fetched and verified against
+  that ref's published checksum; a checksum recorded in the consumer's own
+  `components.json` never authorizes a deletion by itself. Deletion is refused
+  through a symlink and through any install alias resolving outside the project.
+- Fix: a component whose obsolete-file prune could not be planned — the previous
+  ref's index would not load, say — no longer records the target ref. Previously
+  the run reported the skip and advanced anyway, after which the rerun saw
+  `oldRef === newRef` and the removal was lost permanently. The same applies to
+  a component skipped at a conflict prompt: it did not upgrade, so neither its
+  recorded ref nor the top-level `ref` advances.
 - Feature: `greater update` records each component's install paths and canonical
   checksums in `components.json` (`installed[].checksums`, a field the schema
   already carried but nothing populated). From that record on, a locally modified

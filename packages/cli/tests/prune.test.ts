@@ -386,6 +386,52 @@ describe('prune (issue #1000)', () => {
 			}
 		});
 
+		it('refuses to prune through an alias whose install root leaves the project', async () => {
+			// `components.json` is project input, and `resolveAlias` joins whatever it
+			// says onto `cwd`. A `../`-escaping alias puts the install root outside the
+			// project entirely, where per-root containment has nothing left to contain.
+			const outsideDir = await fs.mkdtemp(path.join(os.tmpdir(), 'greater-prune-alias-'));
+			const hostFile = path.join(outsideDir, 'lesserTimelineStore.ts');
+			await fs.outputFile(
+				hostFile,
+				SOURCE_BYTES['packages/faces/social/src/lib/lesserTimelineStore.ts']!
+			);
+
+			const escapingConfig: ComponentConfig = {
+				...config,
+				aliases: {
+					...config.aliases,
+					lib: path.relative(cwd, outsideDir).split(path.sep).join('/'),
+				},
+			};
+
+			try {
+				const results = await evaluatePruneCandidates({
+					candidates: [
+						{
+							installPath: 'lib/lib/lesserTimelineStore.ts',
+							sourcePath: 'packages/faces/social/src/lib/lesserTimelineStore.ts',
+							sourceChecksum:
+								OLD_INDEX.checksums['packages/faces/social/src/lib/lesserTimelineStore.ts']!,
+							localPath: hostFile,
+							basis: 'inferred',
+						},
+					],
+					config: escapingConfig,
+					cwd,
+					oldRef: OLD_REF,
+					fetchSource,
+					dryRun: false,
+				});
+
+				expect(results[0]?.status).toBe('error');
+				expect(results[0]?.reason).toContain('outside the project');
+				expect(await fs.pathExists(hostFile)).toBe(true);
+			} finally {
+				await fs.remove(outsideDir);
+			}
+		});
+
 		it('refuses to prune a path whose real parent escapes the install root', async () => {
 			const outsideDir = await fs.mkdtemp(path.join(os.tmpdir(), 'greater-prune-escape-'));
 			await fs.outputFile(

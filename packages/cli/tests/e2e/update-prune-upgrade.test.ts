@@ -1,11 +1,19 @@
 /**
  * End-to-end upgrade fixture for issue #1000.
  *
- * A consumer pinned at `greater-v0.13.0` with `social-timeline` installed runs
- * `greater update` against the registry shape this branch introduces, in which
- * `lib/lib/lesserTimelineStore.{ts,svelte.ts}` are no longer part of the entry.
- * The required virtualized-timeline files must survive; the two obsolete root
- * store files must be removed.
+ * A consumer pinned at `greater-v0.13.0` with `social-timeline` and `messaging`
+ * installed — the shape of the concrete Contentus checkout this change is
+ * blocking — runs `greater update` against the registry shape this branch
+ * introduces, in which `lib/lib/lesserTimelineStore.{ts,svelte.ts}` are no
+ * longer part of the entry. The required virtualized-timeline files must
+ * survive, the two obsolete root store files must be removed, and nothing in
+ * the messaging module may be touched.
+ *
+ * `messaging` is here because it is the case ownership hydration has to get
+ * right: the index owns `src/sanitize.ts` at both refs while the CLI's static
+ * catalog does not list it, so an ownership pass that reads only
+ * `newIndex.components` concludes the file has no owner and deletes a module
+ * `Message.svelte` and `Conversations.svelte` still import.
  *
  * The two refs are served by a stubbed git layer:
  *
@@ -15,9 +23,9 @@
  *   check against the released hashes rather than against itself;
  * - the target ref's checksums are computed from the working tree, which is what
  *   `registry/index.json` regeneration produces for the same sources;
- * - file bytes come from the real `packages/faces/social/src/**` tree, which is
- *   byte-identical at both refs (asserted below, so the fixture cannot drift
- *   silently).
+ * - file bytes come from the real `packages/faces/social/src/**` and
+ *   `packages/shared/messaging/src/**` trees, which are byte-identical at both
+ *   refs (asserted below, so the fixture cannot drift silently).
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -43,6 +51,7 @@ const OLD_REF = 'ce8f3d9dd4080eb6886e1dd1cb444d65712eca36';
 const NEW_REF = 'a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4';
 
 const SOCIAL_SRC = 'packages/faces/social/src/';
+const MESSAGING_SRC = 'packages/shared/messaging/src/';
 
 /** The file set `social-timeline` shipped at greater-v0.13.0. */
 const V0_13_0_FILES = [
@@ -68,15 +77,51 @@ const REQUIRED_TIMELINE_FILES = [
 	'lib/components/TimelineVirtualizedReactive.svelte',
 ];
 
-const priorChecksums: Record<string, string> = JSON.parse(
-	fs.readFileSync(
-		path.join(__dirname, '../fixtures/upgrade-greater-v0.13.0/social-face-checksums.json'),
-		'utf-8'
-	)
-).checksums;
+/**
+ * The `messaging` file set as the *index* owned it at greater-v0.13.0 — which is
+ * what `greater add` installed, because dependency resolution hydrates an
+ * entry's file list from the index. `shared/messaging/sanitize.ts` is in this
+ * list and absent from the CLI's static catalog, which is the whole point.
+ */
+const MESSAGING_INSTALL_PATHS = [
+	'shared/messaging/Composer.svelte',
+	'shared/messaging/ConversationPicker.svelte',
+	'shared/messaging/ConversationWorkflowSummary.svelte',
+	'shared/messaging/Conversations.svelte',
+	'shared/messaging/MediaUpload.svelte',
+	'shared/messaging/Message.svelte',
+	'shared/messaging/NewConversation.svelte',
+	'shared/messaging/Root.svelte',
+	'shared/messaging/Thread.svelte',
+	'shared/messaging/UnreadIndicator.svelte',
+	'shared/messaging/WorkflowThreadMoment.svelte',
+	'shared/messaging/context.svelte.ts',
+	'shared/messaging/index.ts',
+	'shared/messaging/sanitize.ts',
+	'shared/messaging/types.ts',
+	'shared/messaging/utils.ts',
+];
 
-function listSocialSources(): string[] {
-	const root = path.join(REPO_ROOT!, SOCIAL_SRC);
+const SANITIZE_INSTALL_PATH = 'shared/messaging/sanitize.ts';
+/** The two surviving components whose imports the sanitizer has to satisfy. */
+const SANITIZE_IMPORTERS = [
+	'shared/messaging/Message.svelte',
+	'shared/messaging/Conversations.svelte',
+];
+
+function readFixtureChecksums(name: string): Record<string, string> {
+	return JSON.parse(
+		fs.readFileSync(path.join(__dirname, `../fixtures/upgrade-greater-v0.13.0/${name}`), 'utf-8')
+	).checksums;
+}
+
+const priorChecksums: Record<string, string> = {
+	...readFixtureChecksums('social-face-checksums.json'),
+	...readFixtureChecksums('shared-messaging-checksums.json'),
+};
+
+function listSources(prefix: string): string[] {
+	const root = path.join(REPO_ROOT!, prefix);
 	const out: string[] = [];
 	const walk = (dir: string) => {
 		for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -89,6 +134,27 @@ function listSocialSources(): string[] {
 	return out;
 }
 
+/**
+ * The index's `shared.messaging` entry at a ref: every messaging source it
+ * carries, in the `src/…`-relative form the real index records.
+ */
+function messagingIndexEntry(checksums: Record<string, string>) {
+	const files = Object.keys(checksums)
+		.filter((key) => key.startsWith(MESSAGING_SRC))
+		.sort()
+		.map((key) => ({ path: `src/${key.slice(MESSAGING_SRC.length)}`, checksum: checksums[key]! }));
+
+	return {
+		name: 'messaging',
+		version: '1.0.0',
+		exports: [],
+		files,
+		dependencies: [],
+		peerDependencies: [],
+		types: [],
+	};
+}
+
 function makeIndex(ref: string, checksums: Record<string, string>): RegistryIndex {
 	return {
 		schemaVersion: '1.0.0',
@@ -98,12 +164,12 @@ function makeIndex(ref: string, checksums: Record<string, string>): RegistryInde
 		checksums,
 		components: {},
 		faces: {},
-		shared: {},
+		shared: { messaging: messagingIndexEntry(checksums) },
 	};
 }
 
 const targetChecksums: Record<string, string> = Object.fromEntries(
-	listSocialSources().map((rel) => [
+	[...listSources(SOCIAL_SRC), ...listSources(MESSAGING_SRC)].map((rel) => [
 		rel,
 		computeChecksum(fs.readFileSync(path.join(REPO_ROOT!, rel))),
 	])
@@ -113,6 +179,9 @@ const INDEXES: Record<string, RegistryIndex> = {
 	[OLD_REF]: makeIndex(OLD_REF, priorChecksums),
 	[NEW_REF]: makeIndex(NEW_REF, targetChecksums),
 };
+
+/** Set by a test to make the prior ref's index unfetchable for that run. */
+let oldIndexUnavailable = false;
 
 vi.mock('ora', () => ({
 	default: vi.fn(() => ({
@@ -125,7 +194,18 @@ vi.mock('ora', () => ({
 	})),
 }));
 
-vi.mock('prompts', () => ({ default: vi.fn().mockResolvedValue({ confirm: true }) }));
+/**
+ * Answers the run confirmation, and — when a test sets it — the per-file
+ * conflict prompt. `undefined` leaves conflict handling on its default path.
+ */
+let conflictResolution: string | undefined;
+
+vi.mock('prompts', () => ({
+	default: vi.fn(async (question: { name?: string }) => {
+		if (question?.name === 'resolution') return { resolution: conflictResolution ?? 'keep' };
+		return { confirm: true };
+	}),
+}));
 
 vi.mock('../../src/utils/git-fetch.js', async (importOriginal) => {
 	const actual = await importOriginal<typeof import('../../src/utils/git-fetch.js')>();
@@ -139,6 +219,9 @@ vi.mock('../../src/utils/git-fetch.js', async (importOriginal) => {
 				const index = INDEXES[ref];
 				if (!index) throw new actual.NetworkError(`no fixture index for ref ${ref}`, 404);
 				return Buffer.from(JSON.stringify(index), 'utf-8');
+			}
+			if (oldIndexUnavailable && ref === OLD_REF) {
+				throw new actual.NetworkError(`simulated outage for ref ${ref}`, 503);
 			}
 			const onDisk = nodePath.join(REPO_ROOT!, filePath);
 			if (!nodeFs.existsSync(onDisk)) {
@@ -156,6 +239,9 @@ vi.mock('../../src/utils/registry-index.js', async (importOriginal) => {
 		// Bypass the on-disk index cache: this fixture serves two refs whose
 		// contents are synthesised per run.
 		fetchRegistryIndex: vi.fn(async (ref: string) => {
+			if (oldIndexUnavailable && ref === OLD_REF) {
+				throw new Error(`simulated outage fetching the index for ref ${ref}`);
+			}
 			const index = INDEXES[ref];
 			if (!index) throw new Error(`no fixture index for ref ${ref}`);
 			return index;
@@ -198,15 +284,13 @@ describe('greater update: greater-v0.13.0 → retired-store registry shape', () 
 				hooks: '$lib/primitives',
 				greater: '$lib/greater',
 			},
-			installed: [
-				{
-					name: 'social-timeline',
-					version: OLD_REF,
-					installedAt: new Date(0).toISOString(),
-					modified: false,
-					checksums: [],
-				},
-			],
+			installed: ['social-timeline', 'messaging'].map((name) => ({
+				name,
+				version: OLD_REF,
+				installedAt: new Date(0).toISOString(),
+				modified: false,
+				checksums: [],
+			})),
 		});
 
 		exitSpy = vi.spyOn(process, 'exit').mockImplementation(((code: number) => {
@@ -219,13 +303,15 @@ describe('greater update: greater-v0.13.0 → retired-store registry shape', () 
 		await fs.remove(cwd);
 		if (savedLocalRepoRoot === undefined) delete process.env['GREATER_CLI_LOCAL_REPO_ROOT'];
 		else process.env['GREATER_CLI_LOCAL_REPO_ROOT'] = savedLocalRepoRoot;
+		oldIndexUnavailable = false;
+		conflictResolution = undefined;
 		vi.resetModules();
 	});
 
-	/** Reproduce the v0.13.0 install: every file the entry owned, as the CLI wrote it. */
+	/** Reproduce the v0.13.0 install: every file the entries owned, as the CLI wrote it. */
 	async function installAtV0_13_0(): Promise<Map<string, string>> {
 		const written = new Map<string, string>();
-		for (const installPath of V0_13_0_FILES) {
+		for (const installPath of [...V0_13_0_FILES, ...MESSAGING_INSTALL_PATHS]) {
 			const sourcePath = sourceFor(installPath);
 			const localPath = getInstalledFilePath(installPath, config, cwd);
 			const content = fs.readFileSync(path.join(REPO_ROOT!, sourcePath), 'utf-8');
@@ -241,6 +327,9 @@ describe('greater update: greater-v0.13.0 → retired-store registry shape', () 
 	}
 
 	function sourceFor(installPath: string): string {
+		if (installPath.startsWith('shared/messaging/')) {
+			return `${MESSAGING_SRC}${installPath.slice('shared/messaging/'.length)}`;
+		}
 		if (installPath.startsWith('lib/lib/')) {
 			return `${SOCIAL_SRC}lib/${installPath.slice('lib/lib/'.length)}`;
 		}
@@ -255,14 +344,26 @@ describe('greater update: greater-v0.13.0 → retired-store registry shape', () 
 
 	async function runUpdate(options: Record<string, unknown> = {}) {
 		const { updateAction } = await import('../../src/commands/update.js');
-		return updateAction(['social-timeline'], { ref: NEW_REF, cwd, yes: true, ...options });
+		return updateAction(['social-timeline', 'messaging'], {
+			ref: NEW_REF,
+			cwd,
+			yes: true,
+			...options,
+		});
+	}
+
+	function readConfigFile(): {
+		ref: string;
+		installed: Array<{ name: string; version: string; checksums: Array<{ path: string }> }>;
+	} {
+		return fs.readJsonSync(path.join(cwd, 'components.json'));
 	}
 
 	it('serves prior-ref bytes that match the released greater-v0.13.0 checksums', () => {
 		// Tripwire: the fixture pins the *released* hashes while the bytes come from
 		// the working tree. If a future change edits these sources, this fails here
 		// with a clear cause instead of surfacing as an opaque integrity error.
-		for (const installPath of V0_13_0_FILES) {
+		for (const installPath of [...V0_13_0_FILES, ...MESSAGING_INSTALL_PATHS]) {
 			const sourcePath = sourceFor(installPath);
 			const expected = priorChecksums[sourcePath];
 			expect(expected, `missing greater-v0.13.0 checksum for ${sourcePath}`).toBeDefined();
@@ -270,6 +371,35 @@ describe('greater update: greater-v0.13.0 → retired-store registry shape', () 
 				computeChecksum(fs.readFileSync(path.join(REPO_ROOT!, sourcePath))),
 				`${sourcePath} differs from greater-v0.13.0; refresh fixtures/upgrade-greater-v0.13.0`
 			).toBe(expected);
+		}
+	});
+
+	it('keeps the messaging sanitizer the index owns and the static catalog omits', async () => {
+		// The high finding on PR #1001: ownership hydrated only `newIndex.components`,
+		// so `shared/messaging/sanitize.ts` — owned by `newIndex.shared.messaging` at
+		// both refs, absent from the CLI's static `messaging.files` — was read as
+		// unowned and deleted, and the surviving importers stopped resolving.
+		const installed = await installAtV0_13_0();
+
+		await runUpdate();
+
+		const sanitizePath = installed.get(SANITIZE_INSTALL_PATH)!;
+		expect(await fs.pathExists(sanitizePath), 'the messaging sanitizer must survive').toBe(true);
+
+		for (const installPath of MESSAGING_INSTALL_PATHS) {
+			expect(
+				await fs.pathExists(installed.get(installPath)!),
+				`${installPath} is still owned and must survive`
+			).toBe(true);
+		}
+
+		// The importers' specifier must still resolve on disk — the exact link that
+		// failed with ERR_MODULE_NOT_FOUND in the reported Contentus upgrade.
+		for (const importer of SANITIZE_IMPORTERS) {
+			const importerPath = installed.get(importer)!;
+			const body = await fs.readFile(importerPath, 'utf-8');
+			expect(body, `${importer} should import the sanitizer`).toContain("from './sanitize.js'");
+			expect(path.resolve(path.dirname(importerPath), 'sanitize.ts')).toBe(sanitizePath);
 		}
 	});
 
@@ -301,7 +431,9 @@ describe('greater update: greater-v0.13.0 → retired-store registry shape', () 
 
 		// Exactly two files removed — nothing else in the consumer tree was touched.
 		const survivors = [...installed.values()].filter((p) => fs.existsSync(p));
-		expect(survivors).toHaveLength(V0_13_0_FILES.length - RETIRED_FILES.length);
+		expect(survivors).toHaveLength(
+			V0_13_0_FILES.length + MESSAGING_INSTALL_PATHS.length - RETIRED_FILES.length
+		);
 	});
 
 	it('advances components.json only after the writes and prunes both succeed', async () => {
@@ -309,11 +441,8 @@ describe('greater update: greater-v0.13.0 → retired-store registry shape', () 
 
 		await runUpdate();
 
-		const written = await fs.readJson(path.join(cwd, 'components.json'));
-		const entry = written.installed.find((c: { name: string }) => c.name === 'social-timeline') as {
-			version: string;
-			checksums: Array<{ path: string }>;
-		};
+		const written = readConfigFile();
+		const entry = written.installed.find((c) => c.name === 'social-timeline')!;
 
 		expect(entry.version).toBe(NEW_REF);
 		expect(written.ref).toBe(NEW_REF);
@@ -339,21 +468,30 @@ describe('greater update: greater-v0.13.0 → retired-store registry shape', () 
 		expect(await fs.readJson(path.join(cwd, 'components.json'))).toEqual(before);
 	});
 
+	/** Give `social-timeline` the ownership record a v0.14.0-era consumer would have. */
+	async function recordSocialOwnership(installed: Map<string, string>): Promise<void> {
+		config = {
+			...config,
+			installed: config.installed.map((c) =>
+				c.name === 'social-timeline'
+					? {
+							...c,
+							checksums: V0_13_0_FILES.map((installPath) => ({
+								path: installPath,
+								checksum: computeChecksum(fs.readFileSync(installed.get(installPath)!)),
+							})),
+						}
+					: c
+			),
+		};
+		await fs.outputJson(path.join(cwd, 'components.json'), config, { spaces: 2 });
+	}
+
 	it('preserves a retired file the consumer edited, and leaves components.json truthful', async () => {
 		const installed = await installAtV0_13_0();
 		// Simulate a v0.14.0-era consumer: ownership is recorded, so the edit is
 		// provably an edit to a Greater-managed file rather than an unrelated file.
-		config = {
-			...config,
-			installed: config.installed.map((c) => ({
-				...c,
-				checksums: V0_13_0_FILES.map((installPath) => ({
-					path: installPath,
-					checksum: computeChecksum(fs.readFileSync(installed.get(installPath)!)),
-				})),
-			})),
-		};
-		await fs.outputJson(path.join(cwd, 'components.json'), config, { spaces: 2 });
+		await recordSocialOwnership(installed);
 
 		const edited = installed.get('lib/lib/lesserTimelineStore.ts')!;
 		await fs.appendFile(edited, '\n// consumer edit\n');
@@ -363,10 +501,103 @@ describe('greater update: greater-v0.13.0 → retired-store registry shape', () 
 		expect(await fs.pathExists(edited)).toBe(true);
 		expect(await fs.readFile(edited, 'utf-8')).toContain('// consumer edit');
 
-		const written = await fs.readJson(path.join(cwd, 'components.json'));
-		const entry = written.installed.find((c: { name: string }) => c.name === 'social-timeline');
+		const written = readConfigFile();
+		const entry = written.installed.find((c) => c.name === 'social-timeline')!;
 		// The component did not fully upgrade, so its recorded ref must not move.
 		expect(entry.version).toBe(OLD_REF);
+		expect(written.ref).toBe(OLD_REF);
+	});
+
+	it('preserves a retired file whose only claim to being managed is the recorded checksum', async () => {
+		// `components.json` is project input. A record that names the bytes on disk
+		// says nothing about who wrote them, so it cannot stand in for the
+		// comparison against the checksum-verified prior source.
+		const installed = await installAtV0_13_0();
+		const retired = installed.get('lib/lib/lesserTimelineStore.ts')!;
+		await fs.outputFile(retired, 'export const notGreaters = true;\n');
+
+		config = {
+			...config,
+			installed: config.installed.map((c) =>
+				c.name === 'social-timeline'
+					? {
+							...c,
+							checksums: [
+								{
+									path: 'lib/lib/lesserTimelineStore.ts',
+									checksum: computeChecksum(fs.readFileSync(retired)),
+								},
+							],
+						}
+					: c
+			),
+		};
+		await fs.outputJson(path.join(cwd, 'components.json'), config, { spaces: 2 });
+
+		await expect(runUpdate()).rejects.toThrow('Process exit: 1');
+
+		expect(await fs.pathExists(retired), 'a recorded checksum must not authorize deletion').toBe(
+			true
+		);
+		expect(await fs.readFile(retired, 'utf-8')).toBe('export const notGreaters = true;\n');
+		expect(readConfigFile().ref).toBe(OLD_REF);
+	});
+
+	it('retries the prune after a prior-index failure instead of recording the target ref', async () => {
+		// A planning skip that could resolve differently next run is unfinished work.
+		// Recording the target ref would make the rerun see `oldRef === newRef` and
+		// drop the prune permanently.
+		const installed = await installAtV0_13_0();
+
+		oldIndexUnavailable = true;
+		await expect(runUpdate()).rejects.toThrow('Process exit: 1');
+
+		for (const installPath of RETIRED_FILES) {
+			expect(
+				await fs.pathExists(installed.get(installPath)!),
+				`${installPath} must survive a run that could not plan its prune`
+			).toBe(true);
+		}
+
+		const afterOutage = readConfigFile();
+		expect(afterOutage.ref).toBe(OLD_REF);
+		expect(afterOutage.installed.find((c) => c.name === 'social-timeline')!.version).toBe(OLD_REF);
+
+		// The prior ref is still recorded, so the next run plans the prune it missed.
+		oldIndexUnavailable = false;
+		await runUpdate();
+
+		for (const installPath of RETIRED_FILES) {
+			expect(
+				await fs.pathExists(installed.get(installPath)!),
+				`${installPath} must be pruned by the retry`
+			).toBe(false);
+		}
+		expect(readConfigFile().ref).toBe(NEW_REF);
+	});
+
+	it('does not advance the top-level ref when the consumer skips a component', async () => {
+		const installed = await installAtV0_13_0();
+		await recordSocialOwnership(installed);
+
+		// Force a conflict prompt for social-timeline and answer "skip this component".
+		config = {
+			...config,
+			installed: config.installed.map((c) =>
+				c.name === 'social-timeline' ? { ...c, modified: true } : c
+			),
+		};
+		await fs.outputJson(path.join(cwd, 'components.json'), config, { spaces: 2 });
+		await fs.appendFile(installed.get('lib/lib/timelineStore.ts')!, '\n// consumer edit\n');
+		conflictResolution = 'skip';
+
+		await runUpdate();
+
+		const written = readConfigFile();
+		// The skipped component is still at the prior ref, so the top-level ref —
+		// which is what an argument-less rerun resolves against — must not claim the
+		// target.
+		expect(written.installed.find((c) => c.name === 'social-timeline')!.version).toBe(OLD_REF);
 		expect(written.ref).toBe(OLD_REF);
 	});
 });

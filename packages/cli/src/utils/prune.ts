@@ -49,8 +49,14 @@
  *   record, after which the strict path applies.
  * - Pruning is skipped, with a reported reason, when the recorded prior ref is
  *   not a fetchable immutable ref (legacy `components.json` entries whose
- *   `version` is a package version rather than a git ref) or when its index
- *   cannot be fetched. Skipping is reported, never treated as success.
+ *   `version` is a package version rather than a git ref), when its index cannot
+ *   be fetched, or when no prior-ref source directory resolves for the entry.
+ *   Every skip is reported, and a skip that could resolve differently on a
+ *   re-run (`PruneSkipKind` `'unresolved'`) blocks the update from recording the
+ *   target ref, so the prune is retried rather than lost. A skip that is a fixed
+ *   property of the transition (`'not-applicable'`) does not block it: the
+ *   ownership record this update writes is what makes the next transition exact,
+ *   and refusing to advance would leave such a consumer unable to update at all.
  * - Emptied directories are left in place.
  */
 
@@ -61,6 +67,7 @@ import type { ComponentMetadata } from '../registry/index.js';
 import type { RegistryIndex } from './registry-index.js';
 import { getInstalledFilePath, getInstallTarget, normalizeRegistryPath } from './install-path.js';
 import { resolveSourcePathFromIndex } from './registry-source-map.js';
+import { mapRegistryFilePathToInstallPath } from './dependency-resolver.js';
 import { PathTraversalError } from './path-safety.js';
 import { computeChecksum } from './integrity.js';
 import { transformImports } from './transform.js';
@@ -84,7 +91,14 @@ export interface PruneCandidate {
 	sourceChecksum: string;
 	/** Absolute path in the consumer project, resolved through `components.json`. */
 	localPath: string;
-	/** Checksum `components.json` recorded for this path, when ownership is proven. */
+	/**
+	 * Checksum `components.json` recorded for this path, when ownership is proven.
+	 *
+	 * Reported on, never trusted: `components.json` is project input and its
+	 * checksum strings are unauthenticated, so a match here says something about
+	 * the record and nothing about whether Greater wrote the bytes on disk. It
+	 * cannot authorize a delete.
+	 */
 	recordedChecksum?: string;
 	basis: OwnershipBasis;
 }
@@ -111,11 +125,33 @@ export interface PruneResult {
 	reason?: string;
 }
 
+/**
+ * Why prune planning produced nothing — and, decisively, whether the update may
+ * still record the target ref for the component.
+ *
+ * The distinction is whether re-running could produce a different answer:
+ *
+ * - `not-applicable` — no prune is derivable at this transition, and re-running
+ *   the same two refs would say so again. Advancing is truthful, and it is also
+ *   the repair: the update writes the ownership record, so the next transition
+ *   is answered exactly rather than skipped.
+ * - `unresolved` — planning could not be completed *this run*. Nothing may
+ *   advance: the recorded ref has to stay where it is, or the missed prune is
+ *   suppressed forever because the next run sees `oldRef === newRef`.
+ */
+export type PruneSkipKind = 'not-applicable' | 'unresolved';
+
+export interface PruneSkip {
+	kind: PruneSkipKind;
+	/** Operator-facing explanation. */
+	reason: string;
+}
+
 export interface PrunePlan {
 	candidates: PruneCandidate[];
 	basis: OwnershipBasis;
 	/** Set when planning was skipped wholesale; `candidates` is then empty. */
-	skippedReason?: string;
+	skipped?: PruneSkip;
 }
 
 const COMMIT_SHA_RE = /^[0-9a-f]{40}$/i;
@@ -156,8 +192,93 @@ function safeLocalPath(installPath: string, config: ComponentConfig, cwd: string
 }
 
 /**
+ * How one registry-index category's recorded source paths render as install
+ * paths.
+ *
+ * `shared` and `faces` go through `mapRegistryFilePathToInstallPath`, the exact
+ * mapping dependency resolution uses to hydrate an entry's real file list. That
+ * shared mapping is the point: hydration is how an entry acquires files the
+ * static catalog omits, so ownership derived any other way would disagree with
+ * what the installer just wrote. `components` carries the top-level workspace
+ * packages, whose files the fetcher enumerates as `greater/<name>/<path minus
+ * src/>` (`buildCorePackageFileList`).
+ */
+type InstallPathRule = (name: string, sourcePath: string) => string | null;
+
+const CORE_PACKAGE_RULE: InstallPathRule = (name, sourcePath) =>
+	`greater/${name}/${sourcePath.startsWith('src/') ? sourcePath.slice('src/'.length) : sourcePath}`;
+const SHARED_RULE: InstallPathRule = (name, sourcePath) =>
+	mapRegistryFilePathToInstallPath(name, 'shared', sourcePath);
+const FACE_RULE: InstallPathRule = (name, sourcePath) =>
+	mapRegistryFilePathToInstallPath(name, 'face', sourcePath);
+
+const CATEGORY_INSTALL_RULES: Record<string, InstallPathRule[]> = {
+	components: [CORE_PACKAGE_RULE],
+	shared: [SHARED_RULE],
+	faces: [FACE_RULE],
+};
+
+/**
+ * Applied to an entry-bearing category this CLI has no rule for, so a category
+ * added upstream still participates in ownership rather than silently dropping
+ * out of it. Every rule is tried because over-inclusion only ever protects a
+ * file from deletion.
+ */
+const UNKNOWN_CATEGORY_RULES: InstallPathRule[] = [CORE_PACKAGE_RULE, SHARED_RULE, FACE_RULE];
+
+/**
+ * The `files[].path` values of an index entry, or `null` when the value is not
+ * a registry entry at all (the index also carries `checksums`, `ref`, and other
+ * scalars at the same level).
+ */
+function indexEntrySourcePaths(entry: unknown): string[] | null {
+	if (!entry || typeof entry !== 'object' || Array.isArray(entry)) return null;
+	const files = (entry as { files?: unknown }).files;
+	if (!Array.isArray(files)) return null;
+	return files
+		.map((file) =>
+			file && typeof file === 'object' ? (file as { path?: unknown }).path : undefined
+		)
+		.filter((path): path is string => typeof path === 'string');
+}
+
+/**
+ * Every install path the fetched index attributes to some entry, across every
+ * category it carries.
+ *
+ * The categories are read off the index rather than listed, so `shared` and
+ * `faces` cannot be omitted the way they were when only `components` was
+ * hydrated — that omission is what let the pruner conclude
+ * `shared/messaging/sanitize.ts`, a file the index owns and the static catalog
+ * does not, had no target owner.
+ */
+function* indexOwnedInstallPaths(index: RegistryIndex): Generator<string> {
+	for (const [category, value] of Object.entries(index)) {
+		if (!value || typeof value !== 'object' || Array.isArray(value)) continue;
+
+		const rules = CATEGORY_INSTALL_RULES[category] ?? UNKNOWN_CATEGORY_RULES;
+
+		for (const [name, entry] of Object.entries(value as Record<string, unknown>)) {
+			const sourcePaths = indexEntrySourcePaths(entry);
+			if (!sourcePaths) continue;
+
+			for (const sourcePath of sourcePaths) {
+				for (const rule of rules) {
+					const installPath = rule(name, sourcePath);
+					if (installPath) yield installPath;
+				}
+			}
+		}
+	}
+}
+
+/**
  * Every local path owned by *any* registry entry at the target ref, mapped
  * through this consumer's `components.json` aliases.
+ *
+ * Both sources of truth participate: the CLI's static catalog, and the fetched
+ * index. The index is authoritative — the static catalog is a hand-maintained
+ * file list that is routinely a subset of what an entry ships.
  *
  * Over-inclusion is the safe direction: an extra path here can only protect a
  * file from deletion, never cause one.
@@ -177,14 +298,9 @@ export function collectOwnedLocalPaths(
 		}
 	}
 
-	// Core packages enumerate their files through the index rather than through
-	// the single placeholder entry the static registry carries for them.
-	for (const [name, indexEntry] of Object.entries(newIndex.components)) {
-		for (const file of indexEntry.files) {
-			const withoutSrc = file.path.startsWith('src/') ? file.path.slice('src/'.length) : file.path;
-			const localPath = safeLocalPath(`greater/${name}/${withoutSrc}`, config, cwd);
-			if (localPath) owned.add(localPath);
-		}
+	for (const installPath of indexOwnedInstallPaths(newIndex)) {
+		const localPath = safeLocalPath(installPath, config, cwd);
+		if (localPath) owned.add(localPath);
 	}
 
 	return owned;
@@ -275,13 +391,21 @@ export function planComponentPrune(options: {
 			: inferredOwnership(component, oldIndex, newIndex);
 
 	if (priorInstallPaths.length === 0) {
+		// Only the inferred path reaches here: a recorded basis exists precisely
+		// because the record listed at least one path. Neither case can resolve
+		// differently on a re-run of the same two refs, and both are repaired by
+		// the ownership record this update writes.
+		const ownsNoFiles = (component.files?.length ?? 0) === 0;
 		return {
 			candidates: [],
 			basis,
-			skippedReason:
-				basis === 'inferred'
-					? 'no prior-ref source directories resolved for this entry'
-					: undefined,
+			skipped: {
+				kind: 'not-applicable',
+				reason: ownsNoFiles
+					? 'this entry installs no files of its own, so it can own no obsolete ones'
+					: 'no prior-ref source directory resolved for this entry, so obsolete files ' +
+						'from that install cannot be identified',
+			},
 		};
 	}
 
@@ -374,6 +498,14 @@ export function renderManagedBytes(
  * as the install root, and `greater add` / `greater update` already write through
  * it; pruning follows the same root. What this catches is a link that escapes
  * from *within* the root — the case lexical containment alone cannot see.
+ *
+ * The install root must additionally sit inside the project the command was
+ * invoked on. `resolveAlias` joins the configured alias onto `cwd`, so an alias
+ * like `../../etc` yields a root outside the consumer project that
+ * `resolvePathWithinDir` would happily contain a file inside. Writes already
+ * follow such an alias; a delete is not recoverable, so the pruner requires the
+ * declared root to be within the intended consumer boundary. A symlinked root
+ * still passes — it is lexically inside `cwd`, and only its real path is not.
  */
 async function assertSafeToDelete(
 	candidate: PruneCandidate,
@@ -381,6 +513,18 @@ async function assertSafeToDelete(
 	cwd: string
 ): Promise<void> {
 	const target = getInstallTarget(candidate.installPath, config, cwd);
+
+	const lexicalRoot = path.resolve(target.targetDir);
+	const rootRel = path.relative(path.resolve(cwd), lexicalRoot);
+	if (
+		rootRel !== '' &&
+		(rootRel === '..' || rootRel.startsWith(`..${path.sep}`) || path.isAbsolute(rootRel))
+	) {
+		throw new PathTraversalError(
+			`Refusing to prune outside the project: install root ${target.targetDir} is not inside ${cwd}`
+		);
+	}
+
 	const realRoot = await fs.realpath(path.resolve(target.targetDir));
 	const realParent = await fs.realpath(path.dirname(candidate.localPath));
 
@@ -458,11 +602,23 @@ export async function evaluatePruneCandidates(
 				candidate.localPath
 			);
 
-			const matchesManagedBytes =
-				computeChecksum(currentBytes) === candidate.recordedChecksum ||
-				expected.some((bytes) => bytes.equals(currentBytes));
+			// The *only* deletion authority: these bytes are what the CLI would have
+			// written from the prior ref's source, and that source was just verified
+			// against the prior ref's immutable checksum. A checksum recorded in
+			// `components.json` is unauthenticated project input — a hostile checkout
+			// can name any file's contents there — so it never stands in for this
+			// comparison.
+			const matchesManagedBytes = expected.some((bytes) => bytes.equals(currentBytes));
 
 			if (!matchesManagedBytes) {
+				const recordClaimsOwnership =
+					!!candidate.recordedChecksum &&
+					computeChecksum(currentBytes) === candidate.recordedChecksum;
+				const recordNote = recordClaimsOwnership
+					? ` components.json records this checksum for the path, but that record is ` +
+						`project input and does not establish that Greater wrote these bytes.`
+					: '';
+
 				results.push(
 					candidate.basis === 'recorded'
 						? {
@@ -473,7 +629,8 @@ export async function evaluatePruneCandidates(
 									`contents differ from the bytes Greater installed at ${oldRef}, ` +
 									`so it was preserved. Review the local changes and delete ` +
 									`${candidate.localPath} yourself once they are no longer needed, ` +
-									`then re-run the update. (--force does not delete modified files.)`,
+									`then re-run the update. (--force does not delete modified files.)` +
+									recordNote,
 							}
 						: {
 								...base,
