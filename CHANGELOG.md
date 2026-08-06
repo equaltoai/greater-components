@@ -9,6 +9,60 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## Unreleased
 
+### `greater update` prunes obsolete managed files (#1000)
+
+**Semver impact: minor.** `greater update` gains behaviour it did not have
+before; no component prop, slot, event, export, CSS custom property, CLI
+command, or CLI flag changed meaning. The one registry change removes two files
+from an entry, which is what the new update behaviour is there to handle.
+
+- Registry: `social-timeline` no longer ships `lib/lib/lesserTimelineStore.ts`
+  or `lib/lib/lesserTimelineStore.svelte.ts`. Both installed into the consumer's
+  root `src/lib/` rather than the managed `src/lib/greater/` tree, and nothing in
+  Greater or downstream imports `LesserTimelineStore` outside its own monorepo
+  unit test. The monorepo source files are unchanged and stay in place; only
+  registry ownership is withdrawn. The entry's remaining 12 files, including
+  `TimelineVirtualized.svelte` and `TimelineVirtualizedReactive.svelte`, are
+  untouched.
+- Feature: `greater update` now removes files a component owned at the ref
+  recorded in `components.json` and no longer owns at the target ref. Ownership
+  is derived from the two immutable `registry/index.json` snapshots plus the
+  consumer's own install-path configuration — never from a scan of the install
+  directory and never from a hand-authored removal list. Every category the
+  index carries participates in ownership (components, shared modules, faces),
+  mapped through the same source→install rule dependency resolution installs
+  with, so a file the index ships but the CLI's static catalog omits is still
+  protected. A file is deleted only when its bytes are identical to what the CLI
+  wrote at the previous ref, rendered from source fetched and verified against
+  that ref's published checksum; a checksum recorded in the consumer's own
+  `components.json` never authorizes a deletion by itself. Deletion is refused
+  through a symlink and through any install alias resolving outside the project.
+- Fix: a component whose obsolete-file prune could not be planned — the previous
+  ref's index would not load, say — no longer records the target ref. Previously
+  the run reported the skip and advanced anyway, after which the rerun saw
+  `oldRef === newRef` and the removal was lost permanently. The same applies to
+  a component skipped at a conflict prompt: it did not upgrade, so neither its
+  recorded ref nor the top-level `ref` advances.
+- Feature: `greater update` records each component's install paths and canonical
+  checksums in `components.json` (`installed[].checksums`, a field the schema
+  already carried but nothing populated). From that record on, a locally modified
+  obsolete file is a hard update failure with a precise remediation message
+  rather than a guess; the file is always preserved, and `--force` does not
+  delete it.
+- Fix: a component whose files failed to write no longer has its target ref
+  recorded in `components.json`, and `ref` at the top level only advances when
+  every component succeeded. Previously a per-file write error still bumped the
+  recorded version, so the config claimed an upgrade that had not happened.
+- Fix: `greater update --dry-run` no longer rewrites `components.json`. It
+  previously persisted a config-schema migration as a side effect of reading the
+  file. `readConfig` accepts `persistMigration: false` for preview callers.
+- Note for consumers pinned before this release: there is no ownership record to
+  read, so the previous file set is narrowed from the prior ref's registry index
+  instead. On that path a file is removed only when its bytes prove Greater wrote
+  it; anything else is left untouched and the update still succeeds. The first
+  update after this release writes the record, after which the strict path
+  applies.
+
 ### Review workflow chrome (M2c)
 
 **Semver impact: minor.** Everything below is additive — no existing component
