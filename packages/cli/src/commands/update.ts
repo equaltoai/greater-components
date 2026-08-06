@@ -17,19 +17,29 @@ import {
 	addInstalledComponent,
 	FALLBACK_REF,
 	type ComponentConfig,
+	type FileChecksumEntry,
 	type InstalledComponent,
 } from '../utils/config.js';
-import { resolveRef } from '../utils/registry-index.js';
-import { getComponent } from '../registry/index.js';
+import { resolveRef, fetchRegistryIndex } from '../utils/registry-index.js';
+import { getComponent, getAllRegistryEntries } from '../registry/index.js';
 import { fetchComponentFiles, type FetchOptions } from '../utils/fetch.js';
 import { readFile, readFileBuffer, writeFile, fileExists } from '../utils/files.js';
 import { computeDiff, formatDiffStats, type DiffResult } from '../utils/diff.js';
+import { computeChecksum } from '../utils/integrity.js';
 
 import { transformImports } from '../utils/transform.js';
 import { logger } from '../utils/logger.js';
 import { getInstalledFilePath } from '../utils/install-path.js';
 import { ensureLocalRepoRoot } from '../utils/local-repo.js';
 import { resolveRefForFetch } from '../utils/ref.js';
+import { fetchFromGitTag } from '../utils/git-fetch.js';
+import {
+	evaluatePruneCandidates,
+	isImmutablePriorRef,
+	planComponentPrune,
+	pruneHasFailures,
+	type PruneResult,
+} from '../utils/prune.js';
 
 /**
  * Conflict resolution choice
@@ -47,6 +57,12 @@ interface ComponentUpdateStatus {
 	hasConflicts: boolean;
 	skipped: boolean;
 	error?: string;
+	/** Outcome for each file this component owned at its prior ref but not at the target ref. */
+	prunes: PruneResult[];
+	/** Set when prune planning could not run (reported, never treated as success). */
+	pruneSkippedReason?: string;
+	/** Install path + canonical checksum for every file this component owns at the target ref. */
+	managedChecksums: FileChecksumEntry[];
 }
 
 /**
@@ -175,6 +191,8 @@ async function updateComponent(
 			files: [],
 			hasConflicts: false,
 			skipped: true,
+			prunes: [],
+			managedChecksums: [],
 			error: 'Component not found in registry',
 		};
 	}
@@ -200,11 +218,14 @@ async function updateComponent(
 			files: [],
 			hasConflicts: false,
 			skipped: true,
+			prunes: [],
+			managedChecksums: [],
 			error: `Failed to fetch: ${error instanceof Error ? error.message : String(error)}`,
 		};
 	}
 
 	const fileStatuses: FileUpdateStatus[] = [];
+	const managedChecksums: FileChecksumEntry[] = [];
 	let hasConflicts = false;
 	let skipComponent = false;
 
@@ -214,6 +235,27 @@ async function updateComponent(
 		const remoteRaw = file.raw;
 		const isBinaryFile = !!remoteRaw;
 		const shouldBypassTransform = file.transform === false;
+
+		// The canonical managed content for this file at the target ref: exactly what
+		// the CLI writes, and what gets recorded in `components.json` as this
+		// component's ownership fingerprint. Recording the canonical rendering
+		// rather than the bytes on disk means a file the user chose to keep local
+		// edits to is still correctly seen as modified by the next update.
+		const managedContent: string | Buffer = isBinaryFile
+			? remoteRaw
+			: shouldBypassTransform
+				? remoteContent
+				: transformImports(remoteContent, config, file.path, {
+						sourceFilePath: localPath,
+						consumerRoot: cwd,
+					}).content;
+
+		managedChecksums.push({
+			path: file.path,
+			checksum: computeChecksum(
+				Buffer.isBuffer(managedContent) ? managedContent : Buffer.from(managedContent, 'utf-8')
+			),
+		});
 
 		const status: FileUpdateStatus = {
 			filePath: file.path,
@@ -286,17 +328,7 @@ async function updateComponent(
 
 				// Apply transformation and write file
 				if (!options.dryRun) {
-					if (isBinaryFile) {
-						await writeFile(localPath, remoteRaw);
-					} else if (shouldBypassTransform) {
-						await writeFile(localPath, remoteContent);
-					} else {
-						const transformed = transformImports(remoteContent, config, file.path, {
-							sourceFilePath: localPath,
-							consumerRoot: cwd,
-						});
-						await writeFile(localPath, transformed.content);
-					}
+					await writeFile(localPath, managedContent);
 				}
 
 				status.status = 'updated';
@@ -310,17 +342,7 @@ async function updateComponent(
 
 			if (!options.dryRun) {
 				try {
-					if (isBinaryFile) {
-						await writeFile(localPath, remoteRaw);
-					} else if (shouldBypassTransform) {
-						await writeFile(localPath, remoteContent);
-					} else {
-						const transformed = transformImports(remoteContent, config, file.path, {
-							sourceFilePath: localPath,
-							consumerRoot: cwd,
-						});
-						await writeFile(localPath, transformed.content);
-					}
+					await writeFile(localPath, managedContent);
 				} catch (error) {
 					status.status = 'error';
 					status.error = error instanceof Error ? error.message : String(error);
@@ -338,7 +360,102 @@ async function updateComponent(
 		files: fileStatuses,
 		hasConflicts,
 		skipped: skipComponent,
+		prunes: [],
+		managedChecksums,
 	};
+}
+
+/**
+ * Plan and carry out obsolete-file pruning for one component.
+ *
+ * Runs *after* the component's writes so that a failed write never leaves the
+ * consumer with neither the new file nor the old one. Ownership comes entirely
+ * from the two immutable registry indexes — see `utils/prune.ts`.
+ */
+async function pruneComponent(
+	componentName: string,
+	config: ComponentConfig,
+	cwd: string,
+	options: { oldRef: string | undefined; newRef: string; dryRun?: boolean }
+): Promise<{ results: PruneResult[]; skippedReason?: string }> {
+	const component = getComponent(componentName);
+	if (!component) {
+		return { results: [], skippedReason: 'component not found in registry' };
+	}
+
+	const { oldRef, newRef } = options;
+
+	if (!isImmutablePriorRef(oldRef)) {
+		return {
+			results: [],
+			skippedReason: `prior ref ${oldRef ? `"${oldRef}"` : '(unset)'} is not an immutable registry ref`,
+		};
+	}
+
+	if (oldRef === newRef) {
+		return { results: [] };
+	}
+
+	let oldIndex;
+	let newIndex;
+	try {
+		[oldIndex, newIndex] = await Promise.all([
+			fetchRegistryIndex(oldRef),
+			fetchRegistryIndex(newRef),
+		]);
+	} catch (error) {
+		return {
+			results: [],
+			skippedReason: `could not load registry index: ${
+				error instanceof Error ? error.message : String(error)
+			}`,
+		};
+	}
+
+	const recorded = getInstalledComponent(componentName, config)?.checksums ?? [];
+
+	const plan = planComponentPrune({
+		component,
+		allEntries: getAllRegistryEntries(),
+		config,
+		cwd,
+		oldIndex,
+		newIndex,
+		recorded,
+	});
+
+	if (plan.skippedReason) {
+		return { results: [], skippedReason: plan.skippedReason };
+	}
+
+	if (plan.candidates.length === 0) {
+		return { results: [] };
+	}
+
+	const results = await evaluatePruneCandidates({
+		candidates: plan.candidates,
+		config,
+		cwd,
+		oldRef,
+		dryRun: options.dryRun ?? false,
+		fetchSource: (ref, sourcePath) => fetchFromGitTag(ref, sourcePath),
+	});
+
+	return { results };
+}
+
+/**
+ * Whether a component's update left anything in a failed state.
+ *
+ * Drives both the process exit code and whether `components.json` is allowed to
+ * record the target ref for that component.
+ */
+function componentFailed(result: ComponentUpdateStatus): boolean {
+	return (
+		!!result.error ||
+		result.files.some((f) => f.status === 'error') ||
+		pruneHasFailures(result.prunes)
+	);
 }
 
 /**
@@ -354,6 +471,8 @@ function displayUpdateResults(results: ComponentUpdateStatus[], dryRun: boolean)
 	let skipped = 0;
 	let conflicts = 0;
 	let errors = 0;
+	let pruned = 0;
+	let blocked = 0;
 
 	for (const result of results) {
 		if (result.error) {
@@ -398,6 +517,19 @@ function displayUpdateResults(results: ComponentUpdateStatus[], dryRun: boolean)
 			errors += fileStats['error'];
 		}
 
+		const prunedFiles = result.prunes.filter((p) => p.status === 'pruned');
+		const blockedFiles = result.prunes.filter(
+			(p) => p.status === 'blocked' || p.status === 'error'
+		);
+		if (prunedFiles.length > 0) {
+			parts.push(chalk.magenta(`${prunedFiles.length} ${dryRun ? 'to prune' : 'pruned'}`));
+			pruned += prunedFiles.length;
+		}
+		if (blockedFiles.length > 0) {
+			parts.push(chalk.red(`${blockedFiles.length} prune blocked`));
+			blocked += blockedFiles.length;
+		}
+
 		const statusStr = parts.length > 0 ? parts.join(', ') : 'no changes';
 		const versionStr =
 			result.currentVersion !== result.targetVersion
@@ -405,14 +537,42 @@ function displayUpdateResults(results: ComponentUpdateStatus[], dryRun: boolean)
 				: '';
 
 		logger.info(`  ${chalk.green('✓')} ${result.componentName}: ${statusStr}${versionStr}`);
+
+		for (const file of prunedFiles) {
+			logger.info(
+				chalk.magenta(`      ${dryRun ? '- would remove' : '- removed'} ${file.localPath}`) +
+					chalk.dim(` (no longer part of ${result.componentName})`)
+			);
+		}
+		for (const file of blockedFiles) {
+			logger.error(chalk.red(`      ✖ preserved ${file.localPath}`));
+			logger.error(chalk.dim(`        ${file.reason ?? 'unknown reason'}`));
+		}
+		// Inferred-only candidates that did not byte-match are, as far as the CLI
+		// can prove, not Greater files at all. Surfacing them as warnings would
+		// alarm consumers about their own sources, so they stay at debug level.
+		for (const file of result.prunes.filter((p) => p.status === 'retained')) {
+			logger.debug(`prune: retained ${file.localPath} — ${file.reason ?? 'unverified ownership'}`);
+		}
+		if (result.pruneSkippedReason) {
+			logger.warn(
+				chalk.yellow(`      ⚠ obsolete-file pruning skipped: ${result.pruneSkippedReason}`)
+			);
+		}
 	}
 
 	logger.info(chalk.bold('\n━━━ Totals ━━━'));
 	logger.info(`  Files updated: ${chalk.green(updated)}`);
 	logger.info(`  Files created: ${chalk.blue(created)}`);
 	logger.info(`  Files skipped: ${chalk.dim(skipped)}`);
+	if (pruned > 0) {
+		logger.info(`  Files ${dryRun ? 'to prune' : 'pruned'}: ${chalk.magenta(pruned)}`);
+	}
 	if (conflicts > 0) {
 		logger.info(`  Conflicts: ${chalk.yellow(conflicts)}`);
+	}
+	if (blocked > 0) {
+		logger.info(`  Prunes blocked: ${chalk.red(blocked)}`);
 	}
 	if (errors > 0) {
 		logger.info(`  Errors: ${chalk.red(errors)}`);
@@ -440,8 +600,9 @@ export const updateAction = async (
 		process.exit(1);
 	}
 
-	// Read config
-	let config = await readConfig(cwd);
+	// Read config. A dry run must not rewrite `components.json`, not even to
+	// persist a schema migration.
+	let config = await readConfig(cwd, { persistMigration: !options.dryRun });
 	if (!config) {
 		logger.error(chalk.red('✖ Failed to read configuration'));
 		process.exit(1);
@@ -518,37 +679,74 @@ export const updateAction = async (
 	for (const name of componentNames) {
 		spinner.text = `Updating ${name}...`;
 
+		const priorRef = getInstalledComponent(name, config)?.version;
+
 		const result = await updateComponent(name, config, cwd, {
 			ref: targetRef,
 			force: options.force,
 			dryRun: options.dryRun,
 		});
 
-		results.push(result);
-
-		// Update config with new version if successful
-		if (!options.dryRun && !result.skipped && !result.error) {
-			config = addInstalledComponent(config, name, result.targetVersion);
+		// Prune only after this component's writes are on disk, and only when the
+		// writes themselves succeeded — otherwise a half-written update could lose
+		// both the new file and the old one.
+		if (!result.skipped && !result.error && !result.files.some((f) => f.status === 'error')) {
+			spinner.text = `Pruning obsolete ${name} files...`;
+			const prune = await pruneComponent(name, config, cwd, {
+				oldRef: priorRef,
+				newRef: targetRef,
+				dryRun: options.dryRun,
+			});
+			result.prunes = prune.results;
+			if (prune.skippedReason) {
+				result.pruneSkippedReason = prune.skippedReason;
+			}
 		}
+
+		results.push(result);
 	}
 
 	spinner.stop();
 
-	// Save updated config
+	// `components.json` records the target ref for a component only once every
+	// write *and* every prune for that component succeeded. A component whose
+	// obsolete files could not be removed keeps its prior recorded ref, so the
+	// config never claims an upgrade that did not fully happen.
+	const allSucceeded = results.every((r) => !componentFailed(r));
+
 	if (!options.dryRun) {
-		config = {
-			...config,
-			ref: targetRef,
-		};
+		for (const result of results) {
+			if (result.skipped || componentFailed(result)) continue;
+			config = addInstalledComponent(
+				config,
+				result.componentName,
+				result.targetVersion,
+				result.managedChecksums
+			);
+		}
+
+		if (allSucceeded) {
+			config = {
+				...config,
+				ref: targetRef,
+			};
+		}
+
 		await writeConfig(config, cwd);
 	}
 
 	// Display results
 	displayUpdateResults(results, options.dryRun || false);
 
-	// Exit with error code if there were failures
-	const hasErrors = results.some((r) => r.error || r.files.some((f) => f.status === 'error'));
-	if (hasErrors) {
+	if (!allSucceeded) {
+		if (!options.dryRun) {
+			logger.warn(
+				chalk.yellow(
+					'\n⚠ components.json still records the prior ref for the component(s) above; ' +
+						're-run the update once the reported files are resolved.\n'
+				)
+			);
+		}
 		process.exit(1);
 	}
 };
