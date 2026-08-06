@@ -1,0 +1,27 @@
+{
+  "_provenance": {
+    "describes": "registry/index.json checksums at the greater-v0.13.0 release tag",
+    "tag": "greater-v0.13.0",
+    "commit": "ce8f3d9dd4080eb6886e1dd1cb444d65712eca36",
+    "scope": "packages/shared/messaging/src/** only \u2014 the source tree the messaging shared module installs from",
+    "note": "Copied verbatim from that tag. Do not hand-edit: these hashes are what the upgrade fixture verifies the prior-ref source bytes against."
+  },
+  "checksums": {
+    "packages/shared/messaging/src/Composer.svelte": "sha256-mDu8POEo19GzW1+bDIWvQauxpZ7H1gTw5r4Z7UXMUnU=",
+    "packages/shared/messaging/src/ConversationPicker.svelte": "sha256-WXQCot9O4SbZ8IjGVcyuRHhQ9sL209LU3acbUTgVuAo=",
+    "packages/shared/messaging/src/ConversationWorkflowSummary.svelte": "sha256-+mO7cS42J9G7FplGDcvuUealcYVAqx47qH4WqUkaxPU=",
+    "packages/shared/messaging/src/Conversations.svelte": "sha256-WIOjfV5CmsCkhFyp9i0IOUMDz8ceMWrUc1Rr2box0hc=",
+    "packages/shared/messaging/src/MediaUpload.svelte": "sha256-5ORpNjGoJKb1SXWhVzFZ80Frxi0e6VYP1oM1ow2Oejo=",
+    "packages/shared/messaging/src/Message.svelte": "sha256-/i/rdtKRja1KMVaTH2P/Zog1062AiKfNmfY1lBUxhgY=",
+    "packages/shared/messaging/src/NewConversation.svelte": "sha256-23nXlWNf5SY+FF7NBPVU5WVMWj+ywpAq3MUbyauX8rE=",
+    "packages/shared/messaging/src/Root.svelte": "sha256-ayF6lgF3ZxI5MuuIcj1zCntD+iSfaS7lCkRRQx54NZY=",
+    "packages/shared/messaging/src/Thread.svelte": "sha256-wF052p+7XJQJ2ccM+j9Za+DROrObEKmYCS+MXfBmTGU=",
+    "packages/shared/messaging/src/UnreadIndicator.svelte": "sha256-IG65mT6Y0jrY2AKbFCIlFaRKKHj9XpUpViWd+lcCoT0=",
+    "packages/shared/messaging/src/WorkflowThreadMoment.svelte": "sha256-FN/gYB5HCi3ltwxI0L3qjqep+jXwQE1zJSEAKtXnzlU=",
+    "packages/shared/messaging/src/context.svelte.ts": "sha256-kyRfy1iaR4A1PtVf4c3+EIxHhrgjgBjR3XUNH9jpx7g=",
+    "packages/shared/messaging/src/index.ts": "sha256-51SFnggIOSpqEXRczLt8ySe8GJM2LmokXYfhkNtVcp4=",
+    "packages/shared/messaging/src/sanitize.ts": "sha256-pjf+ROpLOSEl8f3sLMywp44loupt8PKUlS2CgLgB8w0=",
+    "packages/shared/messaging/src/types.ts": "sha256-hHc+ulSYjI46KKV/O+h845OcqMhB6feSn6oR7CV76JY=",
+    "packages/shared/messaging/src/utils.ts": "sha256-n5s8ZSURaYg3TP01VFafGTH43dn04IiTwLtAKMU1Hyk="
+  }
+}

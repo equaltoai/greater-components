@@ -73,7 +73,28 @@ vi.mock('../src/registry/index.js', () => ({
 		version: '1.0.0',
 	}),
 	componentRegistry: {},
+	getAllRegistryEntries: vi.fn(() => []),
 }));
+
+// Obsolete-file pruning is exercised directly in `prune.test.ts` and
+// `e2e/update-prune-upgrade.test.ts`. Here the registry index is stubbed empty so
+// these update-mechanics tests neither reach the network nor gain prune candidates.
+vi.mock('../src/utils/registry-index.js', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('../src/utils/registry-index.js')>();
+	return {
+		...actual,
+		fetchRegistryIndex: vi.fn().mockResolvedValue({
+			schemaVersion: '1.0.0',
+			version: '0.0.0',
+			ref: 'greater-v0.1.2',
+			generatedAt: new Date(0).toISOString(),
+			checksums: {},
+			components: {},
+			faces: {},
+			shared: {},
+		}),
+	};
+});
 
 vi.mock('../src/utils/transform.js', () => ({
 	transformImports: vi.fn().mockImplementation((content) => ({ content })),

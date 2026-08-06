@@ -344,6 +344,61 @@ Button has local modifications. Options:
 [3] Show diff and decide
 ```
 
+**Removing obsolete files:**
+
+When a component stops shipping a file, `greater update` removes that file from
+your project as well as writing the new file set. Only files Greater installed
+and you have not edited are removed:
+
+```
+✓ social-timeline: 12 updated, 2 pruned (greater-v0.13.0 → greater-v0.14.0)
+      - removed src/lib/lesserTimelineStore.ts (no longer part of social-timeline)
+      - removed src/lib/lesserTimelineStore.svelte.ts (no longer part of social-timeline)
+```
+
+The rules:
+
+- **Ownership comes from the registry, not from your directory listing.** Greater
+  compares the immutable `registry/index.json` at the ref recorded in your
+  `components.json` against the one at the ref you are updating to. It never
+  scans your install directories for things that "look like" Greater files.
+- **A path any entry owns at the target ref is kept**, whether that entry is a
+  component, a shared module, or a face, and whether or not it is the component
+  you are updating. Ownership is read from the registry index, so a file the
+  index ships is protected even when the CLI's own catalog does not list it.
+- **A file is deleted only when its bytes match what Greater installed.** The
+  check is against the previous ref's source, fetched and verified against that
+  ref's published checksum. A checksum recorded in your `components.json` is not
+  a substitute — that file is yours to edit, so a value in it cannot authorize a
+  deletion on its own.
+- **Nothing outside your project is ever deleted.** Pruning refuses any path
+  reached through a symlink, and any install alias that resolves outside the
+  directory you ran the command in. Containment is judged after symlinks are
+  resolved, so an install root that merely looks local — a symlinked `src/lib`,
+  or a symlinked parent of it — is refused rather than followed.
+- **A file you edited is never deleted.** If Greater has a record of installing
+  it (that record is written by every `greater update` from v0.14.0 onward), the
+  update stops with the path and an explanation, `components.json` keeps the
+  previous ref for that component, and you decide what to do. `--force` does not
+  override this — it applies to overwriting files, not deleting them.
+- **`--dry-run` reports removals without performing them** and does not write
+  `components.json`.
+- Directories left empty by a removal are not deleted.
+
+Pruning is reported as not applicable, with a note in the summary, when the ref
+recorded for a component is not an immutable ref (a commit SHA or a
+`greater-vX.Y.Z` tag) — for example a `components.json` written by a much older
+CLI that recorded a package version — or when the entry installs no files of its
+own. The update still completes: it records an immutable ref and the ownership
+record, and subsequent updates prune normally.
+
+If pruning cannot be planned at all — the previous ref's registry index will not
+load, say — the update fails instead. `components.json` keeps the previous ref
+for that component, so re-running once the index is reachable performs the
+removal rather than silently skipping it forever. The same applies to a
+component you skip at a conflict prompt: neither its recorded ref nor the
+top-level `ref` moves, because it is still on the previous version.
+
 ---
 
 ### `greater cache`

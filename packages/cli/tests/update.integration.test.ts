@@ -87,7 +87,27 @@ const mockGetComponent = vi.fn();
 vi.mock('../src/registry/index.js', () => ({
 	getComponent: mockGetComponent,
 	componentRegistry: {},
+	getAllRegistryEntries: vi.fn(() => []),
 }));
+
+// Obsolete-file pruning has its own suites; stub the registry index empty so these
+// command-execution tests stay offline and produce no prune candidates.
+vi.mock('../src/utils/registry-index.js', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('../src/utils/registry-index.js')>();
+	return {
+		...actual,
+		fetchRegistryIndex: vi.fn().mockResolvedValue({
+			schemaVersion: '1.0.0',
+			version: '0.0.0',
+			ref: 'greater-v0.1.1',
+			generatedAt: new Date(0).toISOString(),
+			checksums: {},
+			components: {},
+			faces: {},
+			shared: {},
+		}),
+	};
+});
 
 // Mock Process Exit
 const _mockExit = vi.spyOn(process, 'exit').mockImplementation(((code: number) => {

@@ -12,6 +12,7 @@ import { DEFAULT_REF, FALLBACK_REF } from './config.js';
 import { logger } from './logger.js';
 import { resolveRefForFetch } from './ref.js';
 import { buildSourcePathCandidates } from './source-paths.js';
+import { resolveSourcePathFromIndex } from './registry-source-map.js';
 import {
 	shouldVerify,
 	verifyGitTag,
@@ -139,59 +140,6 @@ function buildCorePackageFileList(index: RegistryIndex, packageName: string): Co
 			transform: !isBinaryFilePath(withoutSrc),
 		};
 	});
-}
-
-function findUniqueChecksumMatch(
-	index: RegistryIndex,
-	predicate: (path: string) => boolean
-): string | null {
-	let match: string | null = null;
-	for (const key of Object.keys(index.checksums)) {
-		if (!predicate(key)) continue;
-		if (match) return null; // ambiguous
-		match = key;
-	}
-	return match;
-}
-
-function resolveSourcePathFromIndex(
-	index: RegistryIndex,
-	component: ComponentMetadata,
-	installPath: string
-): string | null {
-	const candidates = buildSourcePathCandidates(component, installPath);
-
-	for (const candidate of candidates) {
-		if (index.checksums[candidate]) {
-			return candidate;
-		}
-	}
-
-	const normalized = installPath.replace(/\\/g, '/').replace(/^\/+/, '');
-
-	// Try suffix-based resolution for known virtual prefixes.
-	if (normalized.startsWith('lib/components/')) {
-		const rest = normalized.slice('lib/components/'.length);
-		const suffix = `/src/components/${rest}`;
-		const unique = findUniqueChecksumMatch(index, (key) => key.endsWith(suffix));
-		if (unique) return unique;
-	}
-
-	if (normalized.startsWith('lib/patterns/')) {
-		const rest = normalized.slice('lib/patterns/'.length);
-		const suffix = `/src/patterns/${rest}`;
-		const unique = findUniqueChecksumMatch(index, (key) => key.endsWith(suffix));
-		if (unique) return unique;
-	}
-
-	if (normalized.startsWith('lib/generics/')) {
-		const rest = normalized.slice('lib/generics/'.length);
-		const suffix = `/src/generics/${rest}`;
-		const unique = findUniqueChecksumMatch(index, (key) => key.endsWith(suffix));
-		if (unique) return unique;
-	}
-
-	return null;
 }
 
 /**

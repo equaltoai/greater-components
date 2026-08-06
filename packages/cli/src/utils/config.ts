@@ -232,8 +232,17 @@ export function migrateConfig(oldConfig: Record<string, unknown>): MigrationResu
 /**
  * Read configuration from file
  * Automatically migrates old config formats to new schema
+ *
+ * `persistMigration: false` returns the migrated shape in memory without writing
+ * it back. Callers running in a preview mode (`--dry-run`) need this: silently
+ * rewriting `components.json` while claiming to change nothing is still a
+ * mutation, and it is the one file a dry run must never touch.
  */
-export async function readConfig(cwd: string = process.cwd()): Promise<ComponentConfig | null> {
+export async function readConfig(
+	cwd: string = process.cwd(),
+	options: { persistMigration?: boolean } = {}
+): Promise<ComponentConfig | null> {
+	const { persistMigration = true } = options;
 	const configPath = getConfigPath(cwd);
 
 	if (!(await fs.pathExists(configPath))) {
@@ -248,7 +257,7 @@ export async function readConfig(cwd: string = process.cwd()): Promise<Component
 		if (needsMigration(json)) {
 			const result = migrateConfig(json);
 			// Auto-save migrated config
-			if (result.migrated) {
+			if (result.migrated && persistMigration) {
 				await writeConfig(result.config, cwd);
 			}
 			return result.config;
