@@ -316,6 +316,7 @@ greater update [items...] [options]
 | `--ref <tag>` | Update to a specific version    |
 | `--dry-run`   | Show what would be updated      |
 | `-f, --force` | Overwrite local modifications   |
+| `-y, --yes`   | Skip prompts (required in CI)   |
 
 **Examples:**
 
@@ -329,9 +330,15 @@ greater update --all
 # Preview updates
 greater update --all --dry-run
 
+# Unattended/CI update
+greater update --all --yes
+
 # Force update (overwrites local changes)
 greater update button --force
 ```
+
+The update command confirms writes interactively by default. Always pass `--yes` in unattended
+scripts and CI so the process cannot wait for terminal input.
 
 **Conflict Resolution:**
 

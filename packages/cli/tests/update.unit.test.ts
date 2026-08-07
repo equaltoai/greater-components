@@ -163,6 +163,20 @@ describe('Update Command', () => {
 	});
 
 	describe('Conflict Resolution & Update Logic', () => {
+		it('does not build full diffs for forced update batches', async () => {
+			const config = createTestConfig({
+				installed: [createInstalledComponent('button')],
+			});
+			mockFs.set('/components.json', JSON.stringify(config));
+			mockFs.set('/src/lib/primitives/button.ts', 'local consumer content');
+
+			const { updateAction } = await import('../src/commands/update.js');
+			await updateAction([], { cwd: '/', all: true, yes: true, force: true });
+
+			const { computeDiff } = await import('../src/utils/diff.js');
+			expect(computeDiff).not.toHaveBeenCalled();
+		});
+
 		it('loads each registry ref once for a large --all batch', async () => {
 			const installed = Array.from({ length: 250 }, (_, index) =>
 				createInstalledComponent(`component-${index}`)
