@@ -262,6 +262,7 @@
  * ============================================================================ */
 
 .gr-blog-article-card {
+	position: relative;
 	background: var(--gr-color-surface, var(--gr-color-base-white, #ffffff));
 	border: 1px solid var(--gr-color-border, var(--gr-color-gray-200));
 	border-radius: var(--gr-radii-lg);
@@ -280,9 +281,14 @@
 }
 
 .gr-blog-article-card__link {
-	display: block;
 	color: inherit;
 	text-decoration: none;
+}
+
+.gr-blog-article-card__link::after {
+	position: absolute;
+	inset: 0;
+	content: '';
 }
 
 .gr-blog-article-card__link:focus-visible {
