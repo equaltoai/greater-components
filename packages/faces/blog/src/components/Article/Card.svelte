@@ -23,6 +23,8 @@ canonical Article reader page.
 		showAuthor?: boolean;
 		/** Show published date in card metadata. */
 		showPublishedAt?: boolean;
+		/** IANA time zone for the published date label. Defaults to the runtime's local zone. */
+		timeZone?: string;
 		/** Show reading-time metadata when available. */
 		showReadingTime?: boolean;
 		/** Show article tags/categories. */
@@ -40,6 +42,7 @@ canonical Article reader page.
 		showExcerpt = true,
 		showAuthor = true,
 		showPublishedAt = true,
+		timeZone,
 		showReadingTime = true,
 		showTags = true,
 		maxTags = 3,
@@ -54,7 +57,7 @@ canonical Article reader page.
 	const tags = $derived((metadata.tags ?? []).slice(0, maxTags));
 	const cardClass = $derived(['gr-blog-article-card', className].filter(Boolean).join(' '));
 	const headingTag = $derived(`h${headingLevel}` as 'h2' | 'h3' | 'h4');
-	const publishedDate = $derived(formatArticleDateTime(metadata.publishedAt));
+	const publishedDate = $derived(formatArticleDateTime(metadata.publishedAt, { timeZone }));
 	const metaItems = $derived.by(() => {
 		const items: Array<{ label: string; datetime?: string }> = [];
 		if (showPublishedAt && publishedDate.label) {

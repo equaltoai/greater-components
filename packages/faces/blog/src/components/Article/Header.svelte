@@ -11,7 +11,9 @@ Article.Header - Article header with title, metadata, and featured image
 	const context = getArticleContext();
 	const article = $derived(context.article);
 	const metadata = $derived(article.metadata);
-	const publishedDate = $derived(formatArticleDateTime(metadata.publishedAt));
+	const publishedDate = $derived(
+		formatArticleDateTime(metadata.publishedAt, { timeZone: context.config.timeZone })
+	);
 </script>
 
 <header class="gr-blog-article__header">

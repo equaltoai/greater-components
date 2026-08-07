@@ -24,7 +24,8 @@ export const ARTICLE_CONTEXT_KEY = Symbol('article-context');
 /**
  * Default article configuration
  */
-export const DEFAULT_ARTICLE_CONFIG: Required<ArticleConfig> = {
+export const DEFAULT_ARTICLE_CONFIG: Required<Omit<ArticleConfig, 'timeZone'>> &
+	Pick<ArticleConfig, 'timeZone'> = {
 	density: 'comfortable',
 	showTableOfContents: true,
 	showReadingProgress: true,
@@ -32,6 +33,7 @@ export const DEFAULT_ARTICLE_CONFIG: Required<ArticleConfig> = {
 	showRelatedPosts: true,
 	showAuthor: true,
 	showComments: false,
+	timeZone: undefined,
 	class: '',
 };
 

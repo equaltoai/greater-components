@@ -190,6 +190,8 @@ export interface ArticleConfig {
 	showAuthor?: boolean;
 	/** Show comments section */
 	showComments?: boolean;
+	/** IANA time zone for absolute article date labels. Defaults to the runtime's local zone. */
+	timeZone?: string;
 	/** Custom CSS class */
 	class?: string;
 }
@@ -564,7 +566,7 @@ export interface SEOData {
  */
 export interface ArticleContext {
 	article: ArticleData;
-	config: Required<ArticleConfig>;
+	config: Required<Omit<ArticleConfig, 'timeZone'>> & Pick<ArticleConfig, 'timeZone'>;
 	handlers: ArticleHandlers;
 	headings: HeadingData[];
 	activeHeadingId: string | null;
