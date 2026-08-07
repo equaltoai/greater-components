@@ -192,6 +192,31 @@ describe('package utilities', () => {
 			cwd: '/repo',
 			stdio: 'inherit',
 		});
+
+		fsStore.clear();
+		fsStore.set('/repo/bun.lock', '');
+		expect(await detectPackageManager('/repo')).toBe('bun');
+		await installDependencies([{ name: 'zod', version: '^4.0.0' }], '/repo', true);
+		expect(execa).toHaveBeenCalledWith('bun', ['add', '--dev', 'zod@^4.0.0'], {
+			cwd: '/repo',
+			stdio: 'inherit',
+		});
+
+		fsStore.clear();
+		fsStore.set('/repo/deno.lock', '');
+		expect(await detectPackageManager('/repo')).toBe('deno');
+		await installDependencies([{ name: 'svelte', version: '^5.0.0' }], '/repo', true);
+		expect(execa).toHaveBeenCalledWith('deno', ['add', '--dev', 'npm:svelte@^5.0.0'], {
+			cwd: '/repo',
+			stdio: 'inherit',
+		});
+
+		fsStore.clear();
+		fsStore.set('/repo/package.json', JSON.stringify({ packageManager: 'bun@1.2.0' }));
+		expect(await detectPackageManager('/repo')).toBe('bun');
+
+		fsStore.set('/repo/package.json', JSON.stringify({ packageManager: 'deno@2.4.0' }));
+		expect(await detectPackageManager('/repo')).toBe('deno');
 	});
 
 	it('computes missing dependencies', async () => {
