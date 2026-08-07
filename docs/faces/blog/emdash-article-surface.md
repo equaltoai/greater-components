@@ -56,12 +56,15 @@ export function renderArticleBody(article: ArticleDisplayData): string {
 `ArticleData`-shaped display object:
 
 - `contentFormat: 'HTML' | 'MARKDOWN'` is normalized to Greater's lowercase format.
+- Lesser `renderedHtml` is preferred as the canonical public body; raw `content` remains source-only
+  and is never locally rendered into public HTML when the canonical field is unavailable.
 - `author.displayName` / `author.avatarUrl` are normalized to Blog face `AuthorData`.
 - `categories` become display tags for the public reader/card.
 - `featuredImage.url` / `featuredImage.altText` feed the existing featured-image presentation.
 
-For public Lesser-backed articles, `HTML` remains the canonical rendered/sanitized path. `MARKDOWN` is
-still escaped fallback text; Greater does not become a second public Markdown renderer.
+For public Lesser-backed articles, `renderedHtml` is the canonical rendered/sanitized path. `MARKDOWN`
+is still escaped fallback text when that field is unavailable; Greater does not become a second public
+Markdown renderer.
 
 ## SSR index-card replacement
 

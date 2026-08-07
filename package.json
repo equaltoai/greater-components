@@ -60,7 +60,7 @@
     "validate:exports": "node scripts/audit-exports.mjs",
     "validate:ids": "node scripts/validate-ids.js",
     "validate:versions": "node scripts/validate-release-versions.js",
-    "validate:package": "pnpm validate:exports && pnpm validate:dist && pnpm validate:deps && pnpm validate:cli && pnpm validate:check-parity && pnpm validate:tokens && pnpm validate:ids && pnpm validate:csp && pnpm validate:versions && pnpm check:openapi-auth",
+    "validate:package": "pnpm validate:exports && pnpm validate:dist && pnpm validate:deps && pnpm validate:cli && pnpm validate:check-parity && pnpm validate:tokens && pnpm validate:ids && pnpm validate:csp && pnpm validate:versions && pnpm check:openapi-auth && pnpm check:adapter-declarations && pnpm check:contract-snapshots",
     "validate:registry": "node scripts/validate-registry-index.js --strict && node scripts/generate-registry-index.js --check && pnpm validate:versions",
     "validate:tokens": "node scripts/audit-tokens-placeholders.mjs",
     "check:openapi-auth": "node scripts/check-openapi-auth.mjs",
@@ -73,7 +73,10 @@
     "release:prepare": "node scripts/prepare-github-release.js",
     "release:artifacts": "bash scripts/build-release-artifacts.sh",
     "audit:lockfile-integrity": "node scripts/audit-lockfile-integrity.mjs",
-    "audit:tarball-integrity": "node scripts/verify-tarball-integrity.js"
+    "audit:tarball-integrity": "node scripts/verify-tarball-integrity.js",
+    "generate:adapter-declarations": "node scripts/check-adapter-declarations.mjs --write",
+    "check:adapter-declarations": "node scripts/check-adapter-declarations.mjs",
+    "check:contract-snapshots": "node scripts/check-pinned-contract-snapshots.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -84,7 +87,7 @@
     "@graphql-codegen/typescript": "^5.0.9",
     "@graphql-codegen/typescript-operations": "^5.0.9",
     "@sveltejs/package": "^2.5.7",
-    "@theory-cloud/facetheory": "https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.5/theory-cloud-facetheory-4.0.5.tgz",
+    "@theory-cloud/facetheory": "https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.6/theory-cloud-facetheory-4.0.6.tgz",
     "@types/node": "^25.6.0",
     "@typescript-eslint/eslint-plugin": "^8.58.0",
     "@typescript-eslint/parser": "^8.58.0",
@@ -155,8 +158,8 @@
   },
   "greaterVerifiedTarballs": {
     "@theory-cloud/facetheory": {
-      "url": "https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.5/theory-cloud-facetheory-4.0.5.tgz",
-      "integrity": "sha512-6OuCzOJELmBIHzxua0cx6DkpP+Iy7AGtWiDqGc1/NvjDryUWKofTUmiIV48w1eZECpFRc+taWn/hVWpPwf3Hqw=="
+      "url": "https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.6/theory-cloud-facetheory-4.0.6.tgz",
+      "integrity": "sha512-tlESMyYY7hRsGeTezdAS4Qj42QWt0juqqp+M82K3Gucl3ytc0CMT6z+1LevEgPOP47s5cqi3iXXToqqny5XzlQ=="
     }
   }
 }

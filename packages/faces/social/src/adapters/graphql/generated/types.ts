@@ -1081,6 +1081,8 @@ export type Article = {
   readonly publishedAt: Scalars['Time']['output'];
   readonly publishedBy?: Maybe<Actor>;
   readonly readingTimeMinutes: Scalars['Int']['output'];
+  /** Canonical sanitized HTML. Never fall back to rendering content when this field is unavailable. */
+  readonly renderedHtml?: Maybe<Scalars['String']['output']>;
   readonly reviewStatus?: Maybe<Scalars['String']['output']>;
   readonly reviewedBy?: Maybe<Actor>;
   readonly seoDescription?: Maybe<Scalars['String']['output']>;

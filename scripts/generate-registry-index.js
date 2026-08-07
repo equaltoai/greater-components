@@ -582,7 +582,10 @@ function getFilesRecursive(dir, extensions, basePath = '') {
 			files.push(...getFilesRecursive(fullPath, extensions, relativePath));
 		} else if (entry.isFile()) {
 			const ext = path.extname(entry.name);
-			if (extensions.includes(ext)) {
+			if (
+				extensions.includes(ext) ||
+				(entry.name.endsWith('.d.ts.map') && extensions.includes('.ts'))
+			) {
 				files.push(relativePath);
 			}
 		}

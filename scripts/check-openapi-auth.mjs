@@ -30,7 +30,7 @@ import { parse as parseYaml, stringify as stringifyYaml } from 'yaml';
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { resolve, dirname } from 'node:path';
+import { resolve, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 
@@ -200,6 +200,10 @@ function assertSelfTest(condition, message) {
 }
 
 function runSelfTest() {
+	assertSelfTest(
+		repositoryRelativePath(DEFAULT_SPEC) === 'docs/lesser/contracts/openapi.yaml',
+		'default baseline metadata path must be repository-relative and deterministic'
+	);
 	const spec = loadOpenapi(DEFAULT_SPEC);
 	const knownGapKeys = loadBaseline(DEFAULT_BASELINE);
 	const rotateSecretKey = 'POST /api/v1/apps/{id}/rotate_secret';
@@ -370,6 +374,10 @@ function writeBaseline(baselinePath, gaps, meta) {
 	}
 }
 
+function repositoryRelativePath(filePath) {
+	return relative(ROOT, resolve(filePath)).replaceAll('\\', '/');
+}
+
 // ── CLI ────────────────────────────────────────────────────────────────────
 
 function printUsage() {
@@ -431,7 +439,7 @@ function main() {
 	// ── Write baseline mode ──────────────────────────────────────────────
 	if (args['write-baseline']) {
 		const meta = {
-			spec_path: specPath,
+			spec_path: repositoryRelativePath(specPath),
 			generated_at: new Date().toISOString(),
 			has_global_security: result.hasGlobalSecurity,
 			has_security_schemes: result.hasSecuritySchemes,

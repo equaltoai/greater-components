@@ -85,6 +85,7 @@ import type {
 	UpdatePushSubscriptionResult,
 	DeletePushSubscriptionResult,
 } from './types.js';
+import { toTimelineType, type TimelineTypeOption } from './timeline-type.js';
 
 /**
  * High-level Lesser client with convenience methods
@@ -106,9 +107,12 @@ export class LesserClient {
 	async getTimeline(options?: {
 		limit?: number;
 		cursor?: string;
-		type?: 'home' | 'local' | 'federated';
+		type?: TimelineTypeOption;
 	}): Promise<TimelineResult> {
-		return this.client.query<TimelineResult>(queries.GET_TIMELINE, options);
+		return this.client.query<TimelineResult>(queries.GET_TIMELINE, {
+			...options,
+			...(options?.type && { type: toTimelineType(options.type) }),
+		});
 	}
 
 	/**
@@ -422,12 +426,12 @@ export class LesserClient {
 	 */
 	subscribeToTimeline(
 		callback: (event: TimelineUpdateEvent) => void,
-		type?: 'home' | 'local' | 'federated'
+		type?: TimelineTypeOption
 	): () => void {
 		return this.client.subscribe(
 			queries.SUBSCRIBE_TIMELINE,
 			callback as (event: SubscriptionEvent) => void,
-			{ type }
+			{ type: toTimelineType(type) }
 		);
 	}
 

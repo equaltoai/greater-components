@@ -904,5 +904,7 @@ export function getQuotePermission(object: ActivityPubObject): QuotePermission {
 			return permission;
 		}
 	}
-	return 'EVERYONE'; // Default permission
+	// Unknown or absent extension data must fail closed. Treating an unrecognized
+	// upstream value as EVERYONE silently expands who may quote the object.
+	return 'NONE';
 }

@@ -20,7 +20,7 @@ import {
 	type FileChecksumEntry,
 	type InstalledComponent,
 } from '../utils/config.js';
-import { resolveRef, fetchRegistryIndex } from '../utils/registry-index.js';
+import { resolveRef, fetchRegistryIndex, type RegistryIndex } from '../utils/registry-index.js';
 import { getComponent, getAllRegistryEntries } from '../registry/index.js';
 import { fetchComponentFiles, type FetchOptions } from '../utils/fetch.js';
 import { readFile, readFileBuffer, writeFile, fileExists } from '../utils/files.js';
@@ -41,6 +41,7 @@ import {
 	type PruneResult,
 	type PruneSkip,
 } from '../utils/prune.js';
+import { hydrateMetadataFilesFromRegistryIndex } from '../utils/dependency-resolver.js';
 
 /**
  * Conflict resolution choice
@@ -180,11 +181,12 @@ async function updateComponent(
 		ref: string;
 		force?: boolean;
 		dryRun?: boolean;
+		registryIndex: RegistryIndex;
 	}
 ): Promise<ComponentUpdateStatus> {
-	const component = getComponent(componentName);
+	const staticComponent = getComponent(componentName);
 
-	if (!component) {
+	if (!staticComponent) {
 		return {
 			componentName,
 			currentVersion: 'unknown',
@@ -198,12 +200,23 @@ async function updateComponent(
 		};
 	}
 
+	// Static CLI metadata is deliberately small and can lag the generated registry
+	// file list. The pinned index is the source of truth for update ownership, just
+	// as it is for add/dependency resolution.
+	const component = hydrateMetadataFilesFromRegistryIndex(
+		componentName.replace(/^faces?\//i, ''),
+		staticComponent.type,
+		staticComponent,
+		options.registryIndex
+	) as typeof staticComponent;
+
 	const installed = getInstalledComponent(componentName, config);
 	const currentVersion = installed?.version || 'not installed';
 	const targetVersion = options.ref;
 
 	const fetchOptions: FetchOptions = {
 		ref: options.ref,
+		registryIndex: options.registryIndex,
 	};
 
 	// Fetch remote files
@@ -377,7 +390,12 @@ async function pruneComponent(
 	componentName: string,
 	config: ComponentConfig,
 	cwd: string,
-	options: { oldRef: string | undefined; newRef: string; dryRun?: boolean }
+	options: {
+		oldRef: string | undefined;
+		newRef: string;
+		dryRun?: boolean;
+		loadRegistryIndex: (ref: string) => Promise<RegistryIndex>;
+	}
 ): Promise<{ results: PruneResult[]; skipped?: PruneSkip }> {
 	const component = getComponent(componentName);
 	if (!component) {
@@ -412,8 +430,8 @@ async function pruneComponent(
 	let newIndex;
 	try {
 		[oldIndex, newIndex] = await Promise.all([
-			fetchRegistryIndex(oldRef),
-			fetchRegistryIndex(newRef),
+			options.loadRegistryIndex(oldRef),
+			options.loadRegistryIndex(newRef),
 		]);
 	} catch (error) {
 		// Transient by nature. Advancing here would make the next run see
@@ -659,6 +677,32 @@ export const updateAction = async (
 	const resolved = await resolveRef(options.ref, config.ref, FALLBACK_REF);
 	const targetRef = await resolveRefForFetch(resolved.ref);
 
+	// Batch updates must not refetch and retain the same large registry document
+	// once per installed component. Cache one promise per immutable ref so target
+	// hydration, checksum verification, and prune planning share the same object.
+	const registryIndexes = new Map<string, Promise<RegistryIndex>>();
+	const loadRegistryIndex = (ref: string): Promise<RegistryIndex> => {
+		let pending = registryIndexes.get(ref);
+		if (!pending) {
+			pending = fetchRegistryIndex(ref);
+			registryIndexes.set(ref, pending);
+		}
+		return pending;
+	};
+	let targetRegistryIndex: RegistryIndex;
+	try {
+		targetRegistryIndex = await loadRegistryIndex(targetRef);
+	} catch (error) {
+		logger.error(
+			chalk.red(
+				`\n✖ Failed to load target registry index: ${
+					error instanceof Error ? error.message : String(error)
+				}`
+			)
+		);
+		process.exit(1);
+	}
+
 	// Determine which components to update
 	let componentNames: string[];
 
@@ -733,6 +777,7 @@ export const updateAction = async (
 			ref: targetRef,
 			force: options.force,
 			dryRun: options.dryRun,
+			registryIndex: targetRegistryIndex,
 		});
 
 		// Prune only after this component's writes are on disk, and only when the
@@ -744,6 +789,7 @@ export const updateAction = async (
 				oldRef: priorRef,
 				newRef: targetRef,
 				dryRun: options.dryRun,
+				loadRegistryIndex,
 			});
 			result.prunes = prune.results;
 			if (prune.skipped) {

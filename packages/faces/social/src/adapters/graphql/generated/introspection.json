@@ -10846,6 +10846,18 @@
             "deprecationReason": null
           },
           {
+            "name": "renderedHtml",
+            "description": "Canonical sanitized HTML. Never fall back to rendering content when this field is unavailable.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "reviewStatus",
             "description": null,
             "args": [],
