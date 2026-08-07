@@ -474,7 +474,7 @@ function normalizeQuotePermissions(value: unknown): LesserObjectFragment['quoteP
 			return upper;
 		}
 	}
-	return 'EVERYONE';
+	return 'NONE';
 }
 
 function convertGraphQLReplyRef(value: unknown): LesserObjectFragment['inReplyTo'] {

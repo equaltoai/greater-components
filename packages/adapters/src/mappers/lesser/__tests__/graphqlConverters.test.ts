@@ -228,7 +228,7 @@ describe('convertGraphQLObjectToLesser edge cases', () => {
 
 		expect(result).not.toBeNull();
 		expect(result?.visibility).toBe('PRIVATE');
-		expect(result?.quotePermissions).toBe('EVERYONE');
+		expect(result?.quotePermissions).toBe('NONE');
 		expect(result?.quoteContext?.quoteType).toBe('FULL');
 		expect(result?.quoteContext?.quoteAllowed).toBe(false);
 	});

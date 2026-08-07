@@ -739,18 +739,23 @@ export const DELETE_PUSH_SUBSCRIPTION = `
  * Subscribe to timeline updates
  */
 export const SUBSCRIBE_TIMELINE = `
-  ${ACTIVITY_FRAGMENT}
-  ${NOTE_FRAGMENT}
-  subscription SubscribeTimeline($type: TimelineType) {
-    timeline(type: $type) {
-      activity {
-        ...ActivityFields
-        object {
-          ... on Note {
-            ...NoteFields
-          }
-        }
-      }
+  subscription SubscribeTimeline($type: TimelineType!) {
+    timelineUpdates(type: $type) {
+      id
+      type
+      content
+      visibility
+      sensitive
+      spoilerText
+      createdAt
+      updatedAt
+      repliesCount
+      likesCount
+      sharesCount
+      quoteUrl
+      quoteable
+      quotePermissions
+      quoteCount
     }
   }
 `;

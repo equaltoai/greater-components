@@ -816,6 +816,9 @@ importers:
       axe-core:
         specifier: ^4.12.1
         version: 4.12.1
+      graphql:
+        specifier: ^16.13.2
+        version: 16.13.2
       jsdom:
         specifier: ^29.0.2
         version: 29.0.2(@noble/hashes@1.8.0)
@@ -3417,7 +3420,7 @@ packages:
       '@testing-library/dom': '>=7.21.4'
 
   '@theory-cloud/facetheory@https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.5/theory-cloud-facetheory-4.0.5.tgz':
-    resolution: {integrity: sha512-6OuCzOJELmBIHzxua0cx6DkpP+Iy7AGtWiDqGc1/NvjDryUWKofTUmiIV48w1eZECpFRc+taWn/hVWpPwf3Hqw==, tarball: https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.5/theory-cloud-facetheory-4.0.5.tgz}
+    resolution: {tarball: https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.5/theory-cloud-facetheory-4.0.5.tgz}
     version: 4.0.5
     engines: {node: '>=20'}
     hasBin: true

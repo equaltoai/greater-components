@@ -114,6 +114,7 @@
     "@vitest/coverage-v8": "^4.1.10",
     "@vitest/ui": "^4.1.10",
     "axe-core": "^4.12.1",
+    "graphql": "^16.13.2",
     "jsdom": "^29.0.2",
     "svelte": "^5.55.1",
     "typescript": "^6.0.2",

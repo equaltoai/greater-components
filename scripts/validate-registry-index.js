@@ -168,6 +168,33 @@ function validateComponents(components) {
 }
 
 /**
+ * Every declaration carrying a sourceMappingURL is installed as source by the
+ * CLI, so its referenced map must be part of the same tamper-evident Registry.
+ */
+function validateDeclarationMaps(checksums) {
+	const errors = [];
+	let checked = 0;
+
+	for (const filePath of Object.keys(checksums)) {
+		if (!filePath.endsWith('.d.ts')) continue;
+		const fullPath = path.join(rootDir, filePath);
+		if (!fs.existsSync(fullPath)) continue;
+
+		const content = fs.readFileSync(fullPath, 'utf8');
+		const match = content.match(/^\/\/# sourceMappingURL=(.+)$/m);
+		if (!match?.[1]) continue;
+
+		checked++;
+		const mapPath = path.posix.join(path.posix.dirname(filePath), match[1]);
+		if (!(mapPath in checksums)) {
+			errors.push(`Declaration map is not registered: ${filePath} -> ${mapPath}`);
+		}
+	}
+
+	return { errors, checked };
+}
+
+/**
  * Main validation function
  */
 async function main() {
@@ -228,6 +255,10 @@ async function main() {
 	if (checksumResult.stats.mismatch > 0) {
 		log(`  • Mismatched: ${checksumResult.stats.mismatch}`, colors.red);
 	}
+
+	const declarationMapResult = validateDeclarationMaps(index.checksums || {});
+	allErrors.push(...declarationMapResult.errors);
+	log(`  • Declaration maps: ${declarationMapResult.checked}`, colors.green);
 
 	// Validate components
 	log('\n📦 Validating components...', colors.blue);
