@@ -118,6 +118,22 @@
 	color: var(--gr-color-gray-200);
 }
 
+[data-theme='dark'] .gr-blog-author-card {
+	background: var(--gr-color-gray-800);
+}
+
+[data-theme='dark'] .gr-blog-author-card__name {
+	color: var(--gr-color-gray-100);
+}
+
+[data-theme='dark'] .gr-blog-author-card__bio {
+	color: var(--gr-color-gray-300);
+}
+
+[data-theme='dark'] .gr-blog-author-card__link {
+	color: var(--gr-color-primary-400);
+}
+
 [data-theme='dark'] .gr-blog-toc__title,
 [data-theme='dark'] .gr-blog-archive__month-title,
 [data-theme='dark'] .gr-blog-editor__meta {

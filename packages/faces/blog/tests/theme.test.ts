@@ -194,6 +194,7 @@ describe('blog reading-surface theme', () => {
 				"[data-theme='dark'] .gr-blog-toc__title,\n[data-theme='dark'] .gr-blog-archive__month-title,\n[data-theme='dark'] .gr-blog-editor__meta";
 			const darkNewsletterArchive =
 				"[data-theme='dark'] .gr-blog-newsletter__title,\n[data-theme='dark'] .gr-blog-archive__year";
+			const darkAuthorCard = "[data-theme='dark'] .gr-blog-author-card";
 			const cells: Array<{
 				name: string;
 				foreground: { selector: string; property: string };
@@ -239,12 +240,13 @@ describe('blog reading-surface theme', () => {
 								background: pageBackground,
 							})),
 							...[
-								['author name', '.gr-blog-author-card__name'],
-								['author bio', '.gr-blog-author-card__bio'],
+								['author name', "[data-theme='dark'] .gr-blog-author-card__name"],
+								['author bio', "[data-theme='dark'] .gr-blog-author-card__bio"],
+								['author link', "[data-theme='dark'] .gr-blog-author-card__link"],
 							].map(([name, selector]) => ({
 								name,
 								foreground: { selector, property: 'color' },
-								background: { selector: '.gr-blog-author-card', property: 'background' },
+								background: { selector: darkAuthorCard, property: 'background' },
 							})),
 							{
 								name: 'publication',
