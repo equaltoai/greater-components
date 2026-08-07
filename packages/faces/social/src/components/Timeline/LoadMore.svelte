@@ -18,7 +18,7 @@ Automatically triggered with infinite scroll or manually by user.
 
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { getTimelineContext } from './context.js';
+	import { getOptionalTimelineContext } from './context.js';
 	import { createButton } from '@equaltoai/greater-components-headless/button';
 
 	interface Props {
@@ -37,42 +37,70 @@ Automatically triggered with infinite scroll or manually by user.
 		 */
 		buttonText?: string;
 
+		/** Load-more handler used when the control is outside Timeline.Root. */
+		onLoadMore?: () => Promise<void> | void;
+
+		/** Whether another page is available when used outside Timeline.Root. */
+		hasMore?: boolean;
+
+		/** Whether the parent timeline is initially loading when used standalone. */
+		isLoading?: boolean;
+
+		/** Hide the manual control when an alternative renderer handles infinite scrolling. */
+		infiniteScroll?: boolean;
+
 		/**
 		 * Additional CSS class
 		 */
 		class?: string;
 	}
 
-	let { loading, button, buttonText = 'Load more', class: className = '' }: Props = $props();
+	let {
+		loading,
+		button,
+		buttonText = 'Load more',
+		onLoadMore,
+		hasMore = true,
+		isLoading = false,
+		infiniteScroll = false,
+		class: className = '',
+	}: Props = $props();
 
-	const context = getTimelineContext();
+	const context = getOptionalTimelineContext();
+	let standaloneLoadingMore = $state(false);
+	const loadingMore = $derived(context?.state.loadingMore ?? standaloneLoadingMore);
 
 	const loadMoreButton = createButton({
 		onClick: async () => {
-			if (!context.handlers.onLoadMore) return;
+			const handler = onLoadMore ?? context?.handlers.onLoadMore;
+			if (!handler) return;
 
 			loadMoreButton.helpers.setLoading(true);
-			context.updateState({ loadingMore: true });
+			standaloneLoadingMore = true;
+			context?.updateState({ loadingMore: true });
 
 			try {
-				await context.handlers.onLoadMore();
+				await handler();
 			} catch (error) {
-				context.updateState({ error: error as Error });
+				context?.updateState({ error: error as Error });
 			} finally {
 				loadMoreButton.helpers.setLoading(false);
-				context.updateState({ loadingMore: false });
+				standaloneLoadingMore = false;
+				context?.updateState({ loadingMore: false });
 			}
 		},
 	});
 
 	const shouldShow = $derived(
-		context.state.hasMore && !context.config.infiniteScroll && !context.state.loading
+		(context?.state.hasMore ?? hasMore) &&
+			!(context?.config.infiniteScroll ?? infiniteScroll) &&
+			!(context?.state.loading ?? isLoading)
 	);
 </script>
 
-{#if shouldShow || context.state.loadingMore}
+{#if shouldShow || loadingMore}
 	<div class={`timeline-load-more ${className}`} role="status" aria-live="polite">
-		{#if context.state.loadingMore}
+		{#if loadingMore}
 			{#if loading}
 				{@render loading()}
 			{:else}
