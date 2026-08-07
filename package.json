@@ -87,7 +87,7 @@
     "@graphql-codegen/typescript": "^5.0.9",
     "@graphql-codegen/typescript-operations": "^5.0.9",
     "@sveltejs/package": "^2.5.7",
-    "@theory-cloud/facetheory": "https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.5/theory-cloud-facetheory-4.0.5.tgz",
+    "@theory-cloud/facetheory": "https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.6/theory-cloud-facetheory-4.0.6.tgz",
     "@types/node": "^25.6.0",
     "@typescript-eslint/eslint-plugin": "^8.58.0",
     "@typescript-eslint/parser": "^8.58.0",
@@ -158,8 +158,8 @@
   },
   "greaterVerifiedTarballs": {
     "@theory-cloud/facetheory": {
-      "url": "https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.5/theory-cloud-facetheory-4.0.5.tgz",
-      "integrity": "sha512-6OuCzOJELmBIHzxua0cx6DkpP+Iy7AGtWiDqGc1/NvjDryUWKofTUmiIV48w1eZECpFRc+taWn/hVWpPwf3Hqw=="
+      "url": "https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.6/theory-cloud-facetheory-4.0.6.tgz",
+      "integrity": "sha512-tlESMyYY7hRsGeTezdAS4Qj42QWt0juqqp+M82K3Gucl3ytc0CMT6z+1LevEgPOP47s5cqi3iXXToqqny5XzlQ=="
     }
   }
 }
