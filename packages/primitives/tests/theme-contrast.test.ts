@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { stripCssBlockComments } from '../../../scripts/css-source.mjs';
 
 const tokenCss = fs.readFileSync(path.resolve(process.cwd(), '../tokens/dist/theme.css'), 'utf8');
+const primitiveCss = fs.readFileSync(path.resolve(process.cwd(), 'src/theme.css'), 'utf8');
 
 function componentStyle(relativePath: string): string {
 	const component = fs.readFileSync(path.resolve(process.cwd(), relativePath), 'utf8');
@@ -91,6 +92,23 @@ function contrast(foreground: string, background: string): number {
 }
 
 describe('newly-live primitive theme cells', () => {
+	it('binds the explicit dark menu surface to AA text contrast', () => {
+		const properties = themeProperties('dark');
+		const menuBackground = resolveValue(
+			declarationValue(primitiveCss, "[data-theme='dark'] .gr-menu", 'background-color'),
+			properties
+		);
+		const menuForeground = resolveValue(
+			declarationValue(primitiveCss, '.gr-menu__item', 'color'),
+			properties
+		);
+
+		expect(contrast(menuForeground, menuBackground)).toBeGreaterThanOrEqual(4.5);
+		expect(declarations(primitiveCss, "[data-theme='dark'] .gr-menu")).toContain(
+			'border-color: var(--gr-semantic-border-subtle)'
+		);
+	});
+
 	it.each(['light', 'dark'] as const)('binds declarations to AA contrast in %s', (theme) => {
 		const settingsCss = componentStyle('src/components/Settings/SettingsSection.svelte');
 		const checkerCss = componentStyle('src/components/Theme/ContrastChecker.svelte');

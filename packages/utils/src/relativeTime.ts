@@ -17,6 +17,19 @@ export interface RelativeTimeOptions {
 	maxUnit?: 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second';
 }
 
+export interface FormatDateTimeOptions extends RelativeTimeOptions {
+	/** Absolute-date presentation style. */
+	dateStyle?: 'full' | 'long' | 'medium' | 'short';
+	/** Absolute-time presentation style. */
+	timeStyle?: 'full' | 'long' | 'medium' | 'short';
+	/**
+	 * IANA time-zone name used for the absolute label (for example, `UTC` or
+	 * `America/New_York`). Pin this for SSR so the server and hydrated client
+	 * render the same visible timestamp.
+	 */
+	timeZone?: string;
+}
+
 interface TimeUnit {
 	unit: Intl.RelativeTimeFormatUnit;
 	ms: number;
@@ -108,15 +121,13 @@ export function relativeTime(
  */
 export function formatDateTime(
 	date: Date | string | number,
-	options: RelativeTimeOptions & {
-		dateStyle?: 'full' | 'long' | 'medium' | 'short';
-		timeStyle?: 'full' | 'long' | 'medium' | 'short';
-	} = {}
+	options: FormatDateTimeOptions = {}
 ): { absolute: string; relative: string; iso: string } {
 	const {
 		locale = 'en-US',
 		dateStyle = 'medium',
 		timeStyle = 'short',
+		timeZone,
 		...relativeOptions
 	} = options;
 
@@ -133,6 +144,7 @@ export function formatDateTime(
 	const absolute = new Intl.DateTimeFormat(locale, {
 		dateStyle,
 		timeStyle,
+		timeZone,
 	}).format(targetDate);
 
 	const relative = relativeTime(targetDate, relativeOptions);

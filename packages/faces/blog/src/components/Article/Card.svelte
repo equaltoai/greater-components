@@ -71,51 +71,51 @@ canonical Article reader page.
 </script>
 
 <article class={cardClass} aria-labelledby={titleId} data-article-id={normalizedArticle.id}>
-	<a class="gr-blog-article-card__link" href={articleHref}>
-		{#if metadata.featuredImage}
-			<img
-				class="gr-blog-article-card__image"
-				src={metadata.featuredImage}
-				alt={metadata.featuredImageAlt ?? ''}
-				loading="lazy"
-			/>
+	{#if metadata.featuredImage}
+		<img
+			class="gr-blog-article-card__image"
+			src={metadata.featuredImage}
+			alt={metadata.featuredImageAlt ?? ''}
+			loading="lazy"
+		/>
+	{/if}
+
+	<div class="gr-blog-article-card__body">
+		{#if metaItems.length > 0}
+			<p class="gr-blog-article-card__meta">
+				{#each metaItems as item, index (`${item.label}-${index}`)}
+					{#if index > 0}
+						<span class="gr-blog-article-card__separator" aria-hidden="true">·</span>
+					{/if}
+					{#if item.datetime}
+						<time datetime={item.datetime}>{item.label}</time>
+					{:else}
+						<span>{item.label}</span>
+					{/if}
+				{/each}
+			</p>
 		{/if}
 
-		<div class="gr-blog-article-card__body">
-			{#if metaItems.length > 0}
-				<p class="gr-blog-article-card__meta">
-					{#each metaItems as item, index (`${item.label}-${index}`)}
-						{#if index > 0}
-							<span class="gr-blog-article-card__separator" aria-hidden="true">·</span>
-						{/if}
-						{#if item.datetime}
-							<time datetime={item.datetime}>{item.label}</time>
-						{:else}
-							<span>{item.label}</span>
-						{/if}
-					{/each}
-				</p>
-			{/if}
-
-			<svelte:element this={headingTag} id={titleId} class="gr-blog-article-card__title">
+		<svelte:element this={headingTag} id={titleId} class="gr-blog-article-card__title">
+			<a class="gr-blog-article-card__link" href={articleHref}>
 				{metadata.title}
-			</svelte:element>
+			</a>
+		</svelte:element>
 
-			{#if metadata.subtitle}
-				<p class="gr-blog-article-card__subtitle">{metadata.subtitle}</p>
-			{/if}
+		{#if metadata.subtitle}
+			<p class="gr-blog-article-card__subtitle">{metadata.subtitle}</p>
+		{/if}
 
-			{#if showExcerpt && excerpt}
-				<p class="gr-blog-article-card__excerpt">{excerpt}</p>
-			{/if}
+		{#if showExcerpt && excerpt}
+			<p class="gr-blog-article-card__excerpt">{excerpt}</p>
+		{/if}
 
-			{#if showTags && tags.length > 0}
-				<ul class="gr-blog-article-card__tags" aria-label="Article tags">
-					{#each tags as tag (tag)}
-						<li class="gr-blog-article-card__tag">{tag}</li>
-					{/each}
-				</ul>
-			{/if}
-		</div>
-	</a>
+		{#if showTags && tags.length > 0}
+			<ul class="gr-blog-article-card__tags" aria-label="Article tags">
+				{#each tags as tag (tag)}
+					<li class="gr-blog-article-card__tag">{tag}</li>
+				{/each}
+			</ul>
+		{/if}
+	</div>
 </article>

@@ -24,7 +24,7 @@ import { resolveRef, fetchRegistryIndex, type RegistryIndex } from '../utils/reg
 import { getComponent, getAllRegistryEntries } from '../registry/index.js';
 import { fetchComponentFiles, type FetchOptions } from '../utils/fetch.js';
 import { readFile, readFileBuffer, writeFile, fileExists } from '../utils/files.js';
-import { computeDiff, formatDiffStats, type DiffResult } from '../utils/diff.js';
+import { computeDiff, type DiffResult } from '../utils/diff.js';
 import { computeChecksum } from '../utils/integrity.js';
 
 import { transformImports } from '../utils/transform.js';
@@ -75,7 +75,6 @@ interface FileUpdateStatus {
 	localPath: string;
 	status: 'updated' | 'created' | 'skipped' | 'conflict' | 'error';
 	hasLocalModifications: boolean;
-	diff?: DiffResult;
 	error?: string;
 }
 
@@ -103,13 +102,10 @@ async function checkLocalModification(
  */
 async function promptConflictResolution(
 	componentName: string,
-	filePath: string,
-	diff: DiffResult
+	filePath: string
 ): Promise<ConflictResolution> {
-	const stats = formatDiffStats(diff.stats);
-
 	logger.info(chalk.yellow(`\n⚠ Conflict in ${componentName}/${filePath}`));
-	logger.info(chalk.dim(`  Local file has modifications (${stats})`));
+	logger.info(chalk.dim('  Local file has modifications'));
 
 	const response = await prompts({
 		type: 'select',
@@ -282,16 +278,21 @@ async function updateComponent(
 
 		if (localExists) {
 			try {
-				const diff = isBinaryFile
-					? createBinaryDiffResult(file.path, (await readFileBuffer(localPath)).equals(remoteRaw))
-					: computeDiff(await readFile(localPath), remoteContent, {
-							filePath: file.path,
-							contextLines: 3,
-						});
+				// The update summary only needs equality. Building a full line diff here
+				// allocates an O(local-lines × remote-lines) LCS matrix for every vendored
+				// file, which made `update --all` exhaust even multi-gigabyte heaps. Compare
+				// the exact bytes we would write and defer a detailed diff until a user asks
+				// to inspect an actual conflict.
+				let localTextContent: string | undefined;
+				let identical: boolean;
+				if (isBinaryFile) {
+					identical = (await readFileBuffer(localPath)).equals(remoteRaw as Buffer);
+				} else {
+					localTextContent = await readFile(localPath);
+					identical = localTextContent === managedContent;
+				}
 
-				status.diff = diff;
-
-				if (diff.identical) {
+				if (identical) {
 					status.status = 'skipped';
 					fileStatuses.push(status);
 					continue;
@@ -307,10 +308,16 @@ async function updateComponent(
 
 					if (!options.dryRun) {
 						// Prompt for resolution
-						let resolution = await promptConflictResolution(componentName, file.path, diff);
+						let resolution = await promptConflictResolution(componentName, file.path);
 
 						// Handle show-diff option
 						while (resolution === 'show-diff') {
+							const diff = isBinaryFile
+								? createBinaryDiffResult(file.path, false)
+								: computeDiff(localTextContent ?? '', String(managedContent), {
+										filePath: file.path,
+										contextLines: 3,
+									});
 							displayConflictDiff(diff);
 							const followUp = await prompts({
 								type: 'select',
@@ -858,5 +865,5 @@ export const updateCommand = new Command()
 	.option('--cwd <path>', 'Working directory (default: current directory)')
 	.option('-f, --force', 'Overwrite local modifications without prompting')
 	.option('--dry-run', 'Preview updates without making changes')
-	.option('-y, --yes', 'Skip confirmation prompts')
+	.option('-y, --yes', 'Skip confirmation prompts (required for CI/non-interactive use)')
 	.action(updateAction);

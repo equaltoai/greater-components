@@ -5,7 +5,7 @@ Lesser's pinned CMS GraphQL contract.
 
 ## Evidence
 
-- Lesser pin: `docs/lesser/contracts/LESSER_REF.txt` (`v1.6.2`, commit `9814bf8e8db4ce6deebc2de5394dde2ef09f3010`)
+- Lesser pin: `docs/lesser/contracts/LESSER_REF.txt` (`v1.6.3`, commit `f833ea0b6dea78c11a2b6da6289bf2305f770ebe`)
 - Contract source: `docs/lesser/contracts/graphql-schema.graphql`
 - Greater Blog public types: `packages/faces/blog/src/types.ts`
 - Article display implementation: `packages/faces/blog/src/components/Article/Content.svelte`
@@ -61,6 +61,11 @@ Greater-only `ArticleData` fields (`isPublished`, `isFeatured`, `viewCount`, `re
 `commentCount`) are not in the Lesser M0 CMS contract. Set `isPublished: true` for returned public
 `Article` objects; treat the rest as out-of-scope social/product signals unless a later integration
 proves them.
+
+Lesser v1.6.3 adds the optional `search: String` argument to `Query.articles`. Search is performed by
+Lesser against public article text; Greater's Blog face remains a display surface and does not add a
+second client-side search implementation. Consumers may pass the generated `QueryArticlesArgs.search`
+value through their adapter query.
 
 ## `Draft` field audit
 

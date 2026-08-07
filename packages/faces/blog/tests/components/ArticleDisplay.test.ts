@@ -126,8 +126,11 @@ describe('Article complete display exports', () => {
 		});
 		const published = formatDateTime(flatArticle.publishedAt as string);
 
-		const link = screen.getByRole('link');
+		const link = screen.getByRole('link', { name: 'Proven Blog Gaps' });
 		expect(link).toHaveAttribute('href', '/journal/proven-blog-gaps');
+		expect(link).toHaveTextContent('Proven Blog Gaps');
+		expect(link).not.toHaveTextContent('Demo Writer');
+		expect(link).not.toHaveTextContent('A first-app proven article display gap.');
 		expect(screen.getByRole('heading', { level: 2, name: 'Proven Blog Gaps' })).toBeInTheDocument();
 		expect(screen.getByText(published.absolute)).toHaveAttribute('datetime', published.iso);
 		expect(screen.queryByText('[object Object]')).toBeNull();
