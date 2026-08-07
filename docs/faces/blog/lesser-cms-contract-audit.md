@@ -5,7 +5,7 @@ Lesser's pinned CMS GraphQL contract.
 
 ## Evidence
 
-- Lesser pin: `docs/lesser/contracts/LESSER_REF.txt` (`v1.5.31`, commit `5c0ad0dcff9364bd09aeab11599a04a5a6ed315d`)
+- Lesser pin: `docs/lesser/contracts/LESSER_REF.txt` (`v1.6.2`, commit `9814bf8e8db4ce6deebc2de5394dde2ef09f3010`)
 - Contract source: `docs/lesser/contracts/graphql-schema.graphql`
 - Greater Blog public types: `packages/faces/blog/src/types.ts`
 - Article display implementation: `packages/faces/blog/src/components/Article/Content.svelte`
@@ -25,36 +25,37 @@ Field direction legend:
 
 ## `Article` field audit
 
-| Lesser field         | Direction            | Greater boundary                                                                                                                 |
-| -------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `id`                 | Matches Greater      | `ArticleData.id`                                                                                                                 |
-| `slug`               | Matches Greater      | `ArticleData.slug`                                                                                                               |
-| `authorId`           | Adapter mapping      | Map the Lesser author identifier alongside `author` when an integration needs stable attribution linkage.                        |
-| `author`             | Adapter mapping      | Map `Actor` to `AuthorData` (`id`, display name, username/handle, avatar, bio, links as available).                              |
-| `title`              | Adapter mapping      | `ArticleData.metadata.title`                                                                                                     |
-| `subtitle`           | Adapter mapping      | `ArticleData.metadata.subtitle`                                                                                                  |
-| `excerpt`            | Adapter mapping      | Prefer for `ArticleData.metadata.description` when present; fall back to `seoDescription`/`subtitle` as app policy.              |
-| `content`            | Matches Greater      | `ArticleData.content`; for public articles this should be server-rendered/sanitized HTML when available.                         |
-| `contentFormat`      | Adapter mapping      | Convert Lesser `HTML`/`MARKDOWN` to Greater `html`/`markdown`. `markdown` is escaped fallback text in public `Article.Content`.  |
-| `featuredImage`      | Adapter mapping      | Map `Media` URL/description to `metadata.featuredImage` and `metadata.featuredImageAlt`.                                         |
-| `generatedBy`        | Do not leak          | Generation provenance is workflow state; do not surface in reusable public Article UI without a proven app provenance design.    |
-| `tableOfContents`    | Out of scope for MVP | `Article.Content` currently derives headings from rendered HTML. Do not add a server-TOC prop without a proven app need.         |
-| `readingTimeMinutes` | Adapter mapping      | `ArticleData.metadata.readingTime`                                                                                               |
-| `wordCount`          | Adapter mapping      | `ArticleData.metadata.wordCount`                                                                                                 |
-| `series`             | Out of scope for MVP | Greater `SeriesData` is a richer navigation model and requires article-list context not present on the `Series` object alone.    |
-| `seriesOrder`        | Out of scope for MVP | Only map with `series` once a proven series navigation UI exists.                                                                |
-| `categories`         | Adapter mapping      | Map a primary category to `metadata.category`; navigation/category lists can map to `CategoryData` separately.                   |
-| `seoTitle`           | Adapter mapping      | SEO-layer input; may feed page metadata outside the Article components.                                                          |
-| `seoDescription`     | Adapter mapping      | SEO-layer input; may backfill `metadata.description` when `excerpt` is absent.                                                   |
-| `canonicalUrl`       | Adapter mapping      | `ArticleData.metadata.canonicalUrl`                                                                                              |
-| `ogImage`            | Adapter mapping      | `SEOData.ogImage` or host page metadata, not Article display by default.                                                         |
-| `editorNotes`        | Do not leak          | Editorial/private workflow state; keep out of public reusable Article UI.                                                        |
-| `reviewStatus`       | Do not leak          | Review workflow state; keep out of public reusable Article UI for this MVP.                                                      |
-| `reviewedBy`         | Do not leak          | Review actor state is backend/workflow provenance; keep out of reusable Article UI until an app-specific moderation UI needs it. |
-| `publishedBy`        | Do not leak          | Publishing actor state is workflow provenance; public author attribution remains `author`.                                       |
-| `publishedAt`        | Adapter mapping      | `ArticleData.metadata.publishedAt`                                                                                               |
-| `createdAt`          | Out of scope for MVP | Not displayed by existing Blog face components.                                                                                  |
-| `updatedAt`          | Adapter mapping      | `ArticleData.metadata.updatedAt`                                                                                                 |
+| Lesser field         | Direction            | Greater boundary                                                                                                                                                    |
+| -------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                 | Matches Greater      | `ArticleData.id`                                                                                                                                                    |
+| `slug`               | Matches Greater      | `ArticleData.slug`                                                                                                                                                  |
+| `authorId`           | Adapter mapping      | Map the Lesser author identifier alongside `author` when an integration needs stable attribution linkage.                                                           |
+| `author`             | Adapter mapping      | Map `Actor` to `AuthorData` (`id`, display name, username/handle, avatar, bio, links as available).                                                                 |
+| `title`              | Adapter mapping      | `ArticleData.metadata.title`                                                                                                                                        |
+| `subtitle`           | Adapter mapping      | `ArticleData.metadata.subtitle`                                                                                                                                     |
+| `excerpt`            | Adapter mapping      | Prefer for `ArticleData.metadata.description` when present; fall back to `seoDescription`/`subtitle` as app policy.                                                 |
+| `content`            | Matches Greater      | `ArticleData.content`; retained as source-only data when Lesser supplies canonical `renderedHtml`.                                                                  |
+| `contentFormat`      | Adapter mapping      | Convert Lesser `HTML`/`MARKDOWN` to Greater `html`/`markdown`. `markdown` is escaped fallback text in public `Article.Content`.                                     |
+| `renderedHtml`       | Adapter mapping      | Prefer canonical Lesser HTML for `ArticleData.content` and normalize the display format to `html`; never render source Markdown locally when this field is missing. |
+| `featuredImage`      | Adapter mapping      | Map `Media` URL/description to `metadata.featuredImage` and `metadata.featuredImageAlt`.                                                                            |
+| `generatedBy`        | Do not leak          | Generation provenance is workflow state; do not surface in reusable public Article UI without a proven app provenance design.                                       |
+| `tableOfContents`    | Out of scope for MVP | `Article.Content` currently derives headings from rendered HTML. Do not add a server-TOC prop without a proven app need.                                            |
+| `readingTimeMinutes` | Adapter mapping      | `ArticleData.metadata.readingTime`                                                                                                                                  |
+| `wordCount`          | Adapter mapping      | `ArticleData.metadata.wordCount`                                                                                                                                    |
+| `series`             | Out of scope for MVP | Greater `SeriesData` is a richer navigation model and requires article-list context not present on the `Series` object alone.                                       |
+| `seriesOrder`        | Out of scope for MVP | Only map with `series` once a proven series navigation UI exists.                                                                                                   |
+| `categories`         | Adapter mapping      | Map a primary category to `metadata.category`; navigation/category lists can map to `CategoryData` separately.                                                      |
+| `seoTitle`           | Adapter mapping      | SEO-layer input; may feed page metadata outside the Article components.                                                                                             |
+| `seoDescription`     | Adapter mapping      | SEO-layer input; may backfill `metadata.description` when `excerpt` is absent.                                                                                      |
+| `canonicalUrl`       | Adapter mapping      | `ArticleData.metadata.canonicalUrl`                                                                                                                                 |
+| `ogImage`            | Adapter mapping      | `SEOData.ogImage` or host page metadata, not Article display by default.                                                                                            |
+| `editorNotes`        | Do not leak          | Editorial/private workflow state; keep out of public reusable Article UI.                                                                                           |
+| `reviewStatus`       | Do not leak          | Review workflow state; keep out of public reusable Article UI for this MVP.                                                                                         |
+| `reviewedBy`         | Do not leak          | Review actor state is backend/workflow provenance; keep out of reusable Article UI until an app-specific moderation UI needs it.                                    |
+| `publishedBy`        | Do not leak          | Publishing actor state is workflow provenance; public author attribution remains `author`.                                                                          |
+| `publishedAt`        | Adapter mapping      | `ArticleData.metadata.publishedAt`                                                                                                                                  |
+| `createdAt`          | Out of scope for MVP | Not displayed by existing Blog face components.                                                                                                                     |
+| `updatedAt`          | Adapter mapping      | `ArticleData.metadata.updatedAt`                                                                                                                                    |
 
 Greater-only `ArticleData` fields (`isPublished`, `isFeatured`, `viewCount`, `reactions`,
 `commentCount`) are not in the Lesser M0 CMS contract. Set `isPublished: true` for returned public
@@ -117,10 +118,12 @@ not be invented by the adapter.
 Lesser/server owns canonical public rendering and sanitization. `Article.Content` therefore has two
 safe paths:
 
-1. `contentFormat: 'html'` — Greater sanitizes the supplied HTML as defense-in-depth before `{@html}`.
-   Lesser-backed public articles should use this path once Lesser returns rendered public HTML.
+1. Lesser `renderedHtml` — `normalizeArticleData` prefers this canonical public body, normalizes the
+   display format to `html`, and Greater sanitizes it again as defense-in-depth before `{@html}`.
+   The raw `content` field remains source-only data.
 2. `contentFormat: 'markdown'` — Greater renders the raw source as escaped plain fallback text. It does
-   not convert Markdown to public HTML and does not treat raw Markdown as trusted equivalent content.
+   not convert Markdown to public HTML when `renderedHtml` is null or unavailable and does not treat
+   raw Markdown as trusted equivalent content.
 
 The `content` package's `MarkdownRenderer` remains useful for draft/editor preview, but it is not the
 canonical public article renderer for Lesser-backed publications.
@@ -130,6 +133,7 @@ canonical public article renderer for Lesser-backed publications.
 Concrete adapter work needed by Emdash before handing Lesser CMS objects to the Blog face:
 
 - Normalize `ContentFormat` casing (`HTML`/`MARKDOWN` → `html`/`markdown`).
+- Prefer `Article.renderedHtml` as the canonical public body while retaining raw `content` as source-only data.
 - Map `Actor`, `Media`, `Category`, and SEO fields into Greater view-model fields.
 - Normalize nullable `Draft.title` to a string for `DraftData.title`.
 - Keep workflow/admin/provenance fields (`editorNotes`, `reviewStatus`, `generatedBy`, `reviewedBy`,

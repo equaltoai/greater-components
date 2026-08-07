@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { componentRegistry } from '../src/registry/index.js';
+import { VENDORED_BASELINE_PACKAGES } from '../src/commands/add.js';
 
 interface RegistryDependency {
 	name: string;
@@ -24,5 +25,6 @@ describe('blog face dependency surfaces', () => {
 		expect(required).not.toContain('content');
 		expect(peers).toContain('@equaltoai/greater-components-content');
 		expect(componentRegistry.editor?.registryDependencies).toContain('content');
+		expect(VENDORED_BASELINE_PACKAGES).not.toContain('content');
 	});
 });

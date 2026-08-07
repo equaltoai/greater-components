@@ -42,21 +42,23 @@ For custom layouts, continue using the compound components:
 
 ### Server-rendered HTML (canonical public path)
 
-Use `contentFormat: 'html'` for public articles when the backend has rendered and sanitized the
-canonical article body. Greater still sanitizes before `{@html}` as defense-in-depth.
+Pass Lesser's `renderedHtml` for public articles when the backend has rendered and sanitized the
+canonical article body. `normalizeArticleData` prefers that body over raw `content`, normalizes the
+display format to `html`, and Greater still sanitizes before `{@html}` as defense-in-depth.
 
 ```typescript
 const article = {
-	content: '<h2>Hello World</h2><p>This is the server-rendered article body.</p>',
-	contentFormat: 'html',
+	content: '# Source-only article body',
+	contentFormat: 'markdown',
+	renderedHtml: '<h2>Hello World</h2><p>This is the server-rendered article body.</p>',
 };
 ```
 
 ### Markdown source (escaped fallback only)
 
-Use `contentFormat: 'markdown'` only when the adapter has raw source and no canonical rendered public
-HTML yet. `Article.Content` displays that source as escaped plain text. It does not parse Markdown into
-public HTML and it does not treat raw Markdown as trusted content.
+Use `contentFormat: 'markdown'` only when the adapter has raw source and `renderedHtml` is null or
+unavailable. `Article.Content` displays that source as escaped plain text. It does not parse Markdown
+into public HTML and it does not treat raw Markdown as trusted content.
 
 ```typescript
 const article = {
@@ -74,6 +76,7 @@ articles.
 Adapters should map Lesser's pinned CMS contract into Blog face view models before rendering:
 
 - Lesser `ContentFormat.HTML` / `ContentFormat.MARKDOWN` → Greater `html` / `markdown`
+- Lesser `Article.renderedHtml` → canonical `ArticleData.content` with normalized `html` format
 - Lesser `Article.title`, `subtitle`, `excerpt`, `publishedAt`, `updatedAt`, `readingTimeMinutes`,
   and `wordCount` → `ArticleData.metadata.*`
 - Lesser `Actor` → `AuthorData`

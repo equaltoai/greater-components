@@ -48,6 +48,8 @@ export interface FetchOptions {
 	failFast?: boolean;
 	/** Verify Git tag signature */
 	verifySignature?: boolean;
+	/** Preloaded registry index for batch operations such as `update --all`. */
+	registryIndex?: RegistryIndex;
 }
 
 /**
@@ -193,24 +195,26 @@ export async function fetchComponentFiles(
 	}
 
 	// Try to get checksums from registry index
-	let registryIndex: RegistryIndex | null = null;
+	let registryIndex: RegistryIndex | null = options.registryIndex ?? null;
 	let checksums: ChecksumMap | null = null;
 	if (performVerification || corePackage) {
-		try {
-			registryIndex = await fetchRegistryIndex(ref, {
-				skipCache: options.skipCache,
-				forceRefresh: options.forceRefresh,
-			});
-			checksums = registryIndex.checksums;
-		} catch (error) {
-			const reason = error instanceof Error ? error.message : String(error);
-			throw new Error(
-				`Failed to load registry index for ${
-					corePackage ? `core package "${component.name}"` : `verification of "${component.name}"`
-				}: ${reason}`,
-				{ cause: error }
-			);
+		if (!registryIndex) {
+			try {
+				registryIndex = await fetchRegistryIndex(ref, {
+					skipCache: options.skipCache,
+					forceRefresh: options.forceRefresh,
+				});
+			} catch (error) {
+				const reason = error instanceof Error ? error.message : String(error);
+				throw new Error(
+					`Failed to load registry index for ${
+						corePackage ? `core package "${component.name}"` : `verification of "${component.name}"`
+					}: ${reason}`,
+					{ cause: error }
+				);
+			}
 		}
+		checksums = registryIndex.checksums;
 	}
 
 	const filesToFetch =

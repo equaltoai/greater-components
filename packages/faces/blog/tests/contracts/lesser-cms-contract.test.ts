@@ -20,6 +20,7 @@ const LESSER_CMS_FIELD_DIRECTIONS = {
 		excerpt: 'needs-adapter-mapping',
 		content: 'matches-greater-field',
 		contentFormat: 'needs-adapter-mapping',
+		renderedHtml: 'needs-adapter-mapping',
 		featuredImage: 'needs-adapter-mapping',
 		generatedBy: 'should-not-leak-into-ui',
 		tableOfContents: 'out-of-scope-for-mvp',
@@ -109,6 +110,7 @@ function extractTypeFields(schema: string, typeName: CmsContractType): string[] 
 	}
 
 	return match[1]
+		.replace(/"""[\s\S]*?"""/g, '')
 		.split('\n')
 		.map((line) => line.trim())
 		.filter((line) => line && !line.startsWith('#'))

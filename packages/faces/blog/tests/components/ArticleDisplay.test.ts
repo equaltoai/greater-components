@@ -58,6 +58,31 @@ describe('Article complete display exports', () => {
 		expect(article.metadata.featuredImage).toBe('/article.png');
 	});
 
+	it('prefers Lesser canonical renderedHtml without rendering the source locally', () => {
+		const article = normalizeArticleData({
+			...flatArticle,
+			content: '# Source-only heading\n\n<script>alert(1)</script>',
+			contentFormat: 'MARKDOWN',
+			renderedHtml: '<h2>Canonical heading</h2><p>Rendered and sanitized by Lesser.</p>',
+		});
+
+		expect(article.contentFormat).toBe('html');
+		expect(article.content).toContain('Rendered and sanitized by Lesser.');
+		expect(article.content).not.toContain('Source-only heading');
+	});
+
+	it('keeps missing renderedHtml on the escaped source fallback path', () => {
+		const article = normalizeArticleData({
+			...flatArticle,
+			content: '# Source-only heading',
+			contentFormat: 'MARKDOWN',
+			renderedHtml: null,
+		});
+
+		expect(article.contentFormat).toBe('markdown');
+		expect(article.content).toBe('# Source-only heading');
+	});
+
 	it('renders an SSR-friendly ArticleReader without browser-only affordances by default', () => {
 		render(ArticleReader, { props: { article: flatArticle } });
 		const publishedLabel = formatDateTime(flatArticle.publishedAt as string).absolute;
@@ -70,6 +95,26 @@ describe('Article complete display exports', () => {
 		expect(screen.getByText('Rendered by Lesser.')).toBeInTheDocument();
 		expect(screen.getByText('Demo Writer')).toBeInTheDocument();
 		expect(screen.queryByRole('progressbar')).toBeNull();
+	});
+
+	it('renders Lesser renderedHtml through the existing defense-in-depth sanitizer', () => {
+		render(ArticleReader, {
+			props: {
+				article: {
+					...flatArticle,
+					content: '# Unrendered source',
+					contentFormat: 'MARKDOWN',
+					renderedHtml: '<h2>Canonical server HTML</h2><script>alert(1)</script><p>Safe body.</p>',
+				},
+			},
+		});
+
+		expect(
+			screen.getByRole('heading', { level: 2, name: 'Canonical server HTML' })
+		).toBeInTheDocument();
+		expect(screen.getByText('Safe body.')).toBeInTheDocument();
+		expect(screen.queryByText('# Unrendered source')).toBeNull();
+		expect(document.querySelector('script')).toBeNull();
 	});
 
 	it('renders an accessible ArticleCard for index routes', () => {

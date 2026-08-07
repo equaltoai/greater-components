@@ -25,10 +25,12 @@ export interface DependencyInstallPlan {
 	drift: DependencyManifestDrift[];
 }
 
+export type PackageManager = 'pnpm' | 'yarn' | 'npm' | 'bun' | 'deno';
+
 /**
  * Detect package manager
  */
-export async function detectPackageManager(cwd: string): Promise<'pnpm' | 'yarn' | 'npm'> {
+export async function detectPackageManager(cwd: string): Promise<PackageManager> {
 	// Check for lock files
 	if (await fs.pathExists(path.join(cwd, 'pnpm-lock.yaml'))) {
 		return 'pnpm';
@@ -36,6 +38,17 @@ export async function detectPackageManager(cwd: string): Promise<'pnpm' | 'yarn'
 
 	if (await fs.pathExists(path.join(cwd, 'yarn.lock'))) {
 		return 'yarn';
+	}
+
+	if (
+		(await fs.pathExists(path.join(cwd, 'bun.lock'))) ||
+		(await fs.pathExists(path.join(cwd, 'bun.lockb')))
+	) {
+		return 'bun';
+	}
+
+	if (await fs.pathExists(path.join(cwd, 'deno.lock'))) {
+		return 'deno';
 	}
 
 	// Fall back to package.json#packageManager (Corepack)
@@ -48,6 +61,8 @@ export async function detectPackageManager(cwd: string): Promise<'pnpm' | 'yarn'
 				if (pkg.packageManager.startsWith('pnpm@')) return 'pnpm';
 				if (pkg.packageManager.startsWith('yarn@')) return 'yarn';
 				if (pkg.packageManager.startsWith('npm@')) return 'npm';
+				if (pkg.packageManager.startsWith('bun@')) return 'bun';
+				if (pkg.packageManager.startsWith('deno@')) return 'deno';
 			}
 		} catch {
 			// Ignore and fall back to npm
@@ -91,6 +106,18 @@ export async function installDependencies(
 			args.push('install');
 			if (dev) args.push('--save-dev');
 			args.push(...packages);
+			break;
+
+		case 'bun':
+			args.push('add');
+			if (dev) args.push('--dev');
+			args.push(...packages);
+			break;
+
+		case 'deno':
+			args.push('add');
+			if (dev) args.push('--dev');
+			args.push(...packages.map((packageSpec) => `npm:${packageSpec}`));
 			break;
 	}
 

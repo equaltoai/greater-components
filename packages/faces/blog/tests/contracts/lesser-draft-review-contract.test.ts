@@ -72,9 +72,10 @@ describe('Lesser shared-draft review contract', () => {
 	it('is pinned to a release carrying the review surface', () => {
 		const ref = readLesserRef();
 
-		// v1.6.0 adds contentHash to verdict records; the field assertions below
-		// keep the review chrome pinned to that release boundary.
-		expect(ref).toContain('tag: v1.6.0');
+		// v1.6.0 added contentHash to verdict records; v1.6.2 retains that surface
+		// and adds canonical Article.renderedHtml. The field assertions below keep
+		// the review chrome pinned to the exact synchronized release boundary.
+		expect(ref).toContain('tag: v1.6.2');
 		expect(ref).toMatch(/commit: [0-9a-f]{40}/);
 	});
 

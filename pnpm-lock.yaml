@@ -72,8 +72,8 @@ importers:
         specifier: ^2.5.7
         version: 2.5.7(svelte@5.55.7(@typescript-eslint/types@8.58.0))(typescript@6.0.2)
       '@theory-cloud/facetheory':
-        specifier: https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.5/theory-cloud-facetheory-4.0.5.tgz
-        version: https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.5/theory-cloud-facetheory-4.0.5.tgz(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(svelte@5.55.7(@typescript-eslint/types@8.58.0))
+        specifier: https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.6/theory-cloud-facetheory-4.0.6.tgz
+        version: https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.6/theory-cloud-facetheory-4.0.6.tgz(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(svelte@5.55.7(@typescript-eslint/types@8.58.0))
       '@types/node':
         specifier: ^25.6.0
         version: 25.6.0
@@ -816,6 +816,9 @@ importers:
       axe-core:
         specifier: ^4.12.1
         version: 4.12.1
+      graphql:
+        specifier: ^16.13.2
+        version: 16.13.2
       jsdom:
         specifier: ^29.0.2
         version: 29.0.2(@noble/hashes@1.8.0)
@@ -3416,9 +3419,9 @@ packages:
     peerDependencies:
       '@testing-library/dom': '>=7.21.4'
 
-  '@theory-cloud/facetheory@https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.5/theory-cloud-facetheory-4.0.5.tgz':
-    resolution: {integrity: sha512-6OuCzOJELmBIHzxua0cx6DkpP+Iy7AGtWiDqGc1/NvjDryUWKofTUmiIV48w1eZECpFRc+taWn/hVWpPwf3Hqw==, tarball: https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.5/theory-cloud-facetheory-4.0.5.tgz}
-    version: 4.0.5
+  '@theory-cloud/facetheory@https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.6/theory-cloud-facetheory-4.0.6.tgz':
+    resolution: {integrity: sha512-tlESMyYY7hRsGeTezdAS4Qj42QWt0juqqp+M82K3Gucl3ytc0CMT6z+1LevEgPOP47s5cqi3iXXToqqny5XzlQ==, tarball: https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.6/theory-cloud-facetheory-4.0.6.tgz}
+    version: 4.0.6
     engines: {node: '>=20'}
     hasBin: true
     peerDependencies:
@@ -8592,7 +8595,7 @@ snapshots:
     dependencies:
       '@testing-library/dom': 10.4.1
 
-  '@theory-cloud/facetheory@https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.5/theory-cloud-facetheory-4.0.5.tgz(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(svelte@5.55.7(@typescript-eslint/types@8.58.0))':
+  '@theory-cloud/facetheory@https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.6/theory-cloud-facetheory-4.0.6.tgz(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(svelte@5.55.7(@typescript-eslint/types@8.58.0))':
     dependencies:
       react: 19.2.1
       react-dom: 19.2.1(react@19.2.1)

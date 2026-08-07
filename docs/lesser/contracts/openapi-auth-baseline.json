@@ -24,8 +24,8 @@
     }
   ],
   "meta": {
-    "spec_path": "/home/aron/ai-workspace/codebases/equaltoai/factory/products/greater-components/docs/lesser/contracts/openapi.yaml",
-    "generated_at": "2026-07-29T11:46:10.792Z",
+    "spec_path": "docs/lesser/contracts/openapi.yaml",
+    "generated_at": "2026-08-07T11:38:08.317Z",
     "has_global_security": false,
     "has_security_schemes": true,
     "security_scheme_names": ["bearerAuth", "oauth2", "setupBearer", "soulBindingBearer"],
