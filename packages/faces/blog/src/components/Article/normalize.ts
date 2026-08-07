@@ -99,6 +99,8 @@ export function normalizeArticleData(article: ArticleInputData): ArticleData {
 	const categories = article.categories?.map(normalizeCategoryName).filter(Boolean) ?? [];
 	const tags = article.tags ?? article.metadata?.tags ?? categories;
 	const featuredImage = normalizeFeaturedImage(article.featuredImage);
+	const canonicalRenderedHtml =
+		typeof article.renderedHtml === 'string' ? article.renderedHtml : undefined;
 	const metadata: ArticleMetadata = {
 		title: article.title ?? article.metadata?.title ?? 'Untitled article',
 		subtitle: article.subtitle ?? article.metadata?.subtitle,
@@ -124,8 +126,9 @@ export function normalizeArticleData(article: ArticleInputData): ArticleData {
 		id: article.id,
 		slug: article.slug,
 		metadata,
-		content: article.content,
-		contentFormat: normalizeContentFormat(article.contentFormat),
+		content: canonicalRenderedHtml ?? article.content,
+		contentFormat:
+			canonicalRenderedHtml !== undefined ? 'html' : normalizeContentFormat(article.contentFormat),
 		author: normalizeAuthor(article.author),
 		publication: article.publication,
 		isPublished: article.isPublished ?? true,

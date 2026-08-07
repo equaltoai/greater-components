@@ -139,6 +139,14 @@ export interface ArticleDisplayData {
 	excerpt?: string;
 	content: string;
 	contentFormat: ArticleInputContentFormat;
+	/**
+	 * Canonical sanitized HTML returned by Lesser for a published article.
+	 *
+	 * When this field is present, the Blog face uses it as the public article
+	 * body and treats `content` as source-only data. A missing value never causes
+	 * Greater to render Markdown into HTML.
+	 */
+	renderedHtml?: string | null;
 	author: AuthorData | ArticleInputAuthor;
 	publication?: PublicationData;
 	isPublished?: boolean;

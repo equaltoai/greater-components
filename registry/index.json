@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-07T11:38:59.673Z",
+  "generatedAt": "2026-08-07T13:21:56.759Z",
   "ref": "greater-v0.11.9",
   "version": "0.11.9",
   "checksums": {
@@ -1218,14 +1218,14 @@
     "packages/adapters/src/graphql/client.d.ts": "sha256-flla8fzNoB0zTKoCPaE4qFXaRB/hjluSlSnsJlRB5i8=",
     "packages/adapters/src/graphql/client.d.ts.map": "sha256-04AauZ8eR88ta3iOwB5SAhbzceSk4aw8+2VPTzDDvss=",
     "packages/adapters/src/graphql/client.ts": "sha256-G2+gPI9iro/ZIwDjifxptx9QayzFu72OzsaArsw9M1c=",
-    "packages/adapters/src/graphql/generated/types.d.ts": "sha256-TM75OuqdnLJE8W/nf0N6vLFrqjYzpGrf/7mTwhqMkMM=",
-    "packages/adapters/src/graphql/generated/types.d.ts.map": "sha256-i/UWKeRnjOSvRVxEQNqwRFFe/ibISvYwP/yNEdt8dVU=",
-    "packages/adapters/src/graphql/generated/types.ts": "sha256-/XNViA1lWXK9W8ysF0BvS2TPc33/ncpisllw2HrEYD0=",
+    "packages/adapters/src/graphql/generated/types.d.ts": "sha256-N6yc4JIPZPH4iIzD0/X+SBmowKmt3Juz6LlRs1HipuA=",
+    "packages/adapters/src/graphql/generated/types.d.ts.map": "sha256-PbsNfZCVPk+5OlDvHpDBkvAno5qwo9QvKpnoilBFXXs=",
+    "packages/adapters/src/graphql/generated/types.ts": "sha256-e2LN+HQUFiE+TAym//qw6cWoVefFcaA0ouP9XGMzUpY=",
     "packages/adapters/src/graphql/index.d.ts": "sha256-Eu5nqaAHgFoa1HyMOE/cKCigJGYf8t8TxzmxibQR2Mk=",
     "packages/adapters/src/graphql/index.d.ts.map": "sha256-1CLcm1bQwtrlzXsVrZEgGwv3nyuONkS+P1KQcTzKPfM=",
     "packages/adapters/src/graphql/index.ts": "sha256-330bRj505ZOWM5XTbOpFZW1n8sy2/SCbzCu9XXYvrOA=",
     "packages/adapters/src/graphql/LesserGraphQLAdapter.d.ts": "sha256-Ygqsw+cFct65SmbG+VZOHcqr+fRWWFmxsfKXbbRH1jc=",
-    "packages/adapters/src/graphql/LesserGraphQLAdapter.d.ts.map": "sha256-ksu9GSoWCVWVPj7n74+WAg5LWlEnWPPNgG8LxWHVWzo=",
+    "packages/adapters/src/graphql/LesserGraphQLAdapter.d.ts.map": "sha256-9Az0QFpyJ67Q8cegqrlj3XjIFDxorhehPjugLUEFyPY=",
     "packages/adapters/src/graphql/LesserGraphQLAdapter.ts": "sha256-R9I41qls8ilPqgUIuW3s/wfRS+2278ou9kYHxKXD+Fk=",
     "packages/adapters/src/graphql/optimistic.d.ts": "sha256-DO9Yg7q9e9k3+suvhBSBWMn+8+pVGydTpC7e70EPO1w=",
     "packages/adapters/src/graphql/optimistic.d.ts.map": "sha256-3ZgzaXbtuWIbrCr5D8TV88Z8HYKFTxgXUMDuhbZ6Kds=",
@@ -1275,9 +1275,9 @@
     "packages/adapters/src/models/unified.d.ts": "sha256-gr6KNzGcJe0ByYS/245nF+S+sRUCBH6Uz2oPrkzGAYk=",
     "packages/adapters/src/models/unified.d.ts.map": "sha256-dhzSTpjQyeYXI87o5rXN4tdBHsEGk+ULTZSYH2L72hQ=",
     "packages/adapters/src/models/unified.ts": "sha256-quLVImKg0uJ62HWRnol/PeR/lq7tIkIqGSWCA7lRssg=",
-    "packages/adapters/src/rest/generated/lesser-api.d.ts": "sha256-2boAPQCevaAxGLqKJt0m6wpkAiKZCIKSHUolRPhx8rk=",
-    "packages/adapters/src/rest/generated/lesser-api.d.ts.map": "sha256-5LigTaZ0J4IdZCaKI2QmJ1K2HEPp1m0vxt2xTpZGWes=",
-    "packages/adapters/src/rest/generated/lesser-api.ts": "sha256-Ds/S29tkQX3l4AoT4TgPMdYfIWCmA3D3nu//88m2CCk=",
+    "packages/adapters/src/rest/generated/lesser-api.d.ts": "sha256-Nq2Lj89M2tZDPirCIvXDubaZqhbbBOKDSELREKVWIBQ=",
+    "packages/adapters/src/rest/generated/lesser-api.d.ts.map": "sha256-GaXVL94+swm+S8gS6I7zcl+Nx1Ic8ixPaZTSHnI3pSA=",
+    "packages/adapters/src/rest/generated/lesser-api.ts": "sha256-86/7p4HS6jcfOleaO6QF2NORGXxF8hS2bQrsnu2IzHE=",
     "packages/adapters/src/rest/generated/lesser-host-api.d.ts": "sha256-6BzQZn/9Ey01WhWodDo8+WnJ7szqA2g/TWbsr7KHrMk=",
     "packages/adapters/src/rest/generated/lesser-host-api.d.ts.map": "sha256-36dFp6/b9WCHhHnYwQK7urYyPwp5ASvddLqZz8zcz20=",
     "packages/adapters/src/rest/generated/lesser-host-api.ts": "sha256-kfcOFwcF5O4WBKibOasSLWTSYqrQvh/U6kCqOxbJ/Eo=",
@@ -1399,7 +1399,7 @@
     "packages/faces/social/src/adapters/cache.ts": "sha256-32jUHLAsYoK4U0JZ6hswGUlQOmwhJ5yquqhMqyfrc4I=",
     "packages/faces/social/src/adapters/graphql/client.ts": "sha256-yor+sP4J7hzK+igh2s4mujPOUZTRDN/e3nU1eccrSyo=",
     "packages/faces/social/src/adapters/graphql/generated/possible-types.ts": "sha256-jICUa0Jvj62nX0BdiBLTWoH2TII2SjAkM3ivA4dyuyA=",
-    "packages/faces/social/src/adapters/graphql/generated/types.ts": "sha256-/XNViA1lWXK9W8ysF0BvS2TPc33/ncpisllw2HrEYD0=",
+    "packages/faces/social/src/adapters/graphql/generated/types.ts": "sha256-e2LN+HQUFiE+TAym//qw6cWoVefFcaA0ouP9XGMzUpY=",
     "packages/faces/social/src/adapters/graphql/index.ts": "sha256-GcA5R3Ss8R7jf8ElMym2TuDg4xCS3bnDjscVLa+gxEc=",
     "packages/faces/social/src/adapters/graphql/queries.ts": "sha256-I59rg3+sNOaao13C2bNxrFRgMOVyVpVQW9MvHwzupzU=",
     "packages/faces/social/src/adapters/graphql/timeline-type.ts": "sha256-Qd/YZETo8Kz614V7/tigUC77zJ/QuWX8vKjAUMd7V/E=",
@@ -1521,7 +1521,7 @@
     "packages/faces/blog/src/components/Article/Footer.svelte": "sha256-hfM4IWmoOXUlwPU04MiJkaNnPwykq5a0PQvsuhByfn4=",
     "packages/faces/blog/src/components/Article/Header.svelte": "sha256-79OpRsaaMgpdVQWzr/WF/w7U7X11+tCbepZ/Y7crtRg=",
     "packages/faces/blog/src/components/Article/index.ts": "sha256-0iuzVKuEzw0lyN0IRFJWjRc4tGYTY/QMpkhyNrK3Qi4=",
-    "packages/faces/blog/src/components/Article/normalize.ts": "sha256-/rcTG3AUWshRnFGt+qbzj9Qz7mqSF535NXACjW37PRk=",
+    "packages/faces/blog/src/components/Article/normalize.ts": "sha256-qvZG54rs+KxcwF2om69Jw34vtGF5+QPeC+z6/xnivXA=",
     "packages/faces/blog/src/components/Article/Reader.svelte": "sha256-jKSgDp9ZTFhnX0qKnEs31dfZYtyuQrq3rmfo4pL1Usw=",
     "packages/faces/blog/src/components/Article/ReadingProgress.svelte": "sha256-ISJhocglhnvUANh+zhza3uPaZxHQibQKRqNXs/EpgUI=",
     "packages/faces/blog/src/components/Article/RelatedPosts.svelte": "sha256-nkEuNxlnEchAjNQ5rYqJJy1u6g3aftV+y1+A9ondI1c=",
@@ -1555,7 +1555,7 @@
     "packages/faces/blog/src/patterns/index.ts": "sha256-meoG+gNvG1Os36voxE5lVckTjWYsOZA+Tdff8i7HsDY=",
     "packages/faces/blog/src/share.ts": "sha256-zh34kdwk9EtN/we6XkorjmvX8eXNRaQQBC1YKwVOSCo=",
     "packages/faces/blog/src/theme.css": "sha256-fYq3yt538EgF8xr+J3T5d3wzjHy6IZ+BJL4N7e43mRQ=",
-    "packages/faces/blog/src/types.ts": "sha256-nudDVheVS1I765hJc6WYzOCqIoeUbkYDm0oiG92wHwI=",
+    "packages/faces/blog/src/types.ts": "sha256-1Q5eYnYt4N92YyMa4M/aVn7a+4dmD7auukpXr35dWYg=",
     "packages/faces/community/src/components/Community/context.ts": "sha256-o7hAokh6NA8qRTQSPQx4gZSwM2yKGGWlgI9xWCCQTY8=",
     "packages/faces/community/src/components/Community/Header.svelte": "sha256-Cgg2NDuydM3itR8WioXBTqcdGuRWBeMnvmi/yfg7yCc=",
     "packages/faces/community/src/components/Community/index.ts": "sha256-O2i+BMNyHIDeaNrAk13XiIJjifx4MiVDHa1A5eSMJLg=",
@@ -8059,18 +8059,18 @@
         },
         {
           "path": "src/graphql/generated/types.d.ts",
-          "checksum": "sha256-TM75OuqdnLJE8W/nf0N6vLFrqjYzpGrf/7mTwhqMkMM=",
-          "size": 1934777
+          "checksum": "sha256-N6yc4JIPZPH4iIzD0/X+SBmowKmt3Juz6LlRs1HipuA=",
+          "size": 1934947
         },
         {
           "path": "src/graphql/generated/types.d.ts.map",
-          "checksum": "sha256-i/UWKeRnjOSvRVxEQNqwRFFe/ibISvYwP/yNEdt8dVU=",
-          "size": 1632629
+          "checksum": "sha256-PbsNfZCVPk+5OlDvHpDBkvAno5qwo9QvKpnoilBFXXs=",
+          "size": 1632728
         },
         {
           "path": "src/graphql/generated/types.ts",
-          "checksum": "sha256-/XNViA1lWXK9W8ysF0BvS2TPc33/ncpisllw2HrEYD0=",
-          "size": 2630180
+          "checksum": "sha256-e2LN+HQUFiE+TAym//qw6cWoVefFcaA0ouP9XGMzUpY=",
+          "size": 2630346
         },
         {
           "path": "src/graphql/index.d.ts",
@@ -8094,7 +8094,7 @@
         },
         {
           "path": "src/graphql/LesserGraphQLAdapter.d.ts.map",
-          "checksum": "sha256-ksu9GSoWCVWVPj7n74+WAg5LWlEnWPPNgG8LxWHVWzo=",
+          "checksum": "sha256-9Az0QFpyJ67Q8cegqrlj3XjIFDxorhehPjugLUEFyPY=",
           "size": 81519
         },
         {
@@ -8344,18 +8344,18 @@
         },
         {
           "path": "src/rest/generated/lesser-api.d.ts",
-          "checksum": "sha256-2boAPQCevaAxGLqKJt0m6wpkAiKZCIKSHUolRPhx8rk=",
-          "size": 584767
+          "checksum": "sha256-Nq2Lj89M2tZDPirCIvXDubaZqhbbBOKDSELREKVWIBQ=",
+          "size": 586663
         },
         {
           "path": "src/rest/generated/lesser-api.d.ts.map",
-          "checksum": "sha256-5LigTaZ0J4IdZCaKI2QmJ1K2HEPp1m0vxt2xTpZGWes=",
-          "size": 491576
+          "checksum": "sha256-GaXVL94+swm+S8gS6I7zcl+Nx1Ic8ixPaZTSHnI3pSA=",
+          "size": 493059
         },
         {
           "path": "src/rest/generated/lesser-api.ts",
-          "checksum": "sha256-Ds/S29tkQX3l4AoT4TgPMdYfIWCmA3D3nu//88m2CCk=",
-          "size": 584728
+          "checksum": "sha256-86/7p4HS6jcfOleaO6QF2NORGXxF8hS2bQrsnu2IzHE=",
+          "size": 586624
         },
         {
           "path": "src/rest/generated/lesser-host-api.d.ts",
@@ -9115,8 +9115,8 @@
         },
         {
           "path": "src/adapters/graphql/generated/types.ts",
-          "checksum": "sha256-/XNViA1lWXK9W8ysF0BvS2TPc33/ncpisllw2HrEYD0=",
-          "size": 2630180
+          "checksum": "sha256-e2LN+HQUFiE+TAym//qw6cWoVefFcaA0ouP9XGMzUpY=",
+          "size": 2630346
         },
         {
           "path": "src/adapters/graphql/index.ts",
@@ -9877,8 +9877,8 @@
         },
         {
           "path": "src/components/Article/normalize.ts",
-          "checksum": "sha256-/rcTG3AUWshRnFGt+qbzj9Qz7mqSF535NXACjW37PRk=",
-          "size": 4354
+          "checksum": "sha256-qvZG54rs+KxcwF2om69Jw34vtGF5+QPeC+z6/xnivXA=",
+          "size": 4539
         },
         {
           "path": "src/components/Article/Reader.svelte",
@@ -10047,8 +10047,8 @@
         },
         {
           "path": "src/types.ts",
-          "checksum": "sha256-nudDVheVS1I765hJc6WYzOCqIoeUbkYDm0oiG92wHwI=",
-          "size": 22737
+          "checksum": "sha256-1Q5eYnYt4N92YyMa4M/aVn7a+4dmD7auukpXr35dWYg=",
+          "size": 23053
         }
       ],
       "styles": {

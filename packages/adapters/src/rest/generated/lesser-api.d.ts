@@ -6433,6 +6433,23 @@ export interface components {
             data: components["schemas"]["PushSubscriptionAlerts"];
             subscription: components["schemas"]["PushSubscriptionData"];
         };
+        QuotePermissionsResponse: {
+            allow_followers: boolean;
+            allow_mentioned: boolean;
+            allow_public: boolean;
+            block_list: string[];
+        };
+        QuoteStatusAccount: {
+            id: string;
+            username?: string | null;
+        };
+        QuoteStatusSummary: {
+            account: components["schemas"]["QuoteStatusAccount"];
+            content: string;
+            created_at: string;
+            id: string;
+        };
+        QuoteStatusSummaryList: components["schemas"]["QuoteStatusSummary"][];
         /** Format: date-time */
         RFC3339DateTime: string;
         ReblogRequest: {
@@ -8590,16 +8607,20 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            400: components["responses"]["BadRequest"];
-            401: components["responses"]["Unauthorized"];
-            403: components["responses"]["Forbidden"];
-            /** @description Quote permission reads are not implemented and no settings are retrieved. */
-            501: {
+            /** @description OK */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["QuotePermissionsResponse"];
+                };
             };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalServerError"];
         };
     };
     get_api_v1_accounts_by_id_statuses: {
@@ -8788,16 +8809,20 @@ export interface operations {
             };
         };
         responses: {
-            400: components["responses"]["BadRequest"];
-            401: components["responses"]["Unauthorized"];
-            403: components["responses"]["Forbidden"];
-            /** @description Quote permission updates are not implemented and no settings are persisted. */
-            501: {
+            /** @description OK */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["QuotePermissionsResponse"];
+                };
             };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
         };
     };
     get_api_v1_accounts_relationships: {
@@ -14967,17 +14992,28 @@ export interface operations {
             };
         };
         responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    /** @description Request limit per window. */
+                    "X-RateLimit-Limit"?: number;
+                    /** @description Requests remaining in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    /** @description Unix timestamp (seconds) when the current window resets. */
+                    "X-RateLimit-Reset"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuoteStatusSummary"];
+                };
+            };
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
             429: components["responses"]["TooManyRequests"];
-            /** @description Quote creation is not implemented; target IDs are not looked up. */
-            501: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
+            500: components["responses"]["InternalServerError"];
         };
     };
     delete_api_v1_statuses_by_id_quote_by_quote_id: {
@@ -15013,8 +15049,8 @@ export interface operations {
             query?: {
                 /** @description Maximum number of items to return. */
                 limit?: components["parameters"]["Limit"];
-                /** @description Offset for offset-based pagination. */
-                offset?: components["parameters"]["Offset"];
+                /** @description Visible-quote offset. Must not exceed (4 × the requested limit) - 1; larger offsets return 422 rather than a silently truncated empty page. */
+                offset?: number;
             };
             header?: never;
             path: {
@@ -15024,14 +15060,21 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            400: components["responses"]["BadRequest"];
-            /** @description Quote listing is not implemented; target IDs and quote counts are not looked up. */
-            501: {
+            /** @description OK */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["QuoteStatusSummaryList"];
+                };
             };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
         };
     };
     post_api_v1_statuses_by_id_reblog: {
