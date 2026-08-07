@@ -16,6 +16,18 @@ export interface RelativeTimeOptions {
 	 */
 	maxUnit?: 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second';
 }
+export interface FormatDateTimeOptions extends RelativeTimeOptions {
+	/** Absolute-date presentation style. */
+	dateStyle?: 'full' | 'long' | 'medium' | 'short';
+	/** Absolute-time presentation style. */
+	timeStyle?: 'full' | 'long' | 'medium' | 'short';
+	/**
+	 * IANA time-zone name used for the absolute label (for example, `UTC` or
+	 * `America/New_York`). Pin this for SSR so the server and hydrated client
+	 * render the same visible timestamp.
+	 */
+	timeZone?: string;
+}
 /**
  * Format a date as relative time (e.g., "2 hours ago", "just now")
  * @param date - The date to format
@@ -34,10 +46,7 @@ export declare function relativeTime(
  */
 export declare function formatDateTime(
 	date: Date | string | number,
-	options?: RelativeTimeOptions & {
-		dateStyle?: 'full' | 'long' | 'medium' | 'short';
-		timeStyle?: 'full' | 'long' | 'medium' | 'short';
-	}
+	options?: FormatDateTimeOptions
 ): {
 	absolute: string;
 	relative: string;

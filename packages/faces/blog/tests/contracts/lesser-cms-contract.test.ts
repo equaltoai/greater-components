@@ -170,6 +170,12 @@ describe('Lesser CMS contract boundary', () => {
 		expect(extractQueryFields(schema)).toContain('draftPreview');
 	});
 
+	it('keeps Lesser article search on the server query boundary', () => {
+		expect(schema).toMatch(
+			/articles\(authorId: ID, seriesId: ID, categoryId: ID, search: String, first: Int, after: Cursor\): ArticleConnection!/
+		);
+	});
+
 	it('keeps the Article/Draft content-format boundary explicit', () => {
 		expect(extractEnumValues(schema, 'ContentFormat')).toEqual(['HTML', 'MARKDOWN']);
 	});

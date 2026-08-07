@@ -2702,6 +2702,11 @@ body.gr-scroll-locked {
 	}
 }
 
+[data-theme='dark'] .gr-menu {
+	background-color: var(--gr-semantic-background-primary);
+	border-color: var(--gr-semantic-border-subtle);
+}
+
 /* Modal Styles */
 .gr-modal {
 	padding: 0;
