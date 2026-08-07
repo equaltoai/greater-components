@@ -99,6 +99,31 @@ describe('formatDateTime', () => {
 		});
 		expect(result.absolute).toBeTruthy();
 	});
+
+	it('should pin the absolute label to an explicit time zone for SSR', () => {
+		const utc = formatDateTime(date, {
+			locale: 'en-US',
+			dateStyle: 'medium',
+			timeStyle: 'long',
+			timeZone: 'UTC',
+		});
+		const newYork = formatDateTime(date, {
+			locale: 'en-US',
+			dateStyle: 'medium',
+			timeStyle: 'long',
+			timeZone: 'America/New_York',
+		});
+
+		expect(utc.absolute).toBe(
+			new Intl.DateTimeFormat('en-US', {
+				dateStyle: 'medium',
+				timeStyle: 'long',
+				timeZone: 'UTC',
+			}).format(date)
+		);
+		expect(utc.absolute).not.toBe(newYork.absolute);
+		expect(utc.iso).toBe(newYork.iso);
+	});
 });
 
 describe('getDuration', () => {
