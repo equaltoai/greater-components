@@ -60,7 +60,7 @@
     "validate:exports": "node scripts/audit-exports.mjs",
     "validate:ids": "node scripts/validate-ids.js",
     "validate:versions": "node scripts/validate-release-versions.js",
-    "validate:package": "pnpm validate:exports && pnpm validate:dist && pnpm validate:deps && pnpm validate:cli && pnpm validate:check-parity && pnpm validate:tokens && pnpm validate:ids && pnpm validate:csp && pnpm validate:versions && pnpm check:openapi-auth",
+    "validate:package": "pnpm validate:exports && pnpm validate:dist && pnpm validate:deps && pnpm validate:cli && pnpm validate:check-parity && pnpm validate:tokens && pnpm validate:ids && pnpm validate:csp && pnpm validate:versions && pnpm check:openapi-auth && pnpm check:adapter-declarations",
     "validate:registry": "node scripts/validate-registry-index.js --strict && node scripts/generate-registry-index.js --check && pnpm validate:versions",
     "validate:tokens": "node scripts/audit-tokens-placeholders.mjs",
     "check:openapi-auth": "node scripts/check-openapi-auth.mjs",
@@ -73,7 +73,9 @@
     "release:prepare": "node scripts/prepare-github-release.js",
     "release:artifacts": "bash scripts/build-release-artifacts.sh",
     "audit:lockfile-integrity": "node scripts/audit-lockfile-integrity.mjs",
-    "audit:tarball-integrity": "node scripts/verify-tarball-integrity.js"
+    "audit:tarball-integrity": "node scripts/verify-tarball-integrity.js",
+    "generate:adapter-declarations": "node scripts/check-adapter-declarations.mjs --write",
+    "check:adapter-declarations": "node scripts/check-adapter-declarations.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
