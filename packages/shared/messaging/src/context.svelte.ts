@@ -312,7 +312,7 @@ export interface MessagesContext {
 	/**
 	 * Send a message
 	 */
-	sendMessage: (content: string, mediaIds?: string[]) => Promise<void>;
+	sendMessage: (content: string, mediaIds?: string[], conversation?: Conversation) => Promise<void>;
 
 	/**
 	 * Delete a message
@@ -701,16 +701,17 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 				}
 			}
 		},
-		sendMessage: async (content: string, mediaIds?: string[]) => {
-			if (!state.selectedConversation || !content.trim()) return;
-			if ((state.selectedConversation.requestState ?? 'ACCEPTED') === 'PENDING') return;
+		sendMessage: async (content: string, mediaIds?: string[], conversation?: Conversation) => {
+			const targetConversation = conversation ?? state.selectedConversation;
+			if (!targetConversation || !content.trim()) return;
+			if ((targetConversation.requestState ?? 'ACCEPTED') === 'PENDING') return;
 
 			state.loading = true;
 			state.error = null;
 
 			try {
 				const message = await handlers.onSendMessage?.(
-					state.selectedConversation.id,
+					targetConversation.id,
 					content,
 					mediaIds
 				);
@@ -719,13 +720,13 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 
 					// Update last message in conversation
 					const updated = state.conversations.map((c) =>
-						c.id === state.selectedConversation?.id
+						c.id === targetConversation.id
 							? { ...c, lastMessage: message, updatedAt: message.createdAt }
 							: c
 					);
 					state.conversations = sortByUpdatedAt(updated);
 
-					if (state.selectedConversation) {
+					if (state.selectedConversation?.id === targetConversation.id) {
 						state.selectedConversation = {
 							...state.selectedConversation,
 							lastMessage: message,

@@ -24,13 +24,28 @@
 		 * Callback when conversation is created
 		 */
 		onConversationCreated?: (conversationId: string) => void;
+
+		/** Bindable modal visibility for consumer-owned chrome and deep-link flows. */
+		open?: boolean;
+
+		/** Called before the built-in trigger opens the participant picker. */
+		onOpenIntent?: () => void;
+
+		/** Called whenever this component changes modal visibility. */
+		onOpenChange?: (open: boolean) => void;
 	}
 
-	let { initialParticipants = [], class: className = '', onConversationCreated }: Props = $props();
+	let {
+		initialParticipants = [],
+		class: className = '',
+		onConversationCreated,
+		open = $bindable(false),
+		onOpenIntent,
+		onOpenChange,
+	}: Props = $props();
 
 	const { handlers, selectConversation } = getMessagesContext();
 
-	let isOpen = $state(false);
 	let searchQuery = $state('');
 	let selectedParticipants = $state<MessageParticipant[]>(untrack(() => [...initialParticipants]));
 	let searchResults = $state<MessageParticipant[]>([]);
@@ -41,7 +56,7 @@
 	const modal = createModal();
 
 	$effect(() => {
-		if (isOpen) {
+		if (open) {
 			modal.helpers.open();
 		} else {
 			modal.helpers.close();
@@ -50,19 +65,24 @@
 
 	const openButton = createButton({
 		onClick: () => {
-			isOpen = true;
+			onOpenIntent?.();
+			open = true;
+			onOpenChange?.(true);
 			error = null;
 		},
 	});
 
+	function closeConversationPicker() {
+		open = false;
+		onOpenChange?.(false);
+		searchQuery = '';
+		selectedParticipants = [...initialParticipants];
+		searchResults = [];
+		error = null;
+	}
+
 	const closeButton = createButton({
-		onClick: () => {
-			isOpen = false;
-			searchQuery = '';
-			selectedParticipants = [...initialParticipants];
-			searchResults = [];
-			error = null;
-		},
+		onClick: closeConversationPicker,
 	});
 
 	const startButton = createButton({
@@ -114,7 +134,8 @@
 
 			if (conversation) {
 				// Close modal and reset
-				isOpen = false;
+				open = false;
+				onOpenChange?.(false);
 				searchQuery = '';
 				selectedParticipants = [...initialParticipants];
 				searchResults = [];
@@ -167,12 +188,17 @@
 		New Message
 	</button>
 
-	{#if isOpen}
+	{#if open}
 		<div use:modal.actions.backdrop class="new-conversation__backdrop">
 			<div use:modal.actions.content class="new-conversation__modal">
 				<div class="new-conversation__header">
 					<h3 class="new-conversation__title">New Message</h3>
-					<button use:modal.actions.close class="new-conversation__close" aria-label="Close">
+					<button
+						use:modal.actions.close
+						class="new-conversation__close"
+						aria-label="Close"
+						onclick={closeConversationPicker}
+					>
 						×
 					</button>
 				</div>

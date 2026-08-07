@@ -3,19 +3,24 @@
 -->
 <script lang="ts">
 	import { createButton } from '@equaltoai/greater-components-headless/button';
-	import { getMessagesContext } from './context.svelte.js';
+	import { getMessagesContext, type Conversation } from './context.svelte.js';
 
 	interface Props {
+		/** Explicit conversation target. Defaults to the context's selected conversation. */
+		conversation?: Conversation | null;
 		class?: string;
 	}
 
-	let { class: className = '' }: Props = $props();
+	let { conversation, class: className = '' }: Props = $props();
 
 	const { state: messagesState, sendMessage } = getMessagesContext();
 
 	let content = $state('');
 
-	const isPendingRequest = $derived(messagesState.selectedConversation?.requestState === 'PENDING');
+	const activeConversation = $derived(
+		conversation === undefined ? messagesState.selectedConversation : conversation
+	);
+	const isPendingRequest = $derived(activeConversation?.requestState === 'PENDING');
 
 	const sendButton = createButton({
 		onClick: () => handleSend(),
@@ -25,7 +30,7 @@
 		if (!content.trim() || messagesState.loading || isPendingRequest) return;
 
 		try {
-			await sendMessage(content.trim());
+			await sendMessage(content.trim(), undefined, activeConversation ?? undefined);
 			content = '';
 		} catch {
 			// Error handled by context
@@ -40,7 +45,7 @@
 	}
 </script>
 
-{#if messagesState.selectedConversation}
+{#if activeConversation}
 	<div class={`messages-composer ${className}`}>
 		<textarea
 			class="messages-composer__input"
