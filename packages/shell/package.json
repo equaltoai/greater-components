@@ -2,7 +2,7 @@
   "name": "@equaltoai/greater-components-shell",
   "version": "0.11.9",
   "type": "module",
-  "description": "App shell layout components for Greater Components (Shell, Sidebar, Topbar, Panel, StatCard, SummaryStrip, PageFrame, PageTitle, Breadcrumb, Callout)",
+  "description": "App shell layout components for Greater Components (Shell, Sidebar, Topbar, BottomNav, Panel, StatCard, SummaryStrip, PageFrame, PageTitle, Breadcrumb, Callout)",
   "license": "AGPL-3.0-only",
   "author": "Greater Contributors",
   "repository": {
@@ -34,6 +34,11 @@
       "types": "./dist/components/Topbar.svelte.d.ts",
       "svelte": "./dist/components/Topbar.svelte",
       "import": "./dist/components/Topbar.svelte"
+    },
+    "./BottomNav": {
+      "types": "./dist/components/BottomNav.svelte.d.ts",
+      "svelte": "./dist/components/BottomNav.svelte",
+      "import": "./dist/components/BottomNav.svelte"
     },
     "./Panel": {
       "types": "./dist/components/Panel.svelte.d.ts",

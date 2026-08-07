@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-07T23:56:13.292Z",
+  "generatedAt": "2026-08-07T23:58:42.463Z",
   "ref": "greater-v0.11.9",
   "version": "0.11.9",
   "checksums": {
@@ -1351,6 +1351,8 @@
     "packages/content/src/components/CodeBlock.svelte": "sha256-rOSrHh383dE4rGjCMNq/tRle1/VgHuFohiDo2kECbQ4=",
     "packages/content/src/components/MarkdownRenderer.svelte": "sha256-QDI+xz6KliGlz3YV4aCWAoqUmX4cajonVHV/+1doQL0=",
     "packages/content/src/index.ts": "sha256-scEWe7C3B3+/JBaILqZd8c1ZiqZnKapfy8kz4SPFZSY=",
+    "packages/shell/src/components/BottomNav.css": "sha256-/FCtNnf2hGe2/F4u1xXbJXg+0gDqqD/vNrJTdomsJhM=",
+    "packages/shell/src/components/BottomNav.svelte": "sha256-l4d6qb+MOXn7D+Hd99U5rBs6b9RrUj/6Jls6S9DKHTE=",
     "packages/shell/src/components/Breadcrumb.css": "sha256-SW9UA4xhl8K1fKwS/h/Htyui7GujRdNCCznfRrPJ8qY=",
     "packages/shell/src/components/Breadcrumb.svelte": "sha256-Wy1+D8ogvJ7egWGxelLqprshUgz2uqrncc1W8HSc9Ms=",
     "packages/shell/src/components/Callout.css": "sha256-LnnrUMfn9/3VcHX6zcDZFSpqe7nKRMZKAI71Jkpgq+8=",
@@ -1373,7 +1375,7 @@
     "packages/shell/src/components/SummaryStrip.svelte": "sha256-NNogNLiDalDVA/J2I41BLjv4GxwAh/heQ1V6yw7mr/c=",
     "packages/shell/src/components/Topbar.css": "sha256-e49AWpuwlaEBLxqeDvM8sMNuwlqugOB+54w1y+7ojME=",
     "packages/shell/src/components/Topbar.svelte": "sha256-QXASS11a1RlKcnxqDskrt0PwkGTt7zvr+LrK2uWHm80=",
-    "packages/shell/src/index.ts": "sha256-NLhn3AXDEWBZsC7ACM0NX2/1Uq0CzDuQwYjVG4zGXhw=",
+    "packages/shell/src/index.ts": "sha256-fBqTAy+lriasQEwSQKw/vRKV0VOWR1jbcBFl5iunDW0=",
     "packages/shell/src/styles/base.css": "sha256-9aQezHdlFN9B4Ccb07tZ7/D2YwIXsoAeFfAKC6TuUbg=",
     "packages/shell/src/types.ts": "sha256-xRnEGFsxQoJKt05wbZb+rbvOVbkbNb5UCpXOSovR8hI=",
     "packages/shell/src/utils/fuzzy-filter.ts": "sha256-ZopMxsr/aoZ3BqcmGydIR4DOwysud9oxTBLp88qVXt8=",
@@ -8761,9 +8763,19 @@
     "shell": {
       "name": "shell",
       "version": "0.11.9",
-      "description": "App shell layout components for Greater Components (Shell, Sidebar, Topbar, Panel, StatCard, SummaryStrip, PageFrame, PageTitle, Breadcrumb, Callout)",
+      "description": "App shell layout components for Greater Components (Shell, Sidebar, Topbar, BottomNav, Panel, StatCard, SummaryStrip, PageFrame, PageTitle, Breadcrumb, Callout)",
       "type": "components",
       "files": [
+        {
+          "path": "src/components/BottomNav.css",
+          "checksum": "sha256-/FCtNnf2hGe2/F4u1xXbJXg+0gDqqD/vNrJTdomsJhM=",
+          "size": 1317
+        },
+        {
+          "path": "src/components/BottomNav.svelte",
+          "checksum": "sha256-l4d6qb+MOXn7D+Hd99U5rBs6b9RrUj/6Jls6S9DKHTE=",
+          "size": 1100
+        },
         {
           "path": "src/components/Breadcrumb.css",
           "checksum": "sha256-SW9UA4xhl8K1fKwS/h/Htyui7GujRdNCCznfRrPJ8qY=",
@@ -8876,8 +8888,8 @@
         },
         {
           "path": "src/index.ts",
-          "checksum": "sha256-NLhn3AXDEWBZsC7ACM0NX2/1Uq0CzDuQwYjVG4zGXhw=",
-          "size": 2511
+          "checksum": "sha256-fBqTAy+lriasQEwSQKw/vRKV0VOWR1jbcBFl5iunDW0=",
+          "size": 2637
         },
         {
           "path": "src/styles/base.css",
