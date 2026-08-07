@@ -163,6 +163,83 @@ describe('Update Command', () => {
 	});
 
 	describe('Conflict Resolution & Update Logic', () => {
+		it('loads each registry ref once for a large --all batch', async () => {
+			const installed = Array.from({ length: 250 }, (_, index) =>
+				createInstalledComponent(`component-${index}`)
+			);
+			mockFs.set('/components.json', JSON.stringify(createTestConfig({ installed })));
+
+			const { updateAction } = await import('../src/commands/update.js');
+			await updateAction([], { cwd: '/', all: true, yes: true, force: true });
+
+			const { fetchRegistryIndex } = await import('../src/utils/registry-index.js');
+			const fetchedRefs = vi.mocked(fetchRegistryIndex).mock.calls.map(([ref]) => ref);
+			expect(fetchedRefs).toHaveLength(2);
+			expect(new Set(fetchedRefs).size).toBe(2);
+		});
+
+		it('hydrates every update file from one shared target registry index', async () => {
+			const config = createTestConfig({
+				installed: [createInstalledComponent('messaging')],
+			});
+			mockFs.set('/components.json', JSON.stringify(config));
+
+			const { getComponent } = await import('../src/registry/index.js');
+			vi.mocked(getComponent).mockReturnValueOnce(
+				createTestComponentMetadata('messaging', {
+					type: 'shared',
+					files: [{ path: 'shared/messaging/index.ts', content: '', type: 'utils' }],
+				})
+			);
+
+			const targetIndex = {
+				schemaVersion: '1.0.0',
+				version: '0.13.0',
+				ref: 'greater-v0.13.0',
+				generatedAt: new Date(0).toISOString(),
+				checksums: {},
+				components: {},
+				faces: {},
+				shared: {
+					messaging: {
+						name: 'messaging',
+						version: '0.13.0',
+						files: [
+							{ path: 'src/index.ts', checksum: 'sha256-YQ==' },
+							{ path: 'src/sanitize.ts', checksum: 'sha256-Yg==' },
+						],
+						dependencies: [],
+						peerDependencies: [],
+						types: [],
+					},
+				},
+			};
+			const { fetchRegistryIndex } = await import('../src/utils/registry-index.js');
+			vi.mocked(fetchRegistryIndex).mockResolvedValueOnce(targetIndex);
+
+			const { fetchComponentFiles } = await import('../src/utils/fetch.js');
+			vi.mocked(fetchComponentFiles).mockImplementationOnce(async (component, options) => ({
+				files: component.files.map((file) => ({ ...file, content: `// ${file.path}` })),
+				verified: true,
+				ref: options.ref ?? 'greater-v0.13.0',
+			}));
+
+			const { updateAction } = await import('../src/commands/update.js');
+			await updateAction(['messaging'], { cwd: '/', yes: true, force: true });
+
+			expect(mockFs.get('/src/shared/messaging/sanitize.ts')).toContain('sanitize.ts');
+			const fetchedRefs = vi.mocked(fetchRegistryIndex).mock.calls.map(([ref]) => ref);
+			expect(new Set(fetchedRefs).size).toBe(fetchedRefs.length);
+			expect(fetchComponentFiles).toHaveBeenCalledWith(
+				expect.objectContaining({
+					files: expect.arrayContaining([
+						expect.objectContaining({ path: 'shared/messaging/sanitize.ts' }),
+					]),
+				}),
+				expect.objectContaining({ registryIndex: targetIndex })
+			);
+		});
+
 		it('skips identical files', async () => {
 			const config = createTestConfig({
 				installed: [createInstalledComponent('button')],

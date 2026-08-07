@@ -57,7 +57,18 @@ import { resolveRefForFetch } from '../utils/ref.js';
 const GREATER_COMPONENTS_PACKAGE = '@equaltoai/greater-components';
 const GREATER_TAG_VERSION_RE = /^greater-v(\d+\.\d+\.\d+(?:-[0-9A-Za-z-.]+)?)$/;
 
-const CORE_PACKAGES = ['primitives', 'icons', 'tokens', 'utils', 'content', 'adapters', 'headless'];
+// Baseline packages needed by every vendored face/shared surface. Optional
+// capabilities such as `content` are resolved only when a selected component
+// (for example the blog editor) declares them; reader-only installs must not
+// inherit Markdown/editor dependencies merely because they use a face.
+export const VENDORED_BASELINE_PACKAGES = [
+	'primitives',
+	'icons',
+	'tokens',
+	'utils',
+	'adapters',
+	'headless',
+] as const;
 
 function getGreaterComponentsVersionSpec(ref: string): string {
 	const match = GREATER_TAG_VERSION_RE.exec(ref);
@@ -313,7 +324,7 @@ export const addAction = async (
 		: false;
 
 	if (needsCorePackages) {
-		const missingCore = CORE_PACKAGES.filter(
+		const missingCore = VENDORED_BASELINE_PACKAGES.filter(
 			(pkg) => !skipInstalled.includes(pkg) && !resolution.resolved.some((dep) => dep.name === pkg)
 		);
 

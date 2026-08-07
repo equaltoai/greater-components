@@ -207,7 +207,7 @@ export function mapRegistryFilePathToInstallPath(
 	return null;
 }
 
-function hydrateMetadataFilesFromRegistryIndex(
+export function hydrateMetadataFilesFromRegistryIndex(
 	name: string,
 	type: ResolvedDependency['type'],
 	metadata: ComponentMetadata | FaceManifest | SharedModuleMetadata | PatternMetadata,
