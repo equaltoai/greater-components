@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-07T18:25:03.395Z",
+  "generatedAt": "2026-08-07T18:26:28.425Z",
   "ref": "greater-v0.11.9",
   "version": "0.11.9",
   "checksums": {
@@ -1218,14 +1218,14 @@
     "packages/adapters/src/graphql/client.d.ts": "sha256-flla8fzNoB0zTKoCPaE4qFXaRB/hjluSlSnsJlRB5i8=",
     "packages/adapters/src/graphql/client.d.ts.map": "sha256-04AauZ8eR88ta3iOwB5SAhbzceSk4aw8+2VPTzDDvss=",
     "packages/adapters/src/graphql/client.ts": "sha256-G2+gPI9iro/ZIwDjifxptx9QayzFu72OzsaArsw9M1c=",
-    "packages/adapters/src/graphql/generated/types.d.ts": "sha256-N6yc4JIPZPH4iIzD0/X+SBmowKmt3Juz6LlRs1HipuA=",
-    "packages/adapters/src/graphql/generated/types.d.ts.map": "sha256-PbsNfZCVPk+5OlDvHpDBkvAno5qwo9QvKpnoilBFXXs=",
-    "packages/adapters/src/graphql/generated/types.ts": "sha256-e2LN+HQUFiE+TAym//qw6cWoVefFcaA0ouP9XGMzUpY=",
+    "packages/adapters/src/graphql/generated/types.d.ts": "sha256-rH1evMTmlfStZqKI6obrcKWu504KSe5BvWvpk+GjA58=",
+    "packages/adapters/src/graphql/generated/types.d.ts.map": "sha256-xeQPMmDwGtXjQNL/2q/iItXdH40AluHN/1yWJ0BQmJk=",
+    "packages/adapters/src/graphql/generated/types.ts": "sha256-+XOZGP0T4yI4UkwfXy6Yw3VYBla1is5KY8iGYPaKTN4=",
     "packages/adapters/src/graphql/index.d.ts": "sha256-Eu5nqaAHgFoa1HyMOE/cKCigJGYf8t8TxzmxibQR2Mk=",
     "packages/adapters/src/graphql/index.d.ts.map": "sha256-1CLcm1bQwtrlzXsVrZEgGwv3nyuONkS+P1KQcTzKPfM=",
     "packages/adapters/src/graphql/index.ts": "sha256-330bRj505ZOWM5XTbOpFZW1n8sy2/SCbzCu9XXYvrOA=",
     "packages/adapters/src/graphql/LesserGraphQLAdapter.d.ts": "sha256-Ygqsw+cFct65SmbG+VZOHcqr+fRWWFmxsfKXbbRH1jc=",
-    "packages/adapters/src/graphql/LesserGraphQLAdapter.d.ts.map": "sha256-9Az0QFpyJ67Q8cegqrlj3XjIFDxorhehPjugLUEFyPY=",
+    "packages/adapters/src/graphql/LesserGraphQLAdapter.d.ts.map": "sha256-a2uKGCPUjb2fdfg2yr/3znXTunPqumIqd3bFs1RZv08=",
     "packages/adapters/src/graphql/LesserGraphQLAdapter.ts": "sha256-R9I41qls8ilPqgUIuW3s/wfRS+2278ou9kYHxKXD+Fk=",
     "packages/adapters/src/graphql/optimistic.d.ts": "sha256-DO9Yg7q9e9k3+suvhBSBWMn+8+pVGydTpC7e70EPO1w=",
     "packages/adapters/src/graphql/optimistic.d.ts.map": "sha256-3ZgzaXbtuWIbrCr5D8TV88Z8HYKFTxgXUMDuhbZ6Kds=",
@@ -1399,7 +1399,7 @@
     "packages/faces/social/src/adapters/cache.ts": "sha256-32jUHLAsYoK4U0JZ6hswGUlQOmwhJ5yquqhMqyfrc4I=",
     "packages/faces/social/src/adapters/graphql/client.ts": "sha256-yor+sP4J7hzK+igh2s4mujPOUZTRDN/e3nU1eccrSyo=",
     "packages/faces/social/src/adapters/graphql/generated/possible-types.ts": "sha256-jICUa0Jvj62nX0BdiBLTWoH2TII2SjAkM3ivA4dyuyA=",
-    "packages/faces/social/src/adapters/graphql/generated/types.ts": "sha256-e2LN+HQUFiE+TAym//qw6cWoVefFcaA0ouP9XGMzUpY=",
+    "packages/faces/social/src/adapters/graphql/generated/types.ts": "sha256-+XOZGP0T4yI4UkwfXy6Yw3VYBla1is5KY8iGYPaKTN4=",
     "packages/faces/social/src/adapters/graphql/index.ts": "sha256-GcA5R3Ss8R7jf8ElMym2TuDg4xCS3bnDjscVLa+gxEc=",
     "packages/faces/social/src/adapters/graphql/queries.ts": "sha256-I59rg3+sNOaao13C2bNxrFRgMOVyVpVQW9MvHwzupzU=",
     "packages/faces/social/src/adapters/graphql/timeline-type.ts": "sha256-Qd/YZETo8Kz614V7/tigUC77zJ/QuWX8vKjAUMd7V/E=",
@@ -8059,18 +8059,18 @@
         },
         {
           "path": "src/graphql/generated/types.d.ts",
-          "checksum": "sha256-N6yc4JIPZPH4iIzD0/X+SBmowKmt3Juz6LlRs1HipuA=",
-          "size": 1934947
+          "checksum": "sha256-rH1evMTmlfStZqKI6obrcKWu504KSe5BvWvpk+GjA58=",
+          "size": 1935119
         },
         {
           "path": "src/graphql/generated/types.d.ts.map",
-          "checksum": "sha256-PbsNfZCVPk+5OlDvHpDBkvAno5qwo9QvKpnoilBFXXs=",
-          "size": 1632728
+          "checksum": "sha256-xeQPMmDwGtXjQNL/2q/iItXdH40AluHN/1yWJ0BQmJk=",
+          "size": 1632817
         },
         {
           "path": "src/graphql/generated/types.ts",
-          "checksum": "sha256-e2LN+HQUFiE+TAym//qw6cWoVefFcaA0ouP9XGMzUpY=",
-          "size": 2630346
+          "checksum": "sha256-+XOZGP0T4yI4UkwfXy6Yw3VYBla1is5KY8iGYPaKTN4=",
+          "size": 2630514
         },
         {
           "path": "src/graphql/index.d.ts",
@@ -8094,7 +8094,7 @@
         },
         {
           "path": "src/graphql/LesserGraphQLAdapter.d.ts.map",
-          "checksum": "sha256-9Az0QFpyJ67Q8cegqrlj3XjIFDxorhehPjugLUEFyPY=",
+          "checksum": "sha256-a2uKGCPUjb2fdfg2yr/3znXTunPqumIqd3bFs1RZv08=",
           "size": 81519
         },
         {
@@ -9115,8 +9115,8 @@
         },
         {
           "path": "src/adapters/graphql/generated/types.ts",
-          "checksum": "sha256-e2LN+HQUFiE+TAym//qw6cWoVefFcaA0ouP9XGMzUpY=",
-          "size": 2630346
+          "checksum": "sha256-+XOZGP0T4yI4UkwfXy6Yw3VYBla1is5KY8iGYPaKTN4=",
+          "size": 2630514
         },
         {
           "path": "src/adapters/graphql/index.ts",
