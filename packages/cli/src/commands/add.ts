@@ -45,7 +45,6 @@ import {
 } from '../utils/install-preview.js';
 import {
 	resolveFaceDependencies,
-	updateConfigWithFace,
 	injectFaceCss,
 	displayFaceInstallSummary,
 } from '../utils/face-installer.js';

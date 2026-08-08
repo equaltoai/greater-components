@@ -52,6 +52,19 @@ const NEW_REF = 'a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4';
 
 const SOCIAL_SRC = 'packages/faces/social/src/';
 const MESSAGING_SRC = 'packages/shared/messaging/src/';
+const PRIOR_SOURCE_ROOT = path.join(__dirname, '../fixtures/upgrade-greater-v0.13.0/prior-source');
+
+/**
+ * Read released bytes when a source changed after v0.13.0, otherwise use the
+ * still-identical working-tree copy. Adding an override is mandatory whenever
+ * the checksum tripwire below detects a newly changed fixture source.
+ */
+function readPriorSource(sourcePath: string): Buffer {
+	const overridePath = path.join(PRIOR_SOURCE_ROOT, sourcePath);
+	return fs.existsSync(overridePath)
+		? fs.readFileSync(overridePath)
+		: fs.readFileSync(path.join(REPO_ROOT!, sourcePath));
+}
 
 /** The file set `social-timeline` shipped at greater-v0.13.0. */
 const V0_13_0_FILES = [
@@ -223,6 +236,9 @@ vi.mock('../../src/utils/git-fetch.js', async (importOriginal) => {
 			if (oldIndexUnavailable && ref === OLD_REF) {
 				throw new actual.NetworkError(`simulated outage for ref ${ref}`, 503);
 			}
+			if (ref === OLD_REF) {
+				return readPriorSource(filePath);
+			}
 			const onDisk = nodePath.join(REPO_ROOT!, filePath);
 			if (!nodeFs.existsSync(onDisk)) {
 				throw new actual.NetworkError(`File not found: ${filePath} at ref ${ref}`, 404);
@@ -314,7 +330,7 @@ describe('greater update: greater-v0.13.0 → retired-store registry shape', () 
 		for (const installPath of [...V0_13_0_FILES, ...MESSAGING_INSTALL_PATHS]) {
 			const sourcePath = sourceFor(installPath);
 			const localPath = getInstalledFilePath(installPath, config, cwd);
-			const content = fs.readFileSync(path.join(REPO_ROOT!, sourcePath), 'utf-8');
+			const content = readPriorSource(sourcePath).toString('utf-8');
 			const rendered = transformImports(content, config, installPath, {
 				sourceFilePath: localPath,
 				consumerRoot: cwd,
@@ -359,17 +375,16 @@ describe('greater update: greater-v0.13.0 → retired-store registry shape', () 
 		return fs.readJsonSync(path.join(cwd, 'components.json'));
 	}
 
-	it('serves prior-ref bytes that match the released greater-v0.13.0 checksums', () => {
-		// Tripwire: the fixture pins the *released* hashes while the bytes come from
-		// the working tree. If a future change edits these sources, this fails here
-		// with a clear cause instead of surfacing as an opaque integrity error.
+	it('serves prior-ref fixture bytes that match the released greater-v0.13.0 checksums', () => {
+		// Tripwire: unchanged files may still come from the working tree, while
+		// post-release edits must add a prior-source override with the released bytes.
 		for (const installPath of [...V0_13_0_FILES, ...MESSAGING_INSTALL_PATHS]) {
 			const sourcePath = sourceFor(installPath);
 			const expected = priorChecksums[sourcePath];
 			expect(expected, `missing greater-v0.13.0 checksum for ${sourcePath}`).toBeDefined();
 			expect(
-				computeChecksum(fs.readFileSync(path.join(REPO_ROOT!, sourcePath))),
-				`${sourcePath} differs from greater-v0.13.0; refresh fixtures/upgrade-greater-v0.13.0`
+				computeChecksum(readPriorSource(sourcePath)),
+				`${sourcePath} differs from greater-v0.13.0; add its released bytes under fixtures/upgrade-greater-v0.13.0/prior-source`
 			).toBe(expected);
 		}
 	});
