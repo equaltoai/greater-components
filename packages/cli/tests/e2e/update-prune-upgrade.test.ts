@@ -23,9 +23,10 @@
  *   check against the released hashes rather than against itself;
  * - the target ref's checksums are computed from the working tree, which is what
  *   `registry/index.json` regeneration produces for the same sources;
- * - file bytes come from the real `packages/faces/social/src/**` and
- *   `packages/shared/messaging/src/**` trees, which are byte-identical at both
- *   refs (asserted below, so the fixture cannot drift silently).
+ * - file bytes normally come from the real `packages/faces/social/src/**` and
+ *   `packages/shared/messaging/src/**` trees; sources changed since v0.13.0 use
+ *   vendored released bytes, while the checksum tripwire below prevents either
+ *   path from drifting silently.
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -44,6 +45,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const REPO_ROOT = findLocalRepoRoot(__dirname);
 if (!REPO_ROOT) throw new Error('could not locate the greater-components repo root');
+const VERIFIED_REPO_ROOT = REPO_ROOT;
 
 /** The commit `greater-v0.13.0` points at — what `components.json` records. */
 const OLD_REF = 'ce8f3d9dd4080eb6886e1dd1cb444d65712eca36';
@@ -63,7 +65,7 @@ function readPriorSource(sourcePath: string): Buffer {
 	const overridePath = path.join(PRIOR_SOURCE_ROOT, sourcePath);
 	return fs.existsSync(overridePath)
 		? fs.readFileSync(overridePath)
-		: fs.readFileSync(path.join(REPO_ROOT!, sourcePath));
+		: fs.readFileSync(path.join(VERIFIED_REPO_ROOT, sourcePath));
 }
 
 /** The file set `social-timeline` shipped at greater-v0.13.0. */
@@ -134,13 +136,13 @@ const priorChecksums: Record<string, string> = {
 };
 
 function listSources(prefix: string): string[] {
-	const root = path.join(REPO_ROOT!, prefix);
+	const root = path.join(VERIFIED_REPO_ROOT, prefix);
 	const out: string[] = [];
 	const walk = (dir: string) => {
 		for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
 			const full = path.join(dir, entry.name);
 			if (entry.isDirectory()) walk(full);
-			else out.push(path.relative(REPO_ROOT!, full).split(path.sep).join('/'));
+			else out.push(path.relative(VERIFIED_REPO_ROOT, full).split(path.sep).join('/'));
 		}
 	};
 	walk(root);
@@ -184,7 +186,7 @@ function makeIndex(ref: string, checksums: Record<string, string>): RegistryInde
 const targetChecksums: Record<string, string> = Object.fromEntries(
 	[...listSources(SOCIAL_SRC), ...listSources(MESSAGING_SRC)].map((rel) => [
 		rel,
-		computeChecksum(fs.readFileSync(path.join(REPO_ROOT!, rel))),
+		computeChecksum(fs.readFileSync(path.join(VERIFIED_REPO_ROOT, rel))),
 	])
 );
 
@@ -239,7 +241,7 @@ vi.mock('../../src/utils/git-fetch.js', async (importOriginal) => {
 			if (ref === OLD_REF) {
 				return readPriorSource(filePath);
 			}
-			const onDisk = nodePath.join(REPO_ROOT!, filePath);
+			const onDisk = nodePath.join(VERIFIED_REPO_ROOT, filePath);
 			if (!nodeFs.existsSync(onDisk)) {
 				throw new actual.NetworkError(`File not found: ${filePath} at ref ${ref}`, 404);
 			}
