@@ -1,0 +1,2 @@
+# Preserve byte-exact released source fixtures, including historical trailing spaces.
+packages/cli/tests/fixtures/upgrade-greater-v0.13.0/prior-source/** whitespace=-trailing-space
