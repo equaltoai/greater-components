@@ -111,6 +111,21 @@ const SHARED_MODULES = [
 	'agent',
 ];
 
+// Shared suites currently consume the owning Face's consolidated stylesheet.
+// Recording that relationship explicitly lets source-install consumers fetch
+// appearance assets without guessing which Face defines a module's classes.
+const SHARED_CSS_FACE = {
+	auth: 'social',
+	compose: 'social',
+	notifications: 'social',
+	search: 'social',
+	admin: 'community',
+	chat: 'agent',
+	messaging: 'social',
+	soul: 'agent',
+	agent: 'agent',
+};
+
 // Colors for terminal output
 const colors = {
 	green: '\x1b[32m',
@@ -620,6 +635,25 @@ function processFiles(packageDir, srcDir, extensions, verbose) {
 	return result;
 }
 
+function toRepositoryCssRecords(files, repositoryPrefix) {
+	return files
+		.filter((file) => file.path.toLowerCase().endsWith('.css'))
+		.map((file) => ({ ...file, path: `${repositoryPrefix}/${file.path}` }));
+}
+
+function getFaceThemeCssRecord(faceName) {
+	const themePath = path.join(PACKAGES_DIR, 'faces', faceName, 'src', 'theme.css');
+	if (!fs.existsSync(themePath)) return [];
+	const content = fs.readFileSync(themePath);
+	return [
+		{
+			path: `packages/faces/${faceName}/src/theme.css`,
+			checksum: computeChecksum(content),
+			size: fs.statSync(themePath).size,
+		},
+	];
+}
+
 /**
  * Collect versions of all workspace packages
  */
@@ -767,6 +801,7 @@ function processPackage(packageName, config, verbose, workspaceVersions) {
 		description: packageJson.description || '',
 		type: config.type,
 		files,
+		css: toRepositoryCssRecords(files, `packages/${packageName}`),
 		dependencies: internalDeps.map((dep) => ({
 			name: dep.replace('@equaltoai/greater-components-', ''),
 			version: resolveDependencyVersion(dep, packageJson, workspaceVersions),
@@ -857,6 +892,7 @@ function processFace(faceName, verbose, workspaceVersions) {
 			components: [],
 		},
 		files,
+		css: toRepositoryCssRecords(files, `packages/faces/${faceName}`),
 		styles: {
 			main: `@equaltoai/greater-components/faces/${faceName}/style.css`,
 			tokens: '@equaltoai/greater-components/tokens/theme.css',
@@ -929,6 +965,7 @@ function processSharedModule(moduleName, verbose, workspaceVersions) {
 		description: manifest.description,
 		exports: getManifestExports(manifest),
 		files,
+		css: getFaceThemeCssRecord(SHARED_CSS_FACE[moduleName] ?? 'social'),
 		dependencies: filteredInternalDeps.sort().map((dep) => ({
 			name: dep.replace('@equaltoai/greater-components-', ''),
 			version: resolveDependencyVersion(dep, packageJson, workspaceVersions),

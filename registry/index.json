@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-07T23:58:42.463Z",
+  "generatedAt": "2026-08-08T00:02:04.573Z",
   "ref": "greater-v0.11.9",
   "version": "0.11.9",
   "checksums": {
@@ -2882,6 +2882,13 @@
           "size": 3497
         }
       ],
+      "css": [
+        {
+          "path": "packages/primitives/src/theme.css",
+          "checksum": "sha256-K1gPUNDS0XRNSK0upa3TyPz3f9s+lSWOlqnDq/oG5F0=",
+          "size": 108490
+        }
+      ],
       "dependencies": [
         { "name": "icons", "version": "0.11.9" },
         { "name": "tokens", "version": "0.11.9" },
@@ -3037,6 +3044,7 @@
           "size": 1970
         }
       ],
+      "css": [],
       "dependencies": [],
       "peerDependencies": [
         { "name": "focus-trap", "version": "^8.2.2" },
@@ -7612,6 +7620,7 @@
           "size": 38968
         }
       ],
+      "css": [],
       "dependencies": [],
       "peerDependencies": [{ "name": "svelte", "version": "^5.55.1" }],
       "tags": []
@@ -7691,6 +7700,18 @@
           "path": "src/tokens.json",
           "checksum": "sha256-WWWGm5HpvuOzd0eI2d3pu7LSif7Gwf/P7649asgRhIk=",
           "size": 5671
+        }
+      ],
+      "css": [
+        {
+          "path": "packages/tokens/src/animations.css",
+          "checksum": "sha256-aQE2c513JeeJYYpwXT1nW9IJUH2xIhqsvtK0/gOjTOw=",
+          "size": 5794
+        },
+        {
+          "path": "packages/tokens/src/high-contrast.css",
+          "checksum": "sha256-KyaSWH5jFeCPS8cjgEP7soFCjWWgRnySBKMdPML6Qt8=",
+          "size": 6180
         }
       ],
       "dependencies": [],
@@ -7959,6 +7980,7 @@
           "size": 912
         }
       ],
+      "css": [],
       "dependencies": [],
       "peerDependencies": [
         { "name": "hast-util-to-mdast", "version": "^10.1.2" },
@@ -8710,6 +8732,7 @@
           "size": 11439
         }
       ],
+      "css": [],
       "dependencies": [],
       "peerDependencies": [
         { "name": "@apollo/client", "version": "4.2.9" },
@@ -8744,6 +8767,7 @@
           "size": 1119
         }
       ],
+      "css": [],
       "dependencies": [{ "name": "primitives", "version": "0.11.9" }],
       "peerDependencies": [
         { "name": "hast-util-sanitize", "version": "^5.0.2" },
@@ -8912,6 +8936,73 @@
           "size": 1125
         }
       ],
+      "css": [
+        {
+          "path": "packages/shell/src/components/BottomNav.css",
+          "checksum": "sha256-/FCtNnf2hGe2/F4u1xXbJXg+0gDqqD/vNrJTdomsJhM=",
+          "size": 1317
+        },
+        {
+          "path": "packages/shell/src/components/Breadcrumb.css",
+          "checksum": "sha256-SW9UA4xhl8K1fKwS/h/Htyui7GujRdNCCznfRrPJ8qY=",
+          "size": 885
+        },
+        {
+          "path": "packages/shell/src/components/Callout.css",
+          "checksum": "sha256-LnnrUMfn9/3VcHX6zcDZFSpqe7nKRMZKAI71Jkpgq+8=",
+          "size": 3118
+        },
+        {
+          "path": "packages/shell/src/components/CommandPalette.css",
+          "checksum": "sha256-/IGfp1GGTymIqO1Ti/TqyhNh4l6bvCqhd4On971rKCo=",
+          "size": 4969
+        },
+        {
+          "path": "packages/shell/src/components/PageFrame.css",
+          "checksum": "sha256-uiWRrFQ2HAFj1yBpi2eSLVi2DEGdju5WB4Y+AHL0mlA=",
+          "size": 1410
+        },
+        {
+          "path": "packages/shell/src/components/PageTitle.css",
+          "checksum": "sha256-jy/Vfn9B9VBstoMHrWA0oPdblW8hxPoRexTCf7c1TiU=",
+          "size": 1146
+        },
+        {
+          "path": "packages/shell/src/components/Panel.css",
+          "checksum": "sha256-3mw/B4mA2dW6IHHEkN0cEGSKCZ1NLe/SQWvcAgHsyBU=",
+          "size": 2105
+        },
+        {
+          "path": "packages/shell/src/components/Shell.css",
+          "checksum": "sha256-VvpaGQYzTvXo/rAZ02XGkS9gVI4IZeOzNjSoR/sc+4s=",
+          "size": 2657
+        },
+        {
+          "path": "packages/shell/src/components/Sidebar.css",
+          "checksum": "sha256-+4ATI7iyp9md6prETS8P7EN3Tmnyc6XDBEe8KRDX4Tk=",
+          "size": 2312
+        },
+        {
+          "path": "packages/shell/src/components/StatCard.css",
+          "checksum": "sha256-0vRDyzUYkP8TP0Wft3/P0VjEl77URF8NhWfhJ6igrZ0=",
+          "size": 2726
+        },
+        {
+          "path": "packages/shell/src/components/SummaryStrip.css",
+          "checksum": "sha256-UmCUZShti+oqEmlDg2gKYXGcc0lS92d2EOtWy8ZCayI=",
+          "size": 1365
+        },
+        {
+          "path": "packages/shell/src/components/Topbar.css",
+          "checksum": "sha256-e49AWpuwlaEBLxqeDvM8sMNuwlqugOB+54w1y+7ojME=",
+          "size": 1143
+        },
+        {
+          "path": "packages/shell/src/styles/base.css",
+          "checksum": "sha256-9aQezHdlFN9B4Ccb07tZ7/D2YwIXsoAeFfAKC6TuUbg=",
+          "size": 2689
+        }
+      ],
       "dependencies": [
         { "name": "headless", "version": "0.11.9" },
         { "name": "utils", "version": "0.11.9" }
@@ -9014,6 +9105,43 @@
           "path": "src/utils/sparkline.ts",
           "checksum": "sha256-j+qDcXr+pTHHVFNCTtly1D0gVIUpVVjq+wxCCDVkTFc=",
           "size": 5481
+        }
+      ],
+      "css": [
+        {
+          "path": "packages/host-platform/src/components/ActivitySparkline.css",
+          "checksum": "sha256-M5jmOBJkZLPyqJ7v9irZ+pKWRT3mFFWSEvfuhTvtxPE=",
+          "size": 1533
+        },
+        {
+          "path": "packages/host-platform/src/components/CostGauge.css",
+          "checksum": "sha256-Nqt1VHD3Oo4dTazxtAkpohWq97YHnRKs2lI44IDCNbY=",
+          "size": 13886
+        },
+        {
+          "path": "packages/host-platform/src/components/FleetCard.css",
+          "checksum": "sha256-rslZpcvYjpViDEP6F08QV9gGDTgCmiqYiQ95zuX2wXQ=",
+          "size": 4608
+        },
+        {
+          "path": "packages/host-platform/src/components/ProvisioningTimeline.css",
+          "checksum": "sha256-rphEj1C3PlOup0baAgJyDSkSiZmzvMX2JhOBlpGj+J4=",
+          "size": 6355
+        },
+        {
+          "path": "packages/host-platform/src/components/ReleaseTimeline.css",
+          "checksum": "sha256-UCzT8op2KiKophHU40Bcfv80iMmv22DjWH2nMAxfLNY=",
+          "size": 5801
+        },
+        {
+          "path": "packages/host-platform/src/components/StackMatrix.css",
+          "checksum": "sha256-K59j8igR3hBFO2cFyaq3Rp0Dkjypg3+DM4wLCSWN9cY=",
+          "size": 5005
+        },
+        {
+          "path": "packages/host-platform/src/styles/base.css",
+          "checksum": "sha256-razMHs+WCheiXksb3g4y90O42WAyMruExK9MiNmJbhc=",
+          "size": 1777
         }
       ],
       "dependencies": [{ "name": "utils", "version": "0.11.9" }],
@@ -9701,6 +9829,18 @@
           "size": 6880
         }
       ],
+      "css": [
+        {
+          "path": "packages/faces/social/src/greater-components-fediverse.css",
+          "checksum": "sha256-z2CS6GdB5T5L6AFt6m83Q+Win15ckZH71V0pf8N9G34=",
+          "size": 23
+        },
+        {
+          "path": "packages/faces/social/src/theme.css",
+          "checksum": "sha256-jWzBOQrht8wCb7IIO2aezpPjsAtLMPGMdJqbMn3jS5Y=",
+          "size": 315681
+        }
+      ],
       "styles": {
         "main": "@equaltoai/greater-components/faces/social/style.css",
         "tokens": "@equaltoai/greater-components/tokens/theme.css"
@@ -10063,6 +10203,13 @@
           "size": 23220
         }
       ],
+      "css": [
+        {
+          "path": "packages/faces/blog/src/theme.css",
+          "checksum": "sha256-SvYCF1HQ0E0aG4MUDwW+MBEDrp/ar2GcAOadUSjiDM4=",
+          "size": 33513
+        }
+      ],
       "styles": {
         "main": "@equaltoai/greater-components/faces/blog/style.css",
         "tokens": "@equaltoai/greater-components/tokens/theme.css"
@@ -10349,6 +10496,13 @@
           "path": "src/types.ts",
           "checksum": "sha256-wEwXOHVZlULqUqn/FKSLoXzZlJSwTxYExJHQm7+U79I=",
           "size": 19124
+        }
+      ],
+      "css": [
+        {
+          "path": "packages/faces/community/src/theme.css",
+          "checksum": "sha256-Xu367ov8Nqd2lNsx+Y/qT4SGXoCjG1LS0KNwZBWPLg8=",
+          "size": 25710
         }
       ],
       "styles": {
@@ -11241,6 +11395,33 @@
           "size": 7775
         }
       ],
+      "css": [
+        {
+          "path": "packages/faces/artist/src/styles/_accessibility.css",
+          "checksum": "sha256-sjOjf50T7q+Cb48rm024Eegzl4UvhUsT1hre0nR6HZs=",
+          "size": 7146
+        },
+        {
+          "path": "packages/faces/artist/src/styles/_performance.css",
+          "checksum": "sha256-9XsyR0986G83LGliMuOu3/TxMczIvqB2ZVlkAKrpAZE=",
+          "size": 6405
+        },
+        {
+          "path": "packages/faces/artist/src/styles/_reduced-motion.css",
+          "checksum": "sha256-17rBtaCyQXfHE6m/3hSzMyMHoTrOnWAfN/kewvWfRTw=",
+          "size": 4786
+        },
+        {
+          "path": "packages/faces/artist/src/styles/index.css",
+          "checksum": "sha256-8KiG6c5rEq1fvbrTXphWrQuHV4VlL+pkwQY9sVBAAXs=",
+          "size": 413
+        },
+        {
+          "path": "packages/faces/artist/src/theme.css",
+          "checksum": "sha256-V8BN09El7jnzXMS8YPfaCWpdT4CMB4yiYokAQJkEw+A=",
+          "size": 15690
+        }
+      ],
       "styles": {
         "main": "@equaltoai/greater-components/faces/artist/style.css",
         "tokens": "@equaltoai/greater-components/tokens/theme.css"
@@ -11373,6 +11554,13 @@
           "path": "src/types.ts",
           "checksum": "sha256-jT27z4WRCcXVEIVlR33DsbDZsYsxaw4XUAPhM1r0Ww0=",
           "size": 4581
+        }
+      ],
+      "css": [
+        {
+          "path": "packages/faces/agent/src/theme.css",
+          "checksum": "sha256-FsJB9imFWOyYfnWaZZnTw3Vw10nofdARPmC5fU5dlRo=",
+          "size": 201
         }
       ],
       "styles": {
@@ -11517,6 +11705,13 @@
           "path": "src/WebAuthnSetup.svelte",
           "checksum": "sha256-/HEOFxF/jaMT81CDqCytNQcL5mf1gYxvKlnKca5k1Pg=",
           "size": 6521
+        }
+      ],
+      "css": [
+        {
+          "path": "packages/faces/social/src/theme.css",
+          "checksum": "sha256-jWzBOQrht8wCb7IIO2aezpPjsAtLMPGMdJqbMn3jS5Y=",
+          "size": 315681
         }
       ],
       "dependencies": [
@@ -11684,6 +11879,13 @@
           "size": 2209
         }
       ],
+      "css": [
+        {
+          "path": "packages/faces/social/src/theme.css",
+          "checksum": "sha256-jWzBOQrht8wCb7IIO2aezpPjsAtLMPGMdJqbMn3jS5Y=",
+          "size": 315681
+        }
+      ],
       "dependencies": [
         { "name": "adapters", "version": "latest" },
         { "name": "headless", "version": "0.11.9" },
@@ -11805,6 +12007,13 @@
           "size": 3300
         }
       ],
+      "css": [
+        {
+          "path": "packages/faces/social/src/theme.css",
+          "checksum": "sha256-jWzBOQrht8wCb7IIO2aezpPjsAtLMPGMdJqbMn3jS5Y=",
+          "size": 315681
+        }
+      ],
       "dependencies": [
         { "name": "adapters", "version": "0.11.9" },
         { "name": "icons", "version": "0.11.9" },
@@ -11904,6 +12113,13 @@
           "path": "src/TagResult.svelte",
           "checksum": "sha256-HxW5fPk+WPfsOR5QUMFC6tVNgSufQKLbTm5paEL1ypk=",
           "size": 933
+        }
+      ],
+      "css": [
+        {
+          "path": "packages/faces/social/src/theme.css",
+          "checksum": "sha256-jWzBOQrht8wCb7IIO2aezpPjsAtLMPGMdJqbMn3jS5Y=",
+          "size": 315681
         }
       ],
       "dependencies": [
@@ -12143,6 +12359,13 @@
           "size": 11013
         }
       ],
+      "css": [
+        {
+          "path": "packages/faces/community/src/theme.css",
+          "checksum": "sha256-Xu367ov8Nqd2lNsx+Y/qT4SGXoCjG1LS0KNwZBWPLg8=",
+          "size": 25710
+        }
+      ],
       "dependencies": [
         { "name": "adapters", "version": "latest" },
         { "name": "headless", "version": "0.11.9" },
@@ -12268,6 +12491,13 @@
           "path": "src/types.ts",
           "checksum": "sha256-Q3Y9rO+7/JqBAVG3+pZnV8lY9KZDi318Fbs70twvM9k=",
           "size": 9395
+        }
+      ],
+      "css": [
+        {
+          "path": "packages/faces/agent/src/theme.css",
+          "checksum": "sha256-FsJB9imFWOyYfnWaZZnTw3Vw10nofdARPmC5fU5dlRo=",
+          "size": 201
         }
       ],
       "dependencies": [
@@ -12417,6 +12647,13 @@
           "size": 3580
         }
       ],
+      "css": [
+        {
+          "path": "packages/faces/social/src/theme.css",
+          "checksum": "sha256-jWzBOQrht8wCb7IIO2aezpPjsAtLMPGMdJqbMn3jS5Y=",
+          "size": 315681
+        }
+      ],
       "dependencies": [
         { "name": "compose", "version": "0.11.9" },
         { "name": "headless", "version": "0.11.9" },
@@ -12512,6 +12749,13 @@
           "path": "src/utils.ts",
           "checksum": "sha256-CaCSx7yKwUy5bQd0xDTYsJ9KtwYlNg2xEv5WZh0BvFk=",
           "size": 6034
+        }
+      ],
+      "css": [
+        {
+          "path": "packages/faces/agent/src/theme.css",
+          "checksum": "sha256-FsJB9imFWOyYfnWaZZnTw3Vw10nofdARPmC5fU5dlRo=",
+          "size": 201
         }
       ],
       "dependencies": [
@@ -12639,6 +12883,13 @@
           "path": "src/workflow.ts",
           "checksum": "sha256-/+1zlGvvCbqEdBPRkkJaqMfLHtiaFLHojIFaE0G0Vls=",
           "size": 14990
+        }
+      ],
+      "css": [
+        {
+          "path": "packages/faces/agent/src/theme.css",
+          "checksum": "sha256-FsJB9imFWOyYfnWaZZnTw3Vw10nofdARPmC5fU5dlRo=",
+          "size": 201
         }
       ],
       "dependencies": [],
