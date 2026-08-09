@@ -75,8 +75,8 @@ being silently dropped: "not recorded" is itself information a reviewer needs.
 	const grantedAt = $derived(formatReviewDateTime(review.grant?.grantedAt));
 
 	// Names Lesser's rules without claiming progress against them: the active
-	// grant set and the principal's identity are not in the pinned projection,
-	// so any "N of M" here would be invented.
+	// The count is shown only when Lesser's canonical active-reviewer projection
+	// (or an explicit consumer override) supplied it.
 	const approvalText = $derived.by(() => {
 		if (!approvalRequirement) return '';
 

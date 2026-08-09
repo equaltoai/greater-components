@@ -109,6 +109,9 @@ fragment ObjectContentFields on Object {
 	likesCount
 	sharesCount
 	boosted
+	viewerFavourited
+	viewerBookmarked
+	viewerPinned
 	relationshipType
 	contentHash
 	estimatedCost

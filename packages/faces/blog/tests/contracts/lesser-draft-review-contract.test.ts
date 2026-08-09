@@ -72,10 +72,10 @@ describe('Lesser shared-draft review contract', () => {
 	it('is pinned to a release carrying the review surface', () => {
 		const ref = readLesserRef();
 
-		// v1.6.0 added contentHash to verdict records; v1.6.3 retains that surface,
-		// canonical Article.renderedHtml, and server-side article search. The assertions below keep
+		// v1.6.4 adds canonical draft revision, grant-set, and publication eligibility data.
+		// The assertions below keep
 		// the review chrome pinned to the exact synchronized release boundary.
-		expect(ref).toContain('tag: v1.6.3');
+		expect(ref).toContain('tag: v1.6.4');
 		expect(ref).toMatch(/commit: [0-9a-f]{40}/);
 	});
 
@@ -97,8 +97,18 @@ describe('Lesser shared-draft review contract', () => {
 				'reviewedBy',
 				'reviewStatus',
 				'editorNotes',
+				'contentHash',
+				'revision',
+				'activeReviewerIds',
+				'publishEligible',
+				'publishBlockingReasons',
+				'reviewersApproved',
+				'principalApprovalRequired',
+				'principalApproved',
+				'grants',
 				'grant',
 				'verdicts',
+				'publishEligibility',
 			])
 		);
 	});
@@ -126,47 +136,36 @@ describe('Lesser shared-draft review contract', () => {
 		expect(readTypeBlock(schema, 'type Actor {')).toContain('isAgent');
 	});
 
-	describe('what the projection does NOT expose', () => {
-		// These assertions are the justification for the chrome's neutral display.
-		// If any of them starts failing, the projection has gained data that could
-		// support a richer, still-honest state — which is the signal to revisit
-		// `resolveReviewState` / `describeApprovalRequirement`, not to work around.
-
-		it("exposes only the viewer's own grant, never the active grant set", () => {
+	describe('canonical publication eligibility projection', () => {
+		it("retains the viewer's grant and exposes the complete grant set", () => {
 			const fields = readTypeBlock(schema, 'type DraftReview {');
 
-			// Singular `grant`, not `grants: [...]`. Without the full active set the
-			// chrome cannot count eligible reviewers, so it reports no progress.
 			expect(fields).toContain('grant');
-			expect(fields).not.toContain('grants');
+			expect(fields).toContain('grants');
 			expect(schema).toContain('grant: DraftReviewGrant');
-			expect(schema).not.toMatch(/grants:\s*\[DraftReviewGrant/);
+			expect(schema).toMatch(/grants:\s*\[DraftReviewGrant/);
 		});
 
-		it('carries no revocation marker on the grant, so active-ness is not derivable', () => {
+		it('carries canonical grant lifecycle markers', () => {
 			const grantFields = readTypeBlock(schema, 'type DraftReviewGrant {');
 
-			expect(grantFields).toEqual(expect.arrayContaining(['reviewer', 'grantedAt']));
-			expect(grantFields).not.toContain('revokedAt');
+			expect(grantFields).toEqual(
+				expect.arrayContaining(['reviewer', 'grantedAt', 'status', 'revokedAt'])
+			);
 		});
 
-		it('carries no server-computed publication gate', () => {
+		it('carries the server-computed publication gate', () => {
 			const fields = readTypeBlock(schema, 'type DraftReview {');
-
-			// Lesser computes the gate in PublishDraft and does not project it. This
-			// is the recorded upstream candidate; until it lands, the chrome must
-			// not synthesise one.
-			for (const gateish of ['canPublish', 'publishable', 'approvalState', 'gateState']) {
-				expect(fields).not.toContain(gateish);
-			}
-		});
-
-		it('names no instance principal, so principal approval cannot be evaluated here', () => {
-			const fields = readTypeBlock(schema, 'type DraftReview {');
-
-			for (const principalish of ['principal', 'principalApproved', 'requiredReviewers']) {
-				expect(fields).not.toContain(principalish);
-			}
+			expect(fields).toEqual(
+				expect.arrayContaining([
+					'publishEligible',
+					'publishBlockingReasons',
+					'reviewersApproved',
+					'principalApprovalRequired',
+					'principalApproved',
+					'publishEligibility',
+				])
+			);
 		});
 	});
 
@@ -221,7 +220,7 @@ describe('Lesser shared-draft review contract', () => {
 			});
 		});
 
-		it('reports no progress count, because the projection cannot support one', () => {
+		it('does not invent progress for a partial consumer-provided view model', () => {
 			const review = createMockDraftReview('d1', {
 				generatedBy: createMockAgentActor('a1'),
 				verdicts: [createMockVerdict(), createMockVerdict(), createMockVerdict()],
@@ -230,6 +229,19 @@ describe('Lesser shared-draft review contract', () => {
 			const requirement = describeApprovalRequirement(review);
 			expect(requirement).not.toHaveProperty('recorded');
 			expect(requirement).not.toHaveProperty('required');
+		});
+
+		it('derives active reviewer count and principal rule from the canonical projection', () => {
+			const review = createMockDraftReview('d4', {
+				activeReviewerIds: ['reviewer-1', 'reviewer-2'],
+				principalApprovalRequired: true,
+			});
+
+			expect(describeApprovalRequirement(review)).toEqual({
+				allActiveReviewers: true,
+				principalApproval: true,
+				activeReviewerCount: 2,
+			});
 		});
 	});
 

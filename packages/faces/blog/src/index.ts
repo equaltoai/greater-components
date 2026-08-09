@@ -101,6 +101,7 @@ export type {
 	CategoryData,
 	// Review workflow types
 	DraftReviewData,
+	DraftPublishEligibilityData,
 	DraftReviewStatusValue,
 	DraftReviewVerdict,
 	ReviewActorData,

@@ -656,6 +656,8 @@ export type Agent = {
     readonly verifiedAt?: Maybe<Scalars['Time']['output']>;
     /** @deprecated Use agentVersion */
     readonly version: Scalars['String']['output'];
+    /** Whether private ownership, delegation, and soul-binding fields are visible to this viewer. */
+    readonly viewerCanSeePrivateFields: Scalars['Boolean']['output'];
     readonly workflow?: Maybe<AgentWorkflowSurface>;
 };
 export type AgentAccessLease = {
@@ -1058,6 +1060,15 @@ export type BudgetAlert = {
     readonly spentUSD: Scalars['Float']['output'];
     readonly timestamp: Scalars['Time']['output'];
 };
+export type CmsFeatures = {
+    readonly __typename: 'CMSFeatures';
+    readonly categories: Scalars['Boolean']['output'];
+    readonly drafts: Scalars['Boolean']['output'];
+    readonly longForm: Scalars['Boolean']['output'];
+    readonly revisions: Scalars['Boolean']['output'];
+    readonly scheduling: Scalars['Boolean']['output'];
+    readonly series: Scalars['Boolean']['output'];
+};
 export type Category = {
     readonly __typename: 'Category';
     readonly articleCount: Scalars['Int']['output'];
@@ -1197,8 +1208,20 @@ export type Conversation = {
     readonly id: Scalars['ID']['output'];
     readonly lastStatus?: Maybe<Object>;
     readonly unread: Scalars['Boolean']['output'];
+    /** Number of messages unread by the current viewer. */
+    readonly unreadCount: Scalars['Int']['output'];
     readonly updatedAt: Scalars['Time']['output'];
     readonly viewerMetadata: ConversationViewerMetadata;
+};
+export type ConversationConnection = {
+    readonly __typename: 'ConversationConnection';
+    readonly edges: ReadonlyArray<ConversationEdge>;
+    readonly pageInfo: PageInfo;
+};
+export type ConversationEdge = {
+    readonly __typename: 'ConversationEdge';
+    readonly cursor: Scalars['Cursor']['output'];
+    readonly node: Conversation;
 };
 export type ConversationFolder = 'INBOX' | 'REQUESTS';
 export type ConversationViewerMetadata = {
@@ -1341,11 +1364,13 @@ export type CreateNoteInput = {
     readonly content: Scalars['String']['input'];
     readonly contentMap?: InputMaybe<ReadonlyArray<ContentMapInput>>;
     readonly inReplyToId?: InputMaybe<Scalars['ID']['input']>;
+    /** Reserved for explicit mentions. Non-empty input is rejected; include @mentions in content. */
     readonly mentions?: InputMaybe<ReadonlyArray<Scalars['String']['input']>>;
     readonly poll?: InputMaybe<PollParamsInput>;
     readonly quoteId?: InputMaybe<Scalars['ID']['input']>;
     readonly sensitive?: InputMaybe<Scalars['Boolean']['input']>;
     readonly spoilerText?: InputMaybe<Scalars['String']['input']>;
+    /** Reserved for explicit hashtags. Non-empty input is rejected; include #hashtags in content. */
     readonly tags?: InputMaybe<ReadonlyArray<Scalars['String']['input']>>;
     readonly visibility: Visibility;
 };
@@ -1479,13 +1504,19 @@ export type Draft = {
     readonly autosaveVersion: Scalars['Int']['output'];
     readonly content: Scalars['String']['output'];
     readonly contentFormat: ContentFormat;
+    /** Canonical digest used to bind review verdicts to this exact draft content. */
+    readonly contentHash: Scalars['String']['output'];
     readonly contentType: ObjectType;
     readonly createdAt: Scalars['Time']['output'];
     readonly generatedBy?: Maybe<Actor>;
     readonly id: Scalars['ID']['output'];
     readonly lastSavedAt: Scalars['Time']['output'];
     readonly objectId?: Maybe<Scalars['ID']['output']>;
+    /** Latest review verdict for the current draft content, or null when it has not been reviewed. */
+    readonly reviewVerdict?: Maybe<DraftReviewVerdict>;
     readonly reviewedBy?: Maybe<Actor>;
+    /** Monotonic draft revision; increments for updates and autosaves. */
+    readonly revision: Scalars['Int']['output'];
     readonly scheduledAt?: Maybe<Scalars['Time']['output']>;
     readonly slug?: Maybe<Scalars['String']['output']>;
     readonly status: DraftStatus;
@@ -1513,18 +1544,45 @@ export type DraftPreview = {
     readonly sourceFormat: Scalars['String']['output'];
     readonly success: Scalars['Boolean']['output'];
 };
+export type DraftPublishEligibility = {
+    readonly __typename: 'DraftPublishEligibility';
+    readonly blockingReasons: ReadonlyArray<Scalars['String']['output']>;
+    readonly eligible: Scalars['Boolean']['output'];
+    readonly principalApprovalRequired: Scalars['Boolean']['output'];
+    readonly principalApproved: Scalars['Boolean']['output'];
+    readonly reviewersApproved: Scalars['Boolean']['output'];
+};
 export type DraftReview = {
     readonly __typename: 'DraftReview';
+    readonly activeReviewerIds: ReadonlyArray<Scalars['ID']['output']>;
+    readonly content: Scalars['String']['output'];
     readonly contentFormat: ContentFormat;
+    readonly contentHash: Scalars['String']['output'];
     readonly createdAt: Scalars['Time']['output'];
     readonly draftId: Scalars['ID']['output'];
     readonly editorNotes?: Maybe<Scalars['String']['output']>;
     readonly excerpt?: Maybe<Scalars['String']['output']>;
     readonly generatedBy?: Maybe<Actor>;
+    /** Caller-specific grant retained for backwards compatibility. */
     readonly grant?: Maybe<DraftReviewGrant>;
+    readonly grantCount: Scalars['Int']['output'];
+    readonly grants: ReadonlyArray<DraftReviewGrant>;
+    readonly grantsTruncated: Scalars['Boolean']['output'];
+    readonly ownerId: Scalars['ID']['output'];
+    readonly principalApprovalRequired: Scalars['Boolean']['output'];
+    readonly principalApproved: Scalars['Boolean']['output'];
+    readonly publishBlockingReasons: ReadonlyArray<Scalars['String']['output']>;
+    readonly publishEligibility: DraftPublishEligibility;
+    readonly publishEligible: Scalars['Boolean']['output'];
+    readonly renderErrors: ReadonlyArray<Scalars['String']['output']>;
+    /** Canonical sanitized preview for the exact source and contentHash in this response. */
+    readonly renderedHtml?: Maybe<Scalars['String']['output']>;
     readonly reviewStatus?: Maybe<Scalars['String']['output']>;
     readonly reviewedBy?: Maybe<Actor>;
+    readonly reviewersApproved: Scalars['Boolean']['output'];
+    readonly revision: Scalars['Int']['output'];
     readonly scheduledAt?: Maybe<Scalars['Time']['output']>;
+    readonly slug?: Maybe<Scalars['String']['output']>;
     readonly status: DraftStatus;
     readonly subtitle?: Maybe<Scalars['String']['output']>;
     readonly title?: Maybe<Scalars['String']['output']>;
@@ -1546,14 +1604,22 @@ export type DraftReviewGrant = {
     readonly __typename: 'DraftReviewGrant';
     readonly grantedAt: Scalars['Time']['output'];
     readonly reviewer: Actor;
+    readonly reviewerId: Scalars['ID']['output'];
+    readonly revokedAt?: Maybe<Scalars['Time']['output']>;
+    readonly status: DraftReviewGrantStatus;
 };
+export type DraftReviewGrantStatus = 'ACTIVE' | 'REVOKED';
 export type DraftReviewVerdict = 'APPROVED' | 'CHANGES_REQUESTED';
 export type DraftReviewVerdictRecord = {
     readonly __typename: 'DraftReviewVerdictRecord';
     readonly contentHash?: Maybe<Scalars['String']['output']>;
+    /** True only when this verdict is valid for the current draft revision and active grant. */
+    readonly current: Scalars['Boolean']['output'];
     readonly notes?: Maybe<Scalars['String']['output']>;
     readonly recordedAt: Scalars['Time']['output'];
     readonly reviewer: Actor;
+    readonly reviewerId: Scalars['ID']['output'];
+    readonly stale: Scalars['Boolean']['output'];
     readonly verdict: DraftReviewVerdict;
 };
 export type DraftStatus = 'DRAFT' | 'FAILED' | 'PUBLISHED' | 'PUBLISHING' | 'SCHEDULED';
@@ -2116,6 +2182,7 @@ export type InstanceHealthStatus = 'CRITICAL' | 'HEALTHY' | 'OFFLINE' | 'UNKNOWN
 export type InstanceInfo = {
     readonly __typename: 'InstanceInfo';
     readonly approvalRequired: Scalars['Boolean']['output'];
+    readonly cmsFeatures: CmsFeatures;
     readonly contactAccount?: Maybe<Actor>;
     readonly description: Scalars['String']['output'];
     readonly domain: Scalars['String']['output'];
@@ -2123,12 +2190,16 @@ export type InstanceInfo = {
     readonly email?: Maybe<Scalars['String']['output']>;
     readonly invitesEnabled: Scalars['Boolean']['output'];
     readonly languages: ReadonlyArray<Scalars['String']['output']>;
+    readonly maxStatusCharacters: Scalars['Int']['output'];
+    readonly maxUploadSizeBytes: Scalars['Int']['output'];
     readonly registrationsOpen: Scalars['Boolean']['output'];
     readonly rules: ReadonlyArray<InstanceRule>;
     readonly shortDescription?: Maybe<Scalars['String']['output']>;
     readonly sourceUrl?: Maybe<Scalars['String']['output']>;
     readonly statusCount: Scalars['Int']['output'];
     readonly streamingUrl?: Maybe<Scalars['String']['output']>;
+    /** GraphQL subscription endpoint using the graphql-transport-ws protocol. */
+    readonly subscriptionUrl: Scalars['String']['output'];
     readonly thumbnailUrl?: Maybe<Scalars['String']['output']>;
     readonly tips: TipsConfig;
     readonly title: Scalars['String']['output'];
@@ -2576,6 +2647,8 @@ export type Mutation = {
     readonly deleteFilterKeyword: Scalars['Boolean']['output'];
     readonly deleteFilterStatus: Scalars['Boolean']['output'];
     readonly deleteList: Scalars['Boolean']['output'];
+    /** Delete media owned by the authenticated account. */
+    readonly deleteMedia: Scalars['Boolean']['output'];
     readonly deleteMessage: Scalars['Boolean']['output'];
     readonly deleteModerationPattern: Scalars['Boolean']['output'];
     readonly deleteObject: Scalars['Boolean']['output'];
@@ -2941,6 +3014,9 @@ export type MutationDeleteFilterStatusArgs = {
     filterStatusId: Scalars['ID']['input'];
 };
 export type MutationDeleteListArgs = {
+    id: Scalars['ID']['input'];
+};
+export type MutationDeleteMediaArgs = {
     id: Scalars['ID']['input'];
 };
 export type MutationDeleteMessageArgs = {
@@ -3734,6 +3810,9 @@ export type Query = {
     readonly categoryBySlug?: Maybe<Category>;
     readonly communityNotesByAuthor: CommunityNoteConnection;
     readonly conversation?: Maybe<Conversation>;
+    /** Paginated conversation list. Prefer this over the legacy list-valued conversations field. */
+    readonly conversationConnection: ConversationConnection;
+    /** Messages ordered oldest to newest by their stable conversation cursor. */
     readonly conversationMessages: ObjectConnection;
     readonly conversations: ReadonlyArray<Conversation>;
     readonly costBreakdown: CostBreakdown;
@@ -3795,6 +3874,8 @@ export type Query = {
     readonly multiHashtagTimeline: PostConnection;
     readonly mutes: ActorListPage;
     readonly myAgents: ReadonlyArray<Agent>;
+    /** Review assignments created by the authenticated draft owner. */
+    readonly myDraftReviews: DraftReviewConnection;
     readonly myDrafts: DraftConnection;
     readonly myDroneRequests: ReadonlyArray<SoulRequestCard>;
     readonly myDroneReviews: ReadonlyArray<ReviewDecisionCard>;
@@ -3996,6 +4077,11 @@ export type QueryCommunityNotesByAuthorArgs = {
 export type QueryConversationArgs = {
     id: Scalars['ID']['input'];
 };
+export type QueryConversationConnectionArgs = {
+    after?: InputMaybe<Scalars['Cursor']['input']>;
+    first?: InputMaybe<Scalars['Int']['input']>;
+    folder?: InputMaybe<ConversationFolder>;
+};
 export type QueryConversationMessagesArgs = {
     after?: InputMaybe<Scalars['Cursor']['input']>;
     conversationId: Scalars['ID']['input'];
@@ -4187,6 +4273,10 @@ export type QueryMultiHashtagTimelineArgs = {
     mode: HashtagMode;
 };
 export type QueryMutesArgs = {
+    after?: InputMaybe<Scalars['Cursor']['input']>;
+    first?: InputMaybe<Scalars['Int']['input']>;
+};
+export type QueryMyDraftReviewsArgs = {
     after?: InputMaybe<Scalars['Cursor']['input']>;
     first?: InputMaybe<Scalars['Int']['input']>;
 };
@@ -6162,6 +6252,9 @@ export type AgentMemorySearchQuery = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -6184,6 +6277,9 @@ export type AgentMemorySearchQuery = {
                     readonly likesCount: number;
                     readonly sharesCount: number;
                     readonly boosted: boolean;
+                    readonly viewerFavourited: boolean;
+                    readonly viewerBookmarked: boolean;
+                    readonly viewerPinned: boolean;
                     readonly relationshipType: ObjectRelationshipType;
                     readonly contentHash: string;
                     readonly estimatedCost: number;
@@ -7558,6 +7654,9 @@ export type ConversationsQuery = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -7580,6 +7679,9 @@ export type ConversationsQuery = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -8054,6 +8156,9 @@ export type ConversationQuery = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -8076,6 +8181,9 @@ export type ConversationQuery = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -8511,6 +8619,9 @@ export type ConversationMessagesQuery = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -8533,6 +8644,9 @@ export type ConversationMessagesQuery = {
                     readonly likesCount: number;
                     readonly sharesCount: number;
                     readonly boosted: boolean;
+                    readonly viewerFavourited: boolean;
+                    readonly viewerBookmarked: boolean;
+                    readonly viewerPinned: boolean;
                     readonly relationshipType: ObjectRelationshipType;
                     readonly contentHash: string;
                     readonly estimatedCost: number;
@@ -9013,6 +9127,9 @@ export type CreateConversationMutation = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -9035,6 +9152,9 @@ export type CreateConversationMutation = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -9513,6 +9633,9 @@ export type SendMessageMutation = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -9535,6 +9658,9 @@ export type SendMessageMutation = {
                     readonly likesCount: number;
                     readonly sharesCount: number;
                     readonly boosted: boolean;
+                    readonly viewerFavourited: boolean;
+                    readonly viewerBookmarked: boolean;
+                    readonly viewerPinned: boolean;
                     readonly relationshipType: ObjectRelationshipType;
                     readonly contentHash: string;
                     readonly estimatedCost: number;
@@ -9956,6 +10082,9 @@ export type SendMessageMutation = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -9978,6 +10107,9 @@ export type SendMessageMutation = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -10452,6 +10584,9 @@ export type AcceptMessageRequestMutation = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -10474,6 +10609,9 @@ export type AcceptMessageRequestMutation = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -11037,7 +11175,12 @@ export type ReviewActorFieldsFragment = {
 export type DraftReviewFieldsFragment = {
     readonly __typename: 'DraftReview';
     readonly draftId: string;
+    readonly ownerId: string;
     readonly title?: string | null | undefined;
+    readonly slug?: string | null | undefined;
+    readonly content: string;
+    readonly renderedHtml?: string | null | undefined;
+    readonly renderErrors: ReadonlyArray<string>;
     readonly subtitle?: string | null | undefined;
     readonly excerpt?: string | null | undefined;
     readonly contentFormat: ContentFormat;
@@ -11047,6 +11190,16 @@ export type DraftReviewFieldsFragment = {
     readonly createdAt: string;
     readonly reviewStatus?: string | null | undefined;
     readonly editorNotes?: string | null | undefined;
+    readonly contentHash: string;
+    readonly revision: number;
+    readonly activeReviewerIds: ReadonlyArray<string>;
+    readonly publishEligible: boolean;
+    readonly publishBlockingReasons: ReadonlyArray<string>;
+    readonly reviewersApproved: boolean;
+    readonly principalApprovalRequired: boolean;
+    readonly principalApproved: boolean;
+    readonly grantCount: number;
+    readonly grantsTruncated: boolean;
     readonly generatedBy?: {
         readonly __typename: 'Actor';
         readonly id: string;
@@ -11067,7 +11220,10 @@ export type DraftReviewFieldsFragment = {
     } | null | undefined;
     readonly grant?: {
         readonly __typename: 'DraftReviewGrant';
+        readonly reviewerId: string;
         readonly grantedAt: string;
+        readonly status: DraftReviewGrantStatus;
+        readonly revokedAt?: string | null | undefined;
         readonly reviewer: {
             readonly __typename: 'Actor';
             readonly id: string;
@@ -11078,12 +11234,12 @@ export type DraftReviewFieldsFragment = {
             readonly isAgent: boolean;
         };
     } | null | undefined;
-    readonly verdicts: ReadonlyArray<{
-        readonly __typename: 'DraftReviewVerdictRecord';
-        readonly verdict: DraftReviewVerdict;
-        readonly notes?: string | null | undefined;
-        readonly contentHash?: string | null | undefined;
-        readonly recordedAt: string;
+    readonly grants: ReadonlyArray<{
+        readonly __typename: 'DraftReviewGrant';
+        readonly reviewerId: string;
+        readonly grantedAt: string;
+        readonly status: DraftReviewGrantStatus;
+        readonly revokedAt?: string | null | undefined;
         readonly reviewer: {
             readonly __typename: 'Actor';
             readonly id: string;
@@ -11094,6 +11250,33 @@ export type DraftReviewFieldsFragment = {
             readonly isAgent: boolean;
         };
     }>;
+    readonly verdicts: ReadonlyArray<{
+        readonly __typename: 'DraftReviewVerdictRecord';
+        readonly verdict: DraftReviewVerdict;
+        readonly notes?: string | null | undefined;
+        readonly contentHash?: string | null | undefined;
+        readonly reviewerId: string;
+        readonly recordedAt: string;
+        readonly current: boolean;
+        readonly stale: boolean;
+        readonly reviewer: {
+            readonly __typename: 'Actor';
+            readonly id: string;
+            readonly username: string;
+            readonly domain?: string | null | undefined;
+            readonly displayName?: string | null | undefined;
+            readonly avatar?: string | null | undefined;
+            readonly isAgent: boolean;
+        };
+    }>;
+    readonly publishEligibility: {
+        readonly __typename: 'DraftPublishEligibility';
+        readonly eligible: boolean;
+        readonly blockingReasons: ReadonlyArray<string>;
+        readonly reviewersApproved: boolean;
+        readonly principalApprovalRequired: boolean;
+        readonly principalApproved: boolean;
+    };
 };
 export type SharedDraftReviewsQueryVariables = Exact<{
     first?: InputMaybe<Scalars['Int']['input']>;
@@ -11115,7 +11298,12 @@ export type SharedDraftReviewsQuery = {
             readonly node: {
                 readonly __typename: 'DraftReview';
                 readonly draftId: string;
+                readonly ownerId: string;
                 readonly title?: string | null | undefined;
+                readonly slug?: string | null | undefined;
+                readonly content: string;
+                readonly renderedHtml?: string | null | undefined;
+                readonly renderErrors: ReadonlyArray<string>;
                 readonly subtitle?: string | null | undefined;
                 readonly excerpt?: string | null | undefined;
                 readonly contentFormat: ContentFormat;
@@ -11125,6 +11313,16 @@ export type SharedDraftReviewsQuery = {
                 readonly createdAt: string;
                 readonly reviewStatus?: string | null | undefined;
                 readonly editorNotes?: string | null | undefined;
+                readonly contentHash: string;
+                readonly revision: number;
+                readonly activeReviewerIds: ReadonlyArray<string>;
+                readonly publishEligible: boolean;
+                readonly publishBlockingReasons: ReadonlyArray<string>;
+                readonly reviewersApproved: boolean;
+                readonly principalApprovalRequired: boolean;
+                readonly principalApproved: boolean;
+                readonly grantCount: number;
+                readonly grantsTruncated: boolean;
                 readonly generatedBy?: {
                     readonly __typename: 'Actor';
                     readonly id: string;
@@ -11145,7 +11343,10 @@ export type SharedDraftReviewsQuery = {
                 } | null | undefined;
                 readonly grant?: {
                     readonly __typename: 'DraftReviewGrant';
+                    readonly reviewerId: string;
                     readonly grantedAt: string;
+                    readonly status: DraftReviewGrantStatus;
+                    readonly revokedAt?: string | null | undefined;
                     readonly reviewer: {
                         readonly __typename: 'Actor';
                         readonly id: string;
@@ -11156,12 +11357,12 @@ export type SharedDraftReviewsQuery = {
                         readonly isAgent: boolean;
                     };
                 } | null | undefined;
-                readonly verdicts: ReadonlyArray<{
-                    readonly __typename: 'DraftReviewVerdictRecord';
-                    readonly verdict: DraftReviewVerdict;
-                    readonly notes?: string | null | undefined;
-                    readonly contentHash?: string | null | undefined;
-                    readonly recordedAt: string;
+                readonly grants: ReadonlyArray<{
+                    readonly __typename: 'DraftReviewGrant';
+                    readonly reviewerId: string;
+                    readonly grantedAt: string;
+                    readonly status: DraftReviewGrantStatus;
+                    readonly revokedAt?: string | null | undefined;
                     readonly reviewer: {
                         readonly __typename: 'Actor';
                         readonly id: string;
@@ -11172,6 +11373,33 @@ export type SharedDraftReviewsQuery = {
                         readonly isAgent: boolean;
                     };
                 }>;
+                readonly verdicts: ReadonlyArray<{
+                    readonly __typename: 'DraftReviewVerdictRecord';
+                    readonly verdict: DraftReviewVerdict;
+                    readonly notes?: string | null | undefined;
+                    readonly contentHash?: string | null | undefined;
+                    readonly reviewerId: string;
+                    readonly recordedAt: string;
+                    readonly current: boolean;
+                    readonly stale: boolean;
+                    readonly reviewer: {
+                        readonly __typename: 'Actor';
+                        readonly id: string;
+                        readonly username: string;
+                        readonly domain?: string | null | undefined;
+                        readonly displayName?: string | null | undefined;
+                        readonly avatar?: string | null | undefined;
+                        readonly isAgent: boolean;
+                    };
+                }>;
+                readonly publishEligibility: {
+                    readonly __typename: 'DraftPublishEligibility';
+                    readonly eligible: boolean;
+                    readonly blockingReasons: ReadonlyArray<string>;
+                    readonly reviewersApproved: boolean;
+                    readonly principalApprovalRequired: boolean;
+                    readonly principalApproved: boolean;
+                };
             };
         }>;
     };
@@ -11184,7 +11412,12 @@ export type DraftReviewQuery = {
     readonly draftReview?: {
         readonly __typename: 'DraftReview';
         readonly draftId: string;
+        readonly ownerId: string;
         readonly title?: string | null | undefined;
+        readonly slug?: string | null | undefined;
+        readonly content: string;
+        readonly renderedHtml?: string | null | undefined;
+        readonly renderErrors: ReadonlyArray<string>;
         readonly subtitle?: string | null | undefined;
         readonly excerpt?: string | null | undefined;
         readonly contentFormat: ContentFormat;
@@ -11194,6 +11427,16 @@ export type DraftReviewQuery = {
         readonly createdAt: string;
         readonly reviewStatus?: string | null | undefined;
         readonly editorNotes?: string | null | undefined;
+        readonly contentHash: string;
+        readonly revision: number;
+        readonly activeReviewerIds: ReadonlyArray<string>;
+        readonly publishEligible: boolean;
+        readonly publishBlockingReasons: ReadonlyArray<string>;
+        readonly reviewersApproved: boolean;
+        readonly principalApprovalRequired: boolean;
+        readonly principalApproved: boolean;
+        readonly grantCount: number;
+        readonly grantsTruncated: boolean;
         readonly generatedBy?: {
             readonly __typename: 'Actor';
             readonly id: string;
@@ -11214,7 +11457,10 @@ export type DraftReviewQuery = {
         } | null | undefined;
         readonly grant?: {
             readonly __typename: 'DraftReviewGrant';
+            readonly reviewerId: string;
             readonly grantedAt: string;
+            readonly status: DraftReviewGrantStatus;
+            readonly revokedAt?: string | null | undefined;
             readonly reviewer: {
                 readonly __typename: 'Actor';
                 readonly id: string;
@@ -11225,12 +11471,12 @@ export type DraftReviewQuery = {
                 readonly isAgent: boolean;
             };
         } | null | undefined;
-        readonly verdicts: ReadonlyArray<{
-            readonly __typename: 'DraftReviewVerdictRecord';
-            readonly verdict: DraftReviewVerdict;
-            readonly notes?: string | null | undefined;
-            readonly contentHash?: string | null | undefined;
-            readonly recordedAt: string;
+        readonly grants: ReadonlyArray<{
+            readonly __typename: 'DraftReviewGrant';
+            readonly reviewerId: string;
+            readonly grantedAt: string;
+            readonly status: DraftReviewGrantStatus;
+            readonly revokedAt?: string | null | undefined;
             readonly reviewer: {
                 readonly __typename: 'Actor';
                 readonly id: string;
@@ -11241,6 +11487,33 @@ export type DraftReviewQuery = {
                 readonly isAgent: boolean;
             };
         }>;
+        readonly verdicts: ReadonlyArray<{
+            readonly __typename: 'DraftReviewVerdictRecord';
+            readonly verdict: DraftReviewVerdict;
+            readonly notes?: string | null | undefined;
+            readonly contentHash?: string | null | undefined;
+            readonly reviewerId: string;
+            readonly recordedAt: string;
+            readonly current: boolean;
+            readonly stale: boolean;
+            readonly reviewer: {
+                readonly __typename: 'Actor';
+                readonly id: string;
+                readonly username: string;
+                readonly domain?: string | null | undefined;
+                readonly displayName?: string | null | undefined;
+                readonly avatar?: string | null | undefined;
+                readonly isAgent: boolean;
+            };
+        }>;
+        readonly publishEligibility: {
+            readonly __typename: 'DraftPublishEligibility';
+            readonly eligible: boolean;
+            readonly blockingReasons: ReadonlyArray<string>;
+            readonly reviewersApproved: boolean;
+            readonly principalApprovalRequired: boolean;
+            readonly principalApproved: boolean;
+        };
     } | null | undefined;
 };
 export type ShareDraftForReviewMutationVariables = Exact<{
@@ -11252,7 +11525,12 @@ export type ShareDraftForReviewMutation = {
     readonly shareDraftForReview: {
         readonly __typename: 'DraftReview';
         readonly draftId: string;
+        readonly ownerId: string;
         readonly title?: string | null | undefined;
+        readonly slug?: string | null | undefined;
+        readonly content: string;
+        readonly renderedHtml?: string | null | undefined;
+        readonly renderErrors: ReadonlyArray<string>;
         readonly subtitle?: string | null | undefined;
         readonly excerpt?: string | null | undefined;
         readonly contentFormat: ContentFormat;
@@ -11262,6 +11540,16 @@ export type ShareDraftForReviewMutation = {
         readonly createdAt: string;
         readonly reviewStatus?: string | null | undefined;
         readonly editorNotes?: string | null | undefined;
+        readonly contentHash: string;
+        readonly revision: number;
+        readonly activeReviewerIds: ReadonlyArray<string>;
+        readonly publishEligible: boolean;
+        readonly publishBlockingReasons: ReadonlyArray<string>;
+        readonly reviewersApproved: boolean;
+        readonly principalApprovalRequired: boolean;
+        readonly principalApproved: boolean;
+        readonly grantCount: number;
+        readonly grantsTruncated: boolean;
         readonly generatedBy?: {
             readonly __typename: 'Actor';
             readonly id: string;
@@ -11282,7 +11570,10 @@ export type ShareDraftForReviewMutation = {
         } | null | undefined;
         readonly grant?: {
             readonly __typename: 'DraftReviewGrant';
+            readonly reviewerId: string;
             readonly grantedAt: string;
+            readonly status: DraftReviewGrantStatus;
+            readonly revokedAt?: string | null | undefined;
             readonly reviewer: {
                 readonly __typename: 'Actor';
                 readonly id: string;
@@ -11293,12 +11584,12 @@ export type ShareDraftForReviewMutation = {
                 readonly isAgent: boolean;
             };
         } | null | undefined;
-        readonly verdicts: ReadonlyArray<{
-            readonly __typename: 'DraftReviewVerdictRecord';
-            readonly verdict: DraftReviewVerdict;
-            readonly notes?: string | null | undefined;
-            readonly contentHash?: string | null | undefined;
-            readonly recordedAt: string;
+        readonly grants: ReadonlyArray<{
+            readonly __typename: 'DraftReviewGrant';
+            readonly reviewerId: string;
+            readonly grantedAt: string;
+            readonly status: DraftReviewGrantStatus;
+            readonly revokedAt?: string | null | undefined;
             readonly reviewer: {
                 readonly __typename: 'Actor';
                 readonly id: string;
@@ -11309,6 +11600,33 @@ export type ShareDraftForReviewMutation = {
                 readonly isAgent: boolean;
             };
         }>;
+        readonly verdicts: ReadonlyArray<{
+            readonly __typename: 'DraftReviewVerdictRecord';
+            readonly verdict: DraftReviewVerdict;
+            readonly notes?: string | null | undefined;
+            readonly contentHash?: string | null | undefined;
+            readonly reviewerId: string;
+            readonly recordedAt: string;
+            readonly current: boolean;
+            readonly stale: boolean;
+            readonly reviewer: {
+                readonly __typename: 'Actor';
+                readonly id: string;
+                readonly username: string;
+                readonly domain?: string | null | undefined;
+                readonly displayName?: string | null | undefined;
+                readonly avatar?: string | null | undefined;
+                readonly isAgent: boolean;
+            };
+        }>;
+        readonly publishEligibility: {
+            readonly __typename: 'DraftPublishEligibility';
+            readonly eligible: boolean;
+            readonly blockingReasons: ReadonlyArray<string>;
+            readonly reviewersApproved: boolean;
+            readonly principalApprovalRequired: boolean;
+            readonly principalApproved: boolean;
+        };
     };
 };
 export type RevokeDraftReviewMutationVariables = Exact<{
@@ -11329,7 +11647,12 @@ export type SubmitDraftReviewMutation = {
     readonly submitDraftReview: {
         readonly __typename: 'DraftReview';
         readonly draftId: string;
+        readonly ownerId: string;
         readonly title?: string | null | undefined;
+        readonly slug?: string | null | undefined;
+        readonly content: string;
+        readonly renderedHtml?: string | null | undefined;
+        readonly renderErrors: ReadonlyArray<string>;
         readonly subtitle?: string | null | undefined;
         readonly excerpt?: string | null | undefined;
         readonly contentFormat: ContentFormat;
@@ -11339,6 +11662,16 @@ export type SubmitDraftReviewMutation = {
         readonly createdAt: string;
         readonly reviewStatus?: string | null | undefined;
         readonly editorNotes?: string | null | undefined;
+        readonly contentHash: string;
+        readonly revision: number;
+        readonly activeReviewerIds: ReadonlyArray<string>;
+        readonly publishEligible: boolean;
+        readonly publishBlockingReasons: ReadonlyArray<string>;
+        readonly reviewersApproved: boolean;
+        readonly principalApprovalRequired: boolean;
+        readonly principalApproved: boolean;
+        readonly grantCount: number;
+        readonly grantsTruncated: boolean;
         readonly generatedBy?: {
             readonly __typename: 'Actor';
             readonly id: string;
@@ -11359,7 +11692,10 @@ export type SubmitDraftReviewMutation = {
         } | null | undefined;
         readonly grant?: {
             readonly __typename: 'DraftReviewGrant';
+            readonly reviewerId: string;
             readonly grantedAt: string;
+            readonly status: DraftReviewGrantStatus;
+            readonly revokedAt?: string | null | undefined;
             readonly reviewer: {
                 readonly __typename: 'Actor';
                 readonly id: string;
@@ -11370,12 +11706,12 @@ export type SubmitDraftReviewMutation = {
                 readonly isAgent: boolean;
             };
         } | null | undefined;
-        readonly verdicts: ReadonlyArray<{
-            readonly __typename: 'DraftReviewVerdictRecord';
-            readonly verdict: DraftReviewVerdict;
-            readonly notes?: string | null | undefined;
-            readonly contentHash?: string | null | undefined;
-            readonly recordedAt: string;
+        readonly grants: ReadonlyArray<{
+            readonly __typename: 'DraftReviewGrant';
+            readonly reviewerId: string;
+            readonly grantedAt: string;
+            readonly status: DraftReviewGrantStatus;
+            readonly revokedAt?: string | null | undefined;
             readonly reviewer: {
                 readonly __typename: 'Actor';
                 readonly id: string;
@@ -11386,6 +11722,33 @@ export type SubmitDraftReviewMutation = {
                 readonly isAgent: boolean;
             };
         }>;
+        readonly verdicts: ReadonlyArray<{
+            readonly __typename: 'DraftReviewVerdictRecord';
+            readonly verdict: DraftReviewVerdict;
+            readonly notes?: string | null | undefined;
+            readonly contentHash?: string | null | undefined;
+            readonly reviewerId: string;
+            readonly recordedAt: string;
+            readonly current: boolean;
+            readonly stale: boolean;
+            readonly reviewer: {
+                readonly __typename: 'Actor';
+                readonly id: string;
+                readonly username: string;
+                readonly domain?: string | null | undefined;
+                readonly displayName?: string | null | undefined;
+                readonly avatar?: string | null | undefined;
+                readonly isAgent: boolean;
+            };
+        }>;
+        readonly publishEligibility: {
+            readonly __typename: 'DraftPublishEligibility';
+            readonly eligible: boolean;
+            readonly blockingReasons: ReadonlyArray<string>;
+            readonly reviewersApproved: boolean;
+            readonly principalApprovalRequired: boolean;
+            readonly principalApproved: boolean;
+        };
     };
 };
 export type SyncThreadMutationVariables = Exact<{
@@ -11420,6 +11783,9 @@ export type SyncThreadMutation = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -11442,6 +11808,9 @@ export type SyncThreadMutation = {
                     readonly likesCount: number;
                     readonly sharesCount: number;
                     readonly boosted: boolean;
+                    readonly viewerFavourited: boolean;
+                    readonly viewerBookmarked: boolean;
+                    readonly viewerPinned: boolean;
                     readonly relationshipType: ObjectRelationshipType;
                     readonly contentHash: string;
                     readonly estimatedCost: number;
@@ -11881,6 +12250,9 @@ export type SyncMissingRepliesMutation = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -11903,6 +12275,9 @@ export type SyncMissingRepliesMutation = {
                     readonly likesCount: number;
                     readonly sharesCount: number;
                     readonly boosted: boolean;
+                    readonly viewerFavourited: boolean;
+                    readonly viewerBookmarked: boolean;
+                    readonly viewerPinned: boolean;
                     readonly relationshipType: ObjectRelationshipType;
                     readonly contentHash: string;
                     readonly estimatedCost: number;
@@ -12338,6 +12713,9 @@ export type ThreadContextQuery = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -12360,6 +12738,9 @@ export type ThreadContextQuery = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -13086,6 +13467,9 @@ export type ObjectContentFieldsFragment = {
     readonly likesCount: number;
     readonly sharesCount: number;
     readonly boosted: boolean;
+    readonly viewerFavourited: boolean;
+    readonly viewerBookmarked: boolean;
+    readonly viewerPinned: boolean;
     readonly relationshipType: ObjectRelationshipType;
     readonly contentHash: string;
     readonly estimatedCost: number;
@@ -13307,6 +13691,9 @@ export type ObjectFieldsFragment = {
     readonly likesCount: number;
     readonly sharesCount: number;
     readonly boosted: boolean;
+    readonly viewerFavourited: boolean;
+    readonly viewerBookmarked: boolean;
+    readonly viewerPinned: boolean;
     readonly relationshipType: ObjectRelationshipType;
     readonly contentHash: string;
     readonly estimatedCost: number;
@@ -13329,6 +13716,9 @@ export type ObjectFieldsFragment = {
         readonly likesCount: number;
         readonly sharesCount: number;
         readonly boosted: boolean;
+        readonly viewerFavourited: boolean;
+        readonly viewerBookmarked: boolean;
+        readonly viewerPinned: boolean;
         readonly relationshipType: ObjectRelationshipType;
         readonly contentHash: string;
         readonly estimatedCost: number;
@@ -14481,6 +14871,9 @@ export type CommunityNotesByObjectQuery = {
         readonly likesCount: number;
         readonly sharesCount: number;
         readonly boosted: boolean;
+        readonly viewerFavourited: boolean;
+        readonly viewerBookmarked: boolean;
+        readonly viewerPinned: boolean;
         readonly relationshipType: ObjectRelationshipType;
         readonly contentHash: string;
         readonly estimatedCost: number;
@@ -14544,6 +14937,9 @@ export type CommunityNotesByObjectQuery = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -15000,6 +15396,9 @@ export type CreateNoteMutation = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -15022,6 +15421,9 @@ export type CreateNoteMutation = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -15507,6 +15909,9 @@ export type CreateQuoteNoteMutation = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -15529,6 +15934,9 @@ export type CreateQuoteNoteMutation = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -16016,6 +16424,9 @@ export type WithdrawFromQuotesMutation = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -16038,6 +16449,9 @@ export type WithdrawFromQuotesMutation = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -16471,6 +16885,9 @@ export type UpdateQuotePermissionsMutation = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -16493,6 +16910,9 @@ export type UpdateQuotePermissionsMutation = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -16990,6 +17410,9 @@ export type ShareObjectMutation = {
         readonly likesCount: number;
         readonly sharesCount: number;
         readonly boosted: boolean;
+        readonly viewerFavourited: boolean;
+        readonly viewerBookmarked: boolean;
+        readonly viewerPinned: boolean;
         readonly relationshipType: ObjectRelationshipType;
         readonly contentHash: string;
         readonly estimatedCost: number;
@@ -17012,6 +17435,9 @@ export type ShareObjectMutation = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -17438,6 +17864,9 @@ export type UnshareObjectMutation = {
         readonly likesCount: number;
         readonly sharesCount: number;
         readonly boosted: boolean;
+        readonly viewerFavourited: boolean;
+        readonly viewerBookmarked: boolean;
+        readonly viewerPinned: boolean;
         readonly relationshipType: ObjectRelationshipType;
         readonly contentHash: string;
         readonly estimatedCost: number;
@@ -17460,6 +17889,9 @@ export type UnshareObjectMutation = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -17886,6 +18318,9 @@ export type BookmarkObjectMutation = {
         readonly likesCount: number;
         readonly sharesCount: number;
         readonly boosted: boolean;
+        readonly viewerFavourited: boolean;
+        readonly viewerBookmarked: boolean;
+        readonly viewerPinned: boolean;
         readonly relationshipType: ObjectRelationshipType;
         readonly contentHash: string;
         readonly estimatedCost: number;
@@ -17908,6 +18343,9 @@ export type BookmarkObjectMutation = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -18341,6 +18779,9 @@ export type PinObjectMutation = {
         readonly likesCount: number;
         readonly sharesCount: number;
         readonly boosted: boolean;
+        readonly viewerFavourited: boolean;
+        readonly viewerBookmarked: boolean;
+        readonly viewerPinned: boolean;
         readonly relationshipType: ObjectRelationshipType;
         readonly contentHash: string;
         readonly estimatedCost: number;
@@ -18363,6 +18804,9 @@ export type PinObjectMutation = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -18798,6 +19242,9 @@ export type ObjectWithQuotesQuery = {
         readonly likesCount: number;
         readonly sharesCount: number;
         readonly boosted: boolean;
+        readonly viewerFavourited: boolean;
+        readonly viewerBookmarked: boolean;
+        readonly viewerPinned: boolean;
         readonly relationshipType: ObjectRelationshipType;
         readonly contentHash: string;
         readonly estimatedCost: number;
@@ -18826,6 +19273,9 @@ export type ObjectWithQuotesQuery = {
                     readonly likesCount: number;
                     readonly sharesCount: number;
                     readonly boosted: boolean;
+                    readonly viewerFavourited: boolean;
+                    readonly viewerBookmarked: boolean;
+                    readonly viewerPinned: boolean;
                     readonly relationshipType: ObjectRelationshipType;
                     readonly contentHash: string;
                     readonly estimatedCost: number;
@@ -18848,6 +19298,9 @@ export type ObjectWithQuotesQuery = {
                         readonly likesCount: number;
                         readonly sharesCount: number;
                         readonly boosted: boolean;
+                        readonly viewerFavourited: boolean;
+                        readonly viewerBookmarked: boolean;
+                        readonly viewerPinned: boolean;
                         readonly relationshipType: ObjectRelationshipType;
                         readonly contentHash: string;
                         readonly estimatedCost: number;
@@ -19277,6 +19730,9 @@ export type ObjectWithQuotesQuery = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -19751,6 +20207,9 @@ export type NotificationsQuery = {
                     readonly likesCount: number;
                     readonly sharesCount: number;
                     readonly boosted: boolean;
+                    readonly viewerFavourited: boolean;
+                    readonly viewerBookmarked: boolean;
+                    readonly viewerPinned: boolean;
                     readonly relationshipType: ObjectRelationshipType;
                     readonly contentHash: string;
                     readonly estimatedCost: number;
@@ -19773,6 +20232,9 @@ export type NotificationsQuery = {
                         readonly likesCount: number;
                         readonly sharesCount: number;
                         readonly boosted: boolean;
+                        readonly viewerFavourited: boolean;
+                        readonly viewerBookmarked: boolean;
+                        readonly viewerPinned: boolean;
                         readonly relationshipType: ObjectRelationshipType;
                         readonly contentHash: string;
                         readonly estimatedCost: number;
@@ -20251,6 +20713,9 @@ export type ObjectByIdQuery = {
         readonly likesCount: number;
         readonly sharesCount: number;
         readonly boosted: boolean;
+        readonly viewerFavourited: boolean;
+        readonly viewerBookmarked: boolean;
+        readonly viewerPinned: boolean;
         readonly relationshipType: ObjectRelationshipType;
         readonly contentHash: string;
         readonly estimatedCost: number;
@@ -20273,6 +20738,9 @@ export type ObjectByIdQuery = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -21290,6 +21758,9 @@ export type SearchQuery = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -21312,6 +21783,9 @@ export type SearchQuery = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -32642,6 +33116,9 @@ export type TimelineUpdatesSubscription = {
         readonly likesCount: number;
         readonly sharesCount: number;
         readonly boosted: boolean;
+        readonly viewerFavourited: boolean;
+        readonly viewerBookmarked: boolean;
+        readonly viewerPinned: boolean;
         readonly relationshipType: ObjectRelationshipType;
         readonly contentHash: string;
         readonly estimatedCost: number;
@@ -32664,6 +33141,9 @@ export type TimelineUpdatesSubscription = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -33129,6 +33609,9 @@ export type NotificationStreamSubscription = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -33151,6 +33634,9 @@ export type NotificationStreamSubscription = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -33672,6 +34158,9 @@ export type QuoteActivitySubscription = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -33694,6 +34183,9 @@ export type QuoteActivitySubscription = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -34158,6 +34650,9 @@ export type HashtagActivitySubscription = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -34180,6 +34675,9 @@ export type HashtagActivitySubscription = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -34679,6 +35177,9 @@ export type ActivityStreamSubscription = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -34701,6 +35202,9 @@ export type ActivityStreamSubscription = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -35121,6 +35625,9 @@ export type ActivityStreamSubscription = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -35143,6 +35650,9 @@ export type ActivityStreamSubscription = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -35649,6 +36159,9 @@ export type ModerationEventsSubscription = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -35671,6 +36184,9 @@ export type ModerationEventsSubscription = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -36384,6 +36900,9 @@ export type ModerationAlertsSubscription = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -36406,6 +36925,9 @@ export type ModerationAlertsSubscription = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -36894,6 +37416,9 @@ export type ModerationQueueUpdateSubscription = {
             readonly likesCount: number;
             readonly sharesCount: number;
             readonly boosted: boolean;
+            readonly viewerFavourited: boolean;
+            readonly viewerBookmarked: boolean;
+            readonly viewerPinned: boolean;
             readonly relationshipType: ObjectRelationshipType;
             readonly contentHash: string;
             readonly estimatedCost: number;
@@ -36916,6 +37441,9 @@ export type ModerationQueueUpdateSubscription = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -37437,6 +37965,9 @@ export type TimelineQuery = {
                 readonly likesCount: number;
                 readonly sharesCount: number;
                 readonly boosted: boolean;
+                readonly viewerFavourited: boolean;
+                readonly viewerBookmarked: boolean;
+                readonly viewerPinned: boolean;
                 readonly relationshipType: ObjectRelationshipType;
                 readonly contentHash: string;
                 readonly estimatedCost: number;
@@ -37459,6 +37990,9 @@ export type TimelineQuery = {
                     readonly likesCount: number;
                     readonly sharesCount: number;
                     readonly boosted: boolean;
+                    readonly viewerFavourited: boolean;
+                    readonly viewerBookmarked: boolean;
+                    readonly viewerPinned: boolean;
                     readonly relationshipType: ObjectRelationshipType;
                     readonly contentHash: string;
                     readonly estimatedCost: number;

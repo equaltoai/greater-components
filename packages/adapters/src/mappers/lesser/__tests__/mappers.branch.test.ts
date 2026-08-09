@@ -224,6 +224,23 @@ describe('Lesser Mappers Branch Coverage', () => {
 			expect(result.data?.quoteContext).toBeDefined();
 		});
 
+		it('preserves viewer engagement state', () => {
+			const result = mapLesserObject({
+				...baseObject,
+				boosted: true,
+				viewerFavourited: true,
+				viewerBookmarked: true,
+				viewerPinned: true,
+			});
+
+			expect(result.data).toMatchObject({
+				favourited: true,
+				reblogged: true,
+				bookmarked: true,
+				pinned: true,
+			});
+		});
+
 		it('should return error on exception', () => {
 			// Force error by passing circular object or invalid type that causes throw
 			const result = mapLesserObject(null as any);
