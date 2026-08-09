@@ -419,6 +419,60 @@ describe('Dependency Resolution', () => {
 			);
 		});
 
+		it('routes repository-root CSS records to their vendored face path', async () => {
+			const { mapRegistryFilePathToInstallPath } =
+				await import('../src/utils/dependency-resolver.js');
+
+			expect(
+				mapRegistryFilePathToInstallPath(
+					'messaging',
+					'shared',
+					'packages/faces/social/src/theme.css'
+				)
+			).toBe('greater/faces/social/theme.css');
+		});
+
+		it('hydrates verified module CSS records into install metadata', async () => {
+			const { hydrateMetadataFilesFromRegistryIndex } =
+				await import('../src/utils/dependency-resolver.js');
+			const metadata = createTestComponentMetadata({ name: 'messaging', type: 'shared' });
+			const hydrated = hydrateMetadataFilesFromRegistryIndex('messaging', 'shared', metadata, {
+				schemaVersion: '1.0.0',
+				version: '1.0.0',
+				ref: 'greater-v1.0.0',
+				generatedAt: new Date().toISOString(),
+				checksums: {},
+				components: {},
+				faces: {},
+				shared: {
+					messaging: {
+						name: 'messaging',
+						version: '1.0.0',
+						files: [{ path: 'src/index.ts', checksum: 'sha256-YWJjZA==' }],
+						css: [
+							{
+								path: 'packages/faces/social/src/theme.css',
+								checksum: 'sha256-YWJjZA==',
+							},
+						],
+						dependencies: [],
+						peerDependencies: [],
+						exports: [],
+						types: [],
+					},
+				},
+			});
+
+			expect(hydrated.files).toEqual(
+				expect.arrayContaining([
+					expect.objectContaining({
+						path: 'greater/faces/social/theme.css',
+						type: 'styles',
+					}),
+				])
+			);
+		});
+
 		it('handles paths that do not start with src/', async () => {
 			const { mapRegistryFilePathToInstallPath } =
 				await import('../src/utils/dependency-resolver.js');

@@ -1,0 +1,41 @@
+.gr-shell-bottom-nav {
+	display: flex;
+	align-items: stretch;
+	width: 100%;
+	min-height: 3rem;
+	padding: var(--gr-spacing-scale-1, 0.25rem) var(--gr-shell-gutter, 1rem);
+	padding-bottom: max(var(--gr-spacing-scale-1, 0.25rem), env(safe-area-inset-bottom));
+	background: var(--gr-semantic-background-surface, var(--gr-color-base-white, #fff));
+	color: var(--gr-semantic-foreground-primary, var(--gr-color-gray-900, #111827));
+	border-top: 1px solid var(--gr-semantic-border-subtle, var(--gr-color-gray-200, #e5e7eb));
+	box-shadow: var(--gr-shadows-lg, 0 -4px 12px rgb(0 0 0 / 0.08));
+}
+
+.gr-shell-bottom-nav--fixed {
+	position: fixed;
+	inset-inline: 0;
+	bottom: 0;
+	z-index: 20;
+}
+
+.gr-shell-bottom-nav > :where(a, button) {
+	display: inline-flex;
+	flex: 1 1 0;
+	align-items: center;
+	justify-content: center;
+	min-width: 2.75rem;
+	min-height: 2.75rem;
+	padding: var(--gr-spacing-scale-2, 0.5rem);
+	color: inherit;
+	text-align: center;
+	text-decoration: none;
+}
+
+.gr-shell-bottom-nav > :where(a, button):focus-visible {
+	outline: var(--gr-semantic-focus-ring-width, 2px) solid var(--gr-semantic-focus-ring, #2563eb);
+	outline-offset: var(--gr-semantic-focus-ring-offset, 2px);
+}
+
+.gr-shell-bottom-nav > [aria-current='page'] {
+	color: var(--gr-semantic-action-primary-default, var(--gr-color-primary-600, #2563eb));
+}

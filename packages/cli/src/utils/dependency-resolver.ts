@@ -191,6 +191,16 @@ export function mapRegistryFilePathToInstallPath(
 	type: ResolvedDependency['type'],
 	sourcePath: string
 ): string | null {
+	const faceCssMatch = sourcePath.match(/^packages\/faces\/([^/]+)\/src\/(.+\.css)$/);
+	if (faceCssMatch?.[1] && faceCssMatch?.[2]) {
+		return `greater/faces/${faceCssMatch[1]}/${faceCssMatch[2]}`;
+	}
+
+	const packageCssMatch = sourcePath.match(/^packages\/([^/]+)\/src\/(.+\.css)$/);
+	if (packageCssMatch?.[1] && packageCssMatch?.[2]) {
+		return `greater/${packageCssMatch[1]}/${packageCssMatch[2]}`;
+	}
+
 	const withoutSrc = sourcePath.startsWith('src/') ? sourcePath.slice('src/'.length) : sourcePath;
 
 	if (type === 'face') {
@@ -222,7 +232,7 @@ export function hydrateMetadataFilesFromRegistryIndex(
 		return metadata;
 	}
 
-	const mappedFiles = indexEntry.files
+	const mappedFiles = [...indexEntry.files, ...(indexEntry.css ?? [])]
 		.map((file) => {
 			const installPath = mapRegistryFilePathToInstallPath(name, type, file.path);
 			if (!installPath) {
@@ -236,14 +246,17 @@ export function hydrateMetadataFilesFromRegistryIndex(
 			};
 		})
 		.filter((file): file is NonNullable<typeof file> => file !== null);
+	const uniqueMappedFiles = Array.from(
+		new Map(mappedFiles.map((file) => [file.path, file])).values()
+	);
 
-	if (mappedFiles.length === 0) {
+	if (uniqueMappedFiles.length === 0) {
 		return metadata;
 	}
 
 	return {
 		...metadata,
-		files: mappedFiles,
+		files: uniqueMappedFiles,
 	};
 }
 

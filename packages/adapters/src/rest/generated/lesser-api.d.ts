@@ -5370,7 +5370,7 @@ export interface components {
         };
         AppRegistrationResponse: {
             client_id: string;
-            client_secret?: string;
+            client_secret: string;
             grant_types?: string[];
             id: string;
             name: string;

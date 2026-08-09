@@ -72,6 +72,28 @@ describe('Composer', () => {
 		unmount(instance);
 	});
 
+	it('renders and sends against an explicit conversation without changing selection', async () => {
+		const explicitConversation = { id: 'c-explicit', participants: [], unreadCount: 0 } as any;
+		const target = document.createElement('div');
+		const instance = mount(Composer, { target, props: { conversation: explicitConversation } });
+		await flushSync();
+
+		const textarea = target.querySelector('textarea') as HTMLTextAreaElement;
+		textarea.value = 'Explicit target';
+		textarea.dispatchEvent(new Event('input', { bubbles: true }));
+		await flushSync();
+		(target.querySelector('button') as HTMLButtonElement).click();
+		await new Promise((resolve) => setTimeout(resolve, 0));
+
+		expect(mockSendMessage).toHaveBeenCalledWith(
+			'Explicit target',
+			undefined,
+			explicitConversation
+		);
+		expect(mockState.selectedConversation).toBeNull();
+		unmount(instance);
+	});
+
 	it('disables send button when empty', async () => {
 		mockState.selectedConversation = { id: 'c1', participants: [], unreadCount: 0 };
 		const target = document.createElement('div');
@@ -124,7 +146,11 @@ describe('Composer', () => {
 		await new Promise((resolve) => setTimeout(resolve, 0));
 		await flushSync();
 
-		expect(mockSendMessage).toHaveBeenCalledWith('Hello world');
+		expect(mockSendMessage).toHaveBeenCalledWith(
+			'Hello world',
+			undefined,
+			mockState.selectedConversation
+		);
 		expect(textarea.value).toBe(''); // Should clear after send
 
 		unmount(instance);
@@ -146,7 +172,11 @@ describe('Composer', () => {
 		await new Promise((resolve) => setTimeout(resolve, 0));
 		await flushSync();
 
-		expect(mockSendMessage).toHaveBeenCalledWith('Hello Enter');
+		expect(mockSendMessage).toHaveBeenCalledWith(
+			'Hello Enter',
+			undefined,
+			mockState.selectedConversation
+		);
 		expect(event.defaultPrevented).toBe(true);
 		expect(textarea.value).toBe('');
 
@@ -209,7 +239,11 @@ describe('Composer', () => {
 		button.click();
 		await flushSync();
 
-		expect(mockSendMessage).toHaveBeenCalledWith('Fail me');
+		expect(mockSendMessage).toHaveBeenCalledWith(
+			'Fail me',
+			undefined,
+			mockState.selectedConversation
+		);
 		// Should NOT clear content on error
 		expect(textarea.value).toBe('Fail me');
 

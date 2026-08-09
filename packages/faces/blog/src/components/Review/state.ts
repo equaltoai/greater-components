@@ -116,12 +116,10 @@ function latestVerdict(
  *    `APPROVED` from another, and neither reflects the gate.
  * 2. Otherwise the newest recorded verdict is named (`source: 'verdicts'`).
  *
- * The real gate reconstructs, per reviewer holding an active grant, that
- * reviewer's newest verdict recorded *after* the grant was issued, and requires
- * all of them to approve — plus the instance principal for generated drafts.
- * That reconstruction needs the active-grant set and the principal's identity,
- * neither of which the pinned projection exposes, so the chrome does not
- * attempt it. See {@link describeApprovalRequirement}.
+ * Lesser v1.6.4 exposes the canonical publication gate separately through
+ * `publishEligibility`. This resolver deliberately remains an activity badge;
+ * it never substitutes activity history for that server-authored gate. See
+ * {@link describeApprovalRequirement}.
  *
  * Renderers pair the result with {@link REVIEW_STATE_QUALIFIER}.
  */
@@ -154,11 +152,9 @@ export interface DescribeApprovalRequirementOptions {
 	/**
 	 * How many reviewers hold an **active** (unrevoked) grant on this draft.
 	 *
-	 * The pinned projection exposes only `DraftReview.grant` — the *viewer's
-	 * own* invitation — not the full active set, so this cannot be derived from
-	 * `DraftReviewData`. Supply it only from a source that genuinely enumerates
-	 * active grants; when omitted the descriptor names the rules without
-	 * implying any completion.
+	 * Lesser v1.6.4 projects `activeReviewerIds` and the complete grant set. This
+	 * override remains useful for partial selections and backwards-compatible
+	 * consumer-provided view models.
 	 *
 	 * Note this is the *active* count, not an invited count: a revoked grant
 	 * leaves the required set immediately while its verdict history remains as
@@ -197,21 +193,28 @@ function hasRecordedGenerator(review: DraftReviewData): boolean {
  * review chrome consumes the result to enable, disable, or gate a verdict
  * submission; Lesser enforces the policy and rejects invalid submissions.
  *
- * The descriptor reports no progress. Doing so honestly would require counting
- * reviewers with an active grant at the current round — data the pinned
- * projection does not carry — and counting `verdicts` instead would be wrong,
- * because that history is immutable and append-only. The chrome therefore names
- * the rules and stays neutral about how far along they are.
+ * Reviewer count comes from Lesser's canonical `activeReviewerIds` projection,
+ * or from an explicit override for partial view models. It never counts verdict
+ * history, which remains immutable and append-only.
  */
 export function describeApprovalRequirement(
 	review: DraftReviewData,
 	options: DescribeApprovalRequirementOptions = {}
 ): ReviewApprovalRequirement {
-	const { activeReviewerCount } = options;
+	const activeReviewerCount =
+		options.activeReviewerCount ??
+		review.activeReviewerIds?.length ??
+		(review.grantsTruncated
+			? undefined
+			: review.grants?.filter((grant) => grant.status === 'ACTIVE').length);
+	const principalApproval =
+		review.publishEligibility?.principalApprovalRequired ??
+		review.principalApprovalRequired ??
+		hasRecordedGenerator(review);
 
 	return {
 		allActiveReviewers: true,
-		principalApproval: hasRecordedGenerator(review),
+		principalApproval,
 		...(activeReviewerCount === undefined ? {} : { activeReviewerCount }),
 	};
 }

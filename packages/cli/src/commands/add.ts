@@ -45,7 +45,6 @@ import {
 } from '../utils/install-preview.js';
 import {
 	resolveFaceDependencies,
-	updateConfigWithFace,
 	injectFaceCss,
 	displayFaceInstallSummary,
 } from '../utils/face-installer.js';
@@ -384,6 +383,18 @@ export const addAction = async (
 
 	// Generate and display preview
 	const preview = generatePreview(resolution, config, cwd, options.path);
+	if (options.cssOnly) {
+		preview.targetPaths = preview.targetPaths
+			.map((target) => ({
+				...target,
+				files: target.files.filter((file) => file.toLowerCase().endsWith('.css')),
+			}))
+			.filter((target) => target.files.length > 0);
+		preview.diskSpace.files = preview.targetPaths.reduce(
+			(total, target) => total + target.files.length,
+			0
+		);
+	}
 
 	// Dry run - just show preview and exit
 	if (options.dryRun) {
@@ -474,25 +485,49 @@ export const addAction = async (
 		process.exit(1);
 	}
 
-	// CSS-only mode for faces
+	// CSS-only mode writes only new stylesheet files. It deliberately does not
+	// inject imports into existing consumer source, rewrite components.json, or
+	// install dependencies; the caller remains in control of where those styles
+	// are imported.
 	if (options.cssOnly && isFaceInstall) {
-		const faceName = faceItems[0]?.name ?? '';
-		const cssSpinner = ora('Injecting CSS imports...').start();
+		const cssSpinner = ora('Writing CSS files...').start();
 
 		try {
-			const cssInjected = await injectFaceCss(faceName, config, cwd);
-			if (cssInjected) {
-				cssSpinner.succeed('CSS imports added');
-			} else {
-				cssSpinner.warn('CSS imports need manual configuration');
+			let writtenCssFiles = 0;
+
+			for (const dep of resolution.resolved) {
+				const cssFiles = (componentFiles.get(dep.key) ?? []).filter(
+					(file) => file.type === 'styles' || file.path.toLowerCase().endsWith('.css')
+				);
+				if (cssFiles.length === 0) continue;
+
+				const overrideDir = options.path ? path.resolve(cwd, options.path) : null;
+				const byTargetDir = new Map<string, ComponentFile[]>();
+				for (const file of cssFiles) {
+					const target = getInstallTarget(file.path, config, cwd);
+					const targetDir = overrideDir ?? target.targetDir;
+					const group = byTargetDir.get(targetDir) ?? [];
+					group.push({ ...file, path: target.relativePath });
+					byTargetDir.set(targetDir, group);
+				}
+
+				for (const [targetDir, files] of byTargetDir) {
+					const result = await writeComponentFilesWithTransform(files, targetDir, config, cwd);
+					writtenCssFiles += result.writtenFiles.length;
+				}
 			}
 
-			// Update config with face
-			config = await updateConfigWithFace(config, faceName, cwd);
-			logger.success(chalk.green('\n✓ Face CSS configured successfully!\n'));
+			if (writtenCssFiles === 0) {
+				throw new Error('The selected face has no CSS files in the registry');
+			}
+
+			cssSpinner.succeed(`Wrote ${writtenCssFiles} CSS file(s)`);
+			logger.success(
+				chalk.green('\n✓ Face CSS installed without changing components.json or existing source.\n')
+			);
 			process.exit(0);
 		} catch (error) {
-			cssSpinner.fail('Failed to inject CSS');
+			cssSpinner.fail('Failed to write CSS files');
 			console.error(chalk.red(error instanceof Error ? error.message : String(error)));
 			process.exit(1);
 		}

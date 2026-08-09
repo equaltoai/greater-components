@@ -177,6 +177,7 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 	private authToken;
 	constructor(config: LesserGraphQLAdapterConfig);
 	updateToken(token: string | null): void;
+	onRealtimeReconnect(listener: () => void): () => void;
 	/**
 	 * Verify credentials and fetch current authenticated user
 	 *
@@ -232,6 +233,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 				readonly likesCount: number;
 				readonly sharesCount: number;
 				readonly boosted: boolean;
+				readonly viewerFavourited: boolean;
+				readonly viewerBookmarked: boolean;
+				readonly viewerPinned: boolean;
 				readonly relationshipType: import('./index.js').ObjectRelationshipType;
 				readonly contentHash: string;
 				readonly estimatedCost: number;
@@ -255,6 +259,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly likesCount: number;
 							readonly sharesCount: number;
 							readonly boosted: boolean;
+							readonly viewerFavourited: boolean;
+							readonly viewerBookmarked: boolean;
+							readonly viewerPinned: boolean;
 							readonly relationshipType: import('./index.js').ObjectRelationshipType;
 							readonly contentHash: string;
 							readonly estimatedCost: number;
@@ -742,6 +749,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 				readonly likesCount: number;
 				readonly sharesCount: number;
 				readonly boosted: boolean;
+				readonly viewerFavourited: boolean;
+				readonly viewerBookmarked: boolean;
+				readonly viewerPinned: boolean;
 				readonly relationshipType: import('./index.js').ObjectRelationshipType;
 				readonly contentHash: string;
 				readonly estimatedCost: number;
@@ -765,6 +775,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly likesCount: number;
 							readonly sharesCount: number;
 							readonly boosted: boolean;
+							readonly viewerFavourited: boolean;
+							readonly viewerBookmarked: boolean;
+							readonly viewerPinned: boolean;
 							readonly relationshipType: import('./index.js').ObjectRelationshipType;
 							readonly contentHash: string;
 							readonly estimatedCost: number;
@@ -1253,6 +1266,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 				readonly likesCount: number;
 				readonly sharesCount: number;
 				readonly boosted: boolean;
+				readonly viewerFavourited: boolean;
+				readonly viewerBookmarked: boolean;
+				readonly viewerPinned: boolean;
 				readonly relationshipType: import('./index.js').ObjectRelationshipType;
 				readonly contentHash: string;
 				readonly estimatedCost: number;
@@ -1276,6 +1292,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly likesCount: number;
 							readonly sharesCount: number;
 							readonly boosted: boolean;
+							readonly viewerFavourited: boolean;
+							readonly viewerBookmarked: boolean;
+							readonly viewerPinned: boolean;
 							readonly relationshipType: import('./index.js').ObjectRelationshipType;
 							readonly contentHash: string;
 							readonly estimatedCost: number;
@@ -1763,6 +1782,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 				readonly likesCount: number;
 				readonly sharesCount: number;
 				readonly boosted: boolean;
+				readonly viewerFavourited: boolean;
+				readonly viewerBookmarked: boolean;
+				readonly viewerPinned: boolean;
 				readonly relationshipType: import('./index.js').ObjectRelationshipType;
 				readonly contentHash: string;
 				readonly estimatedCost: number;
@@ -1786,6 +1808,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly likesCount: number;
 							readonly sharesCount: number;
 							readonly boosted: boolean;
+							readonly viewerFavourited: boolean;
+							readonly viewerBookmarked: boolean;
+							readonly viewerPinned: boolean;
 							readonly relationshipType: import('./index.js').ObjectRelationshipType;
 							readonly contentHash: string;
 							readonly estimatedCost: number;
@@ -2274,6 +2299,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 				readonly likesCount: number;
 				readonly sharesCount: number;
 				readonly boosted: boolean;
+				readonly viewerFavourited: boolean;
+				readonly viewerBookmarked: boolean;
+				readonly viewerPinned: boolean;
 				readonly relationshipType: import('./index.js').ObjectRelationshipType;
 				readonly contentHash: string;
 				readonly estimatedCost: number;
@@ -2297,6 +2325,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly likesCount: number;
 							readonly sharesCount: number;
 							readonly boosted: boolean;
+							readonly viewerFavourited: boolean;
+							readonly viewerBookmarked: boolean;
+							readonly viewerPinned: boolean;
 							readonly relationshipType: import('./index.js').ObjectRelationshipType;
 							readonly contentHash: string;
 							readonly estimatedCost: number;
@@ -2785,6 +2816,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 				readonly likesCount: number;
 				readonly sharesCount: number;
 				readonly boosted: boolean;
+				readonly viewerFavourited: boolean;
+				readonly viewerBookmarked: boolean;
+				readonly viewerPinned: boolean;
 				readonly relationshipType: import('./index.js').ObjectRelationshipType;
 				readonly contentHash: string;
 				readonly estimatedCost: number;
@@ -2808,6 +2842,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly likesCount: number;
 							readonly sharesCount: number;
 							readonly boosted: boolean;
+							readonly viewerFavourited: boolean;
+							readonly viewerBookmarked: boolean;
+							readonly viewerPinned: boolean;
 							readonly relationshipType: import('./index.js').ObjectRelationshipType;
 							readonly contentHash: string;
 							readonly estimatedCost: number;
@@ -3296,6 +3333,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 				readonly likesCount: number;
 				readonly sharesCount: number;
 				readonly boosted: boolean;
+				readonly viewerFavourited: boolean;
+				readonly viewerBookmarked: boolean;
+				readonly viewerPinned: boolean;
 				readonly relationshipType: import('./index.js').ObjectRelationshipType;
 				readonly contentHash: string;
 				readonly estimatedCost: number;
@@ -3319,6 +3359,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly likesCount: number;
 							readonly sharesCount: number;
 							readonly boosted: boolean;
+							readonly viewerFavourited: boolean;
+							readonly viewerBookmarked: boolean;
+							readonly viewerPinned: boolean;
 							readonly relationshipType: import('./index.js').ObjectRelationshipType;
 							readonly contentHash: string;
 							readonly estimatedCost: number;
@@ -3799,6 +3842,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 				readonly likesCount: number;
 				readonly sharesCount: number;
 				readonly boosted: boolean;
+				readonly viewerFavourited: boolean;
+				readonly viewerBookmarked: boolean;
+				readonly viewerPinned: boolean;
 				readonly relationshipType: import('./index.js').ObjectRelationshipType;
 				readonly contentHash: string;
 				readonly estimatedCost: number;
@@ -3822,6 +3868,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly likesCount: number;
 							readonly sharesCount: number;
 							readonly boosted: boolean;
+							readonly viewerFavourited: boolean;
+							readonly viewerBookmarked: boolean;
+							readonly viewerPinned: boolean;
 							readonly relationshipType: import('./index.js').ObjectRelationshipType;
 							readonly contentHash: string;
 							readonly estimatedCost: number;
@@ -4786,6 +4835,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 				readonly likesCount: number;
 				readonly sharesCount: number;
 				readonly boosted: boolean;
+				readonly viewerFavourited: boolean;
+				readonly viewerBookmarked: boolean;
+				readonly viewerPinned: boolean;
 				readonly relationshipType: import('./index.js').ObjectRelationshipType;
 				readonly contentHash: string;
 				readonly estimatedCost: number;
@@ -4809,6 +4861,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly likesCount: number;
 							readonly sharesCount: number;
 							readonly boosted: boolean;
+							readonly viewerFavourited: boolean;
+							readonly viewerBookmarked: boolean;
+							readonly viewerPinned: boolean;
 							readonly relationshipType: import('./index.js').ObjectRelationshipType;
 							readonly contentHash: string;
 							readonly estimatedCost: number;
@@ -6029,6 +6084,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 			readonly likesCount: number;
 			readonly sharesCount: number;
 			readonly boosted: boolean;
+			readonly viewerFavourited: boolean;
+			readonly viewerBookmarked: boolean;
+			readonly viewerPinned: boolean;
 			readonly relationshipType: import('./index.js').ObjectRelationshipType;
 			readonly contentHash: string;
 			readonly estimatedCost: number;
@@ -6052,6 +6110,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 						readonly likesCount: number;
 						readonly sharesCount: number;
 						readonly boosted: boolean;
+						readonly viewerFavourited: boolean;
+						readonly viewerBookmarked: boolean;
+						readonly viewerPinned: boolean;
 						readonly relationshipType: import('./index.js').ObjectRelationshipType;
 						readonly contentHash: string;
 						readonly estimatedCost: number;
@@ -6577,6 +6638,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly likesCount: number;
 							readonly sharesCount: number;
 							readonly boosted: boolean;
+							readonly viewerFavourited: boolean;
+							readonly viewerBookmarked: boolean;
+							readonly viewerPinned: boolean;
 							readonly relationshipType: import('./index.js').ObjectRelationshipType;
 							readonly contentHash: string;
 							readonly estimatedCost: number;
@@ -6600,6 +6664,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 										readonly likesCount: number;
 										readonly sharesCount: number;
 										readonly boosted: boolean;
+										readonly viewerFavourited: boolean;
+										readonly viewerBookmarked: boolean;
+										readonly viewerPinned: boolean;
 										readonly relationshipType: import('./index.js').ObjectRelationshipType;
 										readonly contentHash: string;
 										readonly estimatedCost: number;
@@ -7171,6 +7238,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly likesCount: number;
 							readonly sharesCount: number;
 							readonly boosted: boolean;
+							readonly viewerFavourited: boolean;
+							readonly viewerBookmarked: boolean;
+							readonly viewerPinned: boolean;
 							readonly relationshipType: import('./index.js').ObjectRelationshipType;
 							readonly contentHash: string;
 							readonly estimatedCost: number;
@@ -7194,6 +7264,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 										readonly likesCount: number;
 										readonly sharesCount: number;
 										readonly boosted: boolean;
+										readonly viewerFavourited: boolean;
+										readonly viewerBookmarked: boolean;
+										readonly viewerPinned: boolean;
 										readonly relationshipType: import('./index.js').ObjectRelationshipType;
 										readonly contentHash: string;
 										readonly estimatedCost: number;
@@ -7676,6 +7749,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 				readonly likesCount: number;
 				readonly sharesCount: number;
 				readonly boosted: boolean;
+				readonly viewerFavourited: boolean;
+				readonly viewerBookmarked: boolean;
+				readonly viewerPinned: boolean;
 				readonly relationshipType: import('./index.js').ObjectRelationshipType;
 				readonly contentHash: string;
 				readonly estimatedCost: number;
@@ -7699,6 +7775,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly likesCount: number;
 							readonly sharesCount: number;
 							readonly boosted: boolean;
+							readonly viewerFavourited: boolean;
+							readonly viewerBookmarked: boolean;
+							readonly viewerPinned: boolean;
 							readonly relationshipType: import('./index.js').ObjectRelationshipType;
 							readonly contentHash: string;
 							readonly estimatedCost: number;
@@ -8227,6 +8306,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 					readonly likesCount: number;
 					readonly sharesCount: number;
 					readonly boosted: boolean;
+					readonly viewerFavourited: boolean;
+					readonly viewerBookmarked: boolean;
+					readonly viewerPinned: boolean;
 					readonly relationshipType: import('./index.js').ObjectRelationshipType;
 					readonly contentHash: string;
 					readonly estimatedCost: number;
@@ -8250,6 +8332,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 								readonly likesCount: number;
 								readonly sharesCount: number;
 								readonly boosted: boolean;
+								readonly viewerFavourited: boolean;
+								readonly viewerBookmarked: boolean;
+								readonly viewerPinned: boolean;
 								readonly relationshipType: import('./index.js').ObjectRelationshipType;
 								readonly contentHash: string;
 								readonly estimatedCost: number;
@@ -8780,6 +8865,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 						readonly likesCount: number;
 						readonly sharesCount: number;
 						readonly boosted: boolean;
+						readonly viewerFavourited: boolean;
+						readonly viewerBookmarked: boolean;
+						readonly viewerPinned: boolean;
 						readonly relationshipType: import('./index.js').ObjectRelationshipType;
 						readonly contentHash: string;
 						readonly estimatedCost: number;
@@ -8803,6 +8891,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 									readonly likesCount: number;
 									readonly sharesCount: number;
 									readonly boosted: boolean;
+									readonly viewerFavourited: boolean;
+									readonly viewerBookmarked: boolean;
+									readonly viewerPinned: boolean;
 									readonly relationshipType: import('./index.js').ObjectRelationshipType;
 									readonly contentHash: string;
 									readonly estimatedCost: number;
@@ -9276,6 +9367,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 			readonly likesCount: number;
 			readonly sharesCount: number;
 			readonly boosted: boolean;
+			readonly viewerFavourited: boolean;
+			readonly viewerBookmarked: boolean;
+			readonly viewerPinned: boolean;
 			readonly relationshipType: import('./index.js').ObjectRelationshipType;
 			readonly contentHash: string;
 			readonly estimatedCost: number;
@@ -9299,6 +9393,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 						readonly likesCount: number;
 						readonly sharesCount: number;
 						readonly boosted: boolean;
+						readonly viewerFavourited: boolean;
+						readonly viewerBookmarked: boolean;
+						readonly viewerPinned: boolean;
 						readonly relationshipType: import('./index.js').ObjectRelationshipType;
 						readonly contentHash: string;
 						readonly estimatedCost: number;
@@ -9823,6 +9920,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 					readonly likesCount: number;
 					readonly sharesCount: number;
 					readonly boosted: boolean;
+					readonly viewerFavourited: boolean;
+					readonly viewerBookmarked: boolean;
+					readonly viewerPinned: boolean;
 					readonly relationshipType: import('./index.js').ObjectRelationshipType;
 					readonly contentHash: string;
 					readonly estimatedCost: number;
@@ -9846,6 +9946,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 								readonly likesCount: number;
 								readonly sharesCount: number;
 								readonly boosted: boolean;
+								readonly viewerFavourited: boolean;
+								readonly viewerBookmarked: boolean;
+								readonly viewerPinned: boolean;
 								readonly relationshipType: import('./index.js').ObjectRelationshipType;
 								readonly contentHash: string;
 								readonly estimatedCost: number;
@@ -10620,6 +10723,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 			readonly likesCount: number;
 			readonly sharesCount: number;
 			readonly boosted: boolean;
+			readonly viewerFavourited: boolean;
+			readonly viewerBookmarked: boolean;
+			readonly viewerPinned: boolean;
 			readonly relationshipType: import('./index.js').ObjectRelationshipType;
 			readonly contentHash: string;
 			readonly estimatedCost: number;
@@ -10643,6 +10749,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 						readonly likesCount: number;
 						readonly sharesCount: number;
 						readonly boosted: boolean;
+						readonly viewerFavourited: boolean;
+						readonly viewerBookmarked: boolean;
+						readonly viewerPinned: boolean;
 						readonly relationshipType: import('./index.js').ObjectRelationshipType;
 						readonly contentHash: string;
 						readonly estimatedCost: number;
@@ -11181,6 +11290,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 			readonly likesCount: number;
 			readonly sharesCount: number;
 			readonly boosted: boolean;
+			readonly viewerFavourited: boolean;
+			readonly viewerBookmarked: boolean;
+			readonly viewerPinned: boolean;
 			readonly relationshipType: import('./index.js').ObjectRelationshipType;
 			readonly contentHash: string;
 			readonly estimatedCost: number;
@@ -11204,6 +11316,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 						readonly likesCount: number;
 						readonly sharesCount: number;
 						readonly boosted: boolean;
+						readonly viewerFavourited: boolean;
+						readonly viewerBookmarked: boolean;
+						readonly viewerPinned: boolean;
 						readonly relationshipType: import('./index.js').ObjectRelationshipType;
 						readonly contentHash: string;
 						readonly estimatedCost: number;
@@ -11745,6 +11860,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 				readonly likesCount: number;
 				readonly sharesCount: number;
 				readonly boosted: boolean;
+				readonly viewerFavourited: boolean;
+				readonly viewerBookmarked: boolean;
+				readonly viewerPinned: boolean;
 				readonly relationshipType: import('./index.js').ObjectRelationshipType;
 				readonly contentHash: string;
 				readonly estimatedCost: number;
@@ -11773,6 +11891,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly likesCount: number;
 							readonly sharesCount: number;
 							readonly boosted: boolean;
+							readonly viewerFavourited: boolean;
+							readonly viewerBookmarked: boolean;
+							readonly viewerPinned: boolean;
 							readonly relationshipType: import('./index.js').ObjectRelationshipType;
 							readonly contentHash: string;
 							readonly estimatedCost: number;
@@ -11796,6 +11917,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 										readonly likesCount: number;
 										readonly sharesCount: number;
 										readonly boosted: boolean;
+										readonly viewerFavourited: boolean;
+										readonly viewerBookmarked: boolean;
+										readonly viewerPinned: boolean;
 										readonly relationshipType: import('./index.js').ObjectRelationshipType;
 										readonly contentHash: string;
 										readonly estimatedCost: number;
@@ -12276,6 +12400,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly likesCount: number;
 							readonly sharesCount: number;
 							readonly boosted: boolean;
+							readonly viewerFavourited: boolean;
+							readonly viewerBookmarked: boolean;
+							readonly viewerPinned: boolean;
 							readonly relationshipType: import('./index.js').ObjectRelationshipType;
 							readonly contentHash: string;
 							readonly estimatedCost: number;
@@ -12753,6 +12880,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 			readonly likesCount: number;
 			readonly sharesCount: number;
 			readonly boosted: boolean;
+			readonly viewerFavourited: boolean;
+			readonly viewerBookmarked: boolean;
+			readonly viewerPinned: boolean;
 			readonly relationshipType: import('./index.js').ObjectRelationshipType;
 			readonly contentHash: string;
 			readonly estimatedCost: number;
@@ -12776,6 +12906,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 						readonly likesCount: number;
 						readonly sharesCount: number;
 						readonly boosted: boolean;
+						readonly viewerFavourited: boolean;
+						readonly viewerBookmarked: boolean;
+						readonly viewerPinned: boolean;
 						readonly relationshipType: import('./index.js').ObjectRelationshipType;
 						readonly contentHash: string;
 						readonly estimatedCost: number;
@@ -13255,6 +13388,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 			readonly likesCount: number;
 			readonly sharesCount: number;
 			readonly boosted: boolean;
+			readonly viewerFavourited: boolean;
+			readonly viewerBookmarked: boolean;
+			readonly viewerPinned: boolean;
 			readonly relationshipType: import('./index.js').ObjectRelationshipType;
 			readonly contentHash: string;
 			readonly estimatedCost: number;
@@ -13278,6 +13414,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 						readonly likesCount: number;
 						readonly sharesCount: number;
 						readonly boosted: boolean;
+						readonly viewerFavourited: boolean;
+						readonly viewerBookmarked: boolean;
+						readonly viewerPinned: boolean;
 						readonly relationshipType: import('./index.js').ObjectRelationshipType;
 						readonly contentHash: string;
 						readonly estimatedCost: number;
@@ -13810,6 +13949,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 		readonly likesCount: number;
 		readonly sharesCount: number;
 		readonly boosted: boolean;
+		readonly viewerFavourited: boolean;
+		readonly viewerBookmarked: boolean;
+		readonly viewerPinned: boolean;
 		readonly relationshipType: import('./index.js').ObjectRelationshipType;
 		readonly contentHash: string;
 		readonly estimatedCost: number;
@@ -13833,6 +13975,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 					readonly likesCount: number;
 					readonly sharesCount: number;
 					readonly boosted: boolean;
+					readonly viewerFavourited: boolean;
+					readonly viewerBookmarked: boolean;
+					readonly viewerPinned: boolean;
 					readonly relationshipType: import('./index.js').ObjectRelationshipType;
 					readonly contentHash: string;
 					readonly estimatedCost: number;
@@ -14303,6 +14448,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 		readonly likesCount: number;
 		readonly sharesCount: number;
 		readonly boosted: boolean;
+		readonly viewerFavourited: boolean;
+		readonly viewerBookmarked: boolean;
+		readonly viewerPinned: boolean;
 		readonly relationshipType: import('./index.js').ObjectRelationshipType;
 		readonly contentHash: string;
 		readonly estimatedCost: number;
@@ -14326,6 +14474,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 					readonly likesCount: number;
 					readonly sharesCount: number;
 					readonly boosted: boolean;
+					readonly viewerFavourited: boolean;
+					readonly viewerBookmarked: boolean;
+					readonly viewerPinned: boolean;
 					readonly relationshipType: import('./index.js').ObjectRelationshipType;
 					readonly contentHash: string;
 					readonly estimatedCost: number;
@@ -14796,6 +14947,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 		readonly likesCount: number;
 		readonly sharesCount: number;
 		readonly boosted: boolean;
+		readonly viewerFavourited: boolean;
+		readonly viewerBookmarked: boolean;
+		readonly viewerPinned: boolean;
 		readonly relationshipType: import('./index.js').ObjectRelationshipType;
 		readonly contentHash: string;
 		readonly estimatedCost: number;
@@ -14819,6 +14973,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 					readonly likesCount: number;
 					readonly sharesCount: number;
 					readonly boosted: boolean;
+					readonly viewerFavourited: boolean;
+					readonly viewerBookmarked: boolean;
+					readonly viewerPinned: boolean;
 					readonly relationshipType: import('./index.js').ObjectRelationshipType;
 					readonly contentHash: string;
 					readonly estimatedCost: number;
@@ -15290,6 +15447,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 		readonly likesCount: number;
 		readonly sharesCount: number;
 		readonly boosted: boolean;
+		readonly viewerFavourited: boolean;
+		readonly viewerBookmarked: boolean;
+		readonly viewerPinned: boolean;
 		readonly relationshipType: import('./index.js').ObjectRelationshipType;
 		readonly contentHash: string;
 		readonly estimatedCost: number;
@@ -15313,6 +15473,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 					readonly likesCount: number;
 					readonly sharesCount: number;
 					readonly boosted: boolean;
+					readonly viewerFavourited: boolean;
+					readonly viewerBookmarked: boolean;
+					readonly viewerPinned: boolean;
 					readonly relationshipType: import('./index.js').ObjectRelationshipType;
 					readonly contentHash: string;
 					readonly estimatedCost: number;
@@ -16417,6 +16580,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 				readonly likesCount: number;
 				readonly sharesCount: number;
 				readonly boosted: boolean;
+				readonly viewerFavourited: boolean;
+				readonly viewerBookmarked: boolean;
+				readonly viewerPinned: boolean;
 				readonly relationshipType: import('./index.js').ObjectRelationshipType;
 				readonly contentHash: string;
 				readonly estimatedCost: number;
@@ -16484,6 +16650,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly likesCount: number;
 							readonly sharesCount: number;
 							readonly boosted: boolean;
+							readonly viewerFavourited: boolean;
+							readonly viewerBookmarked: boolean;
+							readonly viewerPinned: boolean;
 							readonly relationshipType: import('./index.js').ObjectRelationshipType;
 							readonly contentHash: string;
 							readonly estimatedCost: number;
@@ -17315,6 +17484,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 				readonly likesCount: number;
 				readonly sharesCount: number;
 				readonly boosted: boolean;
+				readonly viewerFavourited: boolean;
+				readonly viewerBookmarked: boolean;
+				readonly viewerPinned: boolean;
 				readonly relationshipType: import('./index.js').ObjectRelationshipType;
 				readonly contentHash: string;
 				readonly estimatedCost: number;
@@ -17338,6 +17510,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly likesCount: number;
 							readonly sharesCount: number;
 							readonly boosted: boolean;
+							readonly viewerFavourited: boolean;
+							readonly viewerBookmarked: boolean;
+							readonly viewerPinned: boolean;
 							readonly relationshipType: import('./index.js').ObjectRelationshipType;
 							readonly contentHash: string;
 							readonly estimatedCost: number;
@@ -17821,6 +17996,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 				readonly likesCount: number;
 				readonly sharesCount: number;
 				readonly boosted: boolean;
+				readonly viewerFavourited: boolean;
+				readonly viewerBookmarked: boolean;
+				readonly viewerPinned: boolean;
 				readonly relationshipType: import('./index.js').ObjectRelationshipType;
 				readonly contentHash: string;
 				readonly estimatedCost: number;
@@ -17844,6 +18022,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 							readonly likesCount: number;
 							readonly sharesCount: number;
 							readonly boosted: boolean;
+							readonly viewerFavourited: boolean;
+							readonly viewerBookmarked: boolean;
+							readonly viewerPinned: boolean;
 							readonly relationshipType: import('./index.js').ObjectRelationshipType;
 							readonly contentHash: string;
 							readonly estimatedCost: number;
@@ -18324,6 +18505,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 					readonly likesCount: number;
 					readonly sharesCount: number;
 					readonly boosted: boolean;
+					readonly viewerFavourited: boolean;
+					readonly viewerBookmarked: boolean;
+					readonly viewerPinned: boolean;
 					readonly relationshipType: import('./index.js').ObjectRelationshipType;
 					readonly contentHash: string;
 					readonly estimatedCost: number;
@@ -18347,6 +18531,9 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 								readonly likesCount: number;
 								readonly sharesCount: number;
 								readonly boosted: boolean;
+								readonly viewerFavourited: boolean;
+								readonly viewerBookmarked: boolean;
+								readonly viewerPinned: boolean;
 								readonly relationshipType: import('./index.js').ObjectRelationshipType;
 								readonly contentHash: string;
 								readonly estimatedCost: number;
@@ -19131,7 +19318,12 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 			readonly node: {
 				readonly __typename: 'DraftReview';
 				readonly draftId: string;
+				readonly ownerId: string;
 				readonly title?: string | null | undefined;
+				readonly slug?: string | null | undefined;
+				readonly content: string;
+				readonly renderedHtml?: string | null | undefined;
+				readonly renderErrors: ReadonlyArray<string>;
 				readonly subtitle?: string | null | undefined;
 				readonly excerpt?: string | null | undefined;
 				readonly contentFormat: import('./index.js').ContentFormat;
@@ -19141,6 +19333,16 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 				readonly createdAt: string;
 				readonly reviewStatus?: string | null | undefined;
 				readonly editorNotes?: string | null | undefined;
+				readonly contentHash: string;
+				readonly revision: number;
+				readonly activeReviewerIds: ReadonlyArray<string>;
+				readonly publishEligible: boolean;
+				readonly publishBlockingReasons: ReadonlyArray<string>;
+				readonly reviewersApproved: boolean;
+				readonly principalApprovalRequired: boolean;
+				readonly principalApproved: boolean;
+				readonly grantCount: number;
+				readonly grantsTruncated: boolean;
 				readonly generatedBy?:
 					| {
 							readonly __typename: 'Actor';
@@ -19168,7 +19370,10 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 				readonly grant?:
 					| {
 							readonly __typename: 'DraftReviewGrant';
+							readonly reviewerId: string;
 							readonly grantedAt: string;
+							readonly status: import('./index.js').DraftReviewGrantStatus;
+							readonly revokedAt?: string | null | undefined;
 							readonly reviewer: {
 								readonly __typename: 'Actor';
 								readonly id: string;
@@ -19181,12 +19386,12 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 					  }
 					| null
 					| undefined;
-				readonly verdicts: ReadonlyArray<{
-					readonly __typename: 'DraftReviewVerdictRecord';
-					readonly verdict: DraftReviewVerdict;
-					readonly notes?: string | null | undefined;
-					readonly contentHash?: string | null | undefined;
-					readonly recordedAt: string;
+				readonly grants: ReadonlyArray<{
+					readonly __typename: 'DraftReviewGrant';
+					readonly reviewerId: string;
+					readonly grantedAt: string;
+					readonly status: import('./index.js').DraftReviewGrantStatus;
+					readonly revokedAt?: string | null | undefined;
 					readonly reviewer: {
 						readonly __typename: 'Actor';
 						readonly id: string;
@@ -19197,6 +19402,33 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 						readonly isAgent: boolean;
 					};
 				}>;
+				readonly verdicts: ReadonlyArray<{
+					readonly __typename: 'DraftReviewVerdictRecord';
+					readonly verdict: DraftReviewVerdict;
+					readonly notes?: string | null | undefined;
+					readonly contentHash?: string | null | undefined;
+					readonly reviewerId: string;
+					readonly recordedAt: string;
+					readonly current: boolean;
+					readonly stale: boolean;
+					readonly reviewer: {
+						readonly __typename: 'Actor';
+						readonly id: string;
+						readonly username: string;
+						readonly domain?: string | null | undefined;
+						readonly displayName?: string | null | undefined;
+						readonly avatar?: string | null | undefined;
+						readonly isAgent: boolean;
+					};
+				}>;
+				readonly publishEligibility: {
+					readonly __typename: 'DraftPublishEligibility';
+					readonly eligible: boolean;
+					readonly blockingReasons: ReadonlyArray<string>;
+					readonly reviewersApproved: boolean;
+					readonly principalApprovalRequired: boolean;
+					readonly principalApproved: boolean;
+				};
 			};
 		}>;
 	}>;
@@ -19207,7 +19439,12 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 		| {
 				readonly __typename: 'DraftReview';
 				readonly draftId: string;
+				readonly ownerId: string;
 				readonly title?: string | null | undefined;
+				readonly slug?: string | null | undefined;
+				readonly content: string;
+				readonly renderedHtml?: string | null | undefined;
+				readonly renderErrors: ReadonlyArray<string>;
 				readonly subtitle?: string | null | undefined;
 				readonly excerpt?: string | null | undefined;
 				readonly contentFormat: import('./index.js').ContentFormat;
@@ -19217,6 +19454,16 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 				readonly createdAt: string;
 				readonly reviewStatus?: string | null | undefined;
 				readonly editorNotes?: string | null | undefined;
+				readonly contentHash: string;
+				readonly revision: number;
+				readonly activeReviewerIds: ReadonlyArray<string>;
+				readonly publishEligible: boolean;
+				readonly publishBlockingReasons: ReadonlyArray<string>;
+				readonly reviewersApproved: boolean;
+				readonly principalApprovalRequired: boolean;
+				readonly principalApproved: boolean;
+				readonly grantCount: number;
+				readonly grantsTruncated: boolean;
 				readonly generatedBy?:
 					| {
 							readonly __typename: 'Actor';
@@ -19244,7 +19491,10 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 				readonly grant?:
 					| {
 							readonly __typename: 'DraftReviewGrant';
+							readonly reviewerId: string;
 							readonly grantedAt: string;
+							readonly status: import('./index.js').DraftReviewGrantStatus;
+							readonly revokedAt?: string | null | undefined;
 							readonly reviewer: {
 								readonly __typename: 'Actor';
 								readonly id: string;
@@ -19257,12 +19507,12 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 					  }
 					| null
 					| undefined;
-				readonly verdicts: ReadonlyArray<{
-					readonly __typename: 'DraftReviewVerdictRecord';
-					readonly verdict: DraftReviewVerdict;
-					readonly notes?: string | null | undefined;
-					readonly contentHash?: string | null | undefined;
-					readonly recordedAt: string;
+				readonly grants: ReadonlyArray<{
+					readonly __typename: 'DraftReviewGrant';
+					readonly reviewerId: string;
+					readonly grantedAt: string;
+					readonly status: import('./index.js').DraftReviewGrantStatus;
+					readonly revokedAt?: string | null | undefined;
 					readonly reviewer: {
 						readonly __typename: 'Actor';
 						readonly id: string;
@@ -19273,6 +19523,33 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 						readonly isAgent: boolean;
 					};
 				}>;
+				readonly verdicts: ReadonlyArray<{
+					readonly __typename: 'DraftReviewVerdictRecord';
+					readonly verdict: DraftReviewVerdict;
+					readonly notes?: string | null | undefined;
+					readonly contentHash?: string | null | undefined;
+					readonly reviewerId: string;
+					readonly recordedAt: string;
+					readonly current: boolean;
+					readonly stale: boolean;
+					readonly reviewer: {
+						readonly __typename: 'Actor';
+						readonly id: string;
+						readonly username: string;
+						readonly domain?: string | null | undefined;
+						readonly displayName?: string | null | undefined;
+						readonly avatar?: string | null | undefined;
+						readonly isAgent: boolean;
+					};
+				}>;
+				readonly publishEligibility: {
+					readonly __typename: 'DraftPublishEligibility';
+					readonly eligible: boolean;
+					readonly blockingReasons: ReadonlyArray<string>;
+					readonly reviewersApproved: boolean;
+					readonly principalApprovalRequired: boolean;
+					readonly principalApproved: boolean;
+				};
 		  }
 		| null
 		| undefined
@@ -19290,7 +19567,12 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 	): Promise<{
 		readonly __typename: 'DraftReview';
 		readonly draftId: string;
+		readonly ownerId: string;
 		readonly title?: string | null | undefined;
+		readonly slug?: string | null | undefined;
+		readonly content: string;
+		readonly renderedHtml?: string | null | undefined;
+		readonly renderErrors: ReadonlyArray<string>;
 		readonly subtitle?: string | null | undefined;
 		readonly excerpt?: string | null | undefined;
 		readonly contentFormat: import('./index.js').ContentFormat;
@@ -19300,6 +19582,16 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 		readonly createdAt: string;
 		readonly reviewStatus?: string | null | undefined;
 		readonly editorNotes?: string | null | undefined;
+		readonly contentHash: string;
+		readonly revision: number;
+		readonly activeReviewerIds: ReadonlyArray<string>;
+		readonly publishEligible: boolean;
+		readonly publishBlockingReasons: ReadonlyArray<string>;
+		readonly reviewersApproved: boolean;
+		readonly principalApprovalRequired: boolean;
+		readonly principalApproved: boolean;
+		readonly grantCount: number;
+		readonly grantsTruncated: boolean;
 		readonly generatedBy?:
 			| {
 					readonly __typename: 'Actor';
@@ -19327,7 +19619,10 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 		readonly grant?:
 			| {
 					readonly __typename: 'DraftReviewGrant';
+					readonly reviewerId: string;
 					readonly grantedAt: string;
+					readonly status: import('./index.js').DraftReviewGrantStatus;
+					readonly revokedAt?: string | null | undefined;
 					readonly reviewer: {
 						readonly __typename: 'Actor';
 						readonly id: string;
@@ -19340,12 +19635,12 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 			  }
 			| null
 			| undefined;
-		readonly verdicts: ReadonlyArray<{
-			readonly __typename: 'DraftReviewVerdictRecord';
-			readonly verdict: DraftReviewVerdict;
-			readonly notes?: string | null | undefined;
-			readonly contentHash?: string | null | undefined;
-			readonly recordedAt: string;
+		readonly grants: ReadonlyArray<{
+			readonly __typename: 'DraftReviewGrant';
+			readonly reviewerId: string;
+			readonly grantedAt: string;
+			readonly status: import('./index.js').DraftReviewGrantStatus;
+			readonly revokedAt?: string | null | undefined;
 			readonly reviewer: {
 				readonly __typename: 'Actor';
 				readonly id: string;
@@ -19356,6 +19651,33 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 				readonly isAgent: boolean;
 			};
 		}>;
+		readonly verdicts: ReadonlyArray<{
+			readonly __typename: 'DraftReviewVerdictRecord';
+			readonly verdict: DraftReviewVerdict;
+			readonly notes?: string | null | undefined;
+			readonly contentHash?: string | null | undefined;
+			readonly reviewerId: string;
+			readonly recordedAt: string;
+			readonly current: boolean;
+			readonly stale: boolean;
+			readonly reviewer: {
+				readonly __typename: 'Actor';
+				readonly id: string;
+				readonly username: string;
+				readonly domain?: string | null | undefined;
+				readonly displayName?: string | null | undefined;
+				readonly avatar?: string | null | undefined;
+				readonly isAgent: boolean;
+			};
+		}>;
+		readonly publishEligibility: {
+			readonly __typename: 'DraftPublishEligibility';
+			readonly eligible: boolean;
+			readonly blockingReasons: ReadonlyArray<string>;
+			readonly reviewersApproved: boolean;
+			readonly principalApprovalRequired: boolean;
+			readonly principalApproved: boolean;
+		};
 	}>;
 	/**
 	 * Invites a reviewer, reporting an existing grant as an expected condition
@@ -19401,7 +19723,12 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 	submitDraftReview(variables: SubmitDraftReviewMutationVariables): Promise<{
 		readonly __typename: 'DraftReview';
 		readonly draftId: string;
+		readonly ownerId: string;
 		readonly title?: string | null | undefined;
+		readonly slug?: string | null | undefined;
+		readonly content: string;
+		readonly renderedHtml?: string | null | undefined;
+		readonly renderErrors: ReadonlyArray<string>;
 		readonly subtitle?: string | null | undefined;
 		readonly excerpt?: string | null | undefined;
 		readonly contentFormat: import('./index.js').ContentFormat;
@@ -19411,6 +19738,16 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 		readonly createdAt: string;
 		readonly reviewStatus?: string | null | undefined;
 		readonly editorNotes?: string | null | undefined;
+		readonly contentHash: string;
+		readonly revision: number;
+		readonly activeReviewerIds: ReadonlyArray<string>;
+		readonly publishEligible: boolean;
+		readonly publishBlockingReasons: ReadonlyArray<string>;
+		readonly reviewersApproved: boolean;
+		readonly principalApprovalRequired: boolean;
+		readonly principalApproved: boolean;
+		readonly grantCount: number;
+		readonly grantsTruncated: boolean;
 		readonly generatedBy?:
 			| {
 					readonly __typename: 'Actor';
@@ -19438,7 +19775,10 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 		readonly grant?:
 			| {
 					readonly __typename: 'DraftReviewGrant';
+					readonly reviewerId: string;
 					readonly grantedAt: string;
+					readonly status: import('./index.js').DraftReviewGrantStatus;
+					readonly revokedAt?: string | null | undefined;
 					readonly reviewer: {
 						readonly __typename: 'Actor';
 						readonly id: string;
@@ -19451,12 +19791,12 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 			  }
 			| null
 			| undefined;
-		readonly verdicts: ReadonlyArray<{
-			readonly __typename: 'DraftReviewVerdictRecord';
-			readonly verdict: DraftReviewVerdict;
-			readonly notes?: string | null | undefined;
-			readonly contentHash?: string | null | undefined;
-			readonly recordedAt: string;
+		readonly grants: ReadonlyArray<{
+			readonly __typename: 'DraftReviewGrant';
+			readonly reviewerId: string;
+			readonly grantedAt: string;
+			readonly status: import('./index.js').DraftReviewGrantStatus;
+			readonly revokedAt?: string | null | undefined;
 			readonly reviewer: {
 				readonly __typename: 'Actor';
 				readonly id: string;
@@ -19467,6 +19807,33 @@ export declare class LesserGraphQLAdapter implements LesserMessagesAdapter {
 				readonly isAgent: boolean;
 			};
 		}>;
+		readonly verdicts: ReadonlyArray<{
+			readonly __typename: 'DraftReviewVerdictRecord';
+			readonly verdict: DraftReviewVerdict;
+			readonly notes?: string | null | undefined;
+			readonly contentHash?: string | null | undefined;
+			readonly reviewerId: string;
+			readonly recordedAt: string;
+			readonly current: boolean;
+			readonly stale: boolean;
+			readonly reviewer: {
+				readonly __typename: 'Actor';
+				readonly id: string;
+				readonly username: string;
+				readonly domain?: string | null | undefined;
+				readonly displayName?: string | null | undefined;
+				readonly avatar?: string | null | undefined;
+				readonly isAgent: boolean;
+			};
+		}>;
+		readonly publishEligibility: {
+			readonly __typename: 'DraftPublishEligibility';
+			readonly eligible: boolean;
+			readonly blockingReasons: ReadonlyArray<string>;
+			readonly reviewersApproved: boolean;
+			readonly principalApprovalRequired: boolean;
+			readonly principalApproved: boolean;
+		};
 	}>;
 }
 export declare function createLesserGraphQLAdapter(
@@ -19504,7 +19871,12 @@ export declare function createSubmitDraftReviewHandler(adapter: LesserGraphQLAda
 ) => Promise<{
 	readonly __typename: 'DraftReview';
 	readonly draftId: string;
+	readonly ownerId: string;
 	readonly title?: string | null | undefined;
+	readonly slug?: string | null | undefined;
+	readonly content: string;
+	readonly renderedHtml?: string | null | undefined;
+	readonly renderErrors: ReadonlyArray<string>;
 	readonly subtitle?: string | null | undefined;
 	readonly excerpt?: string | null | undefined;
 	readonly contentFormat: import('./index.js').ContentFormat;
@@ -19514,6 +19886,16 @@ export declare function createSubmitDraftReviewHandler(adapter: LesserGraphQLAda
 	readonly createdAt: string;
 	readonly reviewStatus?: string | null | undefined;
 	readonly editorNotes?: string | null | undefined;
+	readonly contentHash: string;
+	readonly revision: number;
+	readonly activeReviewerIds: ReadonlyArray<string>;
+	readonly publishEligible: boolean;
+	readonly publishBlockingReasons: ReadonlyArray<string>;
+	readonly reviewersApproved: boolean;
+	readonly principalApprovalRequired: boolean;
+	readonly principalApproved: boolean;
+	readonly grantCount: number;
+	readonly grantsTruncated: boolean;
 	readonly generatedBy?:
 		| {
 				readonly __typename: 'Actor';
@@ -19541,7 +19923,10 @@ export declare function createSubmitDraftReviewHandler(adapter: LesserGraphQLAda
 	readonly grant?:
 		| {
 				readonly __typename: 'DraftReviewGrant';
+				readonly reviewerId: string;
 				readonly grantedAt: string;
+				readonly status: import('./index.js').DraftReviewGrantStatus;
+				readonly revokedAt?: string | null | undefined;
 				readonly reviewer: {
 					readonly __typename: 'Actor';
 					readonly id: string;
@@ -19554,12 +19939,12 @@ export declare function createSubmitDraftReviewHandler(adapter: LesserGraphQLAda
 		  }
 		| null
 		| undefined;
-	readonly verdicts: ReadonlyArray<{
-		readonly __typename: 'DraftReviewVerdictRecord';
-		readonly verdict: DraftReviewVerdict;
-		readonly notes?: string | null | undefined;
-		readonly contentHash?: string | null | undefined;
-		readonly recordedAt: string;
+	readonly grants: ReadonlyArray<{
+		readonly __typename: 'DraftReviewGrant';
+		readonly reviewerId: string;
+		readonly grantedAt: string;
+		readonly status: import('./index.js').DraftReviewGrantStatus;
+		readonly revokedAt?: string | null | undefined;
 		readonly reviewer: {
 			readonly __typename: 'Actor';
 			readonly id: string;
@@ -19570,5 +19955,32 @@ export declare function createSubmitDraftReviewHandler(adapter: LesserGraphQLAda
 			readonly isAgent: boolean;
 		};
 	}>;
+	readonly verdicts: ReadonlyArray<{
+		readonly __typename: 'DraftReviewVerdictRecord';
+		readonly verdict: DraftReviewVerdict;
+		readonly notes?: string | null | undefined;
+		readonly contentHash?: string | null | undefined;
+		readonly reviewerId: string;
+		readonly recordedAt: string;
+		readonly current: boolean;
+		readonly stale: boolean;
+		readonly reviewer: {
+			readonly __typename: 'Actor';
+			readonly id: string;
+			readonly username: string;
+			readonly domain?: string | null | undefined;
+			readonly displayName?: string | null | undefined;
+			readonly avatar?: string | null | undefined;
+			readonly isAgent: boolean;
+		};
+	}>;
+	readonly publishEligibility: {
+		readonly __typename: 'DraftPublishEligibility';
+		readonly eligible: boolean;
+		readonly blockingReasons: ReadonlyArray<string>;
+		readonly reviewersApproved: boolean;
+		readonly principalApprovalRequired: boolean;
+		readonly principalApproved: boolean;
+	};
 }>;
 //# sourceMappingURL=LesserGraphQLAdapter.d.ts.map

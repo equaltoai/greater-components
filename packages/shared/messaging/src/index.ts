@@ -63,6 +63,8 @@ export type {
 export type {
 	MessageParticipant,
 	DirectMessage,
+	DirectMessagePage,
+	MessagePageInfo,
 	Conversation,
 	ConversationFolder,
 	DmRequestState,

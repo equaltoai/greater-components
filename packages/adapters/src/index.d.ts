@@ -223,7 +223,12 @@ export type {
 	VerifySoulBootstrapWalletInput,
 } from './soul/index.js';
 export { createLesserMessagesHandlers } from './messaging/index.js';
-export type { LesserMessagesAdapter, LesserMessagesHandlersConfig } from './messaging/index.js';
+export type {
+	DirectMessagePage,
+	LesserMessagesAdapter,
+	LesserMessagesHandlersConfig,
+	MessagePageInfo,
+} from './messaging/index.js';
 export {
 	createTimelineStore,
 	createNotificationStore,
