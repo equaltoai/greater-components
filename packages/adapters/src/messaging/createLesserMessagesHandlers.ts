@@ -63,17 +63,32 @@ export interface ConversationRealtimeUpdate {
 	message?: DirectMessage;
 }
 
+export interface MessagePageInfo {
+	hasNextPage: boolean;
+	hasPreviousPage: boolean;
+	startCursor?: string | null;
+	endCursor?: string | null;
+}
+
+export interface DirectMessagePage {
+	messages: DirectMessage[];
+	pageInfo: MessagePageInfo;
+	totalCount: number;
+}
+
 export interface MessagesRealtimeCallbacks {
 	onConversationUpdate: (update: ConversationRealtimeUpdate) => void;
 	onConnectionStatusChange?: (status: RealtimeConnectionStatus, reason?: string) => void;
+	onReconnect?: () => void | Promise<void>;
 }
 
 export interface MessagesHandlers {
 	onFetchConversations?: (folder?: ConversationFolder) => Promise<Conversation[]>;
+	onFetchConversation?: (conversationId: string) => Promise<Conversation | null>;
 	onFetchMessages?: (
 		conversationId: string,
 		options?: { limit?: number; cursor?: string }
-	) => Promise<DirectMessage[]>;
+	) => Promise<DirectMessage[] | DirectMessagePage>;
 	onSendMessage?: (
 		conversationId: string,
 		content: string,
@@ -123,6 +138,7 @@ export interface LesserMessagesAdapter {
 			complete: () => void;
 		}): { unsubscribe(): void };
 	};
+	onRealtimeReconnect?: (listener: () => void) => () => void;
 }
 
 export interface LesserMessagesHandlersConfig {
@@ -210,7 +226,7 @@ function mapConversationToUiConversation(
 		lastMessage: conversation.lastStatus
 			? mapObjectToDirectMessage(conversation.lastStatus, conversation.id)
 			: undefined,
-		unreadCount: conversation.unread ? 1 : 0,
+		unreadCount: conversation.unreadCount ?? (conversation.unread ? 1 : 0),
 		updatedAt: conversation.updatedAt,
 	};
 }
@@ -231,6 +247,18 @@ export function createLesserMessagesHandlers(
 				mapConversationToUiConversation(conversation, folder)
 			);
 		},
+		onFetchConversation: async (conversationId) => {
+			const conversation = await adapter.getConversation(conversationId);
+			if (!conversation) {
+				return null;
+			}
+
+			const requestState = conversation.viewerMetadata.requestState ?? 'ACCEPTED';
+			return mapConversationToUiConversation(
+				conversation as LesserConversationLike,
+				requestState === 'PENDING' ? 'REQUESTS' : 'INBOX'
+			);
+		},
 		onFetchMessages: async (conversationId, options) => {
 			const data = await adapter.query(ConversationMessagesDocument, {
 				conversationId,
@@ -238,9 +266,13 @@ export function createLesserMessagesHandlers(
 				after: options?.cursor,
 			});
 
-			return data.conversationMessages.edges.map((edge) =>
-				mapObjectToDirectMessage(edge.node, conversationId)
-			);
+			return {
+				messages: data.conversationMessages.edges.map((edge) =>
+					mapObjectToDirectMessage(edge.node, conversationId)
+				),
+				pageInfo: data.conversationMessages.pageInfo,
+				totalCount: data.conversationMessages.totalCount,
+			};
 		},
 		onSendMessage: async (conversationId, content, mediaIds) => {
 			const data = await adapter.mutate(SendMessageDocument, {
@@ -309,6 +341,15 @@ export function createLesserMessagesHandlers(
 		},
 		onSubscribeToConversationUpdates: (callbacks) => {
 			callbacks.onConnectionStatusChange?.('connecting');
+			const stopReconnect = adapter.onRealtimeReconnect?.(() => {
+				callbacks.onConnectionStatusChange?.('connected');
+				void Promise.resolve(callbacks.onReconnect?.()).catch((error) => {
+					callbacks.onConnectionStatusChange?.(
+						'error',
+						error instanceof Error ? error.message : 'Realtime reconciliation failed'
+					);
+				});
+			});
 
 			const sub = adapter.subscribeToConversationUpdates().subscribe({
 				next: ({ data }) => {
@@ -336,8 +377,13 @@ export function createLesserMessagesHandlers(
 								message: uiConversation.lastMessage,
 							});
 						})
-						.catch(() => {
-							// Ignore per-event fetch errors; the caller can fall back to polling.
+						.catch((error) => {
+							callbacks.onConnectionStatusChange?.(
+								'error',
+								error instanceof Error
+									? error.message
+									: 'Failed to reconcile realtime conversation update'
+							);
 						});
 				},
 				error: (error) => {
@@ -353,6 +399,7 @@ export function createLesserMessagesHandlers(
 
 			return () => {
 				sub.unsubscribe();
+				stopReconnect?.();
 			};
 		},
 	};

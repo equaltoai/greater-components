@@ -190,6 +190,8 @@ export interface ArticleConfig {
 	showAuthor?: boolean;
 	/** Show comments section */
 	showComments?: boolean;
+	/** IANA time zone for absolute article date labels. Defaults to the runtime's local zone. */
+	timeZone?: string;
 	/** Custom CSS class */
 	class?: string;
 }
@@ -564,7 +566,7 @@ export interface SEOData {
  */
 export interface ArticleContext {
 	article: ArticleData;
-	config: Required<ArticleConfig>;
+	config: Required<Omit<ArticleConfig, 'timeZone'>> & Pick<ArticleConfig, 'timeZone'>;
 	handlers: ArticleHandlers;
 	headings: HeadingData[];
 	activeHeadingId: string | null;
@@ -677,6 +679,10 @@ export interface ReviewVerdictRecordData {
 	reviewer: ReviewActorData;
 	/** ISO-8601 timestamp for when the verdict was recorded. */
 	recordedAt: string;
+	/** Whether the verdict still applies to the current revision and grant. */
+	current?: boolean;
+	/** Whether the verdict belongs to an older revision or revoked grant. */
+	stale?: boolean;
 }
 
 /**
@@ -691,6 +697,19 @@ export interface ReviewGrantData {
 	reviewer: ReviewActorData;
 	/** ISO-8601 timestamp for when the invitation was granted. */
 	grantedAt: string;
+	/** Canonical grant lifecycle from Lesser. */
+	status?: 'ACTIVE' | 'REVOKED';
+	/** Revocation timestamp, when status is REVOKED. */
+	revokedAt?: string | null;
+}
+
+/** Server-computed publication eligibility for a reviewed draft. */
+export interface DraftPublishEligibilityData {
+	eligible: boolean;
+	blockingReasons: readonly string[];
+	reviewersApproved: boolean;
+	principalApprovalRequired: boolean;
+	principalApproved: boolean;
 }
 
 /**
@@ -701,12 +720,20 @@ export interface ReviewGrantData {
 export interface DraftReviewData {
 	/** Identifier of the draft under review. */
 	draftId: string;
+	/** Owner of the draft. */
+	ownerId?: string;
 	/** Draft title. */
 	title?: string | null;
 	/** Draft subtitle / standfirst. */
 	subtitle?: string | null;
 	/** Short excerpt used in queue listings. */
 	excerpt?: string | null;
+	/** Editable source content for the reviewed revision. */
+	content?: string;
+	/** Canonical sanitized preview for the reviewed revision. */
+	renderedHtml?: string | null;
+	/** Rendering errors reported by Lesser. */
+	renderErrors?: readonly string[];
 	/** Source format of the draft body. */
 	contentFormat?: 'HTML' | 'MARKDOWN';
 	/** Publication lifecycle status of the draft. */
@@ -730,10 +757,28 @@ export interface DraftReviewData {
 	reviewStatus?: string | null;
 	/** Editor-facing notes carried alongside the draft. */
 	editorNotes?: string | null;
+	/** Digest binding verdicts to the current content. */
+	contentHash?: string;
+	/** Monotonic current draft revision. */
+	revision?: number;
+	/** Reviewers whose grants are currently active. */
+	activeReviewerIds?: readonly string[];
+	/** Canonical publication gate projected by Lesser. */
+	publishEligible?: boolean;
+	publishBlockingReasons?: readonly string[];
+	reviewersApproved?: boolean;
+	principalApprovalRequired?: boolean;
+	principalApproved?: boolean;
 	/** The outstanding review invitation, when one is open. */
 	grant?: ReviewGrantData | null;
+	/** Complete grant set, including revoked grants, when not truncated. */
+	grants?: readonly ReviewGrantData[];
+	grantCount?: number;
+	grantsTruncated?: boolean;
 	/** Verdicts recorded so far. */
 	verdicts?: readonly ReviewVerdictRecordData[];
+	/** Structured canonical publication gate. */
+	publishEligibility?: DraftPublishEligibilityData;
 }
 
 /**
@@ -748,11 +793,8 @@ export interface DraftReviewData {
  * never used to enable, disable, or gate a verdict submission — Lesser enforces
  * the policy and rejects submissions it does not permit.
  *
- * It deliberately carries **no progress count**. Progress would have to count
- * reviewers holding an active grant at the current round, and the pinned
- * projection exposes only the viewer's own `grant`. Counting `verdicts` instead
- * would be wrong: verdicts are an immutable append-only history, so repeats and
- * revoke/re-grant cycles make "3 of 3 recorded" meaningless.
+ * `activeReviewerCount` is populated only from Lesser's canonical active-reviewer
+ * projection (or an explicit caller override), never by counting verdict history.
  */
 export interface ReviewApprovalRequirement {
 	/**
@@ -776,8 +818,7 @@ export interface ReviewApprovalRequirement {
 	 * How many reviewers hold an active grant, when the caller can enumerate
 	 * them from a source that genuinely exposes the active set.
 	 *
-	 * Omitted on the pinned projection — the chrome then names the rule without
-	 * implying any completion.
+	 * Derived from the pinned projection's active reviewer set when available.
 	 */
 	activeReviewerCount?: number;
 }
@@ -806,9 +847,8 @@ export interface ReviewStateDescriptor {
 	 * `server` and `verdicts` are both **latest activity, not publication
 	 * state**. Lesser overwrites `ReviewStatus` on every verdict submission, so
 	 * it reports the most recent submission rather than the publication gate;
-	 * the gate itself is reconstructed server-side from active grants and is not
-	 * exposed by the pinned projection. Consumers must not read either value as
-	 * "this draft may publish".
+	 * the canonical gate is exposed separately through `publishEligibility`.
+	 * Consumers must not read either activity value as "this draft may publish".
 	 */
 	source: 'server' | 'verdicts' | 'none';
 }

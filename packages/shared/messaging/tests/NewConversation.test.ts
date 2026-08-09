@@ -88,6 +88,28 @@ describe('NewConversation', () => {
 		unmount(instance);
 	});
 
+	it('reports open intent and supports consumer-controlled visibility', async () => {
+		const target = document.createElement('div');
+		const onOpenIntent = vi.fn();
+		const onOpenChange = vi.fn();
+		const instance = mount(NewConversation, {
+			target,
+			props: { open: true, onOpenIntent, onOpenChange },
+		});
+		await flushSync();
+
+		expect(target.querySelector('.new-conversation__modal')).toBeTruthy();
+		(target.querySelector('.new-conversation__button--secondary') as HTMLButtonElement).click();
+		await flushSync();
+		expect(onOpenChange).toHaveBeenCalledWith(false);
+
+		(target.querySelector('.new-conversation__trigger') as HTMLButtonElement).click();
+		await flushSync();
+		expect(onOpenIntent).toHaveBeenCalledOnce();
+		expect(onOpenChange).toHaveBeenLastCalledWith(true);
+		unmount(instance);
+	});
+
 	it('closes modal on cancel', async () => {
 		const target = document.createElement('div');
 		const instance = mount(NewConversation, { target });

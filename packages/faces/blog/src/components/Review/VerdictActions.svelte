@@ -151,7 +151,7 @@ come from the `Modal` primitive.
 <div class={rootClass}>
 	<Button
 		variant="solid"
-		size="sm"
+		size="lg"
 		{disabled}
 		class="gr-blog-review-verdict__approve"
 		onclick={() => openDialog('APPROVED')}
@@ -160,7 +160,7 @@ come from the `Modal` primitive.
 	</Button>
 	<Button
 		variant="outline"
-		size="sm"
+		size="lg"
 		{disabled}
 		class="gr-blog-review-verdict__request-changes"
 		onclick={() => openDialog('CHANGES_REQUESTED')}
@@ -206,10 +206,10 @@ come from the `Modal` primitive.
 	{/if}
 
 	{#snippet footer()}
-		<Button variant="ghost" size="sm" disabled={submitting} onclick={cancel}>Cancel</Button>
+		<Button variant="ghost" size="lg" disabled={submitting} onclick={cancel}>Cancel</Button>
 		<Button
 			variant="solid"
-			size="sm"
+			size="lg"
 			loading={submitting}
 			disabled={submitting || notesMissing}
 			onclick={confirm}

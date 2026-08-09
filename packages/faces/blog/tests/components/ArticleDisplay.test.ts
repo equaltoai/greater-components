@@ -140,4 +140,17 @@ describe('Article complete display exports', () => {
 		expect(screen.getByText('Greater')).toBeInTheDocument();
 		expect(screen.getByRole('img', { name: 'Article illustration' })).toBeInTheDocument();
 	});
+
+	it('pins ArticleReader and ArticleCard date labels to the requested time zone', () => {
+		const expected = formatDateTime(flatArticle.publishedAt as string, { timeZone: 'UTC' });
+
+		const reader = render(ArticleReader, {
+			props: { article: flatArticle, config: { timeZone: 'UTC' } },
+		});
+		expect(screen.getByText(expected.absolute)).toHaveAttribute('datetime', expected.iso);
+		reader.unmount();
+
+		render(ArticleCard, { props: { article: flatArticle, timeZone: 'UTC' } });
+		expect(screen.getByText(expected.absolute)).toHaveAttribute('datetime', expected.iso);
+	});
 });

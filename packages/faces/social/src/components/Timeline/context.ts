@@ -227,7 +227,7 @@ export function createTimelineContext(
  * @throws Error if called outside of Timeline.Root
  */
 export function getTimelineContext(): TimelineContext {
-	const context = getContext<TimelineContext>(TIMELINE_CONTEXT_KEY);
+	const context = getOptionalTimelineContext();
 
 	if (!context) {
 		throw new Error(
@@ -239,11 +239,19 @@ export function getTimelineContext(): TimelineContext {
 }
 
 /**
+ * Get the timeline context when present without requiring a Timeline.Root.
+ * Standalone controls use this to compose with alternative timeline renderers.
+ */
+export function getOptionalTimelineContext(): TimelineContext | undefined {
+	return getContext<TimelineContext | undefined>(TIMELINE_CONTEXT_KEY);
+}
+
+/**
  * Check if timeline context exists
  */
 export function hasTimelineContext(): boolean {
 	try {
-		const context = getContext<TimelineContext>(TIMELINE_CONTEXT_KEY);
+		const context = getOptionalTimelineContext();
 		return context !== undefined && context !== null;
 	} catch {
 		return false;

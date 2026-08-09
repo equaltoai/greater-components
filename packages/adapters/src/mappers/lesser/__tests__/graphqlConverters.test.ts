@@ -231,6 +231,34 @@ describe('convertGraphQLObjectToLesser edge cases', () => {
 		expect(result?.quotePermissions).toBe('NONE');
 		expect(result?.quoteContext?.quoteType).toBe('FULL');
 		expect(result?.quoteContext?.quoteAllowed).toBe(false);
+		expect(result).toMatchObject({
+			boosted: false,
+			viewerFavourited: false,
+			viewerBookmarked: false,
+			viewerPinned: false,
+		});
+	});
+
+	it('preserves viewer engagement state', () => {
+		const result = convertGraphQLObjectToLesser({
+			id: 'obj-viewer-state',
+			type: 'Note',
+			content: 'hello',
+			createdAt: '2024-01-01T00:00:00Z',
+			updatedAt: '2024-01-01T00:00:00Z',
+			actor: baseActor,
+			boosted: true,
+			viewerFavourited: true,
+			viewerBookmarked: true,
+			viewerPinned: true,
+		});
+
+		expect(result).toMatchObject({
+			boosted: true,
+			viewerFavourited: true,
+			viewerBookmarked: true,
+			viewerPinned: true,
+		});
 	});
 
 	it('preserves the v1.6.0 mentioned-only quote permission', () => {

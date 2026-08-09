@@ -59,6 +59,7 @@ export const registryComponentSchema = z.object({
 	description: z.string().optional(),
 	type: z.string().optional(),
 	files: z.array(fileChecksumSchema),
+	css: z.array(fileChecksumSchema).optional().default([]),
 	dependencies: z.array(componentDependencySchema).optional().default([]),
 	peerDependencies: z.array(componentDependencySchema).optional().default([]),
 	tags: z.array(z.string()).optional().default([]),
@@ -83,6 +84,7 @@ export const registryFaceSchema = z.object({
 		})
 		.optional(),
 	files: z.array(fileChecksumSchema),
+	css: z.array(fileChecksumSchema).optional().default([]),
 	styles: z
 		.object({
 			main: z.string(),
@@ -105,6 +107,7 @@ export const registrySharedSchema = z.object({
 	description: z.string().optional(),
 	exports: z.array(z.string()).optional().default([]),
 	files: z.array(fileChecksumSchema),
+	css: z.array(fileChecksumSchema).optional().default([]),
 	dependencies: z.array(componentDependencySchema).optional().default([]),
 	peerDependencies: z.array(componentDependencySchema).optional().default([]),
 	types: z.array(z.string()).optional().default([]),

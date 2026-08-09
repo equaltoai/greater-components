@@ -541,6 +541,20 @@ describe('Review workflow chrome', () => {
 	describe('Review.VerdictActions', () => {
 		const baseProps = { draftId: 'd1', onSubmit: vi.fn() };
 
+		it('uses the 48px button size for every verdict action', async () => {
+			render(VerdictActions, { props: baseProps });
+
+			const approve = screen.getByRole('button', { name: 'Approve' });
+			const requestChanges = screen.getByRole('button', { name: 'Request changes' });
+			expect(approve).toHaveClass('gr-button--lg');
+			expect(requestChanges).toHaveClass('gr-button--lg');
+
+			await fireEvent.click(approve);
+			const dialog = await screen.findByRole('dialog');
+			expect(within(dialog).getByRole('button', { name: 'Cancel' })).toHaveClass('gr-button--lg');
+			expect(within(dialog).getByRole('button', { name: 'Approve' })).toHaveClass('gr-button--lg');
+		});
+
 		it('guards approval behind a confirmation dialog', async () => {
 			const onSubmit = vi.fn().mockResolvedValue(undefined);
 			render(VerdictActions, { props: { ...baseProps, onSubmit } });

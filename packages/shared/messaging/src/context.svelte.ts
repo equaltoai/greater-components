@@ -97,9 +97,24 @@ export interface ConversationRealtimeUpdate {
 	message?: DirectMessage;
 }
 
+export interface MessagePageInfo {
+	hasNextPage: boolean;
+	hasPreviousPage: boolean;
+	startCursor?: string | null;
+	endCursor?: string | null;
+}
+
+export interface DirectMessagePage {
+	messages: DirectMessage[];
+	pageInfo: MessagePageInfo;
+	totalCount: number;
+}
+
 export interface MessagesRealtimeCallbacks {
 	onConversationUpdate: (update: ConversationRealtimeUpdate) => void;
 	onConnectionStatusChange?: (status: RealtimeConnectionStatus, reason?: string) => void;
+	/** Reconcile state after the transport reconnects and subscriptions resume. */
+	onReconnect?: () => void | Promise<void>;
 }
 
 /**
@@ -121,13 +136,16 @@ export interface MessagesHandlers {
 	 */
 	onFetchConversations?: (folder?: ConversationFolder) => Promise<Conversation[]>;
 
+	/** Fetch one canonical conversation by id. */
+	onFetchConversation?: (conversationId: string) => Promise<Conversation | null>;
+
 	/**
 	 * Fetch messages for a conversation
 	 */
 	onFetchMessages?: (
 		conversationId: string,
 		options?: { limit?: number; cursor?: string }
-	) => Promise<DirectMessage[]>;
+	) => Promise<DirectMessage[] | DirectMessagePage>;
 
 	/**
 	 * Send a message
@@ -256,6 +274,15 @@ export interface MessagesState {
 	 */
 	loadingMessages: boolean;
 
+	/** Whether another page of messages is loading. */
+	loadingMoreMessages?: boolean;
+
+	/** Pagination metadata for the selected conversation. */
+	messagePageInfo?: MessagePageInfo | null;
+
+	/** Total messages reported by the server, when available. */
+	messageTotalCount?: number | null;
+
 	/**
 	 * Number of pending message requests
 	 */
@@ -309,10 +336,13 @@ export interface MessagesContext {
 	 */
 	selectConversation: (conversation: Conversation | null) => Promise<void>;
 
+	/** Fetch the next message page for the selected conversation. */
+	fetchMoreMessages?: () => Promise<void>;
+
 	/**
 	 * Send a message
 	 */
-	sendMessage: (content: string, mediaIds?: string[]) => Promise<void>;
+	sendMessage: (content: string, mediaIds?: string[], conversation?: Conversation) => Promise<void>;
 
 	/**
 	 * Delete a message
@@ -366,6 +396,9 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 		error: null,
 		loadingConversations: false,
 		loadingMessages: false,
+		loadingMoreMessages: false,
+		messagePageInfo: null,
+		messageTotalCount: null,
 		requestCount: 0,
 		realtimeStatus: 'idle',
 		realtimeStatusMessage: null,
@@ -402,6 +435,15 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 
 	const sortByUpdatedAt = (items: Conversation[]) =>
 		[...items].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+
+	const normalizeMessagePage = (result: DirectMessage[] | DirectMessagePage): DirectMessagePage =>
+		Array.isArray(result)
+			? {
+					messages: result,
+					pageInfo: { hasNextPage: false, hasPreviousPage: false },
+					totalCount: result.length,
+				}
+			: result;
 
 	const defaultRealtimeMessage = (status: RealtimeConnectionStatus) => {
 		switch (status) {
@@ -515,6 +557,35 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 		}
 	};
 
+	const reconcileAfterReconnect = async () => {
+		const selectedId = state.selectedConversation?.id;
+		const conversations = await handlers.onFetchConversations?.(state.folder);
+		if (conversations) {
+			updateRequestTracker(conversations);
+			state.conversations = sortByUpdatedAt(conversations);
+		}
+
+		if (!selectedId || state.selectedConversation?.id !== selectedId) {
+			return;
+		}
+
+		const selected = await handlers.onFetchConversation?.(selectedId);
+		if (selected && state.selectedConversation?.id === selectedId) {
+			state.selectedConversation = { ...state.selectedConversation, ...selected };
+			state.conversations = state.conversations.map((conversation) =>
+				conversation.id === selectedId ? { ...conversation, ...selected } : conversation
+			);
+		}
+
+		const result = await handlers.onFetchMessages?.(selectedId);
+		if (result && state.selectedConversation?.id === selectedId) {
+			const page = normalizeMessagePage(result);
+			state.messages = page.messages;
+			state.messagePageInfo = page.pageInfo;
+			state.messageTotalCount = page.totalCount;
+		}
+	};
+
 	const startRealtime = () => {
 		const subscribeHandler = handlers.onSubscribeToConversationUpdates;
 		if (!subscribeHandler) {
@@ -529,6 +600,7 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 			const subscription = subscribeHandler({
 				onConversationUpdate: applyRealtimeConversationUpdate,
 				onConnectionStatusChange: handleRealtimeConnectionChange,
+				onReconnect: reconcileAfterReconnect,
 			});
 
 			Promise.resolve(subscription)
@@ -574,6 +646,8 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 				if (!options.preserveSelection) {
 					state.selectedConversation = null;
 					state.messages = [];
+					state.messagePageInfo = null;
+					state.messageTotalCount = null;
 				}
 			}
 		} else {
@@ -676,15 +750,20 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 		selectConversation: async (conversation: Conversation | null) => {
 			state.selectedConversation = conversation;
 			state.messages = [];
+			state.messagePageInfo = null;
+			state.messageTotalCount = null;
 
 			if (conversation) {
 				state.loadingMessages = true;
 				state.error = null;
 
 				try {
-					const messages = await handlers.onFetchMessages?.(conversation.id);
-					if (messages) {
-						state.messages = messages;
+					const result = await handlers.onFetchMessages?.(conversation.id);
+					if (result) {
+						const page = normalizeMessagePage(result);
+						state.messages = page.messages;
+						state.messagePageInfo = page.pageInfo;
+						state.messageTotalCount = page.totalCount;
 					}
 
 					// Mark as read
@@ -701,31 +780,62 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 				}
 			}
 		},
-		sendMessage: async (content: string, mediaIds?: string[]) => {
-			if (!state.selectedConversation || !content.trim()) return;
-			if ((state.selectedConversation.requestState ?? 'ACCEPTED') === 'PENDING') return;
+		fetchMoreMessages: async () => {
+			const conversationId = state.selectedConversation?.id;
+			const cursor = state.messagePageInfo?.endCursor ?? undefined;
+			if (
+				!conversationId ||
+				!state.messagePageInfo?.hasNextPage ||
+				!cursor ||
+				state.loadingMoreMessages
+			) {
+				return;
+			}
+
+			state.loadingMoreMessages = true;
+			state.error = null;
+			try {
+				const result = await handlers.onFetchMessages?.(conversationId, { cursor });
+				if (!result || state.selectedConversation?.id !== conversationId) {
+					return;
+				}
+
+				const page = normalizeMessagePage(result);
+				const existingIds = new SvelteSet(state.messages.map((message) => message.id));
+				state.messages = [
+					...state.messages,
+					...page.messages.filter((message) => !existingIds.has(message.id)),
+				];
+				state.messagePageInfo = page.pageInfo;
+				state.messageTotalCount = page.totalCount;
+			} catch (error) {
+				state.error = error instanceof Error ? error.message : 'Failed to fetch more messages';
+			} finally {
+				state.loadingMoreMessages = false;
+			}
+		},
+		sendMessage: async (content: string, mediaIds?: string[], conversation?: Conversation) => {
+			const targetConversation = conversation ?? state.selectedConversation;
+			if (!targetConversation || !content.trim()) return;
+			if ((targetConversation.requestState ?? 'ACCEPTED') === 'PENDING') return;
 
 			state.loading = true;
 			state.error = null;
 
 			try {
-				const message = await handlers.onSendMessage?.(
-					state.selectedConversation.id,
-					content,
-					mediaIds
-				);
+				const message = await handlers.onSendMessage?.(targetConversation.id, content, mediaIds);
 				if (message) {
 					state.messages = [...state.messages, message];
 
 					// Update last message in conversation
 					const updated = state.conversations.map((c) =>
-						c.id === state.selectedConversation?.id
+						c.id === targetConversation.id
 							? { ...c, lastMessage: message, updatedAt: message.createdAt }
 							: c
 					);
 					state.conversations = sortByUpdatedAt(updated);
 
-					if (state.selectedConversation) {
+					if (state.selectedConversation?.id === targetConversation.id) {
 						state.selectedConversation = {
 							...state.selectedConversation,
 							lastMessage: message,

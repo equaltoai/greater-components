@@ -331,6 +331,10 @@ export interface LesserObjectFragment {
 	repliesCount: number;
 	likesCount: number;
 	sharesCount: number;
+	boosted?: boolean;
+	viewerFavourited?: boolean;
+	viewerBookmarked?: boolean;
+	viewerPinned?: boolean;
 
 	// Lesser enhancements
 	estimatedCost: number;

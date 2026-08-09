@@ -532,10 +532,10 @@ export function mapLesserObject(obj: LesserObjectFragment): MapperResult<Unified
 			repliesCount: safeNumber(obj.repliesCount),
 			reblogsCount: safeNumber(obj.sharesCount),
 			favouritesCount: safeNumber(obj.likesCount),
-			favourited: false,
-			reblogged: false,
-			bookmarked: false,
-			pinned: false,
+			favourited: safeBoolean(obj.viewerFavourited),
+			reblogged: safeBoolean(obj.boosted),
+			bookmarked: safeBoolean(obj.viewerBookmarked),
+			pinned: safeBoolean(obj.viewerPinned),
 			metadata: createLesserMetadata(obj),
 
 			// Lesser-specific fields

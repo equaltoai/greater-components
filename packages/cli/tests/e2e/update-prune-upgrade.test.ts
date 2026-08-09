@@ -23,9 +23,10 @@
  *   check against the released hashes rather than against itself;
  * - the target ref's checksums are computed from the working tree, which is what
  *   `registry/index.json` regeneration produces for the same sources;
- * - file bytes come from the real `packages/faces/social/src/**` and
- *   `packages/shared/messaging/src/**` trees, which are byte-identical at both
- *   refs (asserted below, so the fixture cannot drift silently).
+ * - file bytes normally come from the real `packages/faces/social/src/**` and
+ *   `packages/shared/messaging/src/**` trees; sources changed since v0.13.0 use
+ *   vendored released bytes, while the checksum tripwire below prevents either
+ *   path from drifting silently.
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -44,6 +45,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const REPO_ROOT = findLocalRepoRoot(__dirname);
 if (!REPO_ROOT) throw new Error('could not locate the greater-components repo root');
+const VERIFIED_REPO_ROOT = REPO_ROOT;
 
 /** The commit `greater-v0.13.0` points at — what `components.json` records. */
 const OLD_REF = 'ce8f3d9dd4080eb6886e1dd1cb444d65712eca36';
@@ -52,6 +54,19 @@ const NEW_REF = 'a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4';
 
 const SOCIAL_SRC = 'packages/faces/social/src/';
 const MESSAGING_SRC = 'packages/shared/messaging/src/';
+const PRIOR_SOURCE_ROOT = path.join(__dirname, '../fixtures/upgrade-greater-v0.13.0/prior-source');
+
+/**
+ * Read released bytes when a source changed after v0.13.0, otherwise use the
+ * still-identical working-tree copy. Adding an override is mandatory whenever
+ * the checksum tripwire below detects a newly changed fixture source.
+ */
+function readPriorSource(sourcePath: string): Buffer {
+	const overridePath = path.join(PRIOR_SOURCE_ROOT, sourcePath);
+	return fs.existsSync(overridePath)
+		? fs.readFileSync(overridePath)
+		: fs.readFileSync(path.join(VERIFIED_REPO_ROOT, sourcePath));
+}
 
 /** The file set `social-timeline` shipped at greater-v0.13.0. */
 const V0_13_0_FILES = [
@@ -121,13 +136,13 @@ const priorChecksums: Record<string, string> = {
 };
 
 function listSources(prefix: string): string[] {
-	const root = path.join(REPO_ROOT!, prefix);
+	const root = path.join(VERIFIED_REPO_ROOT, prefix);
 	const out: string[] = [];
 	const walk = (dir: string) => {
 		for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
 			const full = path.join(dir, entry.name);
 			if (entry.isDirectory()) walk(full);
-			else out.push(path.relative(REPO_ROOT!, full).split(path.sep).join('/'));
+			else out.push(path.relative(VERIFIED_REPO_ROOT, full).split(path.sep).join('/'));
 		}
 	};
 	walk(root);
@@ -171,7 +186,7 @@ function makeIndex(ref: string, checksums: Record<string, string>): RegistryInde
 const targetChecksums: Record<string, string> = Object.fromEntries(
 	[...listSources(SOCIAL_SRC), ...listSources(MESSAGING_SRC)].map((rel) => [
 		rel,
-		computeChecksum(fs.readFileSync(path.join(REPO_ROOT!, rel))),
+		computeChecksum(fs.readFileSync(path.join(VERIFIED_REPO_ROOT, rel))),
 	])
 );
 
@@ -223,7 +238,10 @@ vi.mock('../../src/utils/git-fetch.js', async (importOriginal) => {
 			if (oldIndexUnavailable && ref === OLD_REF) {
 				throw new actual.NetworkError(`simulated outage for ref ${ref}`, 503);
 			}
-			const onDisk = nodePath.join(REPO_ROOT!, filePath);
+			if (ref === OLD_REF) {
+				return readPriorSource(filePath);
+			}
+			const onDisk = nodePath.join(VERIFIED_REPO_ROOT, filePath);
 			if (!nodeFs.existsSync(onDisk)) {
 				throw new actual.NetworkError(`File not found: ${filePath} at ref ${ref}`, 404);
 			}
@@ -314,7 +332,7 @@ describe('greater update: greater-v0.13.0 → retired-store registry shape', () 
 		for (const installPath of [...V0_13_0_FILES, ...MESSAGING_INSTALL_PATHS]) {
 			const sourcePath = sourceFor(installPath);
 			const localPath = getInstalledFilePath(installPath, config, cwd);
-			const content = fs.readFileSync(path.join(REPO_ROOT!, sourcePath), 'utf-8');
+			const content = readPriorSource(sourcePath).toString('utf-8');
 			const rendered = transformImports(content, config, installPath, {
 				sourceFilePath: localPath,
 				consumerRoot: cwd,
@@ -359,17 +377,16 @@ describe('greater update: greater-v0.13.0 → retired-store registry shape', () 
 		return fs.readJsonSync(path.join(cwd, 'components.json'));
 	}
 
-	it('serves prior-ref bytes that match the released greater-v0.13.0 checksums', () => {
-		// Tripwire: the fixture pins the *released* hashes while the bytes come from
-		// the working tree. If a future change edits these sources, this fails here
-		// with a clear cause instead of surfacing as an opaque integrity error.
+	it('serves prior-ref fixture bytes that match the released greater-v0.13.0 checksums', () => {
+		// Tripwire: unchanged files may still come from the working tree, while
+		// post-release edits must add a prior-source override with the released bytes.
 		for (const installPath of [...V0_13_0_FILES, ...MESSAGING_INSTALL_PATHS]) {
 			const sourcePath = sourceFor(installPath);
 			const expected = priorChecksums[sourcePath];
 			expect(expected, `missing greater-v0.13.0 checksum for ${sourcePath}`).toBeDefined();
 			expect(
-				computeChecksum(fs.readFileSync(path.join(REPO_ROOT!, sourcePath))),
-				`${sourcePath} differs from greater-v0.13.0; refresh fixtures/upgrade-greater-v0.13.0`
+				computeChecksum(readPriorSource(sourcePath)),
+				`${sourcePath} differs from greater-v0.13.0; add its released bytes under fixtures/upgrade-greater-v0.13.0/prior-source`
 			).toBe(expected);
 		}
 	});

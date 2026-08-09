@@ -47,19 +47,32 @@ export interface ConversationRealtimeUpdate {
 	conversation: Conversation;
 	message?: DirectMessage;
 }
+export interface MessagePageInfo {
+	hasNextPage: boolean;
+	hasPreviousPage: boolean;
+	startCursor?: string | null;
+	endCursor?: string | null;
+}
+export interface DirectMessagePage {
+	messages: DirectMessage[];
+	pageInfo: MessagePageInfo;
+	totalCount: number;
+}
 export interface MessagesRealtimeCallbacks {
 	onConversationUpdate: (update: ConversationRealtimeUpdate) => void;
 	onConnectionStatusChange?: (status: RealtimeConnectionStatus, reason?: string) => void;
+	onReconnect?: () => void | Promise<void>;
 }
 export interface MessagesHandlers {
 	onFetchConversations?: (folder?: ConversationFolder) => Promise<Conversation[]>;
+	onFetchConversation?: (conversationId: string) => Promise<Conversation | null>;
 	onFetchMessages?: (
 		conversationId: string,
 		options?: {
 			limit?: number;
 			cursor?: string;
 		}
-	) => Promise<DirectMessage[]>;
+	) => Promise<DirectMessage[] | DirectMessagePage>;
 	onSendMessage?: (
 		conversationId: string,
 		content: string,
@@ -114,6 +127,7 @@ export interface LesserMessagesAdapter {
 			unsubscribe(): void;
 		};
 	};
+	onRealtimeReconnect?: (listener: () => void) => () => void;
 }
 export interface LesserMessagesHandlersConfig {
 	adapter: LesserMessagesAdapter;

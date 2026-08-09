@@ -123,6 +123,7 @@ export interface GraphQLClientInstance {
 	client: ApolloClient;
 	wsClient: Client | null; // null if wsEndpoint not provided
 	updateToken: (token: string | null) => void;
+	onReconnect?: (listener: () => void) => () => void;
 	close: () => void;
 }
 
@@ -175,6 +176,18 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 	const refreshAccessToken = createSingleFlightRefresh(onTokenRefresh);
 	/** The in-flight refresh-and-re-dial, shared by every expiring operation. */
 	let authRedial: Promise<void> | null = null;
+	const reconnectListeners = new Set<() => void>();
+	let hasConnected = false;
+	const notifyConnected = () => {
+		if (!hasConnected) {
+			hasConnected = true;
+			return;
+		}
+
+		for (const listener of reconnectListeners) {
+			listener();
+		}
+	};
 	/**
 	 * Which credential is in force, and which generation has spent its recovery.
 	 *
@@ -316,6 +329,7 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 							},
 							connected: () => {
 								logDebug('[GraphQL] WebSocket connected to explicit endpoint');
+								notifyConnected();
 							},
 							closed: () => {
 								logDebug('[GraphQL] WebSocket closed');
@@ -786,6 +800,7 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 				on: {
 					connected: () => {
 						logDebug('[GraphQL] WebSocket reconnected to explicit endpoint');
+						notifyConnected();
 					},
 					closed: () => {
 						logDebug('[GraphQL] WebSocket closed after token update');
@@ -835,10 +850,16 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 		logDebug('[GraphQL] Client closed');
 	};
 
+	const onReconnect = (listener: () => void) => {
+		reconnectListeners.add(listener);
+		return () => reconnectListeners.delete(listener);
+	};
+
 	return {
 		client,
 		wsClient, // null if wsEndpoint not provided
 		updateToken,
+		onReconnect,
 		close,
 	};
 }

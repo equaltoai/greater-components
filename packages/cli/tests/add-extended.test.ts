@@ -208,19 +208,47 @@ describe('Add Command Extended', () => {
 
 		it('handles --css-only flag for faces', async () => {
 			const { addAction } = await import('../src/commands/add.js');
+			const cssMetadata = {
+				...MOCK_BUTTON_COMPONENT,
+				files: [
+					{
+						path: 'greater/faces/social/theme.css',
+						content: '.social {}',
+						type: 'styles' as const,
+					},
+					{
+						path: 'greater/faces/social/Timeline.svelte',
+						content: '<p>timeline</p>',
+						type: 'component' as const,
+					},
+				],
+			};
 
 			vi.mocked(faceInstaller.resolveFaceDependencies).mockReturnValue({
 				success: true,
-				resolved: [{ name: 'button', type: 'primitive', metadata: MOCK_BUTTON_COMPONENT }],
+				resolved: [
+					{
+						key: 'primitive:button',
+						name: 'button',
+						type: 'primitive',
+						depth: 0,
+						dependencies: [],
+						metadata: cssMetadata,
+						isDirectRequest: true,
+						isOptional: false,
+					},
+				],
 				npmDependencies: [],
 				npmDevDependencies: [],
 				missing: [],
 				circular: [],
 			});
-			vi.mocked(faceInstaller.injectFaceCss).mockResolvedValue(true);
-			vi.mocked(faceInstaller.updateConfigWithFace).mockResolvedValue(createTestConfig());
+			vi.mocked(fetchUtils.fetchComponents).mockResolvedValue(
+				new Map([['primitive:button', cssMetadata.files]])
+			);
+			const configBefore = mockFs.get('/components.json');
 
-			// Should exit 0 after injecting CSS
+			// Should exit 0 after writing only the registry CSS files.
 			const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => {
 				throw new Error('exit');
 			}) as any);
@@ -232,23 +260,55 @@ describe('Add Command Extended', () => {
 			}
 
 			expect(exitSpy).toHaveBeenCalledWith(0);
-			expect(faceInstaller.injectFaceCss).toHaveBeenCalled();
-			expect(fetchUtils.fetchComponents).toHaveBeenCalled(); // Fetch is called before css-only check in current impl?
-			// Checking implementation: yes, fetch happens, then cssOnly check.
+			expect(files.writeComponentFilesWithTransform).toHaveBeenCalledTimes(1);
+			expect(files.writeComponentFilesWithTransform).toHaveBeenCalledWith(
+				[expect.objectContaining({ path: 'faces/social/theme.css', type: 'styles' })],
+				expect.any(String),
+				expect.any(Object),
+				'/'
+			);
+			expect(faceInstaller.injectFaceCss).not.toHaveBeenCalled();
+			expect(faceInstaller.updateConfigWithFace).not.toHaveBeenCalled();
+			expect(packages.installDependencies).not.toHaveBeenCalled();
+			expect(mockFs.get('/components.json')).toBe(configBefore);
 		});
 
-		it('fails if CSS injection fails during --css-only', async () => {
+		it('fails if CSS writing fails during --css-only', async () => {
 			const { addAction } = await import('../src/commands/add.js');
+			const cssMetadata = {
+				...MOCK_BUTTON_COMPONENT,
+				files: [
+					{
+						path: 'greater/faces/social/theme.css',
+						content: '.social {}',
+						type: 'styles' as const,
+					},
+				],
+			};
 
 			vi.mocked(faceInstaller.resolveFaceDependencies).mockReturnValue({
 				success: true,
-				resolved: [{ name: 'button', type: 'primitive', metadata: MOCK_BUTTON_COMPONENT }],
+				resolved: [
+					{
+						key: 'primitive:button',
+						name: 'button',
+						type: 'primitive',
+						depth: 0,
+						dependencies: [],
+						metadata: cssMetadata,
+						isDirectRequest: true,
+						isOptional: false,
+					},
+				],
 				npmDependencies: [],
 				npmDevDependencies: [],
 				missing: [],
 				circular: [],
 			});
-			vi.mocked(faceInstaller.injectFaceCss).mockRejectedValue(new Error('CSS Error'));
+			vi.mocked(fetchUtils.fetchComponents).mockResolvedValue(
+				new Map([['primitive:button', cssMetadata.files]])
+			);
+			vi.mocked(files.writeComponentFilesWithTransform).mockRejectedValue(new Error('CSS Error'));
 
 			const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => {
 				throw new Error('exit');

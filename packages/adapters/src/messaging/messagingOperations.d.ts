@@ -39,6 +39,7 @@ export interface LesserMessageObject {
 export interface LesserMessageConversation {
 	id: string;
 	unread: boolean;
+	unreadCount?: number;
 	updatedAt: string;
 	accounts: ReadonlyArray<LesserMessageActor>;
 	lastStatus?: LesserMessageObject | null;
@@ -57,8 +58,16 @@ export type ConversationMessagesVariables = Record<string, unknown> & {
 export type ConversationMessagesData = Record<string, unknown> & {
 	conversationMessages: {
 		edges: ReadonlyArray<{
+			cursor: string;
 			node: LesserMessageObject;
 		}>;
+		pageInfo: {
+			hasNextPage: boolean;
+			hasPreviousPage: boolean;
+			startCursor?: string | null;
+			endCursor?: string | null;
+		};
+		totalCount: number;
 	};
 };
 export type SendMessageVariables = Record<string, unknown> & {

@@ -55,6 +55,7 @@ const mockIndex = {
 			dependencies: [],
 			peerDependencies: [],
 			files: [{ path: 'button.svelte', checksum: 'sha256-abc=' }],
+			css: [],
 		},
 	},
 	faces: {
@@ -62,6 +63,7 @@ const mockIndex = {
 			name: 'blog',
 			version: '1.0.0',
 			files: [{ path: 'blog-layout.svelte', checksum: 'sha256-def=' }],
+			css: [],
 			dependencies: [],
 			peerDependencies: [],
 			exports: [],
@@ -73,6 +75,7 @@ const mockIndex = {
 			name: 'utils',
 			version: '1.0.0',
 			files: [{ path: 'utils.ts', checksum: 'sha256-ghi=' }],
+			css: [],
 			dependencies: [],
 			peerDependencies: [],
 			exports: [],

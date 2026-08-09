@@ -1,4 +1,4 @@
-# Shared-draft review operations (Lesser M2a review contract, LESSER_REF v1.6.0)
+# Shared-draft review operations (Lesser review contract, LESSER_REF v1.6.4)
 #
 # Selection is scoped to exactly what the review chrome renders
 # (Review.QueueCard / Review.AttributionStrip / Review.VerdictActions), so the
@@ -15,7 +15,12 @@ fragment ReviewActorFields on Actor {
 
 fragment DraftReviewFields on DraftReview {
 	draftId
+	ownerId
 	title
+	slug
+	content
+	renderedHtml
+	renderErrors
 	subtitle
 	excerpt
 	contentFormat
@@ -25,6 +30,16 @@ fragment DraftReviewFields on DraftReview {
 	createdAt
 	reviewStatus
 	editorNotes
+	contentHash
+	revision
+	activeReviewerIds
+	publishEligible
+	publishBlockingReasons
+	reviewersApproved
+	principalApprovalRequired
+	principalApproved
+	grantCount
+	grantsTruncated
 	generatedBy {
 		...ReviewActorFields
 	}
@@ -32,7 +47,19 @@ fragment DraftReviewFields on DraftReview {
 		...ReviewActorFields
 	}
 	grant {
+		reviewerId
 		grantedAt
+		status
+		revokedAt
+		reviewer {
+			...ReviewActorFields
+		}
+	}
+	grants {
+		reviewerId
+		grantedAt
+		status
+		revokedAt
 		reviewer {
 			...ReviewActorFields
 		}
@@ -41,10 +68,20 @@ fragment DraftReviewFields on DraftReview {
 		verdict
 		notes
 		contentHash
+		reviewerId
 		recordedAt
+		current
+		stale
 		reviewer {
 			...ReviewActorFields
 		}
+	}
+	publishEligibility {
+		eligible
+		blockingReasons
+		reviewersApproved
+		principalApprovalRequired
+		principalApproved
 	}
 }
 
