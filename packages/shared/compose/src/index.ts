@@ -72,6 +72,12 @@ export type {
 	ComposeState,
 	PostVisibility,
 	ComposeAttachment,
+	ComposeCmsDraftState,
+	ComposeCmsDraftStatus,
+	ComposeCmsReviewState,
+	ComposeCmsReviewGrant,
+	ComposeCmsReviewVerdict,
+	ComposeCmsVerdictRecord,
 } from './context.js';
 
 // Export utility modules

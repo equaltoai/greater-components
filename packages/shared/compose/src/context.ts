@@ -30,6 +30,57 @@ export type QuotePermission = 'EVERYONE' | 'FOLLOWERS' | 'MENTIONED' | 'NONE';
  */
 export type QuoteType = 'FULL' | 'PARTIAL' | 'COMMENTARY' | 'REACTION';
 
+/** Lesser CMS draft lifecycle values. */
+export type ComposeCmsDraftStatus = 'DRAFT' | 'SCHEDULED' | 'PUBLISHING' | 'PUBLISHED' | 'FAILED';
+
+/** Lesser CMS review verdict values. */
+export type ComposeCmsReviewVerdict = 'APPROVED' | 'CHANGES_REQUESTED';
+
+/** Lesser CMS reviewer grant projected into Compose workflow state. */
+export interface ComposeCmsReviewGrant {
+	reviewerId: string;
+	grantedAt: string;
+	status: 'ACTIVE' | 'REVOKED';
+	revokedAt?: string | null;
+}
+
+/** Lesser CMS verdict record, bound to a specific content revision. */
+export interface ComposeCmsVerdictRecord {
+	reviewerId: string;
+	verdict: ComposeCmsReviewVerdict;
+	notes?: string | null;
+	contentHash?: string | null;
+	recordedAt: string;
+	current: boolean;
+	stale: boolean;
+}
+
+/** Server-authored review and publication eligibility for a CMS draft. */
+export interface ComposeCmsReviewState {
+	verdict?: ComposeCmsReviewVerdict | null;
+	viewerGrant?: ComposeCmsReviewGrant | null;
+	grants?: readonly ComposeCmsReviewGrant[];
+	grantsTruncated?: boolean;
+	verdicts?: readonly ComposeCmsVerdictRecord[];
+	activeReviewerIds?: readonly string[];
+	publishEligible?: boolean;
+	publishBlockingReasons?: readonly string[];
+	reviewersApproved?: boolean;
+	principalApprovalRequired?: boolean;
+	principalApproved?: boolean;
+}
+
+/** Optional Lesser CMS identity and workflow state associated with the composer. */
+export interface ComposeCmsDraftState {
+	id?: string;
+	ownerId?: string;
+	status?: ComposeCmsDraftStatus;
+	scheduledAt?: string | null;
+	contentHash?: string;
+	revision?: number;
+	review?: ComposeCmsReviewState;
+}
+
 /**
  * Media attachment type for compose
  */
@@ -212,6 +263,9 @@ export interface ComposeState {
 	 * Who can quote this post (Lesser-specific)
 	 */
 	quotePermissions?: QuotePermission;
+
+	/** Lesser CMS draft/review/publish state, when Compose is editing an article draft. */
+	cmsDraft?: ComposeCmsDraftState;
 }
 
 /**
