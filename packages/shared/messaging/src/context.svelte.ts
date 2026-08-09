@@ -801,7 +801,7 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 				}
 
 				const page = normalizeMessagePage(result);
-				const existingIds = new Set(state.messages.map((message) => message.id));
+				const existingIds = new SvelteSet(state.messages.map((message) => message.id));
 				state.messages = [
 					...state.messages,
 					...page.messages.filter((message) => !existingIds.has(message.id)),

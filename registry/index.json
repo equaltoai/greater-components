@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-09T04:31:23.737Z",
+  "generatedAt": "2026-08-09T04:43:55.979Z",
   "ref": "greater-v0.11.9",
   "version": "0.11.9",
   "checksums": {
@@ -1781,7 +1781,7 @@
     "packages/shared/compose/src/DraftSaver.svelte": "sha256-2vZgRCkfSyKT7hmuE8fG9WpSJ0M/e3gYYZeRANa/dN0=",
     "packages/shared/compose/src/Editor.svelte": "sha256-o8Ax3GAjHZP/1GmYDrfG9aeAvN4/0OznF/ijBzSuBbc=",
     "packages/shared/compose/src/EditorWithAutocomplete.svelte": "sha256-LDxzK55KYPCxE5ZpiOQtoB0O99AoeZSWSGJkwdOcFs8=",
-    "packages/shared/compose/src/GraphQLAdapter.ts": "sha256-hJGSB86Fl5Ly5hvexYDHPwbcW68K+W60NPmWhZjVf4E=",
+    "packages/shared/compose/src/GraphQLAdapter.ts": "sha256-S7PwAT3FkMGGkHVCmFWWPAj3GkFm8hcA13i2Mv15vYA=",
     "packages/shared/compose/src/ImageEditor.svelte": "sha256-BSJFkCPs1AqAeGyt1f7vxZd3JwzboWVxUlzRwyAQE5I=",
     "packages/shared/compose/src/index.ts": "sha256-uXh7CR5e4qHcRw68vcClId0ub645FBwUQM4eKJybVlg=",
     "packages/shared/compose/src/MediaUpload.svelte": "sha256-2JF6kFxFkK/PaVcvvWxe3CbiuE6Ar2dq4po9Lzal1YI=",
@@ -1871,7 +1871,7 @@
     "packages/shared/chat/src/index.ts": "sha256-cnoREudZzKi9Jn0PUM29xc1qTB7Z8j5QnIBKKyN64ps=",
     "packages/shared/chat/src/types.ts": "sha256-Q3Y9rO+7/JqBAVG3+pZnV8lY9KZDi318Fbs70twvM9k=",
     "packages/shared/messaging/src/Composer.svelte": "sha256-sfx/feD5Rc0IfTYGvEeHD57iNfTh8D2U792sEFt6iQQ=",
-    "packages/shared/messaging/src/context.svelte.ts": "sha256-99T+CNCpuPoZdrtcNnJlBGdljxUYcDQ2/Knm7dD4fk8=",
+    "packages/shared/messaging/src/context.svelte.ts": "sha256-aIzDLvTc265eCmPCh0ZAC0oWk1VXZWgrwfNCyj4lhAs=",
     "packages/shared/messaging/src/ConversationPicker.svelte": "sha256-WXQCot9O4SbZ8IjGVcyuRHhQ9sL209LU3acbUTgVuAo=",
     "packages/shared/messaging/src/Conversations.svelte": "sha256-WIOjfV5CmsCkhFyp9i0IOUMDz8ceMWrUc1Rr2box0hc=",
     "packages/shared/messaging/src/ConversationWorkflowSummary.svelte": "sha256-+mO7cS42J9G7FplGDcvuUealcYVAqx47qH4WqUkaxPU=",
@@ -11820,8 +11820,8 @@
         },
         {
           "path": "src/GraphQLAdapter.ts",
-          "checksum": "sha256-hJGSB86Fl5Ly5hvexYDHPwbcW68K+W60NPmWhZjVf4E=",
-          "size": 13266
+          "checksum": "sha256-S7PwAT3FkMGGkHVCmFWWPAj3GkFm8hcA13i2Mv15vYA=",
+          "size": 13343
         },
         {
           "path": "src/ImageEditor.svelte",
@@ -12573,8 +12573,8 @@
         },
         {
           "path": "src/context.svelte.ts",
-          "checksum": "sha256-99T+CNCpuPoZdrtcNnJlBGdljxUYcDQ2/Knm7dD4fk8=",
-          "size": 25210
+          "checksum": "sha256-aIzDLvTc265eCmPCh0ZAC0oWk1VXZWgrwfNCyj4lhAs=",
+          "size": 25216
         },
         {
           "path": "src/ConversationPicker.svelte",
