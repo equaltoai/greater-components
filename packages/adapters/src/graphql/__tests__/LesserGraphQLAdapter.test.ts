@@ -94,6 +94,7 @@ describe('LesserGraphQLAdapter', () => {
 		mockClientInstance = {
 			client: mockApolloClient,
 			updateToken: vi.fn(),
+			onReconnect: vi.fn(() => vi.fn()),
 			close: vi.fn(),
 		};
 
@@ -214,9 +215,11 @@ describe('LesserGraphQLAdapter', () => {
 			await expect(adapter.getObject('1')).resolves.toBeUndefined();
 		});
 
-		it('should return empty array if conversations query returns undefined data', async () => {
+		it('should reject malformed conversations data instead of coercing it to empty', async () => {
 			mockApolloClient.query.mockResolvedValue({}); // No data
-			await expect(adapter.getConversations({} as any)).resolves.toEqual([]);
+			await expect(adapter.getConversations({} as any)).rejects.toMatchObject({
+				code: 'LESSER_GRAPHQL_INVALID_RESPONSE',
+			});
 		});
 
 		it('should throw if mutation returns null data', async () => {

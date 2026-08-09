@@ -13,6 +13,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const wsClients: Array<{
 	connectionParams: () => Record<string, string>;
+	connected: () => void;
 	terminate: ReturnType<typeof vi.fn>;
 	dispose: ReturnType<typeof vi.fn>;
 }> = [];
@@ -20,15 +21,21 @@ const wsClients: Array<{
 let capturedErrorHandler: ((input: { error: unknown }) => void) | null = null;
 
 vi.mock('graphql-ws', () => ({
-	createClient: vi.fn((options: { connectionParams: () => Record<string, string> }) => {
-		const client = {
-			connectionParams: options.connectionParams,
-			terminate: vi.fn(),
-			dispose: vi.fn(),
-		};
-		wsClients.push(client);
-		return client;
-	}),
+	createClient: vi.fn(
+		(options: {
+			connectionParams: () => Record<string, string>;
+			on?: { connected?: () => void };
+		}) => {
+			const client = {
+				connectionParams: options.connectionParams,
+				connected: options.on?.connected ?? (() => undefined),
+				terminate: vi.fn(),
+				dispose: vi.fn(),
+			};
+			wsClients.push(client);
+			return client;
+		}
+	),
 }));
 
 vi.mock('@apollo/client/link/error/index.js', () => ({
@@ -160,6 +167,18 @@ describe('createGraphQLClient credential expiry (Lesser v1.5.33)', () => {
 
 		// The reconnect presents the refreshed credential.
 		expect(wsClients[0]?.connectionParams()).toEqual({ authorization: 'Bearer fresh-token' });
+	});
+
+	it('notifies reconnect listeners only after the initial connection', () => {
+		const instance = build();
+		const listener = vi.fn();
+		instance.onReconnect?.(listener);
+
+		wsClients[0]?.connected();
+		expect(listener).not.toHaveBeenCalled();
+
+		wsClients[0]?.connected();
+		expect(listener).toHaveBeenCalledOnce();
 	});
 
 	it('collapses concurrent expiry frames into one refresh and one re-dial', async () => {

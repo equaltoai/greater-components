@@ -664,6 +664,10 @@ export class LesserGraphQLAdapter implements LesserMessagesAdapter {
 		this.client.updateToken(token);
 	}
 
+	onRealtimeReconnect(listener: () => void): () => void {
+		return this.client.onReconnect?.(listener) ?? (() => undefined);
+	}
+
 	/**
 	 * Verify credentials and fetch current authenticated user
 	 *
@@ -1218,7 +1222,12 @@ export class LesserGraphQLAdapter implements LesserMessagesAdapter {
 	async getConversations(variables: ConversationsQueryVariables) {
 		const data = await this.query(ConversationsDocument, variables);
 		const conversations = (data as Partial<typeof data>).conversations;
-		return Array.isArray(conversations) ? conversations : [];
+		if (!Array.isArray(conversations)) {
+			throw new LesserGraphQLAdapterError('Invalid conversations response: expected an array.', {
+				code: 'LESSER_GRAPHQL_INVALID_RESPONSE',
+			});
+		}
+		return conversations;
 	}
 
 	async getConversation(id: string) {

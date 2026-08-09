@@ -33,6 +33,8 @@ describe('Messages Context', () => {
 		expect(context.state.conversations).toEqual([]);
 		expect(context.state.selectedConversation).toBeNull();
 		expect(context.state.messages).toEqual([]);
+		expect(context.state.messagePageInfo).toBeNull();
+		expect(context.state.loadingMoreMessages).toBe(false);
 		expect(context.state.loading).toBe(false);
 		expect(context.state.error).toBeNull();
 	});
@@ -127,6 +129,94 @@ describe('Messages Context', () => {
 
 			expect(context.state.selectedConversation).toBeNull();
 			expect(context.state.messages).toEqual([]);
+		});
+
+		it('preserves pagination and fetches the next page without duplicates', async () => {
+			const conversation: Conversation = {
+				id: '1',
+				participants: [],
+				unreadCount: 0,
+				updatedAt: '2026-08-09T00:00:00.000Z',
+			};
+			const first: DirectMessage = {
+				id: 'm1',
+				conversationId: '1',
+				sender: { id: 'u1', username: 'alice', displayName: 'Alice' },
+				content: 'First',
+				createdAt: '2026-08-09T00:00:00.000Z',
+				read: true,
+			};
+			const second: DirectMessage = { ...first, id: 'm2', content: 'Second' };
+			vi.mocked(handlers.onFetchMessages!)
+				.mockResolvedValueOnce({
+					messages: [first],
+					pageInfo: {
+						hasNextPage: true,
+						hasPreviousPage: false,
+						endCursor: 'cursor-1',
+					},
+					totalCount: 2,
+				})
+				.mockResolvedValueOnce({
+					messages: [first, second],
+					pageInfo: {
+						hasNextPage: false,
+						hasPreviousPage: true,
+						endCursor: 'cursor-2',
+					},
+					totalCount: 2,
+				});
+
+			const context = createMessagesContext(handlers);
+			await context.selectConversation(conversation);
+			await context.fetchMoreMessages?.();
+
+			expect(handlers.onFetchMessages).toHaveBeenLastCalledWith('1', {
+				cursor: 'cursor-1',
+			});
+			expect(context.state.messages.map((message) => message.id)).toEqual(['m1', 'm2']);
+			expect(context.state.messagePageInfo?.hasNextPage).toBe(false);
+			expect(context.state.messageTotalCount).toBe(2);
+		});
+	});
+
+	describe('realtime reconciliation', () => {
+		it('refreshes selected state after a transport reconnect', async () => {
+			let callbacks:
+				| Parameters<NonNullable<MessagesHandlers['onSubscribeToConversationUpdates']>>[0]
+				| undefined;
+			const conversation: Conversation = {
+				id: 'c1',
+				participants: [],
+				unreadCount: 1,
+				updatedAt: '2026-08-09T00:00:00.000Z',
+			};
+			const refreshed = { ...conversation, unreadCount: 3 };
+			const message: DirectMessage = {
+				id: 'm1',
+				conversationId: 'c1',
+				sender: { id: 'u1', username: 'alice', displayName: 'Alice' },
+				content: 'Reconciled',
+				createdAt: '2026-08-09T00:01:00.000Z',
+				read: true,
+			};
+			handlers.onSubscribeToConversationUpdates = vi.fn((nextCallbacks) => {
+				callbacks = nextCallbacks;
+				return vi.fn();
+			});
+			handlers.onFetchConversation = vi.fn().mockResolvedValue(refreshed);
+			vi.mocked(handlers.onFetchConversations!).mockResolvedValue([refreshed]);
+			vi.mocked(handlers.onFetchMessages!).mockResolvedValue([message]);
+
+			const context = createMessagesContext(handlers);
+			context.state.selectedConversation = conversation;
+			context.state.conversations = [conversation];
+			context.startRealtime();
+			await callbacks?.onReconnect?.();
+
+			expect(handlers.onFetchConversation).toHaveBeenCalledWith('c1');
+			expect(context.state.selectedConversation?.unreadCount).toBe(3);
+			expect(context.state.messages).toEqual([message]);
 		});
 	});
 

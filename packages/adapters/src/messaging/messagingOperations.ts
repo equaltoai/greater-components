@@ -94,6 +94,7 @@ export interface LesserMessageObject {
 export interface LesserMessageConversation {
 	id: string;
 	unread: boolean;
+	unreadCount?: number;
 	updatedAt: string;
 	accounts: ReadonlyArray<LesserMessageActor>;
 	lastStatus?: LesserMessageObject | null;
@@ -113,7 +114,14 @@ export type ConversationMessagesVariables = Record<string, unknown> & {
 
 export type ConversationMessagesData = Record<string, unknown> & {
 	conversationMessages: {
-		edges: ReadonlyArray<{ node: LesserMessageObject }>;
+		edges: ReadonlyArray<{ cursor: string; node: LesserMessageObject }>;
+		pageInfo: {
+			hasNextPage: boolean;
+			hasPreviousPage: boolean;
+			startCursor?: string | null;
+			endCursor?: string | null;
+		};
+		totalCount: number;
 	};
 };
 
@@ -199,6 +207,7 @@ const messageFields = [
 const conversationFields = [
 	field('id'),
 	field('unread'),
+	field('unreadCount'),
 	field('updatedAt'),
 	field('accounts', { selections: actorFields }),
 	field('lastStatus', { selections: messageFields }),
@@ -248,7 +257,20 @@ export const ConversationMessagesDocument = operation<
 	],
 	field('conversationMessages', {
 		arguments: [argument('conversationId'), argument('first'), argument('after')],
-		selections: [field('edges', { selections: [field('node', { selections: messageFields })] })],
+		selections: [
+			field('edges', {
+				selections: [field('cursor'), field('node', { selections: messageFields })],
+			}),
+			field('pageInfo', {
+				selections: [
+					field('hasNextPage'),
+					field('hasPreviousPage'),
+					field('startCursor'),
+					field('endCursor'),
+				],
+			}),
+			field('totalCount'),
+		],
 	})
 );
 

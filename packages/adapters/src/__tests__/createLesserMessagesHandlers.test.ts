@@ -15,6 +15,7 @@ describe('createLesserMessagesHandlers', () => {
 	const adapter = {
 		getConversations: vi.fn(),
 		getConversation: vi.fn(),
+		onRealtimeReconnect: vi.fn(),
 		subscribeToConversationUpdates: vi.fn(),
 		query: vi.fn(),
 		mutate: vi.fn(),
@@ -24,6 +25,7 @@ describe('createLesserMessagesHandlers', () => {
 
 	beforeEach(() => {
 		vi.clearAllMocks();
+		adapter.onRealtimeReconnect.mockReturnValue(vi.fn());
 	});
 
 	it('uses valid dependency-free GraphQL operation documents', () => {
@@ -87,6 +89,13 @@ describe('createLesserMessagesHandlers', () => {
 						},
 					},
 				],
+				pageInfo: {
+					hasNextPage: true,
+					hasPreviousPage: false,
+					startCursor: 'cursor-1',
+					endCursor: 'cursor-1',
+				},
+				totalCount: 2,
 			},
 		});
 
@@ -97,13 +106,40 @@ describe('createLesserMessagesHandlers', () => {
 			ConversationMessagesDocument,
 			expect.objectContaining({ conversationId: 'c1', first: 25 })
 		);
-		expect(messages).toHaveLength(1);
-		expect(messages?.[0]).toMatchObject({
+		expect(messages).toMatchObject({
+			totalCount: 2,
+			pageInfo: { hasNextPage: true, endCursor: 'cursor-1' },
+		});
+		expect(Array.isArray(messages) ? undefined : messages?.messages[0]).toMatchObject({
 			id: 'm1',
 			conversationId: 'c1',
 			content: 'Hello',
 			sensitive: true,
 			spoilerText: 'CW',
+		});
+	});
+
+	it('fetches a canonical conversation by id', async () => {
+		adapter.getConversation.mockResolvedValueOnce({
+			id: 'c1',
+			unread: true,
+			unreadCount: 7,
+			updatedAt: '2026-02-01T00:00:00.000Z',
+			accounts: [{ id: 'u1', username: 'alice', displayName: 'Alice', avatar: null }],
+			lastStatus: null,
+			viewerMetadata: {
+				requestState: 'ACCEPTED',
+				requestedAt: null,
+				acceptedAt: null,
+				declinedAt: null,
+			},
+		});
+
+		const handlers = createLesserMessagesHandlers({ adapter });
+		await expect(handlers.onFetchConversation?.('c1')).resolves.toMatchObject({
+			id: 'c1',
+			folder: 'INBOX',
+			unreadCount: 7,
 		});
 	});
 
@@ -382,5 +418,36 @@ describe('createLesserMessagesHandlers', () => {
 
 		stop?.();
 		expect(unsubscribe).toHaveBeenCalled();
+	});
+
+	it('reconciles after transport reconnect and surfaces per-event failures', async () => {
+		let reconnect: (() => void) | undefined;
+		adapter.onRealtimeReconnect.mockImplementationOnce((listener: () => void) => {
+			reconnect = listener;
+			return vi.fn();
+		});
+		adapter.subscribeToConversationUpdates.mockReturnValueOnce({
+			subscribe: ({ next }: any) => {
+				next({ data: { conversationUpdates: { id: 'c1' } } });
+				return { unsubscribe: vi.fn() };
+			},
+		});
+		adapter.getConversation.mockRejectedValueOnce(new Error('conversation refresh failed'));
+
+		const handlers = createLesserMessagesHandlers({ adapter });
+		const statuses: Array<[string, string | undefined]> = [];
+		const onReconnect = vi.fn();
+		handlers.onSubscribeToConversationUpdates?.({
+			onConversationUpdate: vi.fn(),
+			onConnectionStatusChange: (status, reason) => statuses.push([status, reason]),
+			onReconnect,
+		});
+
+		reconnect?.();
+		await Promise.resolve();
+		await Promise.resolve();
+
+		expect(onReconnect).toHaveBeenCalledOnce();
+		expect(statuses).toContainEqual(['error', 'conversation refresh failed']);
 	});
 });
