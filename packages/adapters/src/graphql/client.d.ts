@@ -90,7 +90,7 @@ export interface GraphQLClientInstance {
 	client: ApolloClient;
 	wsClient: Client | null;
 	updateToken: (token: string | null) => void;
-	onReconnect: (listener: () => void) => () => void;
+	onReconnect?: (listener: () => void) => () => void;
 	close: () => void;
 }
 /**
