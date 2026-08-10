@@ -443,7 +443,7 @@
     }
   },
   "dependencies": {
-    "@apollo/client": "4.2.9",
+    "@apollo/client": "4.2.10",
     "@apollo/client-react-streaming": "^0.14.5",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@playwright/test": "^1.62.1",
@@ -455,7 +455,7 @@
     "focus-trap": "^8.2.2",
     "fs-extra": "^11.4.0",
     "graphql": "^16.13.2",
-    "graphql-ws": "^6.2.0",
+    "graphql-ws": "^6.2.1",
     "hast-util-sanitize": "^5.0.2",
     "hast-util-to-mdast": "^10.1.2",
     "mdast-util-gfm": "^3.1.0",
@@ -469,10 +469,10 @@
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
     "semver": "^7.8.5",
-    "shiki": "^4.3.1",
+    "shiki": "^4.4.2",
     "tabbable": "^6.5.0",
     "unified": "^11.0.5",
-    "viem": "^2.55.10",
+    "viem": "^2.55.11",
     "zod": "^4.4.3"
   },
   "devDependencies": {
