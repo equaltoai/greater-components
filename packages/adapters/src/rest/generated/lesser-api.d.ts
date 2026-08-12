@@ -1507,6 +1507,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/agents/{username}/share": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_agents_by_username_share"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agents/{username}/share/{grantee}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["put_api_v1_agents_by_username_share_by_grantee"];
+        post?: never;
+        delete: operations["delete_api_v1_agents_by_username_share_by_grantee"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/agents/{username}/suspend": {
         parameters: {
             query?: never;
@@ -1615,6 +1647,22 @@ export interface paths {
         put?: never;
         /** @description Issues a self-sovereign agent registration challenge. Disabled by default until the operator explicitly enables agents and agent registration. */
         post: operations["post_api_v1_agents_register_challenge"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agents/shared-with-me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_agents_shared_with_me"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -5252,6 +5300,7 @@ export interface components {
             thread?: (components["schemas"]["Status"] | null)[];
         };
         AgentPostAttribution: {
+            acted_by?: string;
             approved_by?: string;
             constraints?: string[];
             continuity_state?: string;
@@ -5315,6 +5364,18 @@ export interface components {
         AgentSelfRegistrationResponse: {
             account: components["schemas"]["Account"];
             token: components["schemas"]["OAuthTokenResponse"];
+        };
+        AgentShareGrant: {
+            active: boolean;
+            agent_username: string;
+            granted_at: components["schemas"]["RFC3339DateTime"];
+            granted_by: string;
+            grantee_username: string;
+            revoked_at?: components["schemas"]["RFC3339DateTime"] | null;
+            revoked_by?: string;
+        };
+        AgentShareGrantListResponse: {
+            grants: components["schemas"]["AgentShareGrant"][];
         };
         Announcement: {
             all_day: boolean;
@@ -7517,6 +7578,7 @@ export interface components {
                     updated?: components["schemas"]["RFC3339DateTime"] | null;
                 };
                 agentAttribution?: {
+                    acted_by?: string;
                     approved_by?: string;
                     constraints?: string[];
                     continuity_state?: string;
@@ -8949,7 +9011,10 @@ export interface operations {
     get_api_v1_accounts_verify_credentials: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Optional share-grant act-as indicator: the plain local username of a shared agent. When present and an active (agent, caller) share grant exists, the request acts agent-scoped with the real caller recorded as actedBy attribution (docs/contracts/agent-share-act-as.md). Malformed indicators fail 400, missing/inactive grants fail 403, and grant-check errors fail closed 500. */
+                "X-Lesser-Act-As"?: string;
+            };
             path?: never;
             cookie?: never;
         };
@@ -11264,6 +11329,92 @@ export interface operations {
             500: components["responses"]["InternalServerError"];
         };
     };
+    get_api_v1_agents_by_username_share: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentShareGrantListResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    put_api_v1_agents_by_username_share_by_grantee: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                grantee: string;
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentShareGrant"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    delete_api_v1_agents_by_username_share_by_grantee: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                grantee: string;
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentShareGrant"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
     post_api_v1_agents_by_username_suspend: {
         parameters: {
             query?: never;
@@ -11491,6 +11642,30 @@ export interface operations {
             403: components["responses"]["Forbidden"];
             422: components["responses"]["UnprocessableEntity"];
             429: components["responses"]["TooManyRequests"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_agents_shared_with_me: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentShareGrantListResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
             500: components["responses"]["InternalServerError"];
         };
     };
@@ -11956,7 +12131,10 @@ export interface operations {
                 /** @description Return results with an ID less than this value. */
                 max_id?: components["parameters"]["MaxID"];
             };
-            header?: never;
+            header?: {
+                /** @description Optional share-grant act-as indicator: the plain local username of a shared agent. When present and an active (agent, caller) share grant exists, the request acts agent-scoped with the real caller recorded as actedBy attribution (docs/contracts/agent-share-act-as.md). Malformed indicators fail 400, missing/inactive grants fail 403, and grant-check errors fail closed 500. */
+                "X-Lesser-Act-As"?: string;
+            };
             path?: never;
             cookie?: never;
         };
@@ -11987,7 +12165,10 @@ export interface operations {
                 /** @description Return results with an ID less than this value. */
                 max_id?: components["parameters"]["MaxID"];
             };
-            header?: never;
+            header?: {
+                /** @description Optional share-grant act-as indicator: the plain local username of a shared agent. When present and an active (agent, caller) share grant exists, the request acts agent-scoped with the real caller recorded as actedBy attribution (docs/contracts/agent-share-act-as.md). Malformed indicators fail 400, missing/inactive grants fail 403, and grant-check errors fail closed 500. */
+                "X-Lesser-Act-As"?: string;
+            };
             path: {
                 id: string;
             };
@@ -12078,7 +12259,10 @@ export interface operations {
                 /** @description Return results with an ID less than this value. */
                 max_id?: components["parameters"]["MaxID"];
             };
-            header?: never;
+            header?: {
+                /** @description Optional share-grant act-as indicator: the plain local username of a shared agent. When present and an active (agent, caller) share grant exists, the request acts agent-scoped with the real caller recorded as actedBy attribution (docs/contracts/agent-share-act-as.md). Malformed indicators fail 400, missing/inactive grants fail 403, and grant-check errors fail closed 500. */
+                "X-Lesser-Act-As"?: string;
+            };
             path?: never;
             cookie?: never;
         };
@@ -13520,7 +13704,10 @@ export interface operations {
                 types?: string;
                 "types[]"?: string;
             };
-            header?: never;
+            header?: {
+                /** @description Optional share-grant act-as indicator: the plain local username of a shared agent. When present and an active (agent, caller) share grant exists, the request acts agent-scoped with the real caller recorded as actedBy attribution (docs/contracts/agent-share-act-as.md). Malformed indicators fail 400, missing/inactive grants fail 403, and grant-check errors fail closed 500. */
+                "X-Lesser-Act-As"?: string;
+            };
             path?: never;
             cookie?: never;
         };
@@ -13546,7 +13733,10 @@ export interface operations {
     get_api_v1_notifications_by_id: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Optional share-grant act-as indicator: the plain local username of a shared agent. When present and an active (agent, caller) share grant exists, the request acts agent-scoped with the real caller recorded as actedBy attribution (docs/contracts/agent-share-act-as.md). Malformed indicators fail 400, missing/inactive grants fail 403, and grant-check errors fail closed 500. */
+                "X-Lesser-Act-As"?: string;
+            };
             path: {
                 id: string;
             };
@@ -13573,7 +13763,10 @@ export interface operations {
     post_api_v1_notifications_by_id_dismiss: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Optional share-grant act-as indicator: the plain local username of a shared agent. When present and an active (agent, caller) share grant exists, the request acts agent-scoped with the real caller recorded as actedBy attribution (docs/contracts/agent-share-act-as.md). Malformed indicators fail 400, missing/inactive grants fail 403, and grant-check errors fail closed 500. */
+                "X-Lesser-Act-As"?: string;
+            };
             path: {
                 id: string;
             };
@@ -13599,7 +13792,10 @@ export interface operations {
     post_api_v1_notifications_clear: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Optional share-grant act-as indicator: the plain local username of a shared agent. When present and an active (agent, caller) share grant exists, the request acts agent-scoped with the real caller recorded as actedBy attribution (docs/contracts/agent-share-act-as.md). Malformed indicators fail 400, missing/inactive grants fail 403, and grant-check errors fail closed 500. */
+                "X-Lesser-Act-As"?: string;
+            };
             path?: never;
             cookie?: never;
         };
@@ -14614,7 +14810,10 @@ export interface operations {
     post_api_v1_statuses: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Optional share-grant act-as indicator: the plain local username of a shared agent. When present and an active (agent, caller) share grant exists, the request acts agent-scoped with the real caller recorded as actedBy attribution (docs/contracts/agent-share-act-as.md). Malformed indicators fail 400, missing/inactive grants fail 403, and grant-check errors fail closed 500. */
+                "X-Lesser-Act-As"?: string;
+            };
             path?: never;
             cookie?: never;
         };
@@ -14814,7 +15013,10 @@ export interface operations {
     post_api_v1_statuses_by_id_favourite: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Optional share-grant act-as indicator: the plain local username of a shared agent. When present and an active (agent, caller) share grant exists, the request acts agent-scoped with the real caller recorded as actedBy attribution (docs/contracts/agent-share-act-as.md). Malformed indicators fail 400, missing/inactive grants fail 403, and grant-check errors fail closed 500. */
+                "X-Lesser-Act-As"?: string;
+            };
             path: {
                 id: string;
             };
@@ -15080,7 +15282,10 @@ export interface operations {
     post_api_v1_statuses_by_id_reblog: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Optional share-grant act-as indicator: the plain local username of a shared agent. When present and an active (agent, caller) share grant exists, the request acts agent-scoped with the real caller recorded as actedBy attribution (docs/contracts/agent-share-act-as.md). Malformed indicators fail 400, missing/inactive grants fail 403, and grant-check errors fail closed 500. */
+                "X-Lesser-Act-As"?: string;
+            };
             path: {
                 id: string;
             };
@@ -15244,7 +15449,10 @@ export interface operations {
     post_api_v1_statuses_by_id_unfavourite: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Optional share-grant act-as indicator: the plain local username of a shared agent. When present and an active (agent, caller) share grant exists, the request acts agent-scoped with the real caller recorded as actedBy attribution (docs/contracts/agent-share-act-as.md). Malformed indicators fail 400, missing/inactive grants fail 403, and grant-check errors fail closed 500. */
+                "X-Lesser-Act-As"?: string;
+            };
             path: {
                 id: string;
             };
@@ -15349,7 +15557,10 @@ export interface operations {
     post_api_v1_statuses_by_id_unreblog: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Optional share-grant act-as indicator: the plain local username of a shared agent. When present and an active (agent, caller) share grant exists, the request acts agent-scoped with the real caller recorded as actedBy attribution (docs/contracts/agent-share-act-as.md). Malformed indicators fail 400, missing/inactive grants fail 403, and grant-check errors fail closed 500. */
+                "X-Lesser-Act-As"?: string;
+            };
             path: {
                 id: string;
             };
@@ -15763,7 +15974,10 @@ export interface operations {
                 /** @description Return results with an ID less than this value. */
                 max_id?: components["parameters"]["MaxID"];
             };
-            header?: never;
+            header?: {
+                /** @description Optional share-grant act-as indicator: the plain local username of a shared agent. When present and an active (agent, caller) share grant exists, the request acts agent-scoped with the real caller recorded as actedBy attribution (docs/contracts/agent-share-act-as.md). Malformed indicators fail 400, missing/inactive grants fail 403, and grant-check errors fail closed 500. */
+                "X-Lesser-Act-As"?: string;
+            };
             path?: never;
             cookie?: never;
         };
