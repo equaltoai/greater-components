@@ -958,6 +958,8 @@ export type AnnouncementReaction = {
 };
 export type Article = {
     readonly __typename: 'Article';
+    /** Caller attribution: the actor who performed the write on the author's behalf under an active share grant. Private CMS workflow attribution (author/admin viewers only). */
+    readonly actedBy?: Maybe<Actor>;
     readonly author: Actor;
     readonly authorId: Scalars['ID']['output'];
     readonly canonicalUrl?: Maybe<Scalars['String']['output']>;
@@ -1499,6 +1501,8 @@ export type DomainBlockPage = {
 };
 export type Draft = {
     readonly __typename: 'Draft';
+    /** Caller attribution: the actor who performed the write on the author's behalf under an active share grant. */
+    readonly actedBy?: Maybe<Actor>;
     readonly author: Actor;
     readonly authorId: Scalars['ID']['output'];
     readonly autosaveVersion: Scalars['Int']['output'];

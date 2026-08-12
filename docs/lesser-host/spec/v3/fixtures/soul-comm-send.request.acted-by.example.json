@@ -1,0 +1,9 @@
+{
+  "channel": "email",
+  "agentId": "0x2222222222222222222222222222222222222222222222222222222222222222",
+  "to": "alice@example.com",
+  "subject": "Project collaboration",
+  "body": "Hi Alice,\n\nFollowing up on the collaboration as a shared caller.\n",
+  "idempotencyKey": "mcp-email-send-7b5c8a81-1d5e-5c2e-9f29-8c7g66g4g4f6",
+  "actedBy": "shared_caller-01"
+}

@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/soul-instance-recovery-agent.response.schema.json",
+  "title": "Instance-key Soul recovery agent detail",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "agent_id",
+    "domain",
+    "local_id",
+    "status",
+    "classification",
+    "self_description_version",
+    "source",
+    "migration_read_sha256",
+    "provenance",
+    "versions",
+    "declarations"
+  ],
+  "$defs": {
+    "agent_id": {
+      "type": "string",
+      "pattern": "^0x[0-9a-fA-F]{64}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "prefixed_sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["registration_id", "conversation_id", "produced_at"],
+      "properties": {
+        "registration_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "conversation_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "produced_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "version": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version_number",
+        "registration_uri",
+        "registration_sha256",
+        "created_at",
+        "checksum_verified"
+      ],
+      "properties": {
+        "version_number": { "type": "integer", "minimum": 1 },
+        "registration_uri": {
+          "type": "string",
+          "pattern": "^s3://[^/]+/registry/v1/agents/0x[0-9a-fA-F]{64}/versions/[1-9][0-9]*/registration\\.json$"
+        },
+        "registration_sha256": { "$ref": "#/$defs/sha256" },
+        "previous_registration_sha256": { "$ref": "#/$defs/sha256" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "checksum_verified": { "const": true }
+      }
+    },
+    "declarations": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["selfDescription", "capabilities", "boundaries", "transparency"],
+      "properties": {
+        "selfDescription": { "type": "object", "minProperties": 1 },
+        "capabilities": { "type": "array", "items": { "type": "object" } },
+        "boundaries": { "type": "array", "items": { "type": "object" } },
+        "transparency": { "type": "object" }
+      }
+    }
+  },
+  "properties": {
+    "version": { "const": "1" },
+    "agent_id": { "$ref": "#/$defs/agent_id" },
+    "domain": { "type": "string", "minLength": 1, "maxLength": 253 },
+    "local_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "status": { "const": "active" },
+    "classification": {
+      "type": "string",
+      "enum": ["published_artifact_verified", "legacy_declarations_only"]
+    },
+    "self_description_version": { "type": "integer", "minimum": 1 },
+    "source": { "$ref": "#/$defs/source" },
+    "migration_read_sha256": { "$ref": "#/$defs/prefixed_sha256" },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "digest_semantics", "historical_publication_sha"],
+      "properties": {
+        "source": { "const": "hosted_genesis_exact_declarations" },
+        "digest_semantics": { "const": "migration_read_sha256" },
+        "historical_publication_sha": { "const": false }
+      }
+    },
+    "versions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/version" }
+    },
+    "declarations": { "$ref": "#/$defs/declarations" },
+    "published_registration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["current_registration_sha256", "current_checksum_verified"],
+      "properties": {
+        "current_registration_sha256": { "$ref": "#/$defs/sha256" },
+        "current_checksum_verified": { "const": true }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "classification": { "const": "published_artifact_verified" } } },
+      "then": {
+        "required": ["published_registration"],
+        "properties": { "versions": { "minItems": 1 } }
+      }
+    },
+    {
+      "if": { "properties": { "classification": { "const": "legacy_declarations_only" } } },
+      "then": {
+        "properties": { "versions": { "maxItems": 0 } },
+        "not": { "required": ["published_registration"] }
+      }
+    }
+  ]
+}

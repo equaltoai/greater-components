@@ -27,7 +27,13 @@
       "maxLength": 128,
       "description": "Optional reply/conversation boundary reference, not an outgoing message identity. If present, it must match a prior conversation with every recipient; invalid refs fail closed with 403 comm.boundary_violation and error.details.field=inReplyTo. Prefer the canonical mailbox reply endpoint for replies."
     },
-    "idempotencyKey": { "type": "string", "minLength": 1, "maxLength": 256 }
+    "idempotencyKey": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "actedBy": {
+      "type": "string",
+      "pattern": "^[a-z0-9_-]{1,30}$",
+      "maxLength": 30,
+      "description": "Optional pure caller attribution: the local lesser account username of the real human who initiated the send when the caller acts under a share grant rather than as the agent owner. Attribution only, never authorization: the instance key + agentId remain the sole authz input, host never resolves actedBy against host-side identity, and it never overrides the authenticated instance/agent context. Absent = owner/principal send. Malformed values fail closed with 400 comm.invalid_request and error.details.field=actedBy. actedBy participates in idempotency-key semantics like other payload fields."
+    }
   },
   "allOf": [
     {

@@ -35,10 +35,10 @@
         "details": {
           "type": "object",
           "additionalProperties": true,
-          "description": "Optional structured, client-safe metadata. For comm.boundary_violation caused by an invalid reply/conversation reference, Host returns field=inReplyTo, boundary=conversation, and a reason such as no_prior_conversation.",
+          "description": "Optional structured, client-safe metadata. For comm.boundary_violation caused by an invalid reply/conversation reference, Host returns field=inReplyTo, boundary=conversation, and a reason such as no_prior_conversation. For comm.invalid_request caused by a malformed actedBy attribution value, Host returns field=actedBy.",
           "properties": {
             "boundary": { "type": "string", "enum": ["conversation"] },
-            "field": { "type": "string", "enum": ["inReplyTo", "to"] },
+            "field": { "type": "string", "enum": ["inReplyTo", "to", "actedBy"] },
             "reason": { "type": "string", "enum": ["no_prior_conversation", "missing_recipient", "reply_boundary_violation"] }
           }
         },

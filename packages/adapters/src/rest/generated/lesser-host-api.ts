@@ -366,6 +366,56 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/soul/instance/recovery/agents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List recoverable Soul agents owned by the authenticated Managed instance
+         * @description Direct Body-to-Host, InstanceKey-authenticated recovery inventory. The authenticated key supplies the Slug;
+         *     Host returns only active agents bound to that Managed instance's verified domains and exact Hosted Genesis
+         *     publication evidence. The inventory is bounded and content-free: it never returns declarations, messages,
+         *     provider output, raw keys, or tenant content. A correctly bound inactive domain-index entry is ineligible and
+         *     is omitted while pagination continues; an explicit detail read for that identity still returns an integrity
+         *     conflict. Binding or recovery-evidence ambiguity for an active candidate fails closed instead of being omitted.
+         */
+        get: operations["soulInstanceListRecoveryAgents"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/instance/recovery/agents/{agentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read exact recoverable declarations and verified provenance for one owned Soul agent
+         * @description Returns the exact declaration JSON retained in the selected Hosted Genesis conversation, together with an
+         *     independently computed migration-read SHA256 and verified immutable version metadata. The migration digest is
+         *     explicitly not a historical publication digest. `legacy_declarations_only` means no version row and no current
+         *     or versioned registration object exists; Host does not fabricate that history. This read never invokes replay,
+         *     convergence, finalize, publication, version increment, or business-state mutation. InstanceKey last-used
+         *     metadata and redacted audit evidence may be updated as part of authentication and security telemetry.
+         */
+        get: operations["soulInstanceGetRecoveryAgent"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/soul/instance/agents/{agentId}/mint-conversations": {
         parameters: {
             query?: never;
@@ -893,6 +943,14 @@ export interface paths {
          *     `comm.boundary_violation` plus `error.details.field=inReplyTo` when the reference is invalid. Canonical mailbox
          *     replies should use `POST /api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}/reply`, which derives
          *     recipient, thread, and provider reply headers from host's mailbox state.
+         *
+         *     `actedBy`, when present, is pure caller attribution: the local lesser username of the real human who initiated
+         *     the send under a share grant. It is never an authorization input (the instance key + `agentId` remain the sole
+         *     authz input), is never resolved against host-side identity, and never overrides the authenticated
+         *     instance/agent context. Malformed values fail closed with HTTP 400 `comm.invalid_request` plus
+         *     `error.details.field=actedBy`. Host persists it with the send record, echoes it in this response and in
+         *     `GET /api/v1/soul/comm/status/{messageId}`, and includes it in idempotency-key semantics like other payload
+         *     fields.
          */
         post: operations["soulCommSend"];
         delete?: never;
@@ -908,7 +966,12 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get outbound comm delivery status */
+        /**
+         * Get outbound comm delivery status
+         * @description Returns the current delivery status for one outbound comm message owned by the authenticated instance. When
+         *     the original send carried an `actedBy` caller-attribution value, the response echoes it; attribution only,
+         *     never authorization.
+         */
         get: operations["soulCommStatus"];
         put?: never;
         post?: never;
@@ -1668,6 +1731,9 @@ export interface components {
                 request_id?: string;
             };
         };
+        SoulInstanceRecoveryAgentsResponse: components["schemas"]["soul-instance-recovery-agents.response.schema"];
+        SoulInstanceRecoveryAgentResponse: components["schemas"]["soul-instance-recovery-agent.response.schema"];
+        SoulInstanceRecoveryErrorEnvelope: components["schemas"]["soul-instance-recovery.error.schema"];
         SoulInstanceBootstrapErrorEnvelope: components["schemas"]["soul-instance-bootstrap.error.schema"];
         SoulMintConversationFinalizeBeginRequest: {
             /** @description Required for wallet_principal registrations; omitted for authority_model=instance_trust. */
@@ -2079,7 +2145,176 @@ export interface components {
                 };
             };
         };
+        sha256: string;
+        source: {
+            registration_id: string;
+            conversation_id: string;
+            /** Format: date-time */
+            produced_at: string;
+        };
+        version: {
+            version_number: number;
+            registration_uri: string;
+            registration_sha256: components["schemas"]["sha256"];
+            previous_registration_sha256?: components["schemas"]["sha256"];
+            /** Format: date-time */
+            created_at: string;
+            /** @constant */
+            checksum_verified: true;
+        };
+        agent: {
+            agent_id: string;
+            domain: string;
+            local_id: string;
+            /** @constant */
+            status: "active";
+            /** @enum {unknown} */
+            classification: "published_artifact_verified" | "legacy_declarations_only";
+            self_description_version: number;
+            source: components["schemas"]["source"];
+            migration_read_sha256: string;
+            versions: components["schemas"]["version"][];
+        };
+        /** Instance-key Soul recovery inventory */
+        "soul-instance-recovery-agents.response.schema": {
+            /** @constant */
+            version: "1";
+            agents: components["schemas"]["agent"][];
+            count: number;
+            limit: number;
+            has_more: boolean;
+            next_cursor?: string;
+            $defs: {
+                sha256: string;
+                source: {
+                    registration_id: string;
+                    conversation_id: string;
+                    /** Format: date-time */
+                    produced_at: string;
+                };
+                version: {
+                    version_number: number;
+                    registration_uri: string;
+                    registration_sha256: components["schemas"]["sha256"];
+                    previous_registration_sha256?: components["schemas"]["sha256"];
+                    /** Format: date-time */
+                    created_at: string;
+                    /** @constant */
+                    checksum_verified: true;
+                };
+                agent: {
+                    agent_id: string;
+                    domain: string;
+                    local_id: string;
+                    /** @constant */
+                    status: "active";
+                    /** @enum {unknown} */
+                    classification: "published_artifact_verified" | "legacy_declarations_only";
+                    self_description_version: number;
+                    source: components["schemas"]["source"];
+                    migration_read_sha256: string;
+                    versions: components["schemas"]["version"][];
+                };
+            };
+        };
+        /** Instance-key Soul recovery error envelope */
+        "soul-instance-recovery.error.schema": {
+            error: {
+                /** @enum {string} */
+                code: "soul_recovery.invalid_request" | "soul_recovery.unauthorized" | "soul_recovery.boundary_violation" | "soul_recovery.not_found" | "soul_recovery.integrity_conflict" | "soul_recovery.response_too_large" | "soul_recovery.internal" | "soul_recovery.rate_limited";
+                message: string;
+                status_code?: number;
+                /** @description Client-safe metadata only. Raw InstanceKey values, declaration content, conversations, and provider evidence never appear here. */
+                details?: {
+                    /** @enum {string} */
+                    field?: "agentId" | "limit" | "cursor" | "body";
+                    retry_after_seconds?: number;
+                } & {
+                    [key: string]: unknown;
+                };
+                request_id?: string;
+            };
+        };
+        agent_id: string;
+        prefixed_sha256: string;
+        "$defs-version": {
+            version_number: number;
+            registration_uri: string;
+            registration_sha256: components["schemas"]["sha256"];
+            previous_registration_sha256?: components["schemas"]["sha256"];
+            /** Format: date-time */
+            created_at: string;
+            /** @constant */
+            checksum_verified: true;
+        };
         declarations: {
+            selfDescription: Record<string, never>;
+            capabilities: Record<string, never>[];
+            boundaries: Record<string, never>[];
+            transparency: Record<string, never>;
+        } & {
+            [key: string]: unknown;
+        };
+        /** Instance-key Soul recovery agent detail */
+        "soul-instance-recovery-agent.response.schema": {
+            /** @constant */
+            version: "1";
+            agent_id: components["schemas"]["agent_id"];
+            domain: string;
+            local_id: string;
+            /** @constant */
+            status: "active";
+            /** @enum {string} */
+            classification: "published_artifact_verified" | "legacy_declarations_only";
+            self_description_version: number;
+            source: components["schemas"]["source"];
+            migration_read_sha256: components["schemas"]["prefixed_sha256"];
+            provenance: {
+                /** @constant */
+                source: "hosted_genesis_exact_declarations";
+                /** @constant */
+                digest_semantics: "migration_read_sha256";
+                /** @constant */
+                historical_publication_sha: false;
+            };
+            versions: components["schemas"]["$defs-version"][];
+            declarations: components["schemas"]["declarations"];
+            published_registration?: {
+                current_registration_sha256: components["schemas"]["sha256"];
+                /** @constant */
+                current_checksum_verified: true;
+            };
+            $defs: {
+                agent_id: string;
+                sha256: string;
+                prefixed_sha256: string;
+                source: {
+                    registration_id: string;
+                    conversation_id: string;
+                    /** Format: date-time */
+                    produced_at: string;
+                };
+                version: {
+                    version_number: number;
+                    registration_uri: string;
+                    registration_sha256: components["schemas"]["sha256"];
+                    previous_registration_sha256?: components["schemas"]["sha256"];
+                    /** Format: date-time */
+                    created_at: string;
+                    /** @constant */
+                    checksum_verified: true;
+                };
+                declarations: {
+                    selfDescription: Record<string, never>;
+                    capabilities: Record<string, never>[];
+                    boundaries: Record<string, never>[];
+                    transparency: Record<string, never>;
+                } & {
+                    [key: string]: unknown;
+                };
+            };
+        } & (unknown & unknown);
+        "$defs-declarations": {
             selfDescription: {
                 [key: string]: unknown;
             };
@@ -2111,7 +2346,7 @@ export interface components {
             declaration_hash: string;
             /** Format: date-time */
             produced_at: string;
-            declarations: components["schemas"]["declarations"];
+            declarations: components["schemas"]["$defs-declarations"];
             evidence: {
                 /** @constant */
                 source: "host_conversation";
@@ -2236,7 +2471,7 @@ export interface components {
                     declaration_hash: string;
                     /** Format: date-time */
                     produced_at: string;
-                    declarations: components["schemas"]["declarations"];
+                    declarations: components["schemas"]["$defs-declarations"];
                     evidence: {
                         /** @constant */
                         source: "host_conversation";
@@ -2511,6 +2746,8 @@ export interface components {
             /** @description Optional reply/conversation boundary reference, not an outgoing message identity. If present, it must match a prior conversation with every recipient; invalid refs fail closed with 403 comm.boundary_violation and error.details.field=inReplyTo. Prefer the canonical mailbox reply endpoint for replies. */
             inReplyTo?: string | null;
             idempotencyKey?: string;
+            /** @description Optional pure caller attribution: the local lesser account username of the real human who initiated the send when the caller acts under a share grant rather than as the agent owner. Attribution only, never authorization: the instance key + agentId remain the sole authz input, host never resolves actedBy against host-side identity, and it never overrides the authenticated instance/agent context. Absent = owner/principal send. Malformed values fail closed with 400 comm.invalid_request and error.details.field=actedBy. actedBy participates in idempotency-key semantics like other payload fields. */
+            actedBy?: string;
         } & (unknown & unknown & unknown);
         /** POST /api/v1/soul/comm/send response */
         "soul-comm-send.response.schema": {
@@ -2524,6 +2761,8 @@ export interface components {
             to: string;
             provider?: string;
             providerMessageId?: string;
+            /** @description Echo of the caller-attribution actedBy value from the original send request, when present. Attribution only, never authorization. */
+            actedBy?: string;
             /** Format: date-time */
             createdAt: string;
             /** @description Opaque stable body-facing mailbox reference for the created outbound delivery; v1 equals deliveryId. */
@@ -2539,12 +2778,12 @@ export interface components {
                 code: "comm.invalid_request" | "comm.unauthorized" | "comm.agent_not_active" | "comm.channel_not_provisioned" | "comm.channel_unverified" | "comm.rate_limited" | "comm.preference_violation" | "comm.boundary_violation" | "comm.entitlement_required" | "comm.insufficient_credits" | "comm.provider_unavailable" | "comm.provider_rejected" | "comm.idempotency_conflict" | "comm.internal";
                 message: string;
                 status_code?: number;
-                /** @description Optional structured, client-safe metadata. For comm.boundary_violation caused by an invalid reply/conversation reference, Host returns field=inReplyTo, boundary=conversation, and a reason such as no_prior_conversation. */
+                /** @description Optional structured, client-safe metadata. For comm.boundary_violation caused by an invalid reply/conversation reference, Host returns field=inReplyTo, boundary=conversation, and a reason such as no_prior_conversation. For comm.invalid_request caused by a malformed actedBy attribution value, Host returns field=actedBy. */
                 details?: {
                     /** @enum {string} */
                     boundary?: "conversation";
                     /** @enum {string} */
-                    field?: "inReplyTo" | "to";
+                    field?: "inReplyTo" | "to" | "actedBy";
                     /** @enum {string} */
                     reason?: "no_prior_conversation" | "missing_recipient" | "reply_boundary_violation";
                 } & {
@@ -2571,6 +2810,8 @@ export interface components {
             replyConfidence?: number;
             /** Format: date-time */
             replyReceivedAt?: string;
+            /** @description Caller-attribution actedBy value persisted with the send record, echoed when present. Attribution only, never authorization. */
+            actedBy?: string;
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
@@ -4124,6 +4365,191 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    soulInstanceListRecoveryAgents: {
+        parameters: {
+            query?: {
+                limit?: number;
+                /** @description Opaque cursor returned by the preceding inventory page. */
+                cursor?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Tenant-bounded recovery inventory */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-recovery-agents.response.schema"];
+                };
+            };
+            /** @description Invalid limit, cursor, or request body */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-recovery.error.schema"];
+                };
+            };
+            /** @description Missing, invalid, or revoked InstanceKey */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-recovery.error.schema"];
+                };
+            };
+            /** @description Tenant/domain boundary mismatch */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-recovery.error.schema"];
+                };
+            };
+            /** @description Recovery evidence is incomplete, ambiguous, or fails integrity checks */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-recovery.error.schema"];
+                };
+            };
+            /** @description Bounded source or response size exceeded */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-recovery.error.schema"];
+                };
+            };
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    /** @description Seconds until the caller should retry when available. */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-recovery.error.schema"];
+                };
+            };
+            /** @description Internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-recovery.error.schema"];
+                };
+            };
+        };
+    };
+    soulInstanceGetRecoveryAgent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Exact declarations with recovery provenance and integrity classification */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-recovery-agent.response.schema"];
+                };
+            };
+            /** @description Invalid agent ID or request body */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-recovery.error.schema"];
+                };
+            };
+            /** @description Missing, invalid, or revoked InstanceKey */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-recovery.error.schema"];
+                };
+            };
+            /** @description Agent is outside the authenticated Slug/domain boundary */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-recovery.error.schema"];
+                };
+            };
+            /** @description Agent not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-recovery.error.schema"];
+                };
+            };
+            /** @description Recovery evidence is incomplete, ambiguous, or fails integrity checks */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-recovery.error.schema"];
+                };
+            };
+            /** @description Bounded source or response size exceeded */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-recovery.error.schema"];
+                };
+            };
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    /** @description Seconds until the caller should retry when available. */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-recovery.error.schema"];
+                };
+            };
+            /** @description Internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-instance-recovery.error.schema"];
                 };
             };
         };
