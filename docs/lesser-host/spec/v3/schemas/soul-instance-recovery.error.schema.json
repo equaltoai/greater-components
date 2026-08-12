@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/soul-instance-recovery.error.schema.json",
+  "title": "Instance-key Soul recovery error envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["error"],
+  "properties": {
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "soul_recovery.invalid_request",
+            "soul_recovery.unauthorized",
+            "soul_recovery.boundary_violation",
+            "soul_recovery.not_found",
+            "soul_recovery.integrity_conflict",
+            "soul_recovery.response_too_large",
+            "soul_recovery.internal",
+            "soul_recovery.rate_limited"
+          ]
+        },
+        "message": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "status_code": { "type": "integer", "minimum": 400, "maximum": 599 },
+        "details": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Client-safe metadata only. Raw InstanceKey values, declaration content, conversations, and provider evidence never appear here.",
+          "properties": {
+            "field": { "type": "string", "enum": ["agentId", "limit", "cursor", "body"] },
+            "retry_after_seconds": { "type": "integer", "minimum": 1 }
+          }
+        },
+        "request_id": { "type": "string", "minLength": 1, "maxLength": 128 }
+      }
+    }
+  }
+}

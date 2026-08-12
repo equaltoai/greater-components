@@ -1289,6 +1289,15 @@ components:
               minLength: 1
               maxLength: 128
 
+    SoulInstanceRecoveryAgentsResponse:
+      $ref: "../spec/v3/schemas/soul-instance-recovery-agents.response.schema.json"
+
+    SoulInstanceRecoveryAgentResponse:
+      $ref: "../spec/v3/schemas/soul-instance-recovery-agent.response.schema.json"
+
+    SoulInstanceRecoveryErrorEnvelope:
+      $ref: "../spec/v3/schemas/soul-instance-recovery.error.schema.json"
+
     SoulInstanceBootstrapErrorEnvelope:
       $ref: "../spec/v3/schemas/soul-instance-bootstrap.error.schema.json"
 
@@ -2527,6 +2536,174 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorEnvelope"
+
+  /api/v1/soul/instance/recovery/agents:
+    get:
+      operationId: soulInstanceListRecoveryAgents
+      summary: List recoverable Soul agents owned by the authenticated Managed instance
+      description: |
+        Direct Body-to-Host, InstanceKey-authenticated recovery inventory. The authenticated key supplies the Slug;
+        Host returns only active agents bound to that Managed instance's verified domains and exact Hosted Genesis
+        publication evidence. The inventory is bounded and content-free: it never returns declarations, messages,
+        provider output, raw keys, or tenant content. A correctly bound inactive domain-index entry is ineligible and
+        is omitted while pagination continues; an explicit detail read for that identity still returns an integrity
+        conflict. Binding or recovery-evidence ambiguity for an active candidate fails closed instead of being omitted.
+      security:
+        - instanceKeyAuth: []
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 50
+        - name: cursor
+          in: query
+          required: false
+          description: Opaque cursor returned by the preceding inventory page.
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 4096
+      responses:
+        "200":
+          description: Tenant-bounded recovery inventory
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceRecoveryAgentsResponse"
+        "400":
+          description: Invalid limit, cursor, or request body
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceRecoveryErrorEnvelope"
+        "401":
+          description: Missing, invalid, or revoked InstanceKey
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceRecoveryErrorEnvelope"
+        "403":
+          description: Tenant/domain boundary mismatch
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceRecoveryErrorEnvelope"
+        "409":
+          description: Recovery evidence is incomplete, ambiguous, or fails integrity checks
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceRecoveryErrorEnvelope"
+        "413":
+          description: Bounded source or response size exceeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceRecoveryErrorEnvelope"
+        "429":
+          description: Rate limited
+          headers:
+            Retry-After:
+              description: Seconds until the caller should retry when available.
+              schema:
+                type: integer
+                minimum: 1
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceRecoveryErrorEnvelope"
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceRecoveryErrorEnvelope"
+
+  /api/v1/soul/instance/recovery/agents/{agentId}:
+    get:
+      operationId: soulInstanceGetRecoveryAgent
+      summary: Read exact recoverable declarations and verified provenance for one owned Soul agent
+      description: |
+        Returns the exact declaration JSON retained in the selected Hosted Genesis conversation, together with an
+        independently computed migration-read SHA256 and verified immutable version metadata. The migration digest is
+        explicitly not a historical publication digest. `legacy_declarations_only` means no version row and no current
+        or versioned registration object exists; Host does not fabricate that history. This read never invokes replay,
+        convergence, finalize, publication, version increment, or business-state mutation. InstanceKey last-used
+        metadata and redacted audit evidence may be updated as part of authentication and security telemetry.
+      security:
+        - instanceKeyAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^0x[0-9a-fA-F]{64}$"
+      responses:
+        "200":
+          description: Exact declarations with recovery provenance and integrity classification
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceRecoveryAgentResponse"
+        "400":
+          description: Invalid agent ID or request body
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceRecoveryErrorEnvelope"
+        "401":
+          description: Missing, invalid, or revoked InstanceKey
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceRecoveryErrorEnvelope"
+        "403":
+          description: Agent is outside the authenticated Slug/domain boundary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceRecoveryErrorEnvelope"
+        "404":
+          description: Agent not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceRecoveryErrorEnvelope"
+        "409":
+          description: Recovery evidence is incomplete, ambiguous, or fails integrity checks
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceRecoveryErrorEnvelope"
+        "413":
+          description: Bounded source or response size exceeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceRecoveryErrorEnvelope"
+        "429":
+          description: Rate limited
+          headers:
+            Retry-After:
+              description: Seconds until the caller should retry when available.
+              schema:
+                type: integer
+                minimum: 1
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceRecoveryErrorEnvelope"
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceRecoveryErrorEnvelope"
 
   /api/v1/soul/instance/agents/{agentId}/mint-conversations:
     get:
@@ -4027,6 +4204,14 @@ paths:
         `comm.boundary_violation` plus `error.details.field=inReplyTo` when the reference is invalid. Canonical mailbox
         replies should use `POST /api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}/reply`, which derives
         recipient, thread, and provider reply headers from host's mailbox state.
+
+        `actedBy`, when present, is pure caller attribution: the local lesser username of the real human who initiated
+        the send under a share grant. It is never an authorization input (the instance key + `agentId` remain the sole
+        authz input), is never resolved against host-side identity, and never overrides the authenticated
+        instance/agent context. Malformed values fail closed with HTTP 400 `comm.invalid_request` plus
+        `error.details.field=actedBy`. Host persists it with the send record, echoes it in this response and in
+        `GET /api/v1/soul/comm/status/{messageId}`, and includes it in idempotency-key semantics like other payload
+        fields.
       security:
         - instanceKeyAuth: []
       requestBody:
@@ -4077,6 +4262,10 @@ paths:
     get:
       operationId: soulCommStatus
       summary: Get outbound comm delivery status
+      description: |
+        Returns the current delivery status for one outbound comm message owned by the authenticated instance. When
+        the original send carried an `actedBy` caller-attribution value, the response echoes it; attribution only,
+        never authorization.
       security:
         - instanceKeyAuth: []
       parameters:

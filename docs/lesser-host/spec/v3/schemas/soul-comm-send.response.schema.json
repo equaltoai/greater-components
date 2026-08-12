@@ -57,6 +57,12 @@
       "minLength": 1,
       "maxLength": 256
     },
+    "actedBy": {
+      "type": "string",
+      "pattern": "^[a-z0-9_-]{1,30}$",
+      "maxLength": 30,
+      "description": "Echo of the caller-attribution actedBy value from the original send request, when present. Attribution only, never authorization."
+    },
     "createdAt": {
       "type": "string",
       "format": "date-time"

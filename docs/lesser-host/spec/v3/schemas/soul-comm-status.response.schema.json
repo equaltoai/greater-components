@@ -19,6 +19,12 @@
     "replyBody": { "type": "string", "minLength": 1, "maxLength": 4096 },
     "replyConfidence": { "type": "number", "minimum": 0, "maximum": 1 },
     "replyReceivedAt": { "type": "string", "format": "date-time" },
+    "actedBy": {
+      "type": "string",
+      "pattern": "^[a-z0-9_-]{1,30}$",
+      "maxLength": 30,
+      "description": "Caller-attribution actedBy value persisted with the send record, echoed when present. Attribution only, never authorization."
+    },
     "createdAt": { "type": "string", "format": "date-time" },
     "updatedAt": { "type": "string", "format": "date-time" }
   }
