@@ -72,10 +72,10 @@ describe('Lesser shared-draft review contract', () => {
 	it('is pinned to a release carrying the review surface', () => {
 		const ref = readLesserRef();
 
-		// v1.6.4 adds canonical draft revision, grant-set, and publication eligibility data.
-		// The assertions below keep
+		// v1.6.4 adds canonical draft revision, grant-set, and publication eligibility data;
+		// v1.6.5 adds nullable actedBy attribution on Draft/Article. The assertions below keep
 		// the review chrome pinned to the exact synchronized release boundary.
-		expect(ref).toContain('tag: v1.6.4');
+		expect(ref).toContain('tag: v1.6.5');
 		expect(ref).toMatch(/commit: [0-9a-f]{40}/);
 	});
 

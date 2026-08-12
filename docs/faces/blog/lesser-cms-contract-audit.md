@@ -5,7 +5,7 @@ Lesser's pinned CMS GraphQL contract.
 
 ## Evidence
 
-- Lesser pin: `docs/lesser/contracts/LESSER_REF.txt` (`v1.6.3`, commit `f833ea0b6dea78c11a2b6da6289bf2305f770ebe`)
+- Lesser pin: `docs/lesser/contracts/LESSER_REF.txt` (`v1.6.5`, commit `a1eb3c6740bd5aca99273130e2b52d3c4c5775ea`)
 - Contract source: `docs/lesser/contracts/graphql-schema.graphql`
 - Greater Blog public types: `packages/faces/blog/src/types.ts`
 - Article display implementation: `packages/faces/blog/src/components/Article/Content.svelte`
@@ -53,6 +53,7 @@ Field direction legend:
 | `reviewStatus`       | Do not leak          | Review workflow state; keep out of public reusable Article UI for this MVP.                                                                                         |
 | `reviewedBy`         | Do not leak          | Review actor state is backend/workflow provenance; keep out of reusable Article UI until an app-specific moderation UI needs it.                                    |
 | `publishedBy`        | Do not leak          | Publishing actor state is workflow provenance; public author attribution remains `author`.                                                                          |
+| `actedBy`            | Do not leak          | Share-grant caller attribution (v1.6.5) is private CMS workflow provenance (author/admin viewers only); keep out of reusable Article UI.                            |
 | `publishedAt`        | Adapter mapping      | `ArticleData.metadata.publishedAt`                                                                                                                                  |
 | `createdAt`          | Out of scope for MVP | Not displayed by existing Blog face components.                                                                                                                     |
 | `updatedAt`          | Adapter mapping      | `ArticleData.metadata.updatedAt`                                                                                                                                    |
@@ -66,6 +67,12 @@ Lesser v1.6.3 adds the optional `search: String` argument to `Query.articles`. S
 Lesser against public article text; Greater's Blog face remains a display surface and does not add a
 second client-side search implementation. Consumers may pass the generated `QueryArticlesArgs.search`
 value through their adapter query.
+
+Lesser v1.6.5 adds the nullable `actedBy: Actor` caller-attribution field to `Article` and `Draft`.
+It records the actor who performed a write on the author's behalf under an active share grant and is
+private CMS workflow provenance. The Blog face does not adopt it in this sync; it is classified
+**Do not leak** alongside `generatedBy`/`reviewedBy`/`publishedBy` until a proven attribution UI
+needs it.
 
 ## `Draft` field audit
 
@@ -86,6 +93,7 @@ value through their adapter query.
 | `lastSavedAt`     | Adapter mapping      | `DraftData.savedAt`                                                                                                     |
 | `generatedBy`     | Do not leak          | Generation provenance is workflow state; keep out of reusable editor data until an app-specific provenance UI needs it. |
 | `reviewedBy`      | Do not leak          | Review actor state is workflow/moderation provenance and should not become reusable editor data by default.             |
+| `actedBy`         | Do not leak          | Share-grant caller attribution (v1.6.5) is workflow provenance; keep out of reusable editor data by default.            |
 | `createdAt`       | Out of scope for MVP | Not displayed by existing editor UI.                                                                                    |
 | `updatedAt`       | Out of scope for MVP | Existing editor status uses `savedAt`; do not add another timestamp without a UI need.                                  |
 
@@ -142,7 +150,7 @@ Concrete adapter work needed by Emdash before handing Lesser CMS objects to the 
 - Map `Actor`, `Media`, `Category`, and SEO fields into Greater view-model fields.
 - Normalize nullable `Draft.title` to a string for `DraftData.title`.
 - Keep workflow/admin/provenance fields (`editorNotes`, `reviewStatus`, `generatedBy`, `reviewedBy`,
-  `publishedBy`, `Draft.authorId`, `Draft.author`, `Publication.actor`) out
+  `publishedBy`, `actedBy`, `Draft.authorId`, `Draft.author`, `Publication.actor`) out
   of reusable Blog UI types.
 - Leave `tableOfContents`, `series`, `seriesOrder`, draft scheduling, publication members, newsletter
   stats, reactions, comments, and view counts out of reusable Blog UI until Emdash proves a concrete

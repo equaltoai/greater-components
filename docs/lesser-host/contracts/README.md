@@ -7,6 +7,8 @@ from `lesser-host` APIs (for example, `greater-components`).
 - `soul-mint-conversation-sse.json` — machine-readable SSE companion contract for the soul mint-conversation stream.
 - `hosted-genesis-conversation.md` — Host-owned durable async hosted-genesis status contract for the Lesser
   instance-key path.
+- `soul-instance-recovery.md` — direct Body-to-Host InstanceKey recovery inventory/detail contract with explicit
+  legacy provenance and no Soul registry business-state mutation.
 - `soul-five-body-schema.md` plus `soul-five-body.schema.v2.json` / `soul-five-body.example.v2.json` — Host-owned
   five-body hosted genesis schema/guidance source for Body G5B-4/G5B-5 consumers.
 - `../spec/v3/` — JSON Schema + fixtures for lesser-soul v3 protocol surfaces implemented by `lesser-host`.
@@ -33,6 +35,8 @@ npm run verify:lesser-host-contracts
 - required soul mint-conversation routes or schemas are missing from `docs/contracts/openapi.yaml`
 - required instance-key mint-conversation read routes and compact/full response schemas are missing from
   `docs/contracts/openapi.yaml`
+- required instance-key recovery inventory/detail routes, schemas, classifications, fixtures, or migration-digest
+  provenance are missing from `docs/contracts/openapi.yaml` and `docs/spec/v3/`
 - required instance-key bootstrap write routes, the `soul_instance.*` error envelope, hosted/off-chain finalize response
   schema, or server-side instance-key auth semantics are missing from `docs/contracts/openapi.yaml`
 - the Lesser-used instance-key registration mint-conversation route is still documented as SSE-only instead of
@@ -43,6 +47,11 @@ npm run verify:lesser-host-contracts
 - the checked-in generated adapter does not match a fresh regeneration
 
 CI and the governance rubric both run this verification so contract drift fails closed.
+
+The recovery routes under `/api/v1/soul/instance/recovery/*` are a distinct direct Body-to-Host contract. They use the
+same hash-only InstanceKey authentication but do not widen Lesser-mediated private self-scope reads. Inventory is
+content-free; detail returns exact declarations only after tenant, Hosted Genesis, promotion, version-chain, and S3
+checksum validation. `migration_read_sha256` is never a historical publication digest.
 
 The instance-key bootstrap route family under `/api/v1/soul/instance/agents/register/...` is a Host ↔ Lesser
 server-side contract. Its bearer token is the managed InstanceKey (`sha256(raw_key)` stored by Host); it is not a

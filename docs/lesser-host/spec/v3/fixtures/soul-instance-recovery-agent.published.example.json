@@ -1,0 +1,49 @@
+{
+  "version": "1",
+  "agent_id": "0x57d10000000000000000000000000000000000000000000000000000000065c3",
+  "domain": "theory.greater.website",
+  "local_id": "della-marlowe",
+  "status": "active",
+  "classification": "published_artifact_verified",
+  "self_description_version": 2,
+  "source": {
+    "registration_id": "reg_della",
+    "conversation_id": "conv_della",
+    "produced_at": "2026-01-16T12:00:00Z"
+  },
+  "migration_read_sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "provenance": {
+    "source": "hosted_genesis_exact_declarations",
+    "digest_semantics": "migration_read_sha256",
+    "historical_publication_sha": false
+  },
+  "versions": [
+    {
+      "version_number": 1,
+      "registration_uri": "s3://lesser-host-live-soul-packs/registry/v1/agents/0x57d10000000000000000000000000000000000000000000000000000000065c3/versions/1/registration.json",
+      "registration_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "created_at": "2026-01-16T12:01:00Z",
+      "checksum_verified": true
+    },
+    {
+      "version_number": 2,
+      "registration_uri": "s3://lesser-host-live-soul-packs/registry/v1/agents/0x57d10000000000000000000000000000000000000000000000000000000065c3/versions/2/registration.json",
+      "registration_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "previous_registration_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "created_at": "2026-02-16T12:01:00Z",
+      "checksum_verified": true
+    }
+  ],
+  "declarations": {
+    "schemaVersion": "2",
+    "guidanceVersion": "2",
+    "selfDescription": { "purpose": "Use exact Host-retained declarations, not the public projection." },
+    "capabilities": [],
+    "boundaries": [],
+    "transparency": { "migration": "verified" }
+  },
+  "published_registration": {
+    "current_registration_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "current_checksum_verified": true
+  }
+}

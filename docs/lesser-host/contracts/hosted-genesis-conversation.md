@@ -13,6 +13,15 @@ ledger before transport execution, GET/status projects from the session, complet
 checkpoint readiness and terminal publication truth from the session, and `SoulAgentMintConversation` is a bounded
 public projection only.
 
+## Recovery contract is deliberately separate
+
+`GET /api/v1/soul/instance/recovery/agents` and
+`GET /api/v1/soul/instance/recovery/agents/{agentId}` are direct Body-to-Host recovery reads documented in
+`soul-instance-recovery.md`. They reuse hash-only InstanceKey authentication, but they do not extend or replace the
+Lesser-mediated private self-scope conversation routes below. Recovery inventory never returns conversation content;
+recovery detail returns only exact produced declarations after graduated promotion, tenant, source, version-chain, and
+S3 checksum verification. It never replays this state into completion/finalize/publication or mutates Hosted Genesis.
+
 ## Authoritative Lesser route family
 
 The Lesser server calls Host with `instanceKeyAuth`; the browser never receives raw Host credentials or Host

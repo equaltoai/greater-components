@@ -1,0 +1,29 @@
+{
+  "version": "1",
+  "agent_id": "0xed005ad972ca331390e8db88f0c3928ace2e56821a7d1c7cfbbd9448b5afee86",
+  "domain": "theory.greater.website",
+  "local_id": "silas-vane",
+  "status": "active",
+  "classification": "legacy_declarations_only",
+  "self_description_version": 1,
+  "source": {
+    "registration_id": "reg_silas_legacy",
+    "conversation_id": "conv_silas_legacy",
+    "produced_at": "2026-01-15T12:00:00Z"
+  },
+  "migration_read_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "provenance": {
+    "source": "hosted_genesis_exact_declarations",
+    "digest_semantics": "migration_read_sha256",
+    "historical_publication_sha": false
+  },
+  "versions": [],
+  "declarations": {
+    "schemaVersion": "2",
+    "guidanceVersion": "2",
+    "selfDescription": { "purpose": "Recover the exact Host-retained declaration bytes." },
+    "capabilities": [],
+    "boundaries": [],
+    "transparency": { "migration": "legacy" }
+  }
+}

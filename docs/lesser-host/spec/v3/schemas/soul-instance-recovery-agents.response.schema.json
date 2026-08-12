@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/soul-instance-recovery-agents.response.schema.json",
+  "title": "Instance-key Soul recovery inventory",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "agents", "count", "limit", "has_more"],
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["registration_id", "conversation_id", "produced_at"],
+      "properties": {
+        "registration_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "conversation_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "produced_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "version": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version_number", "registration_uri", "registration_sha256", "created_at", "checksum_verified"],
+      "properties": {
+        "version_number": { "type": "integer", "minimum": 1 },
+        "registration_uri": { "type": "string", "minLength": 1 },
+        "registration_sha256": { "$ref": "#/$defs/sha256" },
+        "previous_registration_sha256": { "$ref": "#/$defs/sha256" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "checksum_verified": { "const": true }
+      }
+    },
+    "agent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "agent_id",
+        "domain",
+        "local_id",
+        "status",
+        "classification",
+        "self_description_version",
+        "source",
+        "migration_read_sha256",
+        "versions"
+      ],
+      "properties": {
+        "agent_id": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
+        "domain": { "type": "string", "minLength": 1, "maxLength": 253 },
+        "local_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "status": { "const": "active" },
+        "classification": { "enum": ["published_artifact_verified", "legacy_declarations_only"] },
+        "self_description_version": { "type": "integer", "minimum": 1 },
+        "source": { "$ref": "#/$defs/source" },
+        "migration_read_sha256": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "versions": { "type": "array", "items": { "$ref": "#/$defs/version" } }
+      }
+    }
+  },
+  "properties": {
+    "version": { "const": "1" },
+    "agents": { "type": "array", "maxItems": 50, "items": { "$ref": "#/$defs/agent" } },
+    "count": { "type": "integer", "minimum": 0, "maximum": 50 },
+    "limit": { "type": "integer", "minimum": 1, "maximum": 50 },
+    "has_more": { "type": "boolean" },
+    "next_cursor": { "type": "string", "minLength": 1, "maxLength": 4096 }
+  }
+}
