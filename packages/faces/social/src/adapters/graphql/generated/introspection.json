@@ -6908,6 +6908,22 @@
             "deprecationReason": null
           },
           {
+            "name": "viewerIsOwner",
+            "description": "True when the requesting viewer is this agent's owner under Lesser's canonical local-identity comparison.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "workflow",
             "description": null,
             "args": [],
@@ -34889,8 +34905,8 @@
                 "ofType": null
               }
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "Registration is not supported over GraphQL; use POST /api/v1/accounts."
           },
           {
             "name": "registerAgent",
@@ -46713,7 +46729,7 @@
           },
           {
             "name": "myAgents",
-            "description": null,
+            "description": "Agents owned by the viewer. Agents shared with the viewer are served by the shared-with-me index, not this field.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
