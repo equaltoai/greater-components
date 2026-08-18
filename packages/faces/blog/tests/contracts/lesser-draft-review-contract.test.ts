@@ -73,9 +73,11 @@ describe('Lesser shared-draft review contract', () => {
 		const ref = readLesserRef();
 
 		// v1.6.4 adds canonical draft revision, grant-set, and publication eligibility data;
-		// v1.6.5 adds nullable actedBy attribution on Draft/Article. The assertions below keep
-		// the review chrome pinned to the exact synchronized release boundary.
-		expect(ref).toContain('tag: v1.6.5');
+		// v1.6.5 adds nullable actedBy attribution on Draft/Article. v1.6.22 carries the
+		// PROG-M1 passkey signup surface and leaves the review types untouched, so the
+		// boundary moves without any change to the assertions below. They keep the review
+		// chrome pinned to the exact synchronized release boundary.
+		expect(ref).toContain('tag: v1.6.22');
 		expect(ref).toMatch(/commit: [0-9a-f]{40}/);
 	});
 

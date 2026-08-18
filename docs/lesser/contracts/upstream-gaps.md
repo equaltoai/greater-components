@@ -70,24 +70,37 @@ historical fixtures in the meantime.
 
 ---
 
-## Quote Posts REST compatibility surface is 501-only
+## Quote Posts REST compatibility surface was 501-only (closed)
 
 - **Observed at:** `v1.6.0` (`858ad4f94fba055e2d0f9b6a8e0bb78dfea2c796`)
+- **Closed at:** `v1.6.5` (`a1eb3c6740bd5aca99273130e2b52d3c4c5775ea`), re-verified at `v1.6.22`
+  (`0e3e1315ad31b63d859285df4692d6db9afcb14b`)
 - **Greater surface:** REST adapter compatibility; quote flows use GraphQL
-- **Status:** open upstream capability gap — no Greater code change required
+- **Status:** closed — no Greater code change required
 
-At v1.6.0, four Quote Posts REST endpoints lost their `200` responses and are now `501`-only:
+At v1.6.0, four Quote Posts REST endpoints lost their `200` responses and were `501`-only:
 
 - `GET /api/v1/accounts/{id}/quote_permissions`
 - `PUT /api/v1/accounts/quote_permissions`
 - `POST /api/v1/statuses/{id}/quote`
 - `GET /api/v1/statuses/{id}/quotes`
 
-Quote creation, listing, and permissions are therefore GraphQL-only at the pinned version; quote
-retraction (`DELETE /api/v1/statuses/{id}/quote/{quote_id}`) remains available over REST. Upstream
-also dropped the `QuotePermissionsResponse`, `QuoteStatusAccount`, `QuoteStatusSummary`, and
+Quote creation, listing, and permissions were therefore GraphQL-only at v1.6.0; quote retraction
+(`DELETE /api/v1/statuses/{id}/quote/{quote_id}`) remained available over REST. Upstream had also
+dropped the `QuotePermissionsResponse`, `QuoteStatusAccount`, `QuoteStatusSummary`, and
 `QuoteStatusSummaryList` schemas.
 
-This is Mastodon-compat-relevant because REST is the Mastodon-compat path. Greater has zero tracked
-references to the removed schemas, and its quote flows already go through GraphQL, so no adapter or
-component change accompanies this record.
+### Resolution verified at `v1.6.22`
+
+All four endpoints declare `200` responses again, and all four schemas are present in the pinned
+snapshot. The restoration in fact landed by `v1.6.5`, one pin before this record was re-read: the
+v1.6.5 sync advanced the pin without re-verifying this entry, so the "open" status above was stale
+for a full release cycle. Re-verifying every open gap against the newly pinned snapshot — not
+against the record's own prose — is what this sync did differently.
+
+This is Mastodon-compat-relevant because REST is the Mastodon-compat path. The capability is back on
+the Mastodon-compat surface, so nothing is degraded for non-Lesser consumers.
+
+Greater's quote flows still go through GraphQL and no adapter or component change accompanies this
+closure. Whether Greater should now _also_ offer the REST quote path is a separate adapter-surface
+decision, deliberately not taken inside a contract-sync change.

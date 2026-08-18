@@ -21,17 +21,29 @@
       "method": "POST",
       "path": "/api/v1/agents/{username}/access-leases/{leaseID}/token",
       "tags": ["agents"]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/webauthn/signup/begin",
+      "tags": ["auth"],
+      "note": "Intentionally anonymous, not an upstream defect. Signup ceremony entry point: it issues the WebAuthn creation challenge before any credential or account exists, so there is nothing to authenticate. Lesser's public-surface rules classify the route anonymous and rate-limit it 20/5m (the pinned operation carries X-RateLimit-* headers and a 429 response, and declares no 401/403). The PROG-M1 M2 cross-client adversarial review verified that classification (verdict: agree — \"Both routes public, 20/5m, classified anonymous\"). Structurally identical to POST /api/v1/auth/webauthn/login/begin, which this probe already exempts by name. Do not report upstream as missing auth."
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/webauthn/signup/finish",
+      "tags": ["auth"],
+      "note": "Intentionally anonymous, not an upstream defect. Signup ceremony completion: it verifies the attestation from /signup/begin and returns passkey_registration_proof, which the caller then spends on POST /api/v1/accounts — the proof, not a bearer token, is the credential here. Lesser's public-surface rules classify the route anonymous and rate-limit it 20/5m (the pinned operation carries X-RateLimit-* headers and a 429 response, and declares no 401/403). The PROG-M1 M2 cross-client adversarial review verified that classification (verdict: agree — \"Both routes public, 20/5m, classified anonymous\"). Structurally identical to POST /api/v1/auth/webauthn/login/finish, which this probe already exempts by name. Do not report upstream as missing auth."
     }
   ],
   "meta": {
     "spec_path": "docs/lesser/contracts/openapi.yaml",
-    "generated_at": "2026-08-07T11:38:08.317Z",
+    "generated_at": "2026-08-18T14:54:11.340Z",
     "has_global_security": false,
     "has_security_schemes": true,
     "security_scheme_names": ["bearerAuth", "oauth2", "setupBearer", "soulBindingBearer"],
-    "total_paths": 298,
-    "sensitive_checked": 173,
-    "with_security": 148,
-    "without_security": 4
+    "total_paths": 304,
+    "sensitive_checked": 177,
+    "with_security": 150,
+    "without_security": 6
   }
 }
