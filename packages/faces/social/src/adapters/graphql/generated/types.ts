@@ -716,6 +716,8 @@ export type Agent = {
   readonly version: Scalars['String']['output'];
   /** Whether private ownership, delegation, and soul-binding fields are visible to this viewer. */
   readonly viewerCanSeePrivateFields: Scalars['Boolean']['output'];
+  /** True when the requesting viewer is this agent's owner under Lesser's canonical local-identity comparison. */
+  readonly viewerIsOwner: Scalars['Boolean']['output'];
   readonly workflow?: Maybe<AgentWorkflowSurface>;
 };
 
@@ -3126,6 +3128,7 @@ export type Mutation = {
   readonly publishDraft: Article;
   readonly publishHostedSoul: SoulBootstrapMutationPayload;
   readonly recoverHostedSoulGenesisTurn: SoulBootstrapMutationPayload;
+  /** @deprecated Registration is not supported over GraphQL; use POST /api/v1/accounts. */
   readonly registerAccount: RegisterAccountPayload;
   readonly registerAgent: RegisterAgentPayload;
   readonly registerPushSubscription: PushSubscription;
@@ -4777,6 +4780,7 @@ export type Query = {
   readonly moderatorActivity: ModeratorStats;
   readonly multiHashtagTimeline: PostConnection;
   readonly mutes: ActorListPage;
+  /** Agents owned by the viewer. Agents shared with the viewer are served by the shared-with-me index, not this field. */
   readonly myAgents: ReadonlyArray<Agent>;
   /** Review assignments created by the authenticated draft owner. */
   readonly myDraftReviews: DraftReviewConnection;

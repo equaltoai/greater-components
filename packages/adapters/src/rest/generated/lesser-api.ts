@@ -1300,6 +1300,22 @@ export interface paths {
         patch: operations["patch_api_v1_agents_by_username"];
         trace?: never;
     };
+    "/api/v1/agents/{username}/access": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_agents_by_username_access"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/agents/{username}/access-leases": {
         parameters: {
             query?: never;
@@ -1840,6 +1856,38 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["post_api_v1_auth_webauthn_register_finish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/webauthn/signup/begin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_auth_webauthn_signup_begin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/webauthn/signup/finish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_auth_webauthn_signup_finish"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4860,11 +4908,14 @@ export interface components {
             agreement: boolean;
             default_posting_visibility?: string;
             locale?: string;
+            /** @description Single-use proof emitted by `POST /api/v1/auth/webauthn/signup/finish`. Exactly one of `wallet_challenge_id` or `passkey_registration_proof` is required. */
+            passkey_registration_proof?: string;
             password?: string;
             reason?: string;
             username: string;
+            /** @description Single-use wallet registration proof. Exactly one of `wallet_challenge_id` or `passkey_registration_proof` is required. */
             wallet_challenge_id?: string;
-        };
+        } & (unknown | unknown);
         AccountRegistrationResponse: {
             created: boolean;
             id: string;
@@ -5198,6 +5249,12 @@ export interface components {
         AgentAccessLeaseTokenResponse: {
             lease_id: string;
             token: components["schemas"]["OAuthTokenResponse"];
+        };
+        AgentAccessResponse: {
+            acted_by: string;
+            actor: string;
+            authorized: boolean;
+            relationship: string;
         };
         AgentActivityLogEntry: {
             action: string;
@@ -6766,9 +6823,11 @@ export interface components {
         };
         SetupCreateAdminRequest: {
             displayName?: string;
+            /** @description Single-use proof emitted by `POST /api/v1/auth/webauthn/signup/finish`. Exactly one of `wallet` or `passkey_registration_proof` is required. */
+            passkey_registration_proof?: string;
             username: string;
-            wallet: components["schemas"]["AuthWalletVerifyRequest"];
-        };
+            wallet?: components["schemas"]["AuthWalletVerifyRequest"];
+        } & (unknown | unknown);
         SetupCreateAdminResponse: {
             actor: string;
             username: string;
@@ -8060,6 +8119,16 @@ export interface components {
             response: {
                 [key: string]: unknown;
             };
+        };
+        WebAuthnSignupFinishRequest: {
+            challenge: string;
+            response: {
+                [key: string]: unknown;
+            };
+            username: string;
+        };
+        WebAuthnSignupFinishResponse: {
+            passkey_registration_proof: string;
         };
         WebAuthnUpdateCredentialRequest: {
             name: string;
@@ -10899,6 +10968,33 @@ export interface operations {
             500: components["responses"]["InternalServerError"];
         };
     };
+    get_api_v1_agents_by_username_access: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentAccessResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
     get_api_v1_agents_by_username_access_leases: {
         parameters: {
             query?: never;
@@ -12052,6 +12148,74 @@ export interface operations {
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
+            422: components["responses"]["UnprocessableEntity"];
+            429: components["responses"]["TooManyRequests"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_auth_webauthn_signup_begin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["WebAuthnBeginLoginRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    /** @description Request limit per window. */
+                    "X-RateLimit-Limit"?: number;
+                    /** @description Requests remaining in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    /** @description Unix timestamp (seconds) when the current window resets. */
+                    "X-RateLimit-Reset"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebAuthnBeginResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            422: components["responses"]["UnprocessableEntity"];
+            429: components["responses"]["TooManyRequests"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_auth_webauthn_signup_finish: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["WebAuthnSignupFinishRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    /** @description Request limit per window. */
+                    "X-RateLimit-Limit"?: number;
+                    /** @description Requests remaining in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    /** @description Unix timestamp (seconds) when the current window resets. */
+                    "X-RateLimit-Reset"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebAuthnSignupFinishResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
             422: components["responses"]["UnprocessableEntity"];
             429: components["responses"]["TooManyRequests"];
             500: components["responses"]["InternalServerError"];
