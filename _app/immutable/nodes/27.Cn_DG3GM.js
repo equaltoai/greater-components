@@ -1,0 +1,50 @@
+import{n as e}from"../chunks/hePW80VL.js";import{$ as t,B as n,Dt as r,Et as i,F as a,I as o,K as s,M as c,R as l,St as u,at as d,ct as f,ft as p,g as ee,ot as te,st as m,ut as h,xt as g}from"../chunks/xyBo9fw_.js";import"../chunks/xihTtKlq.js";import{A as _,D as v,L as ne,O as y,en as b,k as x}from"../chunks/DnPrlpXk.js";import{t as S}from"../chunks/Bv4csXnx.js";import{t as C}from"../chunks/C1qIpVBb.js";var w=e({load:()=>T}),T=(()=>({metadata:{slug:`layout-demo`,title:`Layout Components Demo`,description:`Avatar, Skeleton, Modal, Tabs, and Tooltip patterns rendered from published Greater primitives.`,sections:[`Avatar states`,`Skeleton placeholders`,`Modal flows`,`Tabs & tooltip coordination`]}})),E=e=>{var t=N();o(e,t)},D=e=>{var t=P();o(e,t)},O=e=>{var t=F();o(e,t)},k=e=>{var t=I();o(e,t)},A=e=>{var t=L();o(e,t)},j=e=>{var t=R();o(e,t)},M=e=>{var t=z();o(e,t)},N=l(`<div class="tab-panel svelte-44h9b4"><strong>Overview</strong> <p>Use this area for quick summaries or KPIs.</p></div>`),P=l(`<div class="tab-panel svelte-44h9b4"><strong>Activity</strong> <ul><li>10:12 · Exported CSV report</li> <li>09:48 · Updated billing address</li> <li>Yesterday · Invited @bay.oates</li></ul></div>`),F=l(`<div class="tab-panel svelte-44h9b4"><strong>Billing</strong> <p>All invoices are routed through Lesser; download history from this tab.</p></div>`),I=l(`<div class="tab-panel svelte-44h9b4"><strong>Preferences</strong> <p>Great for account-level toggles such as theme or locale.</p></div>`),L=l(`<div class="tab-panel svelte-44h9b4"><strong>API Keys</strong> <p>Manual activation lets admins read instructions before switching tabs.</p></div>`),R=l(`<div class="tab-panel svelte-44h9b4"><strong>Audit Logs</strong> <p>This tab is disabled to confirm roving tabindex skips it.</p></div>`),z=l(`<div class="tab-panel svelte-44h9b4"><strong>Access</strong> <p>Keep access policies grouped under vertical tabs.</p></div>`),re=l(`<div class="skeleton-card svelte-44h9b4"><!> <div class="skeleton-lines svelte-44h9b4"><!> <!> <!></div></div>`),ie=l(`<div class="modal-footer svelte-44h9b4"><!> <!></div>`),ae=l(`<p>This dialog demonstrates nested footer actions, ESC dismissal, and automatic focus sent back
+				to the trigger button.</p>`),oe=l(`<section class="demo-section svelte-44h9b4"><header class="svelte-44h9b4"><h2>Avatar Presence</h2> <p class="svelte-44h9b4">Mix photos, initials fallback, and live status indicators. The status pill reuses the same
+				tokenized colors across variants.</p></header> <div class="avatar-grid svelte-44h9b4"><!> <!> <!> <!></div> <div class="avatar-controls svelte-44h9b4"><!> <p class="status-callout svelte-44h9b4">Status indicator remains visible to assistive tech via sr-only text baked into the
+				component.</p></div> <p class="a11y-tip svelte-44h9b4">Tip: Tab to each avatar to confirm focus rings appear even when the component renders an
+			image.</p> <!></section> <section class="demo-section svelte-44h9b4"><header class="svelte-44h9b4"><h2>Skeleton States</h2> <p class="svelte-44h9b4">Rectangular, text, and circular placeholders keep layout shifts minimal while content loads.</p></header> <div class="skeleton-list svelte-44h9b4"></div> <p class="a11y-tip svelte-44h9b4">Skeletons default to <code>role="status"</code>, so screen readers hear a loading announcement
+			once.</p> <!></section> <section class="demo-section svelte-44h9b4"><header class="svelte-44h9b4"><h2>Modal Flow</h2> <p class="svelte-44h9b4">Focus trapping, ESC close, and footer actions ship out of the box. Use aria-live text nearby
+				to report the last choice.</p></header> <div class="modal-demo svelte-44h9b4"><!> <p aria-live="polite" class="status-callout svelte-44h9b4"> </p></div> <!> <p class="a11y-tip svelte-44h9b4">Keyboard: focus starts on the dialog. Press Shift+Tab to verify focus loop, or ESC to close.</p> <!></section> <section class="demo-section svelte-44h9b4"><header class="svelte-44h9b4"><h2>Tabs Orientation</h2> <p class="svelte-44h9b4">Underline tabs for horizontal navigation and manual-activation vertical tabs for settings
+				panes.</p></header> <!> <!> <p class="a11y-tip svelte-44h9b4">Arrow keys follow the orientation automatically. Manual activation waits for Enter/Space
+			before switching content.</p> <!></section> <section class="demo-section svelte-44h9b4"><header class="svelte-44h9b4"><h2>Tooltip Triggers</h2> <p class="svelte-44h9b4">Hover vs click interactions show how helpers expose placement props and custom triggers.</p></header> <div class="tooltip-row svelte-44h9b4"><!> <!></div> <p class="a11y-tip svelte-44h9b4">Click-triggered tooltips stay open until focus or ESC closes them—remind users with inline
+			copy.</p> <!></section>`,1);function B(e,l){u(l,!0);let w=[{id:`overview`,label:`Overview`,content:E},{id:`activity`,label:`Activity`,content:D},{id:`billing`,label:`Billing`,content:O}],T=[{id:`preferences`,label:`Preferences`,content:k},{id:`keys`,label:`API Keys`,content:A},{id:`logs`,label:`Audit Logs`,disabled:!0,content:j},{id:`access`,label:`Access`,content:M}],N=p(f(w[0].id)),P=p(f(T[0].id));function F(e){h(N,e,!0)}function I(e){h(P,e,!0)}let L=[`online`,`away`,`busy`,`offline`],R=p(`online`),z=Array.from({length:3},(e,t)=>t);function B(){let e=(L.indexOf(s(R))+1)%L.length;h(R,L[e],!0)}let V=p(!1),H=p(`Awaiting confirmation`);function U(e){h(H,e,!0),h(V,!1)}S(e,{eyebrow:`Component Demos`,get title(){return l.data.metadata.title},get description(){return l.data.metadata.description},children:(e,l)=>{var u=oe(),f=te(u),p=m(d(f),2),g=d(p);y(g,{src:`https://i.pravatar.cc/120?img=11`,alt:`Nina Briggs`,size:`lg`,status:`online`});var S=m(g,2);y(S,{name:`Miles Abbott`,get status(){return s(R)},size:`md`});var E=m(S,2);y(E,{name:`Fallback`,shape:`square`,status:`offline`,size:`md`});var D=m(E,2);y(D,{name:`Signal`,size:`sm`,status:`busy`,statusPosition:`top-left`}),r(p);var O=m(p,2),k=d(O);b(k,{size:`sm`,variant:`outline`,onclick:B,children:(e,r)=>{i();var c=n();t(()=>a(c,`Rotate status (current: ${s(R)??``})`)),o(e,c)},$$slots:{default:!0}}),i(2),r(O);var A=m(O,4);C(A,{title:`Avatar usage`,description:`Same grid powers the live example, including the status rotation button.`,code:`
+<div class="avatar-grid">
+  <Avatar src="https://i.pravatar.cc/120?img=11" alt="Nina Briggs" size="lg" status="online" />
+  <Avatar name="Miles Abbott" status={presence} />
+  <Avatar name="Fallback" shape="square" status="offline" />
+</div>
+<Button size="sm" variant="outline" onclick={cyclePresence}>
+  Rotate status (current: {presence})
+</Button>`}),r(f);var j=m(f,2),M=m(d(j),2);c(M,20,()=>z,e=>e,(e,n)=>{var i=re(),a=d(i);v(a,{variant:`circular`,class:`layout-avatar-skeleton`});var s=m(a,2),c=d(s);v(c,{width:`3/4`});var l=m(c,2);v(l,{width:`2/3`});var u=m(l,2);v(u,{width:`1/3`}),r(s),r(i),t(()=>ee(i,`aria-label`,`Loading card ${n+1}`)),o(e,i)}),r(M);var L=m(M,4);C(L,{title:`Skeleton card`,description:`Use flex wrappers so inline skeletons match the eventual card layout.`,code:`
+<div class="skeleton-card">
+  <Skeleton variant="circular" class="layout-avatar-skeleton" />
+  <div class="skeleton-lines">
+    <Skeleton width="2/3" />
+    <Skeleton width="3/4" />
+    <Skeleton width="1/3" />
+  </div>
+</div>`}),r(j);var W=m(j,2),G=m(d(W),2),K=d(G);b(K,{onclick:()=>h(V,!0),children:(e,t)=>{i();var r=n(`Open review modal`);o(e,r)},$$slots:{default:!0}});var q=m(K,2),se=d(q,!0);r(q),r(G);var J=m(G,2);ne(J,{title:`Review publication`,closeOnBackdrop:!0,preventScroll:!0,get open(){return s(V)},set open(e){h(V,e,!0)},footer:e=>{var t=ie(),a=d(t);b(a,{variant:`ghost`,onclick:()=>U(`Canceled from footer`),children:(e,t)=>{i();var r=n(`Cancel`);o(e,r)},$$slots:{default:!0}});var s=m(a,2);b(s,{onclick:()=>U(`Published from modal`),children:(e,t)=>{i();var r=n(`Publish update`);o(e,r)},$$slots:{default:!0}}),r(t),o(e,t)},children:(e,t)=>{var n=ae();o(e,n)},$$slots:{footer:!0,default:!0}});var ce=m(J,4);C(ce,{title:`Modal pattern`,description:`Matches the live dialog including footer snippets.`,code:`
+<Button onclick={() => (modalOpen = true)}>Open review modal</Button>
+<Modal bind:open={modalOpen} title="Review publication">
+  <p>Dialog focus is trapped until Cancel or Publish closes it.</p>
+  {#snippet footer()}
+    <div class="modal-footer">
+      <Button variant="ghost" onclick={() => (modalOpen = false)}>Cancel</Button>
+      <Button onclick={() => recordModalAction('Published from modal')}>Publish</Button>
+    </div>
+  {/snippet}
+</Modal>`}),r(W);var Y=m(W,2),X=m(d(Y),2);x(X,{get tabs(){return w},get activeTab(){return s(N)},onTabChange:F,variant:`underline`});var Z=m(X,2);x(Z,{get tabs(){return T},get activeTab(){return s(P)},orientation:`vertical`,activation:`manual`,variant:`pills`,onTabChange:I});var le=m(Z,4);C(le,{title:`Tabs data`,description:`Use the same data set for horizontal and vertical layouts.`,code:`
+const contentTabs = [
+  { id: 'overview', label: 'Overview', content: OverviewPanel },
+  { id: 'activity', label: 'Activity', content: ActivityPanel },
+  { id: 'billing', label: 'Billing', content: BillingPanel }
+];
+
+<Tabs tabs={contentTabs} variant="underline" />
+<Tabs tabs={contentTabs} orientation="vertical" activation="manual" />`}),r(Y);var Q=m(Y,2),$=m(d(Q),2),ue=d($);_(ue,{content:`Hover to hear keyboard help`,children:(e,t)=>{b(e,{variant:`outline`,children:(e,t)=>{i();var r=n(`Hover target`);o(e,r)},$$slots:{default:!0}})},$$slots:{default:!0}});var de=m(ue,2);_(de,{content:`Click to pin instructions`,trigger:`click`,placement:`right`,children:(e,t)=>{b(e,{children:(e,t)=>{i();var r=n(`Click trigger`);o(e,r)},$$slots:{default:!0}})},$$slots:{default:!0}}),r($);var fe=m($,4);C(fe,{title:`Tooltip variants`,description:`Triggers map 1:1 with Greater Tooltip props.`,code:`
+<Tooltip content="Hover to hear keyboard help">
+  <Button variant="outline">Hover target</Button>
+</Tooltip>
+<Tooltip content="Click to pin instructions" trigger="click" placement="right">
+  <Button>Click trigger</Button>
+</Tooltip>`}),r(Q),t(()=>a(se,s(H))),o(e,u)},$$slots:{default:!0}}),g()}export{B as component,w as universal};
