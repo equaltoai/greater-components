@@ -88,7 +88,7 @@
     "@graphql-codegen/typescript-operations": "^5.0.9",
     "@sveltejs/package": "^2.5.7",
     "@theory-cloud/facetheory": "https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.7/theory-cloud-facetheory-4.0.7.tgz",
-    "@types/node": "^25.6.0",
+    "@types/node": "^26.2.0",
     "@typescript-eslint/eslint-plugin": "^8.58.0",
     "@typescript-eslint/parser": "^8.58.0",
     "eslint": "^10.8.0",
