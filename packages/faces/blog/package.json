@@ -84,13 +84,13 @@
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/svelte": "5.4.2",
     "@types/node": "^25.6.0",
-    "@vitest/coverage-v8": "^4.1.10",
-    "@vitest/ui": "^4.1.10",
+    "@vitest/coverage-v8": "^4.1.11",
+    "@vitest/ui": "^4.1.11",
     "jsdom": "^29.0.2",
     "svelte": "^5.55.1",
     "typescript": "^6.0.2",
-    "vite": "^8.2.0",
-    "vitest": "^4.1.10"
+    "vite": "^8.2.2",
+    "vitest": "^4.1.11"
   },
   "peerDependencies": {
     "@equaltoai/greater-components-content": "workspace:*",
