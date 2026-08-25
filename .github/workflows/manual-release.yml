@@ -76,12 +76,12 @@ jobs:
           echo "release tag '${RELEASE_VERSION}' points at ${tagged_sha}, an ancestor of origin/main"
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
         with:
           version: 10.25.0
 
       - name: Setup Node.js
-        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
