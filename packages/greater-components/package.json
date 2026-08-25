@@ -443,11 +443,11 @@
     }
   },
   "dependencies": {
-    "@apollo/client": "4.2.9",
+    "@apollo/client": "4.2.12",
     "@apollo/client-react-streaming": "^0.14.5",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@playwright/test": "^1.62.1",
-    "@tanstack/svelte-virtual": "^3.13.35",
+    "@tanstack/svelte-virtual": "^3.13.36",
     "axe-playwright": "^2.2.2",
     "chalk": "^5.6.2",
     "commander": "^14.0.3",
@@ -455,7 +455,7 @@
     "focus-trap": "^8.2.2",
     "fs-extra": "^11.4.0",
     "graphql": "^16.13.2",
-    "graphql-ws": "^6.2.0",
+    "graphql-ws": "^6.2.1",
     "hast-util-sanitize": "^5.0.2",
     "hast-util-to-mdast": "^10.1.2",
     "mdast-util-gfm": "^3.1.0",
@@ -469,10 +469,10 @@
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
     "semver": "^7.8.5",
-    "shiki": "^4.3.1",
+    "shiki": "^4.4.3",
     "tabbable": "^6.5.0",
     "unified": "^11.0.5",
-    "viem": "^2.55.10",
+    "viem": "^2.55.19",
     "zod": "^4.4.3"
   },
   "devDependencies": {
@@ -498,8 +498,9 @@
     "@equaltoai/greater-components-testing": "workspace:*",
     "@equaltoai/greater-components-tokens": "workspace:*",
     "@equaltoai/greater-components-utils": "workspace:*",
-    "@vitest/coverage-v8": "^4.1.10",
-    "svelte": "^5.55.1",
-    "vitest": "^4.1.10"
+    "@vitest/coverage-v8": "^4.1.11",
+    "jsdom": "^29.0.2",
+    "svelte": "^5.56.10",
+    "vitest": "^4.1.11"
   }
 }

@@ -104,7 +104,7 @@ describe('generated Registry dependencies', () => {
 
 		expect(socialOptionals).toEqual([
 			{ name: '@graphql-typed-document-node/core', version: '^3.2.0' },
-			{ name: '@tanstack/svelte-virtual', version: '^3.13.35' },
+			{ name: '@tanstack/svelte-virtual', version: '^3.13.36' },
 		]);
 		expect(allDependencies().filter((dependency) => dependency.version === 'latest')).toHaveLength(
 			2
