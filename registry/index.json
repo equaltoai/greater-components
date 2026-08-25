@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-18T14:35:25.476Z",
+  "generatedAt": "2026-08-25T04:00:53.595Z",
   "ref": "greater-v0.11.9",
   "version": "0.11.9",
   "checksums": {
@@ -2898,7 +2898,7 @@
         { "name": "@equaltoai/greater-components-icons", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-utils", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-tokens", "version": "0.11.9" },
-        { "name": "svelte", "version": "^5.55.1" }
+        { "name": "svelte", "version": "^5.56.10" }
       ],
       "tags": []
     },
@@ -3049,7 +3049,7 @@
       "peerDependencies": [
         { "name": "focus-trap", "version": "^8.2.2" },
         { "name": "tabbable", "version": "^6.5.0" },
-        { "name": "svelte", "version": "^5.55.1" }
+        { "name": "svelte", "version": "^5.56.10" }
       ],
       "tags": []
     },
@@ -7622,7 +7622,7 @@
       ],
       "css": [],
       "dependencies": [],
-      "peerDependencies": [{ "name": "svelte", "version": "^5.55.1" }],
+      "peerDependencies": [{ "name": "svelte", "version": "^5.56.10" }],
       "tags": []
     },
     "tokens": {
@@ -7990,7 +7990,7 @@
         { "name": "rehype-sanitize", "version": "^6.0.0" },
         { "name": "rehype-stringify", "version": "^10.0.1" },
         { "name": "unified", "version": "^11.0.5" },
-        { "name": "svelte", "version": "^5.55.1" },
+        { "name": "svelte", "version": "^5.56.10" },
         { "name": "hast-util-sanitize", "version": "^5.0.2" }
       ],
       "tags": []
@@ -8735,13 +8735,13 @@
       "css": [],
       "dependencies": [],
       "peerDependencies": [
-        { "name": "@apollo/client", "version": "4.2.9" },
+        { "name": "@apollo/client", "version": "4.2.12" },
         { "name": "@apollo/client-react-streaming", "version": "^0.14.5" },
         { "name": "@graphql-typed-document-node/core", "version": "^3.2.0" },
         { "name": "graphql", "version": "^16.13.2" },
-        { "name": "graphql-ws", "version": "^6.2.0" },
-        { "name": "viem", "version": "^2.55.10" },
-        { "name": "svelte", "version": "^5.55.1" }
+        { "name": "graphql-ws", "version": "^6.2.1" },
+        { "name": "viem", "version": "^2.55.19" },
+        { "name": "svelte", "version": "^5.56.10" }
       ],
       "tags": []
     },
@@ -8776,11 +8776,11 @@
         { "name": "remark-gfm", "version": "^4.0.1" },
         { "name": "remark-parse", "version": "^11.0.0" },
         { "name": "remark-rehype", "version": "^11.1.2" },
-        { "name": "shiki", "version": "^4.3.1" },
+        { "name": "shiki", "version": "^4.4.3" },
         { "name": "unified", "version": "^11.0.5" },
         { "name": "@equaltoai/greater-components-primitives", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-tokens", "version": "0.11.9" },
-        { "name": "svelte", "version": "^5.55.1" }
+        { "name": "svelte", "version": "^5.56.10" }
       ],
       "tags": []
     },
@@ -9011,7 +9011,7 @@
         { "name": "@equaltoai/greater-components-headless", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-utils", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-tokens", "version": "0.11.9" },
-        { "name": "svelte", "version": "^5.55.1" }
+        { "name": "svelte", "version": "^5.56.10" }
       ],
       "tags": []
     },
@@ -9148,7 +9148,7 @@
       "peerDependencies": [
         { "name": "@equaltoai/greater-components-utils", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-tokens", "version": "0.11.9" },
-        { "name": "svelte", "version": "^5.55.1" }
+        { "name": "svelte", "version": "^5.56.10" }
       ],
       "tags": []
     }
@@ -9873,8 +9873,8 @@
         { "name": "@equaltoai/greater-components-tokens", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-utils", "version": "0.11.9" },
         { "name": "@graphql-typed-document-node/core", "version": "^3.2.0" },
-        { "name": "@tanstack/svelte-virtual", "version": "^3.13.35" },
-        { "name": "svelte", "version": "^5.55.1" }
+        { "name": "@tanstack/svelte-virtual", "version": "^3.13.36" },
+        { "name": "svelte", "version": "^5.56.10" }
       ],
       "types": [
         "MediaAttachment",
@@ -10229,7 +10229,7 @@
         { "name": "@equaltoai/greater-components-search", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-tokens", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-utils", "version": "0.11.9" },
-        { "name": "svelte", "version": "^5.55.1" }
+        { "name": "svelte", "version": "^5.56.10" }
       ],
       "types": [
         "ArticleData",
@@ -10527,7 +10527,7 @@
         { "name": "@equaltoai/greater-components-search", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-tokens", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-utils", "version": "0.11.9" },
-        { "name": "svelte", "version": "^5.55.1" }
+        { "name": "svelte", "version": "^5.56.10" }
       ],
       "types": [
         "CommunityData",
@@ -11435,7 +11435,7 @@
         { "name": "utils", "version": "0.11.9" }
       ],
       "peerDependencies": [
-        { "name": "@apollo/client", "version": "4.2.9" },
+        { "name": "@apollo/client", "version": "4.2.12" },
         { "name": "@equaltoai/greater-components-adapters", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-auth", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-headless", "version": "0.11.9" },
@@ -11444,7 +11444,7 @@
         { "name": "@equaltoai/greater-components-primitives", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-tokens", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-utils", "version": "0.11.9" },
-        { "name": "svelte", "version": "^5.55.1" }
+        { "name": "svelte", "version": "^5.56.10" }
       ],
       "types": [
         "ArtworkData",
@@ -11580,7 +11580,7 @@
         { "name": "@equaltoai/greater-components-messaging", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-notifications", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-soul", "version": "0.11.9" },
-        { "name": "svelte", "version": "^5.55.1" }
+        { "name": "svelte", "version": "^5.56.10" }
       ],
       "types": [
         "AgentFacePackageRole",
@@ -11723,7 +11723,7 @@
         { "name": "@equaltoai/greater-components-headless", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-icons", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-primitives", "version": "0.11.9" },
-        { "name": "svelte", "version": "^5.55.1" }
+        { "name": "svelte", "version": "^5.56.10" }
       ],
       "types": [
         "LoginCredentials",
@@ -11898,7 +11898,7 @@
         { "name": "@equaltoai/greater-components-icons", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-primitives", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-utils", "version": "0.11.9" },
-        { "name": "svelte", "version": "^5.55.1" }
+        { "name": "svelte", "version": "^5.56.10" }
       ],
       "types": [
         "ComposeContext",
@@ -12025,7 +12025,7 @@
         { "name": "@equaltoai/greater-components-icons", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-primitives", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-utils", "version": "0.11.9" },
-        { "name": "svelte", "version": "^5.55.1" }
+        { "name": "svelte", "version": "^5.56.10" }
       ],
       "types": [
         "NotificationsContext",
@@ -12133,7 +12133,7 @@
         { "name": "@equaltoai/greater-components-icons", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-primitives", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-utils", "version": "0.11.9" },
-        { "name": "svelte", "version": "^5.55.1" }
+        { "name": "svelte", "version": "^5.56.10" }
       ],
       "types": [
         "SearchResultType",
@@ -12376,7 +12376,7 @@
         { "name": "@equaltoai/greater-components-headless", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-icons", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-primitives", "version": "0.11.9" },
-        { "name": "svelte", "version": "^5.55.1" }
+        { "name": "svelte", "version": "^5.56.10" }
       ],
       "types": [
         "AdminStats",
@@ -12510,7 +12510,7 @@
         { "name": "@equaltoai/greater-components-headless", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-icons", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-primitives", "version": "0.11.9" },
-        { "name": "svelte", "version": "^5.55.1" }
+        { "name": "svelte", "version": "^5.56.10" }
       ],
       "types": [
         "MessageRole",
@@ -12669,7 +12669,7 @@
         { "name": "@equaltoai/greater-components-utils", "version": "0.11.9" },
         { "name": "rehype-parse", "version": "^9.0.1" },
         { "name": "rehype-stringify", "version": "^10.0.1" },
-        { "name": "svelte", "version": "^5.55.1" },
+        { "name": "svelte", "version": "^5.56.10" },
         { "name": "unified", "version": "^11.0.5" }
       ],
       "types": [
@@ -12767,7 +12767,7 @@
         { "name": "@equaltoai/greater-components-adapters", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-primitives", "version": "0.11.9" },
         { "name": "@equaltoai/greater-components-utils", "version": "0.11.9" },
-        { "name": "svelte", "version": "^5.55.1" }
+        { "name": "svelte", "version": "^5.56.10" }
       ],
       "types": [
         "ContactRecommendation",
@@ -12893,7 +12893,7 @@
         }
       ],
       "dependencies": [],
-      "peerDependencies": [{ "name": "svelte", "version": "^5.55.1" }],
+      "peerDependencies": [{ "name": "svelte", "version": "^5.56.10" }],
       "types": [
         "AgentPackageKey",
         "AgentPackageRole",
