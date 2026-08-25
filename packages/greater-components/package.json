@@ -499,6 +499,7 @@
     "@equaltoai/greater-components-tokens": "workspace:*",
     "@equaltoai/greater-components-utils": "workspace:*",
     "@vitest/coverage-v8": "^4.1.11",
+    "jsdom": "^29.0.2",
     "svelte": "^5.56.10",
     "vitest": "^4.1.11"
   }
