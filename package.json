@@ -97,7 +97,7 @@
     "fast-check": "^4.9.0",
     "globals": "^17.8.0",
     "husky": "^9.1.7",
-    "lint-staged": "^16.4.0",
+    "lint-staged": "^17.3.0",
     "node-html-parser": "^7.1.0",
     "openapi-typescript": "^7.13.0",
     "prettier": "^3.9.6",
