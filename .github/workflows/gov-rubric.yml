@@ -37,6 +37,13 @@ jobs:
       - run: bash gov-infra/verifiers/gov-verify-rubric.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Bind the fresh report to the exact head under test: GITHUB_SHA, the
+      # report checksum, and the canonical verifier identity. The uploaded
+      # artifact (report + sidecar) is the exact-head staging proof; the
+      # pre-commit JSON in the PR is a snapshot, not that proof.
+      - run: node gov-infra/verifiers/gov-write-provenance.mjs
+        env:
+          GITHUB_SHA: ${{ github.sha }}
       - if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
