@@ -77,7 +77,8 @@
     "generate:adapter-declarations": "node scripts/check-adapter-declarations.mjs --write",
     "check:adapter-declarations": "node scripts/check-adapter-declarations.mjs",
     "check:contract-snapshots": "node scripts/check-pinned-contract-snapshots.mjs",
-    "check:generator-replay": "node scripts/check-generator-replay.mjs"
+    "check:generator-replay": "node scripts/check-generator-replay.mjs",
+    "test:scripts:generator-replay": "node --test scripts/check-generator-replay.test.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

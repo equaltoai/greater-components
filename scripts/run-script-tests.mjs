@@ -5,6 +5,7 @@ const scripts = [
 	'test:scripts:csp',
 	'test:scripts:registry',
 	'test:scripts:tokens',
+	'test:scripts:generator-replay',
 ];
 let failed = false;
 

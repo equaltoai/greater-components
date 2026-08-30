@@ -44,3 +44,38 @@ does not conflict. `gov_rubric_report.v1` cannot carry a commit SHA, so bind
 the exact head with a sidecar (SHA + report checksum + verifier identity) and
 document that the CI-generated artifact, not the pre-commit JSON, is the
 staging proof.
+
+## 5. Round 3: pull_request CI must check out the immutable PR head, not the merge SHA
+
+`actions/checkout` on a `pull_request` event defaults to `refs/pull/<n>/merge` — a synthetic
+merge commit, not the commit under review. Round-2 CI "at the exact head" was therefore
+evidence about the merge SHA, not the PR head. Every `pull_request` workflow now checks out
+`ref: ${{ github.event.pull_request.head.sha || github.sha }}`, verifies `git rev-parse HEAD`
+equals the expected head (failing the job otherwise), and the provenance writer is fail-closed:
+it fails unless the checked-out HEAD, the expected PR head, `GITHUB_SHA`, and the event payload's
+`pull_request.head.sha` all agree, and it embeds the immutable GitHub run identity (runId /
+runAttempt / runUrl / workflow / repository). The `gov-rubric-evidence` artifact is uploaded only
+after verifier + provenance both succeed; failures upload an explicit failure manifest.
+
+## 6. Round 3: replay gates must refuse before mutating developer WIP
+
+The first replay gate ran the generators first and restored afterwards — a developer's
+pre-existing tracked edit or untracked file under the generated roots would have been
+overwritten by the generator and then erased by the restore. The gate now refuses before any
+generator runs whenever the generated roots contain pre-existing tracked or untracked dirt
+(WIP survives untouched), and because refusal guarantees a clean start, cleanup can safely
+remove only replay-created changes (tracked via `git restore`, untracked files and directories
+via roots-scoped `git clean -fd`), with cleanup exit codes checked and a final clean-status
+verify failing loudly. Proofs: clean path (exit 0), generator-drift path (schema change → diff
+→ exit 1 → roots restored), dirty tracked-file refusal, dirty untracked-file refusal, and
+untracked-directory refusal, all without data loss (covered by
+`scripts/check-generator-replay.test.mjs` and live runs).
+
+## 7. Round 3: lockfile constraint checks must be package-specific
+
+The codegen v5 constraint initially scanned `@graphql-codegen/(typescript|typescript-operations)`
+with one regex per loop iteration, so both plugins observed the same combined major set — a
+`typescript-operations` v6 entry could not be attributed to the right package. The check now
+anchors each plugin's own lockfile keys (`@graphql-codegen/typescript@…` never matches
+`@graphql-codegen/typescript-operations@…` and vice versa), fixes the `CODENGE_PACKAGES` →
+`CODEGEN_PACKAGES` naming typo, and unit-proves each plugin independently.
