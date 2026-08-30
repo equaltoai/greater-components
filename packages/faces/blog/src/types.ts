@@ -825,8 +825,14 @@ export interface ReviewApprovalRequirement {
 
 /**
  * Tone used to style a resolved review state.
+ *
+ * `stale-approved` is deliberately **not** a success tone: it marks a recorded
+ * approval that Lesser has authoritatively voided for the current revision
+ * (`DraftReviewVerdictRecord.stale` / `.current`), so it must never render with
+ * the green `approved` styling or wording implying the current revision is
+ * approved.
  */
-export type ReviewStateTone = 'approved' | 'changes-requested' | 'pending';
+export type ReviewStateTone = 'approved' | 'changes-requested' | 'pending' | 'stale-approved';
 
 /**
  * A resolved, renderable review state.
@@ -851,6 +857,21 @@ export interface ReviewStateDescriptor {
 	 * Consumers must not read either activity value as "this draft may publish".
 	 */
 	source: 'server' | 'verdicts' | 'none';
+	/**
+	 * Whether the named approval no longer applies to the current revision.
+	 *
+	 * `true` only when Lesser's authoritative verdict-record markers
+	 * (`DraftReviewVerdictRecord.stale` / `.current`) void the newest recorded
+	 * approval. Absent markers (older or partial projections) leave this
+	 * `false` — staleness is consumed from the server, never inferred.
+	 */
+	stale: boolean;
+	/**
+	 * Supplementary sentence the chrome renders alongside the badge when the
+	 * state needs one — currently the stale-approval explanation. Rendered as
+	 * visible text so the meaning never depends on badge colour.
+	 */
+	detail?: string;
 }
 
 /**

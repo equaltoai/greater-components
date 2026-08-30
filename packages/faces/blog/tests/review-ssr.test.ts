@@ -18,7 +18,11 @@ import { render } from 'svelte/server';
 import QueueCard from '../src/components/Review/QueueCard.svelte';
 import AttributionStrip from '../src/components/Review/AttributionStrip.svelte';
 import VerdictActions from '../src/components/Review/VerdictActions.svelte';
-import { describeApprovalRequirement } from '../src/components/Review/state.js';
+import {
+	REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL,
+	REVIEW_STALE_APPROVAL_LABEL,
+	describeApprovalRequirement,
+} from '../src/components/Review/state.js';
 import {
 	createMockAgentActor,
 	createMockDraftReview,
@@ -84,6 +88,38 @@ describe('Review chrome SSR safety', () => {
 		expect(result.body).toContain('Not yet reviewed');
 		expect(result.body).toContain('None');
 		expectCspSafe(result.body);
+	});
+
+	it('renders a stale approval with its demotion text on the server', () => {
+		// The incident shape: reviewStatus still spells the approval, but Lesser's
+		// verdict markers void it. Server output must carry the stale label, the
+		// explanation, and the non-success badge class.
+		const review = createMockDraftReview('ssr-6', {
+			reviewStatus: 'Approved',
+			generatedBy: createMockAgentActor('a6'),
+			verdicts: [createMockVerdict({ verdict: 'APPROVED', stale: true })],
+			publishEligibility: {
+				eligible: false,
+				blockingReasons: ['the current revision has not been approved'],
+				reviewersApproved: false,
+				principalApprovalRequired: true,
+				principalApproved: false,
+			},
+		});
+
+		const card = render(QueueCard, { props: { review } }).body;
+		expect(card).toContain(REVIEW_STALE_APPROVAL_LABEL);
+		expect(card).toContain(REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL);
+		expect(card).toContain('gr-blog-review-card__state--stale-approved');
+		expect(card).not.toContain('gr-blog-review-card__state--approved');
+		expectCspSafe(card);
+
+		const strip = render(AttributionStrip, { props: { review } }).body;
+		expect(strip).toContain(REVIEW_STALE_APPROVAL_LABEL);
+		expect(strip).toContain(REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL);
+		expect(strip).toContain('gr-blog-review-attribution__state--stale-approved');
+		expect(strip).not.toContain('gr-blog-review-attribution__state--approved');
+		expectCspSafe(strip);
 	});
 
 	it('renders Review.VerdictActions on the server with the dialog closed', () => {

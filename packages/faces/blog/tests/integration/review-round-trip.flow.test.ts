@@ -21,6 +21,8 @@ import QueueCard from '../../src/components/Review/QueueCard.svelte';
 import AttributionStrip from '../../src/components/Review/AttributionStrip.svelte';
 import VerdictActions from '../../src/components/Review/VerdictActions.svelte';
 import {
+	REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL,
+	REVIEW_STALE_APPROVAL_LABEL,
 	describeApprovalRequirement,
 	resolveReviewState,
 } from '../../src/components/Review/state.js';
@@ -41,8 +43,8 @@ const SHARED_DRAFT_REVIEWS_RESPONSE = {
 		__typename: 'Query',
 		sharedDraftReviews: {
 			__typename: 'DraftReviewConnection',
-			totalCount: 2,
-			pageInfo: { __typename: 'PageInfo', hasNextPage: false, endCursor: 'cursor-2' },
+			totalCount: 3,
+			pageInfo: { __typename: 'PageInfo', hasNextPage: false, endCursor: 'cursor-3' },
 			edges: [
 				{
 					__typename: 'DraftReviewEdge',
@@ -140,6 +142,70 @@ const SHARED_DRAFT_REVIEWS_RESPONSE = {
 						],
 					},
 				},
+				{
+					__typename: 'DraftReviewEdge',
+					cursor: 'cursor-3',
+					node: {
+						__typename: 'DraftReview',
+						draftId: 'draft-stale-3',
+						title: 'Festival coverage with swapped photos',
+						subtitle: null,
+						excerpt: 'Approved by the principal, then the media changed.',
+						contentFormat: 'MARKDOWN',
+						status: 'DRAFT',
+						scheduledAt: null,
+						updatedAt: '2026-08-29T15:00:00.000Z',
+						createdAt: '2026-08-28T09:00:00.000Z',
+						reviewStatus: 'Approved',
+						editorNotes: null,
+						generatedBy: {
+							__typename: 'Actor',
+							id: 'actor-agent-3',
+							username: 'newsroom',
+							domain: null,
+							displayName: 'Newsroom Agent',
+							avatar: '/avatars/newsroom.png',
+							isAgent: true,
+						},
+						reviewedBy: {
+							__typename: 'Actor',
+							id: 'actor-principal',
+							username: 'aron',
+							domain: null,
+							displayName: 'Aron',
+							avatar: null,
+							isAgent: false,
+						},
+						grant: null,
+						verdicts: [
+							{
+								__typename: 'DraftReviewVerdictRecord',
+								verdict: 'APPROVED',
+								notes: null,
+								recordedAt: '2026-08-29T09:00:00.000Z',
+								current: false,
+								stale: true,
+								reviewer: {
+									__typename: 'Actor',
+									id: 'actor-principal',
+									username: 'aron',
+									domain: null,
+									displayName: 'Aron',
+									avatar: null,
+									isAgent: false,
+								},
+							},
+						],
+						publishEligibility: {
+							__typename: 'DraftPublishEligibility',
+							eligible: false,
+							blockingReasons: ['principal approval is outstanding for the current revision'],
+							reviewersApproved: false,
+							principalApprovalRequired: true,
+							principalApproved: false,
+						},
+					},
+				},
 			],
 		},
 	},
@@ -161,7 +227,11 @@ describe('Review workflow round trip', () => {
 
 	it('maps a shared-review connection into a renderable queue', () => {
 		expect(queue).toHaveLength(SHARED_DRAFT_REVIEWS_RESPONSE.data.sharedDraftReviews.totalCount);
-		expect(queue.map((review) => review.draftId)).toEqual(['draft-agent-1', 'draft-human-2']);
+		expect(queue.map((review) => review.draftId)).toEqual([
+			'draft-agent-1',
+			'draft-human-2',
+			'draft-stale-3',
+		]);
 	});
 
 	it('renders the agent-authored draft with agent attribution and a pending state', () => {
@@ -191,6 +261,53 @@ describe('Review workflow round trip', () => {
 		// let this read as the publication gate.
 		expect(screen.getByText('latest activity, not publication state')).toBeInTheDocument();
 		expect(screen.queryByText('Agent-generated')).not.toBeInTheDocument();
+	});
+
+	it('renders the changed-media draft as a stale approval, never a current one', () => {
+		// The incident shape end to end: the principal approved, the media
+		// changed, Lesser marked the verdict stale and the gate ineligible. The
+		// card must keep the approval visible as history without the success
+		// tone or the wording of a current approval.
+		const review = queue[2]!;
+
+		expect(resolveReviewState(review)).toMatchObject({
+			tone: 'stale-approved',
+			label: REVIEW_STALE_APPROVAL_LABEL,
+			source: 'verdicts',
+			stale: true,
+			detail: REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL,
+		});
+
+		const { container } = render(QueueCard, { props: { review } });
+
+		expect(screen.getByText(REVIEW_STALE_APPROVAL_LABEL)).toBeInTheDocument();
+		expect(screen.getByText(REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL)).toBeInTheDocument();
+		expect(screen.queryByText('Approved', { exact: true })).not.toBeInTheDocument();
+		expect(screen.getByText('latest activity, not publication state')).toBeInTheDocument();
+
+		const badge = container.querySelector('.gr-blog-review-card__state');
+		expect(badge).toHaveClass('gr-blog-review-card__state--stale-approved');
+		expect(badge).not.toHaveClass('gr-blog-review-card__state--approved');
+	});
+
+	it('keeps publishEligibility the gate authority on the stale draft', () => {
+		// The chrome consumes the canonical projection rather than recomputing
+		// eligibility from the stale verdict history.
+		const review = queue[2]!;
+
+		expect(review.publishEligibility?.eligible).toBe(false);
+		expect(describeApprovalRequirement(review)).toEqual({
+			allActiveReviewers: true,
+			principalApproval: true,
+		});
+
+		render(AttributionStrip, {
+			props: { review, approvalRequirement: describeApprovalRequirement(review) },
+		});
+
+		expect(screen.getByText(REVIEW_STALE_APPROVAL_LABEL)).toBeInTheDocument();
+		const approval = screen.getByText(/Requires approval from/);
+		expect(approval).toHaveTextContent('from the instance principal as well');
 	});
 
 	it('states both cumulative requirements and the revocable invite on the agent draft', () => {

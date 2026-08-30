@@ -18,6 +18,29 @@ import type {
 export const REVIEW_STATE_QUALIFIER = 'latest activity, not publication state';
 
 /**
+ * Badge label for a recorded approval that Lesser has voided for the current
+ * revision. The parenthetical keeps the history visible ("an approval was
+ * recorded") while ruling out any reading of it as current approval.
+ */
+export const REVIEW_STALE_APPROVAL_LABEL = 'Latest verdict: Approved (superseded)';
+
+/**
+ * Explanation rendered with a stale approval when no principal rule is in
+ * force. States that the recorded approval no longer counts and that approval
+ * for the current revision is outstanding.
+ */
+export const REVIEW_STALE_APPROVAL_DETAIL =
+	'This approval no longer counts. Approval for the current revision is outstanding.';
+
+/**
+ * Explanation rendered with a stale approval when the draft requires the
+ * instance principal's approval — the TheoryLive case: a generated draft whose
+ * media changed after the principal approved.
+ */
+export const REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL =
+	'This approval no longer counts. Principal approval for the current revision is outstanding.';
+
+/**
  * Formats a review timestamp for display while preserving a machine-readable
  * value for `<time datetime>`.
  *
@@ -104,9 +127,50 @@ function latestVerdict(
 }
 
 /**
+ * Whether the newest verdict record is an approval that Lesser has voided for
+ * the current revision.
+ *
+ * Staleness is consumed from the server-authored markers on the pinned
+ * v1.6.28 contract (`DraftReviewVerdictRecord.stale` / `.current`) and never
+ * inferred: an older or partial projection without the markers returns
+ * `false`, which leaves the historical badge in place rather than inventing a
+ * current approval either way.
+ */
+function isStaleApproval(record: ReviewVerdictRecordData | undefined): boolean {
+	if (!record || record.verdict !== 'APPROVED') return false;
+	return record.stale === true || record.current === false;
+}
+
+/**
+ * The stale-approval descriptor shared by both resolution branches.
+ *
+ * The explanation names the principal rule only when Lesser's canonical gate
+ * projection says it is in force and unsatisfied; partial projections get the
+ * generic wording rather than a guessed rule.
+ */
+function staleApprovedState(review: DraftReviewData): ReviewStateDescriptor {
+	const eligibility = review.publishEligibility;
+	const principalOutstanding =
+		eligibility !== undefined &&
+		eligibility !== null &&
+		eligibility.principalApprovalRequired === true &&
+		eligibility.principalApproved === false;
+
+	return {
+		tone: 'stale-approved',
+		label: REVIEW_STALE_APPROVAL_LABEL,
+		source: 'verdicts',
+		stale: true,
+		detail: principalOutstanding
+			? REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL
+			: REVIEW_STALE_APPROVAL_DETAIL,
+	};
+}
+
+/**
  * Resolves the review state to render for a draft.
  *
- * **This is latest activity, never the publication gate.** Both branches below
+ * **This is latest activity, never the publication gate.** The branches below
  * report what most recently happened, not whether the draft may publish:
  *
  * 1. When Lesser supplied `reviewStatus`, that string is rendered verbatim
@@ -116,7 +180,16 @@ function latestVerdict(
  *    `APPROVED` from another, and neither reflects the gate.
  * 2. Otherwise the newest recorded verdict is named (`source: 'verdicts'`).
  *
- * Lesser v1.6.4 exposes the canonical publication gate separately through
+ * **One exception honours a more authoritative signal.** When the newest
+ * recorded approval carries Lesser's stale markers (`stale: true` or
+ * `current: false` on the verdict record) the resolver emits the
+ * `stale-approved` state instead of letting that approval read as current —
+ * even when `reviewStatus` still spells the approval. A media or content
+ * change stales earlier verdicts upstream, and the badge must not keep the
+ * success tone or wording of a current approval after that happens. The
+ * historical record stays visible; it is just demoted to history.
+ *
+ * Lesser v1.6.28 exposes the canonical publication gate separately through
  * `publishEligibility`. This resolver deliberately remains an activity badge;
  * it never substitutes activity history for that server-authored gate. See
  * {@link describeApprovalRequirement}.
@@ -124,25 +197,45 @@ function latestVerdict(
  * Renderers pair the result with {@link REVIEW_STATE_QUALIFIER}.
  */
 export function resolveReviewState(review: DraftReviewData): ReviewStateDescriptor {
+	const newest = latestVerdict(review.verdicts ?? []);
+	const staleApproved = isStaleApproval(newest);
+
 	const serverStatus = review.reviewStatus?.trim();
 	if (serverStatus) {
+		// A server string that would read as an approval is not rendered as one
+		// when Lesser's own markers void the underlying approval. Any other server
+		// string (including changes-requested and unrecognised values) stays
+		// verbatim — it already avoids the success reading.
+		if (staleApproved && toneForServerStatus(serverStatus) === 'approved') {
+			return staleApprovedState(review);
+		}
+
 		return {
 			tone: toneForServerStatus(serverStatus),
 			label: serverStatus,
 			source: 'server',
+			stale: false,
 		};
 	}
 
-	const newest = latestVerdict(review.verdicts ?? []);
 	if (!newest) {
-		return { tone: 'pending', label: 'No review activity recorded', source: 'none' };
+		return { tone: 'pending', label: 'No review activity recorded', source: 'none', stale: false };
+	}
+
+	if (staleApproved) {
+		return staleApprovedState(review);
 	}
 
 	// The label names the verdict *record*, so it reads as history rather than
 	// as a decision about the draft.
 	return newest.verdict === 'CHANGES_REQUESTED'
-		? { tone: 'changes-requested', label: 'Latest verdict: Changes requested', source: 'verdicts' }
-		: { tone: 'approved', label: 'Latest verdict: Approved', source: 'verdicts' };
+		? {
+				tone: 'changes-requested',
+				label: 'Latest verdict: Changes requested',
+				source: 'verdicts',
+				stale: false,
+			}
+		: { tone: 'approved', label: 'Latest verdict: Approved', source: 'verdicts', stale: false };
 }
 
 /**

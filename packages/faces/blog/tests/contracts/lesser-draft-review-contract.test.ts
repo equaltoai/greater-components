@@ -14,6 +14,9 @@ import { dirname, resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
 	REVIEW_STATE_QUALIFIER,
+	REVIEW_STALE_APPROVAL_DETAIL,
+	REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL,
+	REVIEW_STALE_APPROVAL_LABEL,
 	describeApprovalRequirement,
 	resolveReviewState,
 } from '../../src/components/Review/state.js';
@@ -277,6 +280,80 @@ describe('Lesser shared-draft review contract', () => {
 				principalApproval: true,
 				activeReviewerCount: 2,
 			});
+		});
+	});
+
+	describe('stale approval policy (issue #1055)', () => {
+		it('consumes the authoritative current/stale markers instead of inferring staleness', () => {
+			// A media or content change stales earlier verdicts upstream; the
+			// chrome must read that decision, not reconstruct it.
+			const marked = createMockDraftReview('d1', {
+				verdicts: [createMockVerdict({ verdict: 'APPROVED', stale: true })],
+			});
+			expect(resolveReviewState(marked)).toMatchObject({
+				tone: 'stale-approved',
+				label: REVIEW_STALE_APPROVAL_LABEL,
+				stale: true,
+			});
+
+			const clearedCurrent = createMockDraftReview('d2', {
+				verdicts: [createMockVerdict({ verdict: 'APPROVED', current: false })],
+			});
+			expect(resolveReviewState(clearedCurrent).tone).toBe('stale-approved');
+
+			// Absent markers (older/partial projections) leave the qualified
+			// activity badge in place — staleness is never guessed.
+			const unmarked = createMockDraftReview('d3', {
+				verdicts: [createMockVerdict({ verdict: 'APPROVED' })],
+			});
+			expect(resolveReviewState(unmarked)).toMatchObject({
+				tone: 'approved',
+				label: 'Latest verdict: Approved',
+				stale: false,
+			});
+		});
+
+		it('never pairs a stale approval with the success tone or a bare Approved label', () => {
+			const states = [
+				resolveReviewState(
+					createMockDraftReview('d1', {
+						verdicts: [createMockVerdict({ verdict: 'APPROVED', stale: true })],
+					})
+				),
+				resolveReviewState(
+					createMockDraftReview('d2', {
+						reviewStatus: 'Approved',
+						verdicts: [createMockVerdict({ verdict: 'APPROVED', current: false })],
+					})
+				),
+			];
+
+			for (const state of states) {
+				expect(state.tone).not.toBe('approved');
+				expect(state.label).not.toBe('Approved');
+				expect(state.detail).toBeTruthy();
+				expect(state.detail).toContain('no longer counts');
+			}
+		});
+
+		it('names the outstanding principal approval from publishEligibility, not from history', () => {
+			const principal = createMockDraftReview('d1', {
+				generatedBy: createMockAgentActor('a1'),
+				verdicts: [createMockVerdict({ verdict: 'APPROVED', stale: true })],
+				publishEligibility: {
+					eligible: false,
+					blockingReasons: [],
+					reviewersApproved: false,
+					principalApprovalRequired: true,
+					principalApproved: false,
+				},
+			});
+			const generic = createMockDraftReview('d2', {
+				verdicts: [createMockVerdict({ verdict: 'APPROVED', stale: true })],
+			});
+
+			expect(resolveReviewState(principal).detail).toBe(REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL);
+			expect(resolveReviewState(generic).detail).toBe(REVIEW_STALE_APPROVAL_DETAIL);
 		});
 	});
 

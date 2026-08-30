@@ -4,11 +4,15 @@ import QueueCard from '../../src/components/Review/QueueCard.svelte';
 import AttributionStrip from '../../src/components/Review/AttributionStrip.svelte';
 import VerdictActions from '../../src/components/Review/VerdictActions.svelte';
 import {
+	REVIEW_STALE_APPROVAL_DETAIL,
+	REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL,
+	REVIEW_STALE_APPROVAL_LABEL,
 	describeApprovalRequirement,
 	resolveReviewState,
 	reviewActorHandle,
 	reviewActorName,
 } from '../../src/components/Review/state.js';
+import type { DraftPublishEligibilityData } from '../../src/types.js';
 import {
 	createMockAgentActor,
 	createMockDraftReview,
@@ -274,6 +278,182 @@ describe('Review workflow chrome', () => {
 		});
 	});
 
+	describe('stale approval (issue #1055)', () => {
+		function createMockEligibility(
+			overrides: Partial<DraftPublishEligibilityData> = {}
+		): DraftPublishEligibilityData {
+			return {
+				eligible: false,
+				blockingReasons: ['the current revision has not been approved'],
+				reviewersApproved: false,
+				principalApprovalRequired: false,
+				principalApproved: false,
+				...overrides,
+			};
+		}
+
+		it('marks an approval stale when Lesser sets the stale marker', () => {
+			// The incident shape: media changed after the approval was recorded, so
+			// the verdict record carries Lesser's authoritative stale marker and the
+			// gate reports not eligible.
+			const review = createMockDraftReview('d1', {
+				verdicts: [createMockVerdict({ verdict: 'APPROVED', stale: true })],
+				publishEligibility: createMockEligibility(),
+			});
+
+			expect(resolveReviewState(review)).toMatchObject({
+				tone: 'stale-approved',
+				label: REVIEW_STALE_APPROVAL_LABEL,
+				source: 'verdicts',
+				stale: true,
+				detail: REVIEW_STALE_APPROVAL_DETAIL,
+			});
+		});
+
+		it('marks an approval stale when Lesser clears the current marker', () => {
+			// `current` and `stale` are the two authoritative markers; either one
+			// voiding the record is enough.
+			const review = createMockDraftReview('d1', {
+				verdicts: [createMockVerdict({ verdict: 'APPROVED', current: false })],
+			});
+
+			expect(resolveReviewState(review).tone).toBe('stale-approved');
+			expect(resolveReviewState(review).stale).toBe(true);
+		});
+
+		it('keeps a genuinely current approval on the success tone', () => {
+			const review = createMockDraftReview('d1', {
+				verdicts: [createMockVerdict({ verdict: 'APPROVED', current: true, stale: false })],
+				publishEligibility: createMockEligibility({
+					eligible: true,
+					blockingReasons: [],
+					reviewersApproved: true,
+				}),
+			});
+
+			expect(resolveReviewState(review)).toMatchObject({
+				tone: 'approved',
+				label: 'Latest verdict: Approved',
+				stale: false,
+			});
+		});
+
+		it('names the principal rule when the stale draft requires principal approval', () => {
+			// TheoryLive case: an agent-generated draft whose principal approval was
+			// voided by a media change. The detail must say the principal approval
+			// is outstanding, not merely that "approval" is.
+			const review = createMockDraftReview('d1', {
+				generatedBy: createMockAgentActor('a1'),
+				verdicts: [createMockVerdict({ verdict: 'APPROVED', stale: true })],
+				publishEligibility: createMockEligibility({
+					principalApprovalRequired: true,
+					principalApproved: false,
+				}),
+			});
+
+			expect(resolveReviewState(review).detail).toBe(REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL);
+		});
+
+		it('uses the generic detail when the principal rule is satisfied or absent', () => {
+			const satisfied = createMockDraftReview('d1', {
+				verdicts: [createMockVerdict({ verdict: 'APPROVED', stale: true })],
+				publishEligibility: createMockEligibility({
+					principalApprovalRequired: true,
+					principalApproved: true,
+				}),
+			});
+			const notRequired = createMockDraftReview('d2', {
+				verdicts: [createMockVerdict({ verdict: 'APPROVED', stale: true })],
+				publishEligibility: createMockEligibility(),
+			});
+
+			expect(resolveReviewState(satisfied).detail).toBe(REVIEW_STALE_APPROVAL_DETAIL);
+			expect(resolveReviewState(notRequired).detail).toBe(REVIEW_STALE_APPROVAL_DETAIL);
+		});
+
+		it('overrides an approval-shaped reviewStatus when the verdict markers void it', () => {
+			// Lesser overwrites reviewStatus only on submission, so after a media
+			// change it can still spell the approval while the verdict markers say
+			// it no longer applies. The authoritative markers win; the badge must
+			// not keep the success reading.
+			const review = createMockDraftReview('d1', {
+				reviewStatus: 'Approved',
+				verdicts: [createMockVerdict({ verdict: 'APPROVED', stale: true })],
+				publishEligibility: createMockEligibility(),
+			});
+
+			expect(resolveReviewState(review)).toMatchObject({
+				tone: 'stale-approved',
+				label: REVIEW_STALE_APPROVAL_LABEL,
+				stale: true,
+			});
+		});
+
+		it('still renders a non-approval reviewStatus verbatim alongside stale markers', () => {
+			// A server string that already avoids the success reading is not
+			// replaced — it is the newer activity signal.
+			const review = createMockDraftReview('d1', {
+				reviewStatus: 'Changes requested',
+				verdicts: [createMockVerdict({ verdict: 'APPROVED', stale: true })],
+			});
+
+			expect(resolveReviewState(review)).toMatchObject({
+				tone: 'changes-requested',
+				label: 'Changes requested',
+				source: 'server',
+				stale: false,
+			});
+		});
+
+		it('does not mark a stale changes-requested verdict as a stale approval', () => {
+			// The demotion targets approvals only — a stale changes-request keeps
+			// its existing qualified presentation.
+			const review = createMockDraftReview('d1', {
+				verdicts: [createMockVerdict({ verdict: 'CHANGES_REQUESTED', stale: true })],
+			});
+
+			expect(resolveReviewState(review)).toMatchObject({
+				tone: 'changes-requested',
+				label: 'Latest verdict: Changes requested',
+				stale: false,
+			});
+		});
+
+		it('degrades to the historical badge when the projection carries no markers', () => {
+			// Older or partial projections omit current/stale entirely. Staleness
+			// is consumed from the server, never inferred — the badge stays the
+			// qualified activity badge and the draft is never shown as eligible.
+			const review = createMockDraftReview('d1', {
+				verdicts: [createMockVerdict({ verdict: 'APPROVED' })],
+			});
+
+			expect(resolveReviewState(review)).toMatchObject({
+				tone: 'approved',
+				label: 'Latest verdict: Approved',
+				stale: false,
+			});
+		});
+
+		it('never resolves a stale approval to the success tone or a bare Approved', () => {
+			const cases = [
+				createMockDraftReview('d1', {
+					verdicts: [createMockVerdict({ verdict: 'APPROVED', stale: true })],
+				}),
+				createMockDraftReview('d2', {
+					reviewStatus: 'Approved',
+					verdicts: [createMockVerdict({ verdict: 'APPROVED', current: false })],
+				}),
+			];
+
+			for (const review of cases) {
+				const state = resolveReviewState(review);
+				expect(state.tone).not.toBe('approved');
+				expect(state.label).not.toBe('Approved');
+				expect(state.stale).toBe(true);
+			}
+		});
+	});
+
 	describe('Review.QueueCard', () => {
 		it('renders draft identity and links the title when href is given', () => {
 			render(QueueCard, {
@@ -375,6 +555,49 @@ describe('Review workflow chrome', () => {
 			expect(screen.getByText('latest activity, not publication state')).toBeInTheDocument();
 		});
 
+		it('renders a stale approval without the success tone or current-approval wording', () => {
+			const review = createMockDraftReview('d1', {
+				generatedBy: createMockAgentActor('a1'),
+				verdicts: [createMockVerdict({ verdict: 'APPROVED', stale: true })],
+				publishEligibility: {
+					eligible: false,
+					blockingReasons: [],
+					reviewersApproved: false,
+					principalApprovalRequired: true,
+					principalApproved: false,
+				},
+			});
+
+			const { container } = render(QueueCard, { props: { review } });
+
+			// The recorded approval stays visible — demoted to history, not hidden.
+			expect(screen.getByText(REVIEW_STALE_APPROVAL_LABEL)).toBeInTheDocument();
+			// The explanation states it no longer counts and names the outstanding
+			// principal approval.
+			expect(screen.getByText(REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL)).toBeInTheDocument();
+			// And the badge must not carry the approved/success tone.
+			const badge = container.querySelector('.gr-blog-review-card__state');
+			expect(badge).toHaveClass('gr-blog-review-card__state--stale-approved');
+			expect(badge).not.toHaveClass('gr-blog-review-card__state--approved');
+			// The activity qualifier still applies to the stale badge.
+			expect(screen.getByText('latest activity, not publication state')).toBeInTheDocument();
+		});
+
+		it('keeps a genuinely current approval on the success tone', () => {
+			const { container } = render(QueueCard, {
+				props: {
+					review: createMockDraftReview('d1', {
+						verdicts: [createMockVerdict({ verdict: 'APPROVED', current: true, stale: false })],
+					}),
+				},
+			});
+
+			const badge = container.querySelector('.gr-blog-review-card__state');
+			expect(badge).toHaveClass('gr-blog-review-card__state--approved');
+			expect(badge).not.toHaveClass('gr-blog-review-card__state--stale-approved');
+			expect(screen.queryByText(REVIEW_STALE_APPROVAL_DETAIL)).not.toBeInTheDocument();
+		});
+
 		it('hides the excerpt when asked', () => {
 			render(QueueCard, {
 				props: { review: createMockDraftReview('d1'), showExcerpt: false },
@@ -446,6 +669,33 @@ describe('Review workflow chrome', () => {
 			});
 
 			expect(screen.getByText('Latest verdict: Approved')).toBeInTheDocument();
+			expect(screen.getByText('latest activity, not publication state')).toBeInTheDocument();
+		});
+
+		it('shows a stale approval as history, without the success tone', () => {
+			// Even when reviewStatus still spells the approval, the strip must show
+			// the voided state: visible text, non-success tone, outstanding approval.
+			const review = createMockDraftReview('d1', {
+				reviewStatus: 'Approved',
+				verdicts: [createMockVerdict({ verdict: 'APPROVED', stale: true })],
+				publishEligibility: {
+					eligible: false,
+					blockingReasons: [],
+					reviewersApproved: false,
+					principalApprovalRequired: true,
+					principalApproved: false,
+				},
+			});
+
+			const { container } = render(AttributionStrip, { props: { review } });
+
+			expect(screen.getByText(REVIEW_STALE_APPROVAL_LABEL)).toBeInTheDocument();
+			expect(screen.getByText(REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL)).toBeInTheDocument();
+			expect(screen.queryByText('Approved', { exact: true })).not.toBeInTheDocument();
+
+			const badge = container.querySelector('.gr-blog-review-attribution__state');
+			expect(badge).toHaveClass('gr-blog-review-attribution__state--stale-approved');
+			expect(badge).not.toHaveClass('gr-blog-review-attribution__state--approved');
 			expect(screen.getByText('latest activity, not publication state')).toBeInTheDocument();
 		});
 

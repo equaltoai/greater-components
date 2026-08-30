@@ -22,6 +22,9 @@ export { default as VerdictActions } from './VerdictActions.svelte';
 
 export {
 	REVIEW_STATE_QUALIFIER,
+	REVIEW_STALE_APPROVAL_DETAIL,
+	REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL,
+	REVIEW_STALE_APPROVAL_LABEL,
 	describeApprovalRequirement,
 	formatReviewDateTime,
 	resolveReviewState,
