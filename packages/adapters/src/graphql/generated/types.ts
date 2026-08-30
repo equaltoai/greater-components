@@ -1312,6 +1312,16 @@ export type CompleteSoulBootstrapConversationInput = {
   readonly username: Scalars['String']['input'];
 };
 
+export type ComposePromoPackageInput = {
+  readonly articleId: Scalars['ID']['input'];
+  /** Ordered PUBLISHED asset IDs; order is the attachment order on the post. */
+  readonly assetMediaIds: ReadonlyArray<Scalars['ID']['input']>;
+  /** Set to replace an existing package's content (re-hashes and stales approvals); empty creates a new package. */
+  readonly packageId?: InputMaybe<Scalars['ID']['input']>;
+  readonly postText: Scalars['String']['input'];
+  readonly visibility: PromoPackageVisibility;
+};
+
 export type ConnectionType =
   | 'BOOSTS'
   | 'FOLLOWS'
@@ -1726,6 +1736,8 @@ export type Draft = {
   readonly contentHash: Scalars['String']['output'];
   readonly contentType: ObjectType;
   readonly createdAt: Scalars['Time']['output'];
+  /** Modeled editorial assets associated with this unpublished draft. */
+  readonly editorialMedia: ReadonlyArray<EditorialMediaUsage>;
   readonly generatedBy?: Maybe<Actor>;
   readonly id: Scalars['ID']['output'];
   readonly lastSavedAt: Scalars['Time']['output'];
@@ -1758,6 +1770,8 @@ export type DraftEdge = {
 export type DraftPreview = {
   readonly __typename: 'DraftPreview';
   readonly draftId: Scalars['ID']['output'];
+  /** Canonical structured media preview, including missing/processing/rejected placeholders. */
+  readonly editorialMedia: ReadonlyArray<EditorialMediaUsage>;
   readonly errors: ReadonlyArray<Scalars['String']['output']>;
   readonly renderedBytes: Scalars['Int']['output'];
   readonly renderedHtml?: Maybe<Scalars['String']['output']>;
@@ -1784,6 +1798,8 @@ export type DraftReview = {
   readonly createdAt: Scalars['Time']['output'];
   readonly draftId: Scalars['ID']['output'];
   readonly editorNotes?: Maybe<Scalars['String']['output']>;
+  /** Exact draft-bound media visible to this owner or active reviewer. */
+  readonly editorialMedia: ReadonlyArray<EditorialMediaUsage>;
   readonly excerpt?: Maybe<Scalars['String']['output']>;
   readonly generatedBy?: Maybe<Actor>;
   /** Caller-specific grant retained for backwards compatibility. */
@@ -1828,6 +1844,8 @@ export type DraftReviewEdge = {
 
 export type DraftReviewGrant = {
   readonly __typename: 'DraftReviewGrant';
+  /** Bounded expiry; expired grants authorize no reads, URL minting, or approval. */
+  readonly expiresAt?: Maybe<Scalars['Time']['output']>;
   readonly grantedAt: Scalars['Time']['output'];
   readonly reviewer: Actor;
   readonly reviewerId: Scalars['ID']['output'];
@@ -1837,6 +1855,7 @@ export type DraftReviewGrant = {
 
 export type DraftReviewGrantStatus =
   | 'ACTIVE'
+  | 'EXPIRED'
   | 'REVOKED';
 
 export type DraftReviewVerdict =
@@ -1876,6 +1895,113 @@ export type DroneWorkflowMutationPayload = {
   readonly __typename: 'DroneWorkflowMutationPayload';
   readonly agent: Agent;
   readonly workflow: AgentWorkflowSurface;
+};
+
+export type EditorialMediaAccess = {
+  readonly __typename: 'EditorialMediaAccess';
+  readonly contentHash: Scalars['String']['output'];
+  readonly expiresAt: Scalars['Time']['output'];
+  readonly mediaId: Scalars['ID']['output'];
+  readonly url: Scalars['String']['output'];
+};
+
+/** Explicit editorial lifecycle of an internal asset, distinct from the processing-pipeline status. */
+export type EditorialMediaLifecycle =
+  | 'AVAILABLE'
+  | 'SUPERSEDED'
+  | 'UNAVAILABLE'
+  | 'WITHDRAWN';
+
+export type EditorialMediaLifecyclePayload = {
+  readonly __typename: 'EditorialMediaLifecyclePayload';
+  readonly lifecycle: EditorialMediaLifecycle;
+  readonly mediaId: Scalars['ID']['output'];
+  readonly supersededByMediaId?: Maybe<Scalars['ID']['output']>;
+};
+
+export type EditorialMediaOrigin =
+  | 'AI_EDITED'
+  | 'AI_GENERATED'
+  | 'ILLUSTRATED'
+  | 'PHOTOGRAPHED'
+  | 'SUPPLIED';
+
+export type EditorialMediaProvenance = {
+  readonly __typename: 'EditorialMediaProvenance';
+  readonly contentIntegrity: Scalars['String']['output'];
+  readonly createdAt?: Maybe<Scalars['Time']['output']>;
+  readonly origin: EditorialMediaOrigin;
+  readonly recordedAt: Scalars['Time']['output'];
+  readonly responsibleActor?: Maybe<Actor>;
+  readonly responsibleActorId: Scalars['ID']['output'];
+  readonly rightsLicenseNotes?: Maybe<Scalars['String']['output']>;
+  readonly sourceReferences: ReadonlyArray<Scalars['String']['output']>;
+  readonly tool?: Maybe<Scalars['String']['output']>;
+  readonly updatedAt?: Maybe<Scalars['Time']['output']>;
+};
+
+export type EditorialMediaProvenanceInput = {
+  readonly createdAt?: InputMaybe<Scalars['Time']['input']>;
+  readonly origin: EditorialMediaOrigin;
+  readonly responsibleActorId?: InputMaybe<Scalars['ID']['input']>;
+  readonly rightsLicenseNotes?: InputMaybe<Scalars['String']['input']>;
+  readonly sourceReferences?: InputMaybe<ReadonlyArray<Scalars['String']['input']>>;
+  readonly tool?: InputMaybe<Scalars['String']['input']>;
+  readonly updatedAt?: InputMaybe<Scalars['Time']['input']>;
+};
+
+export type EditorialMediaRole =
+  | 'HERO'
+  | 'INLINE'
+  | 'SOCIAL_CARD';
+
+export type EditorialMediaState =
+  | 'MISSING'
+  | 'PROCESSING'
+  | 'READY'
+  | 'REJECTED'
+  /** A named successor asset replaced this binding; publication stays blocked until re-review. */
+  | 'SUPERSEDED'
+  /** The asset's bytes are not servable; publication stays blocked until re-review. */
+  | 'UNAVAILABLE'
+  /** Editorial lifecycle withdrew the asset; publication stays blocked until re-review. */
+  | 'WITHDRAWN';
+
+export type EditorialMediaUsage = {
+  readonly __typename: 'EditorialMediaUsage';
+  readonly accessExpiresAt?: Maybe<Scalars['Time']['output']>;
+  /** Short-lived exact-asset URL, only issued to an owner or active reviewer. */
+  readonly accessUrl?: Maybe<Scalars['String']['output']>;
+  /** Per-usage override; effectiveAltText falls back to the media-global description. */
+  readonly altText?: Maybe<Scalars['String']['output']>;
+  readonly caption?: Maybe<Scalars['String']['output']>;
+  readonly contentHash?: Maybe<Scalars['String']['output']>;
+  /** Reader-facing attribution, distinct from internal provenance. */
+  readonly creditLine?: Maybe<Scalars['String']['output']>;
+  readonly effectiveAltText?: Maybe<Scalars['String']['output']>;
+  readonly focus?: Maybe<Scalars['String']['output']>;
+  readonly height?: Maybe<Scalars['Int']['output']>;
+  /** Zero-based insertion point for INLINE media; null for other roles. */
+  readonly inlinePosition?: Maybe<Scalars['Int']['output']>;
+  readonly mediaId: Scalars['ID']['output'];
+  readonly mimeType?: Maybe<Scalars['String']['output']>;
+  readonly provenance?: Maybe<EditorialMediaProvenance>;
+  readonly publishedAt?: Maybe<Scalars['Time']['output']>;
+  /** Durable published serving minted at the publish transition; absent pre-publish. */
+  readonly publishedUrl?: Maybe<Scalars['String']['output']>;
+  readonly role: EditorialMediaRole;
+  readonly state: EditorialMediaState;
+  readonly width?: Maybe<Scalars['Int']['output']>;
+};
+
+export type EditorialMediaUsageInput = {
+  readonly altText?: InputMaybe<Scalars['String']['input']>;
+  readonly caption?: InputMaybe<Scalars['String']['input']>;
+  readonly creditLine?: InputMaybe<Scalars['String']['input']>;
+  readonly focus?: InputMaybe<Scalars['String']['input']>;
+  readonly inlinePosition?: InputMaybe<Scalars['Int']['input']>;
+  readonly mediaId: Scalars['ID']['input'];
+  readonly role: EditorialMediaRole;
 };
 
 export type Entity = {
@@ -2779,6 +2905,13 @@ export type MetricsUpdate = {
   readonly userId?: Maybe<Scalars['String']['output']>;
 };
 
+export type MintUploadGrantInput = {
+  readonly contentType: Scalars['String']['input'];
+  readonly maxSizeBytes: Scalars['Int']['input'];
+  /** Hex-encoded sha256 of the exact bytes the caller will PUT. */
+  readonly sha256: Scalars['String']['input'];
+};
+
 export type ModerationAction =
   | 'FLAG'
   | 'HIDE'
@@ -3061,6 +3194,8 @@ export type Mutation = {
   readonly clearNotifications: Scalars['Boolean']['output'];
   readonly completeHostedSoulGenesis: SoulBootstrapMutationPayload;
   readonly completeSoulBootstrapConversation: SoulBootstrapMutationPayload;
+  /** Create a promo package or replace its content; every content change re-hashes and stales approvals. */
+  readonly composePromoPackage: PromoPackage;
   readonly createAgentAccessLease: AgentAccessLease;
   readonly createAgentAccessLeaseAgentChallenge: AgentAccessLeaseChallenge;
   readonly createAgentAccessLeasePrincipalChallenge: AgentAccessLeaseChallenge;
@@ -3107,6 +3242,8 @@ export type Mutation = {
   readonly exportReputation: PortableReputation;
   readonly finalizeSoulBootstrap: SoulBootstrapMutationPayload;
   readonly finalizeSoulPromotion: DroneWorkflowMutationPayload;
+  /** Verify the uploaded bytes against the grant and admit the editorial media record. */
+  readonly finalizeUploadGrant: UploadGrantFinalizeResult;
   readonly flagObject: FlagPayload;
   readonly followActor: Activity;
   readonly followHashtag: HashtagFollowPayload;
@@ -3116,6 +3253,8 @@ export type Mutation = {
   readonly likeObject: Activity;
   readonly markConversationAsRead: Conversation;
   readonly markNotificationGroupAsRead: Scalars['Boolean']['output'];
+  /** Mint a one-time, hash-bound upload grant with a presigned PUT URL. */
+  readonly mintUploadGrant: UploadGrant;
   readonly muteActor: Relationship;
   readonly muteHashtag: MuteHashtagPayload;
   readonly muteStatus: Scalars['Boolean']['output'];
@@ -3133,6 +3272,8 @@ export type Mutation = {
   readonly registerAgent: RegisterAgentPayload;
   readonly registerPushSubscription: PushSubscription;
   readonly rejectFollowRequest: Relationship;
+  /** Release an approved package: creates the outbound public/unlisted Status with the exact approved PUBLISHED assets and AI-authorship disclosure intact. */
+  readonly releasePromoPackage: PromoPackageReleaseResult;
   readonly removeAccountsFromList: List;
   readonly removeAnnouncementReaction: Scalars['Boolean']['output'];
   readonly removeArticleFromCategory: Article;
@@ -3152,6 +3293,7 @@ export type Mutation = {
   readonly revokeAgentRuntimeSession: AgentRuntimeSession;
   readonly revokeAgentToken: Scalars['Boolean']['output'];
   readonly revokeDraftReview: Scalars['Boolean']['output'];
+  readonly revokePromoPackageReview: Scalars['Boolean']['output'];
   readonly revokeVouch: Scalars['Boolean']['output'];
   readonly saveMarkers: MarkerSet;
   readonly scheduleDraft: Draft;
@@ -3160,13 +3302,41 @@ export type Mutation = {
   readonly sendHostedSoulGenesisMessage: SoulBootstrapMutationPayload;
   readonly sendMessage: SendMessagePayload;
   readonly sendSoulBootstrapConversationMessage: SoulBootstrapMutationPayload;
+  /** Replace the complete ordered editorial-media association for a draft. */
+  readonly setDraftEditorialMedia: Draft;
   readonly setFederationLimit: FederationLimit;
   readonly setInstanceBudget: InstanceBudget;
+  /**
+   * Share a draft for review. includeAccessUrls mints the per-usage short-lived
+   * media read URLs on the returned review; without it the projection returns no
+   * accessUrl (use draftEditorialMediaAccess for one exact asset read).
+   */
   readonly shareDraftForReview: DraftReview;
   readonly shareObject: Object;
+  /** Share a promo package with a reviewer (7-day bounded grant). */
+  readonly sharePromoPackageForReview: PromoPackageReview;
   readonly startHostedSoulBootstrap: SoulBootstrapMutationPayload;
+  /**
+   * Record a review verdict. contentHash is the content hash the reviewer
+   * actually inspected; it is NULLABLE for compatibility with deployed consumers
+   * that submit without it (an empty value is the legacy no-constraint path) and,
+   * when supplied, a mismatch (the owner edited after inspection) rejects the
+   * submit with a conflict instead of blessing unseen content. includeAccessUrls
+   * mints the per-usage short-lived media read URLs on the returned review;
+   * without it the projection returns no accessUrl (use draftEditorialMediaAccess
+   * for one exact asset read).
+   */
   readonly submitDraftReview: DraftReview;
   readonly submitModerationReview: ModerationReviewResult;
+  /**
+   * Record a hash-bound reviewer verdict on the exact current package content.
+   * contentHash carries the content hash the reviewer actually inspected; the
+   * argument is REQUIRED (the promo surface has no deployed consumer, so the
+   * advisory-binding gap is closed at the contract) and a mismatch (the package
+   * was recomposed after inspection) rejects the submit with a conflict instead
+   * of blessing unseen content.
+   */
+  readonly submitPromoPackageReview: PromoPackageReview;
   readonly syncMissingReplies: SyncRepliesPayload;
   readonly syncThread: SyncThreadPayload;
   readonly testFilters: FilterTestPayload;
@@ -3188,6 +3358,8 @@ export type Mutation = {
   readonly updateArticle: Article;
   readonly updateCategory: Category;
   readonly updateDraft: Draft;
+  /** Apply an explicit editorial lifecycle change to an internal editorial asset. */
+  readonly updateEditorialMediaLifecycle: EditorialMediaLifecyclePayload;
   readonly updateEmoji: CustomEmoji;
   readonly updateFilter: Filter;
   readonly updateHashtagNotifications: UpdateHashtagNotificationsPayload;
@@ -3445,6 +3617,11 @@ export type MutationCompleteSoulBootstrapConversationArgs = {
 };
 
 
+export type MutationComposePromoPackageArgs = {
+  input: ComposePromoPackageInput;
+};
+
+
 export type MutationCreateAgentAccessLeaseArgs = {
   input: CreateAgentAccessLeaseInput;
   username: Scalars['String']['input'];
@@ -3670,6 +3847,11 @@ export type MutationFinalizeSoulPromotionArgs = {
 };
 
 
+export type MutationFinalizeUploadGrantArgs = {
+  grantId: Scalars['ID']['input'];
+};
+
+
 export type MutationFlagObjectArgs = {
   input: FlagInput;
 };
@@ -3716,6 +3898,11 @@ export type MutationMarkConversationAsReadArgs = {
 
 export type MutationMarkNotificationGroupAsReadArgs = {
   groupId: Scalars['ID']['input'];
+};
+
+
+export type MutationMintUploadGrantArgs = {
+  input: MintUploadGrantInput;
 };
 
 
@@ -3801,6 +3988,11 @@ export type MutationRegisterPushSubscriptionArgs = {
 
 export type MutationRejectFollowRequestArgs = {
   accountId: Scalars['ID']['input'];
+};
+
+
+export type MutationReleasePromoPackageArgs = {
+  packageId: Scalars['ID']['input'];
 };
 
 
@@ -3914,6 +4106,12 @@ export type MutationRevokeDraftReviewArgs = {
 };
 
 
+export type MutationRevokePromoPackageReviewArgs = {
+  packageId: Scalars['ID']['input'];
+  reviewer: Scalars['String']['input'];
+};
+
+
 export type MutationRevokeVouchArgs = {
   id: Scalars['ID']['input'];
 };
@@ -3969,6 +4167,12 @@ export type MutationSendSoulBootstrapConversationMessageArgs = {
 };
 
 
+export type MutationSetDraftEditorialMediaArgs = {
+  draftId: Scalars['ID']['input'];
+  media: ReadonlyArray<EditorialMediaUsageInput>;
+};
+
+
 export type MutationSetFederationLimitArgs = {
   domain: Scalars['String']['input'];
   limit: FederationLimitInput;
@@ -3984,6 +4188,7 @@ export type MutationSetInstanceBudgetArgs = {
 
 export type MutationShareDraftForReviewArgs = {
   draftId: Scalars['ID']['input'];
+  includeAccessUrls?: InputMaybe<Scalars['Boolean']['input']>;
   reviewer: Scalars['String']['input'];
 };
 
@@ -3993,13 +4198,21 @@ export type MutationShareObjectArgs = {
 };
 
 
+export type MutationSharePromoPackageForReviewArgs = {
+  packageId: Scalars['ID']['input'];
+  reviewer: Scalars['String']['input'];
+};
+
+
 export type MutationStartHostedSoulBootstrapArgs = {
   input: StartHostedSoulBootstrapInput;
 };
 
 
 export type MutationSubmitDraftReviewArgs = {
+  contentHash?: InputMaybe<Scalars['String']['input']>;
   draftId: Scalars['ID']['input'];
+  includeAccessUrls?: InputMaybe<Scalars['Boolean']['input']>;
   notes?: InputMaybe<Scalars['String']['input']>;
   verdict: DraftReviewVerdict;
 };
@@ -4007,6 +4220,14 @@ export type MutationSubmitDraftReviewArgs = {
 
 export type MutationSubmitModerationReviewArgs = {
   input: ModerationReviewInput;
+};
+
+
+export type MutationSubmitPromoPackageReviewArgs = {
+  contentHash: Scalars['String']['input'];
+  notes?: InputMaybe<Scalars['String']['input']>;
+  packageId: Scalars['ID']['input'];
+  verdict: PromoPackageReviewVerdict;
 };
 
 
@@ -4118,6 +4339,13 @@ export type MutationUpdateCategoryArgs = {
 export type MutationUpdateDraftArgs = {
   id: Scalars['ID']['input'];
   input: UpdateDraftInput;
+};
+
+
+export type MutationUpdateEditorialMediaLifecycleArgs = {
+  lifecycle: EditorialMediaLifecycle;
+  mediaId: Scalars['ID']['input'];
+  supersededByMediaId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 
@@ -4566,6 +4794,155 @@ export type ProfileFieldInput = {
   readonly verifiedAt?: InputMaybe<Scalars['Time']['input']>;
 };
 
+export type PromoPackage = {
+  readonly __typename: 'PromoPackage';
+  /** The published article this package promotes (canonical object URL). */
+  readonly articleId: Scalars['ID']['output'];
+  /** Ordered PUBLISHED assets attached to the outbound post (attachment order). */
+  readonly assets: ReadonlyArray<PromoPackageAsset>;
+  readonly contentHash: Scalars['String']['output'];
+  readonly createdAt: Scalars['Time']['output'];
+  readonly id: Scalars['ID']['output'];
+  readonly ownerId: Scalars['ID']['output'];
+  readonly postText: Scalars['String']['output'];
+  /** Outbound Status created by the release transition; nil until released. */
+  readonly releasedStatusId?: Maybe<Scalars['ID']['output']>;
+  /** Caller-authorized review state (owner or active reviewer grant). */
+  readonly review?: Maybe<PromoPackageReview>;
+  readonly status: PromoPackageStatus;
+  readonly updatedAt: Scalars['Time']['output'];
+  readonly visibility: PromoPackageVisibility;
+};
+
+export type PromoPackageAsset = {
+  readonly __typename: 'PromoPackageAsset';
+  /** The canonical sha256 digest bound into the reviewed package at review time. */
+  readonly contentHash?: Maybe<Scalars['String']['output']>;
+  readonly height?: Maybe<Scalars['Int']['output']>;
+  readonly mediaId: Scalars['ID']['output'];
+  readonly mimeType?: Maybe<Scalars['String']['output']>;
+  readonly provenance?: Maybe<EditorialMediaProvenance>;
+  /** The M2 durable published serving snapshotted at compose time. */
+  readonly publishedUrl?: Maybe<Scalars['String']['output']>;
+  readonly state: PromoPackageAssetState;
+  readonly width?: Maybe<Scalars['Int']['output']>;
+};
+
+export type PromoPackageAssetState =
+  | 'MISSING'
+  | 'PUBLISHED'
+  | 'REJECTED'
+  | 'SUPERSEDED'
+  | 'UNAVAILABLE'
+  | 'WITHDRAWN';
+
+export type PromoPackageConnection = {
+  readonly __typename: 'PromoPackageConnection';
+  readonly edges: ReadonlyArray<PromoPackageEdge>;
+  readonly pageInfo: PageInfo;
+  readonly totalCount: Scalars['Int']['output'];
+};
+
+export type PromoPackageEdge = {
+  readonly __typename: 'PromoPackageEdge';
+  readonly cursor: Scalars['Cursor']['output'];
+  readonly node: PromoPackage;
+};
+
+export type PromoPackageGrantStatus =
+  | 'ACTIVE'
+  | 'EXPIRED'
+  | 'REVOKED';
+
+export type PromoPackageReleaseEligibility = {
+  readonly __typename: 'PromoPackageReleaseEligibility';
+  readonly blockingReasons: ReadonlyArray<Scalars['String']['output']>;
+  readonly eligible: Scalars['Boolean']['output'];
+  readonly principalApprovalRequired: Scalars['Boolean']['output'];
+  readonly principalApproved: Scalars['Boolean']['output'];
+  readonly reviewersApproved: Scalars['Boolean']['output'];
+};
+
+export type PromoPackageReleaseResult = {
+  readonly __typename: 'PromoPackageReleaseResult';
+  readonly package: PromoPackage;
+  readonly statusId: Scalars['ID']['output'];
+  readonly url?: Maybe<Scalars['String']['output']>;
+};
+
+export type PromoPackageReview = {
+  readonly __typename: 'PromoPackageReview';
+  readonly activeReviewerIds: ReadonlyArray<Scalars['ID']['output']>;
+  /** Exact package-bound media visible to this owner or active reviewer. */
+  readonly assets: ReadonlyArray<PromoPackageAsset>;
+  /** Canonical digest over the exact reviewed content (post text, visibility, article reference, ordered asset digests). */
+  readonly contentHash: Scalars['String']['output'];
+  readonly grantCount: Scalars['Int']['output'];
+  readonly grants: ReadonlyArray<PromoPackageReviewGrant>;
+  readonly grantsTruncated: Scalars['Boolean']['output'];
+  readonly packageId: Scalars['ID']['output'];
+  readonly principalApprovalRequired: Scalars['Boolean']['output'];
+  readonly principalApproved: Scalars['Boolean']['output'];
+  readonly releaseBlockingReasons: ReadonlyArray<Scalars['String']['output']>;
+  readonly releaseEligibility: PromoPackageReleaseEligibility;
+  readonly releaseEligible: Scalars['Boolean']['output'];
+  readonly reviewersApproved: Scalars['Boolean']['output'];
+  readonly verdicts: ReadonlyArray<PromoPackageVerdictRecord>;
+};
+
+export type PromoPackageReviewConnection = {
+  readonly __typename: 'PromoPackageReviewConnection';
+  readonly edges: ReadonlyArray<PromoPackageReviewEdge>;
+  readonly pageInfo: PageInfo;
+  readonly totalCount: Scalars['Int']['output'];
+};
+
+export type PromoPackageReviewEdge = {
+  readonly __typename: 'PromoPackageReviewEdge';
+  readonly cursor: Scalars['Cursor']['output'];
+  readonly node: PromoPackageReview;
+};
+
+export type PromoPackageReviewGrant = {
+  readonly __typename: 'PromoPackageReviewGrant';
+  /** Bounded expiry; expired grants authorize no package reads or approval. */
+  readonly expiresAt?: Maybe<Scalars['Time']['output']>;
+  readonly grantedAt: Scalars['Time']['output'];
+  readonly reviewerId: Scalars['ID']['output'];
+  readonly revokedAt?: Maybe<Scalars['Time']['output']>;
+  readonly status: PromoPackageGrantStatus;
+};
+
+export type PromoPackageReviewVerdict =
+  | 'APPROVED'
+  | 'CHANGES_REQUESTED';
+
+export type PromoPackageStatus =
+  | 'DRAFT'
+  | 'RELEASED'
+  /**
+   * Transient release reservation: the package is mid-release (or a release
+   * crashed between reservation and stamp); release and composition are refused
+   * until an operator reconciles the reservation.
+   */
+  | 'RELEASING';
+
+export type PromoPackageVerdictRecord = {
+  readonly __typename: 'PromoPackageVerdictRecord';
+  readonly contentHash?: Maybe<Scalars['String']['output']>;
+  /** True only when this verdict is valid for the current package content and active grant. */
+  readonly current: Scalars['Boolean']['output'];
+  readonly notes?: Maybe<Scalars['String']['output']>;
+  readonly recordedAt: Scalars['Time']['output'];
+  readonly reviewerId: Scalars['ID']['output'];
+  readonly stale: Scalars['Boolean']['output'];
+  readonly verdict: PromoPackageReviewVerdict;
+};
+
+export type PromoPackageVisibility =
+  | 'PUBLIC'
+  | 'UNLISTED';
+
 export type Publication = {
   readonly __typename: 'Publication';
   readonly actor: Actor;
@@ -4727,7 +5104,20 @@ export type Query = {
   readonly customEmojis: ReadonlyArray<CustomEmoji>;
   readonly domainBlocks: DomainBlockPage;
   readonly draft?: Maybe<Draft>;
+  /** Issue a short-lived read for one exact asset bound to an authorized draft. */
+  readonly draftEditorialMediaAccess: EditorialMediaAccess;
+  /**
+   * Renders a draft preview. includeAccessUrls mints the per-usage short-lived
+   * media read URLs on this read; without it the projection returns no accessUrl
+   * (use draftEditorialMediaAccess for one exact asset read).
+   */
   readonly draftPreview: DraftPreview;
+  /**
+   * Review state for the owner or an active reviewer. includeAccessUrls mints
+   * the per-usage short-lived media read URLs on this read; without it the
+   * projection returns no accessUrl (use draftEditorialMediaAccess for one exact
+   * asset read).
+   */
   readonly draftReview?: Maybe<DraftReview>;
   readonly droneWorkflow?: Maybe<AgentWorkflowSurface>;
   readonly endorsements: ReadonlyArray<Actor>;
@@ -4796,6 +5186,10 @@ export type Query = {
   readonly performanceMetrics: PerformanceReport;
   readonly popularStreams: StreamConnection;
   readonly profileDirectory: ProfileDirectory;
+  /** One promo package for its owner or an active reviewer grant. */
+  readonly promoPackage?: Maybe<PromoPackage>;
+  /** The authenticated owner's promo packages. */
+  readonly promoPackages: PromoPackageConnection;
   readonly publication?: Maybe<Publication>;
   readonly publicationBySlug?: Maybe<Publication>;
   readonly pushSubscription?: Maybe<PushSubscription>;
@@ -4813,6 +5207,8 @@ export type Query = {
   readonly seriesBySlug?: Maybe<Series>;
   readonly severedRelationships: SeveredRelationshipConnection;
   readonly sharedDraftReviews: DraftReviewConnection;
+  /** Packages shared for review with the authenticated reviewer. */
+  readonly sharedPromoPackageReviews: PromoPackageReviewConnection;
   readonly slowQueries: ReadonlyArray<QueryPerformance>;
   readonly soulBootstrap?: Maybe<SoulBootstrapSurface>;
   readonly statusFavouritedBy: ActorListPage;
@@ -4831,6 +5227,8 @@ export type Query = {
   readonly trendingTags: ReadonlyArray<TrendingTag>;
   readonly trends: ReadonlyArray<TrendingItem>;
   readonly trustGraph: ReadonlyArray<TrustEdge>;
+  /** One upload grant with its inspectable lifecycle state (owner-scoped). */
+  readonly uploadGrant: UploadGrant;
   readonly userPreferences: UserPreferences;
   readonly viewer: Actor;
   readonly viewerRole: ViewerRole;
@@ -5105,13 +5503,21 @@ export type QueryDraftArgs = {
 };
 
 
+export type QueryDraftEditorialMediaAccessArgs = {
+  draftId: Scalars['ID']['input'];
+  mediaId: Scalars['ID']['input'];
+};
+
+
 export type QueryDraftPreviewArgs = {
   id: Scalars['ID']['input'];
+  includeAccessUrls?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 
 export type QueryDraftReviewArgs = {
   id: Scalars['ID']['input'];
+  includeAccessUrls?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 
@@ -5425,6 +5831,17 @@ export type QueryProfileDirectoryArgs = {
 };
 
 
+export type QueryPromoPackageArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryPromoPackagesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
 export type QueryPublicationArgs = {
   id: Scalars['ID']['input'];
 };
@@ -5505,6 +5922,12 @@ export type QuerySeveredRelationshipsArgs = {
 
 
 export type QuerySharedDraftReviewsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QuerySharedPromoPackageReviewsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
 };
@@ -5606,6 +6029,11 @@ export type QueryTrendsArgs = {
 export type QueryTrustGraphArgs = {
   actorId: Scalars['ID']['input'];
   category?: InputMaybe<TrustCategory>;
+};
+
+
+export type QueryUploadGrantArgs = {
+  grantId: Scalars['ID']['input'];
 };
 
 
@@ -7098,8 +7526,58 @@ export type UpdateUserPreferencesInput = {
   readonly streaming?: InputMaybe<StreamingPreferencesInput>;
 };
 
+/** A one-time, hash-bound, actor-scoped upload grant minted by the owner. */
+export type UploadGrant = {
+  readonly __typename: 'UploadGrant';
+  /** Declared media type, bound into the presigned PUT. */
+  readonly contentType: Scalars['String']['output'];
+  /** Hex-encoded sha256 of the exact bytes the caller will PUT. */
+  readonly declaredSha256: Scalars['String']['output'];
+  /** Bounded expiry; expired grants authorize no PUT or finalize. */
+  readonly expiresAt: Scalars['Time']['output'];
+  /** Set on a digest-failure finalize so the owner can inspect why an upload was not admitted. */
+  readonly failureReason?: Maybe<Scalars['String']['output']>;
+  readonly grantedAt: Scalars['Time']['output'];
+  readonly id: Scalars['ID']['output'];
+  /** Declared size cap; finalize fails closed beyond it. */
+  readonly maxSizeBytes: Scalars['Int']['output'];
+  /** Media ID minted with the grant; set once the finalize admits the asset. */
+  readonly mediaId?: Maybe<Scalars['ID']['output']>;
+  readonly ownerId: Scalars['ID']['output'];
+  /** Presigned PUT URL. Populated at mint and refreshed while the grant is minted. */
+  readonly presignedUrl?: Maybe<Scalars['String']['output']>;
+  readonly status: UploadGrantStatus;
+  readonly usedAt?: Maybe<Scalars['Time']['output']>;
+};
+
+export type UploadGrantFinalizeResult = {
+  readonly __typename: 'UploadGrantFinalizeResult';
+  readonly grant: UploadGrant;
+  readonly media: UploadGrantMedia;
+};
+
+/** The internal editorial media record admitted by a successful finalize. */
+export type UploadGrantMedia = {
+  readonly __typename: 'UploadGrantMedia';
+  /** Canonical sha256:<hex> content integrity of the exact admitted bytes. */
+  readonly contentHash: Scalars['String']['output'];
+  readonly contentType: Scalars['String']['output'];
+  readonly mediaId: Scalars['ID']['output'];
+  readonly size: Scalars['Int']['output'];
+  readonly status: Scalars['String']['output'];
+  readonly visibility: Scalars['String']['output'];
+};
+
+export type UploadGrantStatus =
+  | 'EXPIRED'
+  | 'FAILED_DIGEST'
+  | 'MINTED'
+  | 'USED';
+
 export type UploadMediaInput = {
   readonly description?: InputMaybe<Scalars['String']['input']>;
+  /** When supplied, bytes begin internal and provenance is integrity-bound to their SHA-256 digest. */
+  readonly editorialProvenance?: InputMaybe<EditorialMediaProvenanceInput>;
   readonly file: Scalars['Upload']['input'];
   readonly filename?: InputMaybe<Scalars['String']['input']>;
   readonly focus?: InputMaybe<FocusInput>;

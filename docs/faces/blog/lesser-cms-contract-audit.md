@@ -74,28 +74,36 @@ private CMS workflow provenance. The Blog face does not adopt it in this sync; i
 **Do not leak** alongside `generatedBy`/`reviewedBy`/`publishedBy` until a proven attribution UI
 needs it.
 
+Lesser v1.6.28 adds the M3 editorial-media surface: `Draft.editorialMedia` and
+`DraftPreview.editorialMedia` model draft-bound media with roles, provenance, lifecycle state, and
+owner/reviewer-scoped short-lived access URLs, plus the upload-grant mutations. The Blog face does
+not consume editorial media in this sync; both fields are classified **Out of scope for MVP** and
+recorded, not mapped. `Query.draftPreview` also gains `includeAccessUrls: Boolean = false`, and
+`submitDraftReview` gains an optional hash-bound `contentHash` argument — both additive.
+
 ## `Draft` field audit
 
-| Lesser field      | Direction            | Greater boundary                                                                                                        |
-| ----------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `id`              | Matches Greater      | `DraftData.id`                                                                                                          |
-| `authorId`        | Do not leak          | Draft author identifier is backend/workflow state and should not become reusable editor data by default.                |
-| `author`          | Do not leak          | Existing editor UI does not display draft author state.                                                                 |
-| `contentType`     | Out of scope for MVP | Greater Blog editor is article-shaped for this milestone.                                                               |
-| `title`           | Adapter mapping      | `DraftData.title`; normalize nullable Lesser values to an empty/untitled string at the adapter boundary.                |
-| `slug`            | Out of scope for MVP | Routing belongs to the consuming app until a concrete editor slug UI is needed.                                         |
-| `content`         | Matches Greater      | `DraftData.content`                                                                                                     |
-| `contentFormat`   | Adapter mapping      | Convert Lesser `HTML`/`MARKDOWN` to Greater `html`/`markdown`.                                                          |
-| `status`          | Out of scope for MVP | Scheduling/publish lifecycle UI is explicitly outside this support milestone.                                           |
-| `scheduledAt`     | Out of scope for MVP | No scheduling UI in scope.                                                                                              |
-| `objectId`        | Out of scope for MVP | Backend linkage, not reusable editor display state.                                                                     |
-| `autosaveVersion` | Out of scope for MVP | Use only if a later autosave-conflict UI is proven.                                                                     |
-| `lastSavedAt`     | Adapter mapping      | `DraftData.savedAt`                                                                                                     |
-| `generatedBy`     | Do not leak          | Generation provenance is workflow state; keep out of reusable editor data until an app-specific provenance UI needs it. |
-| `reviewedBy`      | Do not leak          | Review actor state is workflow/moderation provenance and should not become reusable editor data by default.             |
-| `actedBy`         | Do not leak          | Share-grant caller attribution (v1.6.5) is workflow provenance; keep out of reusable editor data by default.            |
-| `createdAt`       | Out of scope for MVP | Not displayed by existing editor UI.                                                                                    |
-| `updatedAt`       | Out of scope for MVP | Existing editor status uses `savedAt`; do not add another timestamp without a UI need.                                  |
+| Lesser field      | Direction            | Greater boundary                                                                                                                                                                                 |
+| ----------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `id`              | Matches Greater      | `DraftData.id`                                                                                                                                                                                   |
+| `authorId`        | Do not leak          | Draft author identifier is backend/workflow state and should not become reusable editor data by default.                                                                                         |
+| `author`          | Do not leak          | Existing editor UI does not display draft author state.                                                                                                                                          |
+| `contentType`     | Out of scope for MVP | Greater Blog editor is article-shaped for this milestone.                                                                                                                                        |
+| `title`           | Adapter mapping      | `DraftData.title`; normalize nullable Lesser values to an empty/untitled string at the adapter boundary.                                                                                         |
+| `slug`            | Out of scope for MVP | Routing belongs to the consuming app until a concrete editor slug UI is needed.                                                                                                                  |
+| `content`         | Matches Greater      | `DraftData.content`                                                                                                                                                                              |
+| `contentFormat`   | Adapter mapping      | Convert Lesser `HTML`/`MARKDOWN` to Greater `html`/`markdown`.                                                                                                                                   |
+| `status`          | Out of scope for MVP | Scheduling/publish lifecycle UI is explicitly outside this support milestone.                                                                                                                    |
+| `scheduledAt`     | Out of scope for MVP | No scheduling UI in scope.                                                                                                                                                                       |
+| `objectId`        | Out of scope for MVP | Backend linkage, not reusable editor display state.                                                                                                                                              |
+| `autosaveVersion` | Out of scope for MVP | Use only if a later autosave-conflict UI is proven.                                                                                                                                              |
+| `lastSavedAt`     | Adapter mapping      | `DraftData.savedAt`                                                                                                                                                                              |
+| `generatedBy`     | Do not leak          | Generation provenance is workflow state; keep out of reusable editor data until an app-specific provenance UI needs it.                                                                          |
+| `reviewedBy`      | Do not leak          | Review actor state is workflow/moderation provenance and should not become reusable editor data by default.                                                                                      |
+| `actedBy`         | Do not leak          | Share-grant caller attribution (v1.6.5) is workflow provenance; keep out of reusable editor data by default.                                                                                     |
+| `editorialMedia`  | Out of scope for MVP | M3 editorial-media association (v1.6.28): server-modeled draft media with roles/provenance/access URLs. The blog face's draft editor does not consume editorial media yet; recorded, not mapped. |
+| `createdAt`       | Out of scope for MVP | Not displayed by existing editor UI.                                                                                                                                                             |
+| `updatedAt`       | Out of scope for MVP | Existing editor status uses `savedAt`; do not add another timestamp without a UI need.                                                                                                           |
 
 Greater-only `DraftData.autoSave` and `DraftData.wordCount` remain local UI concerns. The editor can
 derive word count and autosave behavior from configuration; Lesser does not need to mirror them.

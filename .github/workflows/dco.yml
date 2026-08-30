@@ -3,16 +3,18 @@ name: DCO Check
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-  workflow_dispatch:
-    inputs:
-      base_ref:
-        description: 'Base branch to compare against for signoffs (e.g., staging or main)'
-        required: true
-        type: string
+  # No workflow_dispatch: the manual-dispatch path existed solely for the retired
+  # release-please flow (155/155 dispatch runs were on release-please branches;
+  # the last, 2026-06-18, predates the two-branch feature -> staging -> main
+  # model). It accepted an operator-supplied base_ref, fetched it, and executed
+  # scripts/check-dco.js from that ref, which CodeQL flagged as
+  # actions/cache-poisoning/poisonable-step (#139/#140) in the default-branch
+  # context. Removing the trigger removes the vulnerable pattern; the PR path
+  # below remains the single, least-privilege DCO gate. Manual checks stay
+  # available locally: node scripts/check-dco.js --base origin/staging
 
 permissions:
   contents: read
-  pull-requests: read
 
 jobs:
   dco:
@@ -43,23 +45,3 @@ jobs:
           # whether commits are signed off.
           git checkout "${BASE_REF}" -- scripts/check-dco.js
           node scripts/check-dco.js --base "${BASE_REF}" --head "${HEAD_REF}"
-
-      - name: DCO Check (workflow_dispatch)
-        if: github.event_name == 'workflow_dispatch'
-        env:
-          BASE_REF: ${{ inputs.base_ref }}
-        run: |
-          set -euo pipefail
-
-          if [[ -z "${BASE_REF}" ]]; then
-            echo "::error::Missing required input: base_ref"
-            exit 1
-          fi
-
-          git fetch origin "${BASE_REF}:${BASE_REF}" --force
-
-          # CSR-037: Use base ref's check-dco.js to prevent branch-controlled bypass.
-          # The release branch's version of the script must not be the one that
-          # judges whether commits are signed off.
-          git checkout "${BASE_REF}" -- scripts/check-dco.js
-          node scripts/check-dco.js --base "${BASE_REF}" --head HEAD

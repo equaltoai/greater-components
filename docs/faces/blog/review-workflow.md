@@ -3,16 +3,28 @@
 Chrome for Lesser's shared-draft review workflow: a queue card, an attribution
 strip, and confirm-guarded verdict actions.
 
-Pinned contract: `docs/lesser/contracts/graphql-schema.graphql` at **LESSER_REF v1.6.0**.
+Pinned contract: `docs/lesser/contracts/graphql-schema.graphql` at **LESSER_REF v1.6.28**.
 The shareable-draft review surface was introduced in v1.5.33: `DraftReview`, `DraftReviewGrant`,
 `DraftReviewVerdictRecord`, the `DraftReviewVerdict` enum, and the
 `sharedDraftReviews` / `draftReview` / `shareDraftForReview` /
-`revokeDraftReview` / `submitDraftReview` operations.
+`revokeDraftReview` / `submitDraftReview` operations. v1.6.28 carries the M4
+release surface — `publishEligibility` and the verdict-record `current`/`stale`
+authority markers — plus the M3 editorial-media preview (`draftPreview`, with
+`includeAccessUrls` defaulting to `false` so protected media URLs stay explicit
+opt-in) and the optional hash-bound `contentHash` constraint on
+`submitDraftReview`.
 
 ## Where policy lives
 
 **Lesser owns review semantics. These components render data and report reviewer
-intent; they do not decide anything.**
+intent; they do not decide anything.** Since v1.6.28 the contract carries the
+server-computed publication gate (`DraftReview.publishEligibility` →
+`DraftPublishEligibility` with `eligible`, `blockingReasons`, `reviewersApproved`,
+`principalApprovalRequired`, `principalApproved`) and per-verdict authority
+markers (`DraftReviewVerdictRecord.current` / `.stale`, which say whether a
+verdict still applies to the current draft revision and active grant). Those
+fields are authoritative: the gate is whatever the server computed, and a stale
+verdict record is not gate input no matter what the history reads.
 
 ### `reviewStatus` is latest activity, not publication state
 
@@ -21,21 +33,22 @@ submitted verdict on **every** submission, so the field names the most recent
 submission — a later `CHANGES_REQUESTED` from one reviewer replaces an earlier
 `APPROVED` from another. It is not the publication gate.
 
-The real gate is reconstructed server-side: for each reviewer holding an active
-grant, Lesser takes that reviewer's newest verdict recorded _after_ the grant
-was issued, and requires every one of them to be `APPROVED`. That
-reconstruction needs the active-grant set and the instance principal's
-identity, and the pinned projection exposes neither — `DraftReview.grant` is
-the _viewer's own_ invitation, not the active set.
+The gate itself is server-computed and exposed directly on the pinned
+projection: `DraftReview.publishEligibility` carries the eligibility projection,
+and `DraftReviewVerdictRecord.current` / `.stale` mark which recorded verdicts
+are valid for the current revision and active grant. The chrome reads that
+surface rather than reconstructing it — the reconstruction the v1.6.0-era
+projection forced (active-grant set + instance-principal identity, neither of
+which was exposed) is no longer needed.
 
 So the chrome renders `reviewStatus` verbatim, and when it is absent names the
 newest recorded verdict, and in both cases pairs the badge with the exact
 qualifier **"latest activity, not publication state"**. It never derives an
 Approved / Changes-requested _state_, and it never renders a completion claim.
-With no activity at all it shows "No review activity recorded".
-
-A server-computed gate state would be the honest thing to display. It is not in
-the pinned contract; see "Upstream candidate" below.
+With no activity at all it shows "No review activity recorded". The qualifier is
+deliberate even now that the gate is in-contract: the badge is an activity
+marker, and the authoritative gate lives in `publishEligibility`, which the
+chrome never substitutes activity history for.
 
 ### The approval rules are cumulative
 
@@ -71,15 +84,18 @@ grants; otherwise the chrome names the rules and stays neutral.
 Invitations are revocable via `revokeDraftReview`. A revoked grant leaves the
 required set immediately while its verdict history remains as audit-only record.
 
-### Upstream candidate
+### Upstream candidate — delivered in v1.6.28
 
-The chrome would render a publication-gate state if the contract carried one.
-Today it cannot be computed client-side without the active-grant set and the
-principal identity, and reimplementing Lesser's gate in the chrome would be a
-correctness hazard — a second implementation that can disagree with the one
-that actually gates publication. A server-computed gate field on `DraftReview`
-is recorded as a Lesser upstream candidate, routed via factory, rather than
-worked around here.
+The publication gate the chrome previously could not display is now in the
+pinned contract: `DraftReview.publishEligibility` (`DraftPublishEligibility`)
+is the server-computed gate, and `DraftReviewVerdictRecord.current` / `.stale`
+say which verdicts are valid gate input for the current revision and active
+grant. Reimplementing Lesser's gate client-side would remain a correctness
+hazard — a second implementation that can disagree with the one that actually
+gates publication — so the chrome still does not do that. It renders the
+activity badge and reads the authoritative projection (`publishEligibility`
+feeds `describeApprovalRequirement()`), leaving gate truth where it is
+computed: on the server, in the contract.
 
 ## Components
 

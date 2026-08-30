@@ -18,8 +18,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      # Check out the immutable PR head SHA (pull_request events default to the
+      # refs/pull merge SHA, which is not the commit under review).
+      - name: Checkout repository (immutable PR head)
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Verify checked-out HEAD is the exact PR head
+        env:
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          ACTUAL_HEAD="$(git rev-parse HEAD)"
+          if [ -z "$EXPECTED_HEAD" ] || [ "$ACTUAL_HEAD" != "$EXPECTED_HEAD" ]; then
+            echo "::error::Checked out $ACTUAL_HEAD; expected immutable head $EXPECTED_HEAD. Failing instead of validating a merge SHA."
+            exit 1
+          fi
+          echo "Checked out exact head $ACTUAL_HEAD"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86

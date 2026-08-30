@@ -60,7 +60,7 @@
     "validate:exports": "node scripts/audit-exports.mjs",
     "validate:ids": "node scripts/validate-ids.js",
     "validate:versions": "node scripts/validate-release-versions.js",
-    "validate:package": "pnpm validate:exports && pnpm validate:dist && pnpm validate:deps && pnpm validate:cli && pnpm validate:check-parity && pnpm validate:tokens && pnpm validate:ids && pnpm validate:csp && pnpm validate:versions && pnpm check:openapi-auth && pnpm check:adapter-declarations && pnpm check:contract-snapshots",
+    "validate:package": "pnpm validate:exports && pnpm validate:dist && pnpm validate:deps && pnpm validate:cli && pnpm validate:check-parity && pnpm validate:tokens && pnpm validate:ids && pnpm validate:csp && pnpm validate:versions && pnpm check:openapi-auth && pnpm check:adapter-declarations && pnpm check:contract-snapshots && pnpm check:generator-replay",
     "validate:registry": "node scripts/validate-registry-index.js --strict && node scripts/generate-registry-index.js --check && pnpm validate:versions",
     "validate:tokens": "node scripts/audit-tokens-placeholders.mjs",
     "check:openapi-auth": "node scripts/check-openapi-auth.mjs",
@@ -76,7 +76,9 @@
     "audit:tarball-integrity": "node scripts/verify-tarball-integrity.js",
     "generate:adapter-declarations": "node scripts/check-adapter-declarations.mjs --write",
     "check:adapter-declarations": "node scripts/check-adapter-declarations.mjs",
-    "check:contract-snapshots": "node scripts/check-pinned-contract-snapshots.mjs"
+    "check:contract-snapshots": "node scripts/check-pinned-contract-snapshots.mjs",
+    "check:generator-replay": "node scripts/check-generator-replay.mjs",
+    "test:scripts:generator-replay": "node --test scripts/check-generator-replay.test.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -84,8 +86,8 @@
     "@graphql-codegen/fragment-matcher": "^7.1.0",
     "@graphql-codegen/introspection": "^5.0.1",
     "@graphql-codegen/typed-document-node": "^6.1.7",
-    "@graphql-codegen/typescript": "^6.1.0",
-    "@graphql-codegen/typescript-operations": "^6.1.6",
+    "@graphql-codegen/typescript": "^5.0.9",
+    "@graphql-codegen/typescript-operations": "^5.0.9",
     "@sveltejs/package": "^2.5.8",
     "@theory-cloud/facetheory": "https://github.com/theory-cloud/FaceTheory/releases/download/v4.0.9/theory-cloud-facetheory-4.0.9.tgz",
     "@types/node": "^26.2.0",
@@ -154,7 +156,9 @@
       "undici@^7.0.0": "7.29.0",
       "undici@^8.0.0": "8.9.0",
       "vite@^8.0.0": "8.2.0",
-      "@sveltejs/kit": "2.70.2"
+      "@sveltejs/kit": "2.70.2",
+      "@graphql-codegen/typescript": "<6.0.0",
+      "@graphql-codegen/typescript-operations": "<6.0.0"
     }
   },
   "greaterVerifiedTarballs": {
