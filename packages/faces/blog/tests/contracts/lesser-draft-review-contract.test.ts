@@ -132,6 +132,35 @@ describe('Lesser shared-draft review contract', () => {
 		);
 	});
 
+	it('carries exact authoritative current/stale verdict markers and contentHash', () => {
+		// v1.6.28: the server computes whether a verdict record still applies to
+		// the current draft revision and active grant (current/stale), and binds
+		// records to content with contentHash. These are authoritative gate
+		// inputs — the chrome must never substitute activity history for them.
+		const block = /type DraftReviewVerdictRecord \{([\s\S]*?)\n\}/.exec(schema)?.[1] ?? '';
+		const fields = block
+			.replace(/"""[\s\S]*?"""/g, '')
+			.split('\n')
+			.map((line) => line.trim())
+			.filter((line) => line.length > 0 && !line.startsWith('#'))
+			.map((line) => line.split(/[:(\s]/)[0] ?? '')
+			.filter((name) => name.length > 0);
+
+		expect(fields).toEqual([
+			'verdict',
+			'notes',
+			'contentHash',
+			'reviewerId',
+			'reviewer',
+			'recordedAt',
+			'current',
+			'stale',
+		]);
+		expect(block).toContain('contentHash: String');
+		expect(block).toContain('current: Boolean!');
+		expect(block).toContain('stale: Boolean!');
+	});
+
 	it('declares the grant fields backing the revocable-invitation row', () => {
 		expect(readTypeBlock(schema, 'type DraftReviewGrant {')).toEqual(
 			expect.arrayContaining(['reviewer', 'grantedAt'])
@@ -254,6 +283,11 @@ describe('Lesser shared-draft review contract', () => {
 	it('exposes the review queries and mutations the adapters bind', () => {
 		expect(schema).toContain(
 			'sharedDraftReviews(first: Int, after: Cursor): DraftReviewConnection!'
+		);
+		// Draft preview is the M3 editorial-media render surface; includeAccessUrls
+		// defaults to false so protected media URLs stay explicit opt-in.
+		expect(schema).toContain(
+			'draftPreview(id: ID!, includeAccessUrls: Boolean = false): DraftPreview!'
 		);
 		expect(schema).toContain(
 			'draftReview(id: ID!, includeAccessUrls: Boolean = false): DraftReview'
