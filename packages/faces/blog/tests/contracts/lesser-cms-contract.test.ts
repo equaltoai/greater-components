@@ -66,6 +66,10 @@ const LESSER_CMS_FIELD_DIRECTIONS = {
 		generatedBy: 'should-not-leak-into-ui',
 		reviewedBy: 'should-not-leak-into-ui',
 		actedBy: 'should-not-leak-into-ui',
+		// M3 editorial-media association (v1.6.28): server-modeled draft media with
+		// roles/provenance. The blog face's draft editor does not consume editorial
+		// media yet, so the surface is recorded, not mapped.
+		editorialMedia: 'out-of-scope-for-mvp',
 		createdAt: 'out-of-scope-for-mvp',
 		updatedAt: 'out-of-scope-for-mvp',
 	},
@@ -165,6 +169,9 @@ describe('Lesser CMS contract boundary', () => {
 	it('keeps Lesser server-side draft preview explicit for editor rendering boundaries', () => {
 		expect(extractTypeFields(schema, 'DraftPreview' as CmsContractType)).toEqual([
 			'draftId',
+			// M3 editorial-media preview surface (v1.6.28); the blog face MVP does not
+			// consume media previews, so it is audited, not rendered.
+			'editorialMedia',
 			'errors',
 			'renderedBytes',
 			'renderedHtml',

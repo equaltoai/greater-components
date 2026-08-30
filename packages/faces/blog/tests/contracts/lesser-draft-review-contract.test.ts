@@ -74,10 +74,14 @@ describe('Lesser shared-draft review contract', () => {
 
 		// v1.6.4 adds canonical draft revision, grant-set, and publication eligibility data;
 		// v1.6.5 adds nullable actedBy attribution on Draft/Article. v1.6.22 carries the
-		// PROG-M1 passkey signup surface and leaves the review types untouched, so the
-		// boundary moves without any change to the assertions below. They keep the review
-		// chrome pinned to the exact synchronized release boundary.
-		expect(ref).toContain('tag: v1.6.22');
+		// PROG-M1 passkey signup surface. v1.6.23-v1.6.28 add the M3 editorial-media and
+		// M4 promo-package surfaces and extend submitDraftReview / shareDraftForReview with
+		// optional includeAccessUrls / contentHash args; the review types themselves
+		// (DraftReview, DraftReviewVerdict, DraftReviewVerdictRecord, DraftReviewGrant,
+		// publishEligibility) are untouched, so the boundary moves without any change to
+		// the assertions below. They keep the review chrome pinned to the exact
+		// synchronized release boundary.
+		expect(ref).toContain('tag: v1.6.28');
 		expect(ref).toMatch(/commit: [0-9a-f]{40}/);
 	});
 
@@ -251,11 +255,15 @@ describe('Lesser shared-draft review contract', () => {
 		expect(schema).toContain(
 			'sharedDraftReviews(first: Int, after: Cursor): DraftReviewConnection!'
 		);
-		expect(schema).toContain('draftReview(id: ID!): DraftReview');
-		expect(schema).toContain('shareDraftForReview(draftId: ID!, reviewer: String!): DraftReview!');
+		expect(schema).toContain(
+			'draftReview(id: ID!, includeAccessUrls: Boolean = false): DraftReview'
+		);
+		expect(schema).toContain(
+			'shareDraftForReview(draftId: ID!, reviewer: String!, includeAccessUrls: Boolean = false): DraftReview!'
+		);
 		expect(schema).toContain('revokeDraftReview(draftId: ID!, reviewer: String!): Boolean!');
 		expect(schema).toContain(
-			'submitDraftReview(draftId: ID!, verdict: DraftReviewVerdict!, notes: String): DraftReview!'
+			'submitDraftReview(draftId: ID!, verdict: DraftReviewVerdict!, notes: String, includeAccessUrls: Boolean = false, contentHash: String): DraftReview!'
 		);
 	});
 });
