@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-25T04:00:53.595Z",
+  "generatedAt": "2026-08-30T13:03:01.956Z",
   "ref": "greater-v0.11.9",
   "version": "0.11.9",
   "checksums": {
@@ -1218,14 +1218,14 @@
     "packages/adapters/src/graphql/client.d.ts": "sha256-3jFkOFmuDuQX6/kx8H9wIYdrB2A7KpRmQVE32ZHo13c=",
     "packages/adapters/src/graphql/client.d.ts.map": "sha256-Ssv62Kczx19+0GwgiF0Mizvzd7hiabtKLmV4h/1/ZXY=",
     "packages/adapters/src/graphql/client.ts": "sha256-yRM0pSes5nnK91LXOxO2XvQBbj3GeXlBXaYz+DuxooQ=",
-    "packages/adapters/src/graphql/generated/types.d.ts": "sha256-5nLzIIYZStdWvJo22m+05KR/94Ab95y9YV/44ZwCO24=",
-    "packages/adapters/src/graphql/generated/types.d.ts.map": "sha256-cDtqBROVBeAquMUeT/bCwf6eSHToiAPcpSYfqAgSAQc=",
-    "packages/adapters/src/graphql/generated/types.ts": "sha256-QSxPWxz6EUrBCHoUnrWrFrcS7VOMupAPbUyDzrdgEgI=",
+    "packages/adapters/src/graphql/generated/types.d.ts": "sha256-5gslMPgdJQbw9IGJETZJlUc/5zH7OrmqY8USDdLEwRo=",
+    "packages/adapters/src/graphql/generated/types.d.ts.map": "sha256-hYQEAYUr7Vorrn9ZQqIlOILYx/JhloFRLp3tJeEP/2Q=",
+    "packages/adapters/src/graphql/generated/types.ts": "sha256-cqM3f7TXfoK8Ijd1HpCUDOhWjtJgY6cXiOpTDq2t0Yk=",
     "packages/adapters/src/graphql/index.d.ts": "sha256-Eu5nqaAHgFoa1HyMOE/cKCigJGYf8t8TxzmxibQR2Mk=",
     "packages/adapters/src/graphql/index.d.ts.map": "sha256-1CLcm1bQwtrlzXsVrZEgGwv3nyuONkS+P1KQcTzKPfM=",
     "packages/adapters/src/graphql/index.ts": "sha256-330bRj505ZOWM5XTbOpFZW1n8sy2/SCbzCu9XXYvrOA=",
     "packages/adapters/src/graphql/LesserGraphQLAdapter.d.ts": "sha256-CLStoGo1zTEJLsci7Tx3UpuFSvl4E7MuKTSTmJEtlpA=",
-    "packages/adapters/src/graphql/LesserGraphQLAdapter.d.ts.map": "sha256-MGR/yDlPOsAgmiNBGFcbb2s8NO1mt0UoMZhs3vieIiE=",
+    "packages/adapters/src/graphql/LesserGraphQLAdapter.d.ts.map": "sha256-10aOKZGOfZau+2t+D4Kt4M6K36dEw7Eg1xAB3Zy0jXk=",
     "packages/adapters/src/graphql/LesserGraphQLAdapter.ts": "sha256-ixQDocQLz2mzbbpw9KLUebsdB3hCKSmKkLn6i+rNLCg=",
     "packages/adapters/src/graphql/optimistic.d.ts": "sha256-DO9Yg7q9e9k3+suvhBSBWMn+8+pVGydTpC7e70EPO1w=",
     "packages/adapters/src/graphql/optimistic.d.ts.map": "sha256-3ZgzaXbtuWIbrCr5D8TV88Z8HYKFTxgXUMDuhbZ6Kds=",
@@ -1275,9 +1275,9 @@
     "packages/adapters/src/models/unified.d.ts": "sha256-gr6KNzGcJe0ByYS/245nF+S+sRUCBH6Uz2oPrkzGAYk=",
     "packages/adapters/src/models/unified.d.ts.map": "sha256-dhzSTpjQyeYXI87o5rXN4tdBHsEGk+ULTZSYH2L72hQ=",
     "packages/adapters/src/models/unified.ts": "sha256-quLVImKg0uJ62HWRnol/PeR/lq7tIkIqGSWCA7lRssg=",
-    "packages/adapters/src/rest/generated/lesser-api.d.ts": "sha256-hBCpgmO+BRroIhLNIV1LfgKrYfgNxF0/9xVLHoMWG6U=",
-    "packages/adapters/src/rest/generated/lesser-api.d.ts.map": "sha256-7E+ODzbvzZdHKQUjLxhJMEjihj4IzhrIsZrvBSoXJ+4=",
-    "packages/adapters/src/rest/generated/lesser-api.ts": "sha256-MRpmZHB4cLOhFJ1xwufDa7BWJZiHTREbhu/yhPsATc4=",
+    "packages/adapters/src/rest/generated/lesser-api.d.ts": "sha256-XzA/3uowk2h/tLL8gR5VQI9RQ3nO1d+L3MuvzpKy9wc=",
+    "packages/adapters/src/rest/generated/lesser-api.d.ts.map": "sha256-8t2d+NZwTuEZIG5OXQyOzRvK+VFEuga+jHlSX772tTA=",
+    "packages/adapters/src/rest/generated/lesser-api.ts": "sha256-8gPU3O3W4+KljCisULe0O2SToXjJ+bdT55q0MFdELxg=",
     "packages/adapters/src/rest/generated/lesser-host-api.d.ts": "sha256-6cfj3o2W7vTSfFVHy9QRga5eQtM9iKRD2V+A2qoOOcM=",
     "packages/adapters/src/rest/generated/lesser-host-api.d.ts.map": "sha256-Qz09C/pj3i9GhhvtAxhtu8vABW1Zrxh6DmW8hjgKKHQ=",
     "packages/adapters/src/rest/generated/lesser-host-api.ts": "sha256-lIuN82XqBdEmnWDxkw0e+4ftNwlPS+G82rRx5jQojIQ=",
@@ -1401,7 +1401,7 @@
     "packages/faces/social/src/adapters/cache.ts": "sha256-32jUHLAsYoK4U0JZ6hswGUlQOmwhJ5yquqhMqyfrc4I=",
     "packages/faces/social/src/adapters/graphql/client.ts": "sha256-yor+sP4J7hzK+igh2s4mujPOUZTRDN/e3nU1eccrSyo=",
     "packages/faces/social/src/adapters/graphql/generated/possible-types.ts": "sha256-jICUa0Jvj62nX0BdiBLTWoH2TII2SjAkM3ivA4dyuyA=",
-    "packages/faces/social/src/adapters/graphql/generated/types.ts": "sha256-QSxPWxz6EUrBCHoUnrWrFrcS7VOMupAPbUyDzrdgEgI=",
+    "packages/faces/social/src/adapters/graphql/generated/types.ts": "sha256-cqM3f7TXfoK8Ijd1HpCUDOhWjtJgY6cXiOpTDq2t0Yk=",
     "packages/faces/social/src/adapters/graphql/index.ts": "sha256-GcA5R3Ss8R7jf8ElMym2TuDg4xCS3bnDjscVLa+gxEc=",
     "packages/faces/social/src/adapters/graphql/queries.ts": "sha256-I59rg3+sNOaao13C2bNxrFRgMOVyVpVQW9MvHwzupzU=",
     "packages/faces/social/src/adapters/graphql/timeline-type.ts": "sha256-Qd/YZETo8Kz614V7/tigUC77zJ/QuWX8vKjAUMd7V/E=",
@@ -8083,18 +8083,18 @@
         },
         {
           "path": "src/graphql/generated/types.d.ts",
-          "checksum": "sha256-5nLzIIYZStdWvJo22m+05KR/94Ab95y9YV/44ZwCO24=",
-          "size": 1961781
+          "checksum": "sha256-5gslMPgdJQbw9IGJETZJlUc/5zH7OrmqY8USDdLEwRo=",
+          "size": 1981762
         },
         {
           "path": "src/graphql/generated/types.d.ts.map",
-          "checksum": "sha256-cDtqBROVBeAquMUeT/bCwf6eSHToiAPcpSYfqAgSAQc=",
-          "size": 1654194
+          "checksum": "sha256-hYQEAYUr7Vorrn9ZQqIlOILYx/JhloFRLp3tJeEP/2Q=",
+          "size": 1669976
         },
         {
           "path": "src/graphql/generated/types.ts",
-          "checksum": "sha256-QSxPWxz6EUrBCHoUnrWrFrcS7VOMupAPbUyDzrdgEgI=",
-          "size": 2669614
+          "checksum": "sha256-cqM3f7TXfoK8Ijd1HpCUDOhWjtJgY6cXiOpTDq2t0Yk=",
+          "size": 2689197
         },
         {
           "path": "src/graphql/index.d.ts",
@@ -8118,8 +8118,8 @@
         },
         {
           "path": "src/graphql/LesserGraphQLAdapter.d.ts.map",
-          "checksum": "sha256-MGR/yDlPOsAgmiNBGFcbb2s8NO1mt0UoMZhs3vieIiE=",
-          "size": 82283
+          "checksum": "sha256-10aOKZGOfZau+2t+D4Kt4M6K36dEw7Eg1xAB3Zy0jXk=",
+          "size": 82285
         },
         {
           "path": "src/graphql/LesserGraphQLAdapter.ts",
@@ -8368,18 +8368,18 @@
         },
         {
           "path": "src/rest/generated/lesser-api.d.ts",
-          "checksum": "sha256-hBCpgmO+BRroIhLNIV1LfgKrYfgNxF0/9xVLHoMWG6U=",
-          "size": 604589
+          "checksum": "sha256-XzA/3uowk2h/tLL8gR5VQI9RQ3nO1d+L3MuvzpKy9wc=",
+          "size": 610030
         },
         {
           "path": "src/rest/generated/lesser-api.d.ts.map",
-          "checksum": "sha256-7E+ODzbvzZdHKQUjLxhJMEjihj4IzhrIsZrvBSoXJ+4=",
-          "size": 502825
+          "checksum": "sha256-8t2d+NZwTuEZIG5OXQyOzRvK+VFEuga+jHlSX772tTA=",
+          "size": 507406
         },
         {
           "path": "src/rest/generated/lesser-api.ts",
-          "checksum": "sha256-MRpmZHB4cLOhFJ1xwufDa7BWJZiHTREbhu/yhPsATc4=",
-          "size": 604550
+          "checksum": "sha256-8gPU3O3W4+KljCisULe0O2SToXjJ+bdT55q0MFdELxg=",
+          "size": 609991
         },
         {
           "path": "src/rest/generated/lesser-host-api.d.ts",
@@ -9255,8 +9255,8 @@
         },
         {
           "path": "src/adapters/graphql/generated/types.ts",
-          "checksum": "sha256-QSxPWxz6EUrBCHoUnrWrFrcS7VOMupAPbUyDzrdgEgI=",
-          "size": 2669614
+          "checksum": "sha256-cqM3f7TXfoK8Ijd1HpCUDOhWjtJgY6cXiOpTDq2t0Yk=",
+          "size": 2689197
         },
         {
           "path": "src/adapters/graphql/index.ts",
