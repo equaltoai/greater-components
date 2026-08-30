@@ -79,3 +79,43 @@ with one regex per loop iteration, so both plugins observed the same combined ma
 anchors each plugin's own lockfile keys (`@graphql-codegen/typescript@…` never matches
 `@graphql-codegen/typescript-operations@…` and vice versa), fixes the `CODENGE_PACKAGES` →
 `CODEGEN_PACKAGES` naming typo, and unit-proves each plugin independently.
+
+## 8. Round 4: remove dead workflow_dispatch surface instead of "securing" it
+
+`workflow_dispatch` in `.github/workflows/dco.yml` accepted an operator-supplied `base_ref`
+input, fetched that ref, and executed `scripts/check-dco.js` from it. CodeQL flagged both
+steps as `actions/cache-poisoning/poisonable-step` (alerts #139/#140) in the default-branch
+context — HIGH findings on staging that cannot be dismissed. Before redesigning, prove actual
+usage from primary sources: the GitHub Actions runs API (`event=workflow_dispatch`) showed
+155/155 runs on `release-please--branches--{main,premain}--components--greater`, the last on
+2026-06-18 — before the two-branch model (f26bc81dd) retired release-please
+(`docs/devops/github-releases.md`: "no release-please, changesets, `premain`, promotion
+rehearsal, or auto-publish-on-merge path"). Branch protection requires `DCO Check` only as a
+PR-gated status check, served by the retained `pull_request` trigger. With that evidence the
+dispatch surface was unused and safe to remove: `dco.yml` is now `pull_request`-only,
+`permissions: contents: read`, with no cache, no `pull_request_target`, no input-controlled ref
+checkout or dynamic execution; manual DCO remains available locally
+(`node scripts/check-dco.js --base origin/staging`). Lesson: do not build a "secure variant"
+of a dead manual trigger to appease a scanner — first prove from run history + retirement docs
+whether the trigger has any live consumer; if not, remove the vulnerable surface outright and
+record the evidence in the workflow comment and PR body. Review-bot comments are anchored to
+the head they were filed on; after pushing fixes, re-check the comments API for new findings at
+the new head, and report old thread IDs as made-obsolete-by-code (Factory verifies/resolves;
+delegates do not resolve review threads).
+
+## 9. Round 4: provenance writer — runner GITHUB_SHA is the merge-ref SHA on pull_request events
+
+GitHub Actions does not let a step-level `env:` override change `GITHUB_SHA`; the runner's
+value is authoritative, and for `pull_request` events it is the PR merge-ref SHA
+(`refs/pull/<n>/merge`), never the commit under review. The round-3 fail-closed provenance
+writer compared the checked-out immutable PR head against `GITHUB_SHA`, so every
+`pull_request` run after the hardening landed died in the writer step with "checked-out HEAD
+... does not match GITHUB_SHA ..." — the verifier itself passed 28/28 (the red Governance
+Rubric check at the round-3 head and the new head was the writer, not the rubric). Fix:
+carry the immutable head in a non-reserved variable (`EXPECTED_HEAD_SHA`), and skip the
+`GITHUB_SHA` comparison when `GITHUB_EVENT_NAME == 'pull_request'` (head equivalence for PRs
+is already enforced against the event payload head). Proven by three deterministic
+event-shaped simulations: PR event with merge-ref GITHUB_SHA passes; wrong expected head
+fails closed; non-PR `GITHUB_SHA` mismatch fails closed. Lesson: know which runner variables
+are reserved/immutable and what they mean per event type before wiring a fail-closed gate,
+and prove CI paths with event-shaped local simulations.
