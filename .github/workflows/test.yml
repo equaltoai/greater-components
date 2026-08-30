@@ -47,6 +47,9 @@ jobs:
       - name: Validate packages
         run: pnpm validate:package
 
+      - name: Validate generator replay (zero diff)
+        run: pnpm check:generator-replay
+
       - name: Validate Registry (Strict)
         run: |
           if ! pnpm validate:registry; then

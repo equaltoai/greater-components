@@ -39,6 +39,8 @@ overrides:
   undici@^8.0.0: 8.9.0
   vite@^8.0.0: 8.2.0
   '@sveltejs/kit': 2.70.2
+  '@graphql-codegen/typescript': <6.0.0
+  '@graphql-codegen/typescript-operations': <6.0.0
 
 importers:
 
@@ -64,10 +66,10 @@ importers:
         specifier: ^6.1.7
         version: 6.1.7(graphql@16.13.2)
       '@graphql-codegen/typescript':
-        specifier: ^5.0.9
+        specifier: <6.0.0
         version: 5.0.9(graphql@16.13.2)
       '@graphql-codegen/typescript-operations':
-        specifier: ^5.0.9
+        specifier: <6.0.0
         version: 5.0.9(graphql@16.13.2)
       '@sveltejs/package':
         specifier: ^2.5.8
