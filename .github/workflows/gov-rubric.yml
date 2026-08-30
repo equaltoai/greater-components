@@ -56,13 +56,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Bind the fresh report to the exact head under test. The writer is
       # fail-closed: it aborts the job unless the checked-out HEAD, the expected
-      # PR head, GITHUB_SHA, and the event payload agree, and it records the
-      # immutable GitHub run identity. The uploaded artifact (report + sidecar)
-      # is the exact-head staging proof; the pre-commit JSON in the PR is a
-      # snapshot, not that proof.
+      # PR head, and the event payload agree, and it records the immutable
+      # GitHub run identity. EXPECTED_HEAD_SHA carries the immutable PR head;
+      # the runner's own GITHUB_SHA is the merge-ref SHA for pull_request events
+      # and is neither overridden nor compared by the writer on that path. The
+      # uploaded artifact (report + sidecar) is the exact-head staging proof;
+      # the pre-commit JSON in the PR is a snapshot, not that proof.
       - run: node gov-infra/verifiers/gov-write-provenance.mjs
         env:
-          GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
           EXPECTED_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
       # Upload success evidence only when verifier + provenance both succeeded;
       # a failure uploads an explicit failure manifest instead, so the absence

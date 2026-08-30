@@ -26,11 +26,15 @@
  * Fail-closed semantics: in a GitHub Actions environment the writer fails
  * (non-zero exit) — and the workflow therefore fails — if any of the required
  * runner variables are missing, if `GITHUB_SHA` or the expected head is not a
- * 40-hex SHA, or if the checked-out HEAD disagrees with the expected PR head /
- * `GITHUB_SHA`. A `pull_request` event must carry `pull_request.head.sha` in
- * the event payload and it must agree. A locally set `GITHUB_SHA` can never
- * upgrade `source` to `github-actions` on its own: the full GitHub Actions
- * environment must be present and consistent.
+ * 40-hex SHA, or if the checked-out HEAD disagrees with the expected PR head.
+ * A `pull_request` event must carry `pull_request.head.sha` in the event
+ * payload and it must agree with the checked-out HEAD. For non-PR events
+ * (push / workflow_dispatch / schedule), the checked-out HEAD must also agree
+ * with the runner's `GITHUB_SHA`; for `pull_request` events the runner's
+ * `GITHUB_SHA` is the PR merge-ref SHA and is intentionally not compared (the
+ * event head is authoritative). A locally set `GITHUB_SHA` can never upgrade
+ * `source` to `github-actions` on its own: the full GitHub Actions environment
+ * must be present and consistent.
  *
  * The CI-generated artifact (report + sidecar uploaded from
  * `.github/workflows/gov-rubric.yml` only after verifier + provenance both
@@ -140,7 +144,19 @@ if (actualHead && expectedHead && actualHead !== expectedHead) {
 			'CI must check out the immutable PR head, not the refs/pull merge SHA'
 	);
 }
-if (isGitHubActions && githubSha && actualHead && actualHead !== githubSha) {
+// For pull_request events the runner's GITHUB_SHA is the PR merge-ref SHA
+// (refs/pull/<n>/merge), which legitimately differs from the checked-out
+// immutable PR head; head equivalence for PRs is enforced above via
+// EXPECTED_HEAD_SHA / pull_request.head.sha. GITHUB_SHA is comparable only
+// for non-PR events (push / workflow_dispatch / schedule), where it is the
+// commit under test.
+if (
+	isGitHubActions &&
+	env.GITHUB_EVENT_NAME !== 'pull_request' &&
+	githubSha &&
+	actualHead &&
+	actualHead !== githubSha
+) {
 	errors.push(`checked-out HEAD ${actualHead} does not match GITHUB_SHA ${githubSha}`);
 }
 if (errors.length > 0) fail(errors);
