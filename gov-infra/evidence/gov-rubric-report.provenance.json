@@ -1,10 +1,10 @@
 {
   "reportPath": "gov-infra/evidence/gov-rubric-report.json",
-  "reportChecksumSha256": "640e16125a2f0ffbb81fd07423448aef4e99d2fd45cafdf6ff33cc3646f233ff",
-  "headSha": "9ad9b55fa1f62415d963a06dff690a04118aabee",
+  "reportChecksumSha256": "6f6810c01868e13d1a5381a587400187827f8df1fdfb3b5990888a2698562e30",
+  "headSha": "5626ddc7dfbf84c4eafd075a429eb3ed032798a7",
   "source": "local",
   "run": null,
-  "generatedAt": "2026-08-30T18:14:16Z",
+  "generatedAt": "2026-08-30T19:41:11Z",
   "canonicalReportSchema": "gov_rubric_report.v1",
   "verifier": {
     "path": "gov-infra/verifiers/gov-verify-rubric.sh",
