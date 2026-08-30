@@ -145,7 +145,7 @@ test('checkPlatform: current POSIX platform is supported', () => {
 test('replay safety: clean tree has no dirt', () => {
 	const cwd = createRepo();
 	try {
-		const { entries, error } = collectDirt({ cwd, roots: roots(cwd) });
+		const { entries, error } = collectDirt({ cwd, roots: roots() });
 		assert.equal(error, undefined);
 		assert.deepEqual(entries, []);
 	} finally {
@@ -158,7 +158,7 @@ test('replay safety: dirty tracked file is detected and left untouched (no data 
 	try {
 		const tracked = join(cwd, 'packages', 'adapters', 'src', 'rest', 'generated', 'lesser-api.ts');
 		writeFileSync(tracked, 'const wip = true;\n');
-		const { entries, error } = collectDirt({ cwd, roots: roots(cwd) });
+		const { entries, error } = collectDirt({ cwd, roots: roots() });
 		assert.equal(error, undefined);
 		assert.equal(entries.length, 1, JSON.stringify(entries));
 		assert.ok(entries[0].path.endsWith('lesser-api.ts'), entries[0].path);
@@ -178,7 +178,7 @@ test('replay safety: dirty untracked file is detected and left untouched', () =>
 	try {
 		const untracked = join(cwd, 'packages', 'adapters', 'src', 'rest', 'generated', 'wip.ts');
 		writeFileSync(untracked, 'const wip = true;\n');
-		const { entries, error } = collectDirt({ cwd, roots: roots(cwd) });
+		const { entries, error } = collectDirt({ cwd, roots: roots() });
 		assert.equal(error, undefined);
 		assert.equal(entries.length, 1, JSON.stringify(entries));
 		assert.ok(entries[0].path.endsWith('wip.ts'), entries[0].path);
@@ -194,7 +194,7 @@ test('replay safety: untracked directory is detected without data loss', () => {
 		const dir = join(cwd, 'packages', 'adapters', 'src', 'rest', 'generated', 'wip-dir');
 		mkdirSync(dir, { recursive: true });
 		writeFileSync(join(dir, 'nested.ts'), 'const wip = true;\n');
-		const { entries, error } = collectDirt({ cwd, roots: roots(cwd) });
+		const { entries, error } = collectDirt({ cwd, roots: roots() });
 		assert.equal(error, undefined);
 		assert.equal(entries.length, 1, JSON.stringify(entries));
 		assert.ok(entries[0].path.includes('wip-dir'), entries[0].path);
@@ -214,7 +214,7 @@ test('replay cleanup: restores tracked changes and removes replay-created untrac
 		mkdirSync(dir, { recursive: true });
 		writeFileSync(join(dir, 'nested.ts'), 'nested\n');
 
-		const errors = restoreReplayDirt({ cwd, roots: roots(cwd) });
+		const errors = restoreReplayDirt({ cwd, roots: roots() });
 		assert.deepEqual(errors, []);
 
 		assert.equal(readText(tracked), 'const committed = true;\n', 'tracked file must be restored');
@@ -234,7 +234,7 @@ test('replay cleanup: cleanup failures are surfaced loudly', () => {
 	try {
 		writeFileSync(join(cwd, 'packages', 'adapters', 'src', 'rest', 'generated', 'new.ts'), 'new\n');
 		const failingGit = () => ({ status: 1, stdout: '', stderr: 'simulated git failure' });
-		const errors = restoreReplayDirt({ cwd, roots: roots(cwd), gitFn: failingGit });
+		const errors = restoreReplayDirt({ cwd, roots: roots(), gitFn: failingGit });
 		assert.ok(errors.length > 0, 'cleanup failure must produce errors');
 		assert.ok(errors.join('\n').includes('simulated git failure'));
 	} finally {
@@ -247,7 +247,7 @@ test('diffAfterReplay: exposes replay drift without mutating the tree', () => {
 	try {
 		const tracked = join(cwd, 'packages', 'adapters', 'src', 'rest', 'generated', 'lesser-api.ts');
 		writeFileSync(tracked, 'const drift = true;\n');
-		const result = diffAfterReplay({ cwd, roots: roots(cwd) });
+		const result = diffAfterReplay({ cwd, roots: roots() });
 		assert.equal(result.error, undefined);
 		assert.equal(result.changed.length, 1, JSON.stringify(result.changed));
 		assert.ok(result.diff.includes('drift'), result.diff);
