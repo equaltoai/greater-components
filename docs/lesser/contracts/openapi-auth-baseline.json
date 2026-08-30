@@ -1,49 +1,16 @@
 {
   "_comment": "Auth gap baseline for docs/lesser/contracts/openapi.yaml. Each entry is an endpoint missing a `security:` block in the pinned Lesser OpenAPI snapshot. The fix belongs in Lesser's route contracts. Do not hand-edit openapi.yaml in Greater.",
   "_instructions": "When Lesser publishes a release with auth metadata fixes, resync this snapshot and regenerate this baseline via: node scripts/check-openapi-auth.mjs --write-baseline",
-  "known_gaps": [
-    {
-      "method": "POST",
-      "path": "/api/v1/agents/{username}/access-leases/{leaseID}/renew/challenge",
-      "tags": ["agents"]
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/agents/{username}/access-leases/{leaseID}/session-key",
-      "tags": ["agents"]
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/agents/{username}/access-leases/{leaseID}/session-key/challenge",
-      "tags": ["agents"]
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/agents/{username}/access-leases/{leaseID}/token",
-      "tags": ["agents"]
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/auth/webauthn/signup/begin",
-      "tags": ["auth"],
-      "note": "Intentionally anonymous, not an upstream defect. Signup ceremony entry point: it issues the WebAuthn creation challenge before any credential or account exists, so there is nothing to authenticate. Lesser's public-surface rules classify the route anonymous and rate-limit it 20/5m (the pinned operation carries X-RateLimit-* headers and a 429 response, and declares no 401/403). The PROG-M1 M2 cross-client adversarial review verified that classification (verdict: agree — \"Both routes public, 20/5m, classified anonymous\"). Structurally identical to POST /api/v1/auth/webauthn/login/begin, which this probe already exempts by name. Do not report upstream as missing auth."
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/auth/webauthn/signup/finish",
-      "tags": ["auth"],
-      "note": "Intentionally anonymous, not an upstream defect. Signup ceremony completion: it verifies the attestation from /signup/begin and returns passkey_registration_proof, which the caller then spends on POST /api/v1/accounts — the proof, not a bearer token, is the credential here. Lesser's public-surface rules classify the route anonymous and rate-limit it 20/5m (the pinned operation carries X-RateLimit-* headers and a 429 response, and declares no 401/403). The PROG-M1 M2 cross-client adversarial review verified that classification (verdict: agree — \"Both routes public, 20/5m, classified anonymous\"). Structurally identical to POST /api/v1/auth/webauthn/login/finish, which this probe already exempts by name. Do not report upstream as missing auth."
-    }
-  ],
+  "known_gaps": [],
   "meta": {
     "spec_path": "docs/lesser/contracts/openapi.yaml",
-    "generated_at": "2026-08-18T14:54:11.340Z",
+    "generated_at": "2026-08-30T12:56:39.019Z",
     "has_global_security": false,
     "has_security_schemes": true,
     "security_scheme_names": ["bearerAuth", "oauth2", "setupBearer", "soulBindingBearer"],
-    "total_paths": 304,
-    "sensitive_checked": 177,
-    "with_security": 150,
-    "without_security": 6
+    "total_paths": 308,
+    "sensitive_checked": 179,
+    "with_security": 176,
+    "without_security": 0
   }
 }
