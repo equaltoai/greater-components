@@ -85,15 +85,15 @@
     "svelte": "^5.43.6"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^7.0.0",
+    "@sveltejs/vite-plugin-svelte": "^7.3.0",
     "@testing-library/svelte": "5.4.2",
-    "@types/node": "^25.6.0",
-    "@vitest/coverage-v8": "^4.1.10",
+    "@types/node": "^26.2.0",
+    "@vitest/coverage-v8": "^4.1.11",
     "jsdom": "^29.0.2",
-    "svelte": "^5.55.1",
+    "svelte": "^5.56.10",
     "typescript": "^6.0.2",
-    "vite": "^8.2.0",
-    "vitest": "^4.1.10"
+    "vite": "^8.2.2",
+    "vitest": "^4.1.11"
   },
   "dependencies": {
     "focus-trap": "^8.2.2",

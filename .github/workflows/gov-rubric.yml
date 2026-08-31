@@ -15,11 +15,28 @@ jobs:
     env:
       PLAYWRIGHT_A11Y_USE_SYSTEM_CHROME: 'true'
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
-      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271
+      # Check out the immutable PR head SHA (pull_request events default to the
+      # refs/pull merge SHA, which is not the commit under review).
+      - name: Checkout repository (immutable PR head)
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Verify checked-out HEAD is the exact PR head
+        env:
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          ACTUAL_HEAD="$(git rev-parse HEAD)"
+          if [ -z "$EXPECTED_HEAD" ] || [ "$ACTUAL_HEAD" != "$EXPECTED_HEAD" ]; then
+            echo "::error::Checked out $ACTUAL_HEAD; expected immutable head $EXPECTED_HEAD. Failing instead of producing merge-SHA provenance."
+            exit 1
+          fi
+          echo "Checked out exact head $ACTUAL_HEAD"
+
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
         with:
           version: 10.25.0
-      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
           node-version-file: .nvmrc
           cache: pnpm
@@ -37,8 +54,39 @@ jobs:
       - run: bash gov-infra/verifiers/gov-verify-rubric.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - if: always()
+      # Bind the fresh report to the exact head under test. The writer is
+      # fail-closed: it aborts the job unless the checked-out HEAD, the expected
+      # PR head, and the event payload agree, and it records the immutable
+      # GitHub run identity. EXPECTED_HEAD_SHA carries the immutable PR head;
+      # the runner's own GITHUB_SHA is the merge-ref SHA for pull_request events
+      # and is neither overridden nor compared by the writer on that path. The
+      # uploaded artifact (report + sidecar) is the exact-head staging proof;
+      # the pre-commit JSON in the PR is a snapshot, not that proof.
+      - run: node gov-infra/verifiers/gov-write-provenance.mjs
+        env:
+          EXPECTED_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      # Upload success evidence only when verifier + provenance both succeeded;
+      # a failure uploads an explicit failure manifest instead, so the absence
+      # of the evidence artifact can never be mistaken for PASS.
+      - name: Upload rubric evidence (verifier + provenance succeeded)
+        if: success()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: gov-rubric-evidence
           path: gov-infra/evidence/
+          if-no-files-found: error
+      - name: Write failure manifest
+        if: failure()
+        run: |
+          mkdir -p gov-infra/evidence
+          printf '{"status":"failure","reason":"rubric verifier or provenance writer failed","runId":"%s","runUrl":"%s","headSha":"%s"}\n' \
+            "${{ github.run_id }}" \
+            "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            "${{ github.event.pull_request.head.sha || github.sha }}" > gov-infra/evidence/gov-rubric-failure.json
+      - name: Upload failure manifest
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: gov-rubric-failure
+          path: gov-infra/evidence/gov-rubric-failure.json
+          if-no-files-found: error

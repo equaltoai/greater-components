@@ -2,7 +2,10 @@
 Review.QueueCard - SSR-safe queue card for the shared-draft review workflow
 
 Renders one entry of a review queue: draft identity (title, subtitle, excerpt,
-last-updated), author/agent attribution, and the current verdict state.
+last-updated), author/agent attribution, and the resolved verdict state —
+including the stale-approval demotion, which keeps a recorded approval visible
+but strips it of the success tone and wording once Lesser marks it void for
+the current revision.
 
 The card deliberately does not wrap itself in a single anchor: verdict actions
 are composed into the `actions` snippet, and nesting a button inside an anchor
@@ -92,6 +95,9 @@ link and actions sit alongside it.
 			<p class={stateClass}>
 				<span class="gr-blog-review-card__state-label">{state.label}</span>
 			</p>
+			{#if state.detail}
+				<p class="gr-blog-review-card__state-detail">{state.detail}</p>
+			{/if}
 			{#if state.source !== 'none'}
 				<span class="gr-blog-review-card__state-note">{REVIEW_STATE_QUALIFIER}</span>
 			{/if}

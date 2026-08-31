@@ -14,6 +14,9 @@ import { dirname, resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
 	REVIEW_STATE_QUALIFIER,
+	REVIEW_STALE_APPROVAL_DETAIL,
+	REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL,
+	REVIEW_STALE_APPROVAL_LABEL,
 	describeApprovalRequirement,
 	resolveReviewState,
 } from '../../src/components/Review/state.js';
@@ -74,11 +77,48 @@ describe('Lesser shared-draft review contract', () => {
 
 		// v1.6.4 adds canonical draft revision, grant-set, and publication eligibility data;
 		// v1.6.5 adds nullable actedBy attribution on Draft/Article. v1.6.22 carries the
-		// PROG-M1 passkey signup surface and leaves the review types untouched, so the
-		// boundary moves without any change to the assertions below. They keep the review
-		// chrome pinned to the exact synchronized release boundary.
-		expect(ref).toContain('tag: v1.6.22');
+		// PROG-M1 passkey signup surface. v1.6.23-v1.6.28 add the M3 editorial-media and
+		// M4 promo-package surfaces and extend submitDraftReview / shareDraftForReview with
+		// optional includeAccessUrls / contentHash args; the review types themselves
+		// (DraftReview, DraftReviewVerdict, DraftReviewVerdictRecord, DraftReviewGrant,
+		// publishEligibility) are untouched, so the boundary moves without any change to
+		// the assertions below. They keep the review chrome pinned to the exact
+		// synchronized release boundary.
+		expect(ref).toContain('tag: v1.6.28');
 		expect(ref).toMatch(/commit: [0-9a-f]{40}/);
+	});
+
+	it('keeps every LESSER_REF version comment aligned with the pinned tag', () => {
+		// The review chrome's comments name the contract they mirror. When the
+		// pin moves during a sync-contracts walk, these references must move
+		// with it — a comment citing an old tag is a lie about authority, so
+		// this check derives the expected version from LESSER_REF.txt itself
+		// and fails until every mention is brought in line.
+		const pinnedTag = /tag:\s*(v[0-9]+\.[0-9]+\.[0-9]+)/.exec(readLesserRef())?.[1];
+		expect(pinnedTag, 'LESSER_REF.txt carries no parsable release tag').toBeDefined();
+
+		const commentedFiles = [
+			'packages/faces/blog/src/types.ts',
+			'packages/faces/blog/tests/integration/review-round-trip.flow.test.ts',
+			'packages/faces/blog/tests/mocks/mockDraftReview.ts',
+		];
+
+		for (const relativePath of commentedFiles) {
+			const source = readFileSync(resolve(findRepoRoot(), relativePath), 'utf8');
+			const mentions = [...source.matchAll(/LESSER_REF (v[0-9]+\.[0-9]+\.[0-9]+)/g)].map(
+				(match) => match[1]
+			);
+
+			expect(
+				mentions.length,
+				`${relativePath} no longer names the pinned contract`
+			).toBeGreaterThan(0);
+			for (const mention of mentions) {
+				expect(mention, `${relativePath} cites ${mention}; pinned contract is ${pinnedTag}`).toBe(
+					pinnedTag
+				);
+			}
+		}
 	});
 
 	it('declares every DraftReview field the chrome renders', () => {
@@ -126,6 +166,35 @@ describe('Lesser shared-draft review contract', () => {
 		expect(readTypeBlock(schema, 'type DraftReviewVerdictRecord {')).toEqual(
 			expect.arrayContaining(['verdict', 'notes', 'reviewer', 'recordedAt'])
 		);
+	});
+
+	it('carries exact authoritative current/stale verdict markers and contentHash', () => {
+		// v1.6.28: the server computes whether a verdict record still applies to
+		// the current draft revision and active grant (current/stale), and binds
+		// records to content with contentHash. These are authoritative gate
+		// inputs — the chrome must never substitute activity history for them.
+		const block = /type DraftReviewVerdictRecord \{([\s\S]*?)\n\}/.exec(schema)?.[1] ?? '';
+		const fields = block
+			.replace(/"""[\s\S]*?"""/g, '')
+			.split('\n')
+			.map((line) => line.trim())
+			.filter((line) => line.length > 0 && !line.startsWith('#'))
+			.map((line) => line.split(/[:(\s]/)[0] ?? '')
+			.filter((name) => name.length > 0);
+
+		expect(fields).toEqual([
+			'verdict',
+			'notes',
+			'contentHash',
+			'reviewerId',
+			'reviewer',
+			'recordedAt',
+			'current',
+			'stale',
+		]);
+		expect(block).toContain('contentHash: String');
+		expect(block).toContain('current: Boolean!');
+		expect(block).toContain('stale: Boolean!');
 	});
 
 	it('declares the grant fields backing the revocable-invitation row', () => {
@@ -247,15 +316,98 @@ describe('Lesser shared-draft review contract', () => {
 		});
 	});
 
+	describe('stale approval policy (issue #1055)', () => {
+		it('consumes the authoritative current/stale markers instead of inferring staleness', () => {
+			// A media or content change stales earlier verdicts upstream; the
+			// chrome must read that decision, not reconstruct it.
+			const marked = createMockDraftReview('d1', {
+				verdicts: [createMockVerdict({ verdict: 'APPROVED', stale: true })],
+			});
+			expect(resolveReviewState(marked)).toMatchObject({
+				tone: 'stale-approved',
+				label: REVIEW_STALE_APPROVAL_LABEL,
+				stale: true,
+			});
+
+			const clearedCurrent = createMockDraftReview('d2', {
+				verdicts: [createMockVerdict({ verdict: 'APPROVED', current: false })],
+			});
+			expect(resolveReviewState(clearedCurrent).tone).toBe('stale-approved');
+
+			// Absent markers (older/partial projections) leave the qualified
+			// activity badge in place — staleness is never guessed.
+			const unmarked = createMockDraftReview('d3', {
+				verdicts: [createMockVerdict({ verdict: 'APPROVED' })],
+			});
+			expect(resolveReviewState(unmarked)).toMatchObject({
+				tone: 'approved',
+				label: 'Latest verdict: Approved',
+				stale: false,
+			});
+		});
+
+		it('never pairs a stale approval with the success tone or a bare Approved label', () => {
+			const states = [
+				resolveReviewState(
+					createMockDraftReview('d1', {
+						verdicts: [createMockVerdict({ verdict: 'APPROVED', stale: true })],
+					})
+				),
+				resolveReviewState(
+					createMockDraftReview('d2', {
+						reviewStatus: 'Approved',
+						verdicts: [createMockVerdict({ verdict: 'APPROVED', current: false })],
+					})
+				),
+			];
+
+			for (const state of states) {
+				expect(state.tone).not.toBe('approved');
+				expect(state.label).not.toBe('Approved');
+				expect(state.detail).toBeTruthy();
+				expect(state.detail).toContain('no longer counts');
+			}
+		});
+
+		it('names the outstanding principal approval from publishEligibility, not from history', () => {
+			const principal = createMockDraftReview('d1', {
+				generatedBy: createMockAgentActor('a1'),
+				verdicts: [createMockVerdict({ verdict: 'APPROVED', stale: true })],
+				publishEligibility: {
+					eligible: false,
+					blockingReasons: [],
+					reviewersApproved: false,
+					principalApprovalRequired: true,
+					principalApproved: false,
+				},
+			});
+			const generic = createMockDraftReview('d2', {
+				verdicts: [createMockVerdict({ verdict: 'APPROVED', stale: true })],
+			});
+
+			expect(resolveReviewState(principal).detail).toBe(REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL);
+			expect(resolveReviewState(generic).detail).toBe(REVIEW_STALE_APPROVAL_DETAIL);
+		});
+	});
+
 	it('exposes the review queries and mutations the adapters bind', () => {
 		expect(schema).toContain(
 			'sharedDraftReviews(first: Int, after: Cursor): DraftReviewConnection!'
 		);
-		expect(schema).toContain('draftReview(id: ID!): DraftReview');
-		expect(schema).toContain('shareDraftForReview(draftId: ID!, reviewer: String!): DraftReview!');
+		// Draft preview is the M3 editorial-media render surface; includeAccessUrls
+		// defaults to false so protected media URLs stay explicit opt-in.
+		expect(schema).toContain(
+			'draftPreview(id: ID!, includeAccessUrls: Boolean = false): DraftPreview!'
+		);
+		expect(schema).toContain(
+			'draftReview(id: ID!, includeAccessUrls: Boolean = false): DraftReview'
+		);
+		expect(schema).toContain(
+			'shareDraftForReview(draftId: ID!, reviewer: String!, includeAccessUrls: Boolean = false): DraftReview!'
+		);
 		expect(schema).toContain('revokeDraftReview(draftId: ID!, reviewer: String!): Boolean!');
 		expect(schema).toContain(
-			'submitDraftReview(draftId: ID!, verdict: DraftReviewVerdict!, notes: String): DraftReview!'
+			'submitDraftReview(draftId: ID!, verdict: DraftReviewVerdict!, notes: String, includeAccessUrls: Boolean = false, contentHash: String): DraftReview!'
 		);
 	});
 });

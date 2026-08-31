@@ -616,7 +616,7 @@ export interface NavigationContext {
 // ============================================================================
 //
 // These mirror the pinned Lesser contract snapshot in
-// `docs/lesser/contracts/graphql-schema.graphql` (LESSER_REF v1.6.0). Lesser
+// `docs/lesser/contracts/graphql-schema.graphql` (LESSER_REF v1.6.28). Lesser
 // v1.5.33 introduced the shareable-draft review surface: `DraftReview`,
 // `DraftReviewGrant`, `DraftReviewVerdictRecord`, the `DraftReviewVerdict`
 // enum, and the `sharedDraftReviews` / `draftReview` /
@@ -825,8 +825,14 @@ export interface ReviewApprovalRequirement {
 
 /**
  * Tone used to style a resolved review state.
+ *
+ * `stale-approved` is deliberately **not** a success tone: it marks a recorded
+ * approval that Lesser has authoritatively voided for the current revision
+ * (`DraftReviewVerdictRecord.stale` / `.current`), so it must never render with
+ * the green `approved` styling or wording implying the current revision is
+ * approved.
  */
-export type ReviewStateTone = 'approved' | 'changes-requested' | 'pending';
+export type ReviewStateTone = 'approved' | 'changes-requested' | 'pending' | 'stale-approved';
 
 /**
  * A resolved, renderable review state.
@@ -851,6 +857,25 @@ export interface ReviewStateDescriptor {
 	 * Consumers must not read either activity value as "this draft may publish".
 	 */
 	source: 'server' | 'verdicts' | 'none';
+	/**
+	 * Whether the named approval no longer applies to the current revision.
+	 *
+	 * `true` only when Lesser's authoritative verdict-record markers
+	 * (`DraftReviewVerdictRecord.stale` / `.current`) void the newest recorded
+	 * approval. Absent markers (older or partial projections) leave this
+	 * `false` — staleness is consumed from the server, never inferred.
+	 *
+	 * Typed optional so downstream TypeScript construction of descriptors stays
+	 * additive; `resolveReviewState` itself emits an explicit boolean for every
+	 * state it returns.
+	 */
+	stale?: boolean;
+	/**
+	 * Supplementary sentence the chrome renders alongside the badge when the
+	 * state needs one — currently the stale-approval explanation. Rendered as
+	 * visible text so the meaning never depends on badge colour.
+	 */
+	detail?: string;
 }
 
 /**

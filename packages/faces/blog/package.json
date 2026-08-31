@@ -59,7 +59,7 @@
     "src"
   ],
   "scripts": {
-    "build": "vite build && tsc -b --force --emitDeclarationOnly && node ../../../scripts/copy-svelte-to-dist.js && cp src/theme.css dist/greater-components-blog.css && node ../../../scripts/assert-face-runes-compiled.mjs blog && node scripts/assert-article-dependency-boundary.mjs",
+    "build": "vite build && tsc -b --force --emitDeclarationOnly && node ../../../scripts/copy-svelte-to-dist.js && cp src/theme.css dist/greater-components-blog.css && node ../../../scripts/assert-face-runes-compiled.mjs blog && node scripts/assert-article-dependency-boundary.mjs && node scripts/assert-dist-public-exports.mjs",
     "clean": "rm -rf dist",
     "dev": "vite build --watch",
     "test": "vitest run",
@@ -80,17 +80,17 @@
   "devDependencies": {
     "@equaltoai/greater-components-adapters": "workspace:*",
     "@playwright/test": "^1.62.1",
-    "@sveltejs/vite-plugin-svelte": "^7.0.0",
-    "@testing-library/jest-dom": "6.9.1",
+    "@sveltejs/vite-plugin-svelte": "^7.3.0",
+    "@testing-library/jest-dom": "7.0.1",
     "@testing-library/svelte": "5.4.2",
-    "@types/node": "^25.6.0",
-    "@vitest/coverage-v8": "^4.1.10",
-    "@vitest/ui": "^4.1.10",
+    "@types/node": "^26.2.0",
+    "@vitest/coverage-v8": "^4.1.11",
+    "@vitest/ui": "^4.1.11",
     "jsdom": "^29.0.2",
-    "svelte": "^5.55.1",
+    "svelte": "^5.56.10",
     "typescript": "^6.0.2",
-    "vite": "^8.2.0",
-    "vitest": "^4.1.10"
+    "vite": "^8.2.2",
+    "vitest": "^4.1.11"
   },
   "peerDependencies": {
     "@equaltoai/greater-components-content": "workspace:*",

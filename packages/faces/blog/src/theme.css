@@ -886,6 +886,13 @@
 	--gr-blog-review-agent-bg: var(--gr-color-primary-100);
 	--gr-blog-review-agent-fg: var(--gr-color-primary-900, var(--gr-color-primary-700));
 	--gr-blog-review-agent-border: var(--gr-color-primary-300);
+
+	/* A stale approval is deliberately not a success colour: Lesser has voided
+	   the record for the current revision, so it gets the neutral palette and a
+	   dashed border rather than the approved green. */
+	--gr-blog-review-stale-bg: var(--gr-color-gray-100);
+	--gr-blog-review-stale-fg: var(--gr-color-gray-800);
+	--gr-blog-review-stale-border: var(--gr-color-gray-400);
 }
 
 [data-theme='dark'] {
@@ -904,6 +911,10 @@
 	--gr-blog-review-agent-bg: var(--gr-color-primary-900);
 	--gr-blog-review-agent-fg: var(--gr-color-primary-100);
 	--gr-blog-review-agent-border: var(--gr-color-primary-700);
+
+	--gr-blog-review-stale-bg: var(--gr-color-gray-800);
+	--gr-blog-review-stale-fg: var(--gr-color-gray-100);
+	--gr-blog-review-stale-border: var(--gr-color-gray-500);
 }
 
 /* --------------------------------------------------------------------------
@@ -1053,6 +1064,30 @@
 	border-color: var(--gr-blog-review-pending-border);
 }
 
+/* A recorded approval that Lesser has voided for the current revision: neutral
+   palette plus a dashed border so it is distinct from both the approved green
+   and the plain pending badge without relying on colour alone. */
+.gr-blog-review-card__state--stale-approved {
+	background: var(--gr-blog-review-stale-bg);
+	color: var(--gr-blog-review-stale-fg);
+	border-color: var(--gr-blog-review-stale-border);
+	border-style: dashed;
+}
+
+/* The stale-approval explanation. Deliberately text, never colour: it states
+   that the recorded approval no longer counts. */
+.gr-blog-review-card__state-detail {
+	margin: 0;
+	font-size: 0.6875rem;
+	font-weight: 600;
+	text-align: right;
+	color: var(--gr-color-gray-700);
+}
+
+[data-theme='dark'] .gr-blog-review-card__state-detail {
+	color: var(--gr-color-gray-300);
+}
+
 .gr-blog-review-card__agent-badge,
 .gr-blog-review-attribution__agent-badge {
 	display: inline-flex;
@@ -1138,6 +1173,23 @@
 	background: var(--gr-blog-review-pending-bg);
 	color: var(--gr-blog-review-pending-fg);
 	border-color: var(--gr-blog-review-pending-border);
+}
+
+.gr-blog-review-attribution__state--stale-approved {
+	background: var(--gr-blog-review-stale-bg);
+	color: var(--gr-blog-review-stale-fg);
+	border-color: var(--gr-blog-review-stale-border);
+	border-style: dashed;
+}
+
+.gr-blog-review-attribution__state-detail {
+	font-size: 0.8125rem;
+	font-weight: 600;
+	color: var(--gr-color-gray-700);
+}
+
+[data-theme='dark'] .gr-blog-review-attribution__state-detail {
+	color: var(--gr-color-gray-300);
 }
 
 .gr-blog-review-attribution__notes,
