@@ -271,5 +271,13 @@ goes red, run the `sync-contracts` walk — do not patch the view model in place
 The built-package half of the export promise is machine-enforced too:
 `scripts/assert-dist-public-exports.mjs` runs at the end of the package build
 and fails any build whose `exports` conditions or `dist/index.js` /
-`dist/index.d.ts` export surface drops the pinned review exports, so a
-consumer installing the released package always gets them.
+`dist/index.d.ts` export surface drops the pinned review exports — or whose
+built graphs resolve any of the four pinned constants to anything other than
+the exact wording above. The gate traces each constant through the built
+module graph (runtime entry and declaration entry alike) to its initializer
+and compares it against the authoritative expected-value map in the script;
+a mutated or statically unresolvable value fails the build. The parser
+accepts both spaced and minified-compact export forms and is fail-closed:
+any shape it cannot prove fails rather than passes. A consumer installing the
+released package therefore always gets the pinned names with the pinned
+wording.
