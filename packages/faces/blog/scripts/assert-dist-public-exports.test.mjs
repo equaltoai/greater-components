@@ -1,44 +1,22 @@
-/**
- * Unit tests for the post-build dist public-export parity assertion.
- *
- * The script's job is to fail a build whose built package root stops carrying
- * the pinned #1055 review exports — or carries them with altered values.
- * These tests pin the script's own logic: the export-statement parser (both
- * spaced and compact/minified emission forms, with no false-pass path for
- * export-shaped text inside identifiers, strings, or comments), the value
- * resolver that walks built module graphs to each constant's initializer,
- * the authoritative expected-value map, the `export *` follower, the
- * exports-map condition check, and the Node-import boundary that makes static
- * inspection the right mechanism — so a parser regression cannot silently
- * weaken the gate. Run via `pnpm test:scripts:blog-dist-exports` (wired into
- * `pnpm test:scripts`, which CI runs after "Build packages").
- */
-
 import assert from 'node:assert/strict';
-import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { test } from 'node:test';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import {
 	EXPECTED_PINNED_VALUES,
 	REQUIRED_PUBLIC_EXPORTS,
 	auditPinnedValues,
-	collectModuleExports,
 	mismatchedRootConditions,
 	missingRequiredExports,
-	parseSpecifier,
 	resolveExportedStringValue,
 	resolveExportSurface,
-	stripComments,
 } from './assert-dist-public-exports.mjs';
 
-/**
- * @template T
- * @param {(dir: string) => T} run
- * @returns {T}
- */
+/** @template T @param {(dir: string) => T} run @returns {T} */
 function withTempDir(run) {
 	const dir = join(tmpdir(), `blog-dist-exports-test-${Date.now()}-${Math.random()}`);
 	mkdirSync(dir, { recursive: true });
@@ -49,176 +27,32 @@ function withTempDir(run) {
 	}
 }
 
-test('collectModuleExports reads named, aliased, typed, and local exports', () => {
-	const { names, starFrom } = collectModuleExports(
-		[
-			'export { REVIEW_STATE_QUALIFIER } from "./components/Review/state.js";',
-			'export { Card as ArticleCard } from "./components/Article/index.js";',
-			'export type { ReviewStateTone } from "./types.js";',
-			'export const REVIEW_STALE_APPROVAL_LABEL = "Latest verdict: Approved (superseded)";',
-			'export * from "./patterns/index.js";',
-			'export * as helpers from "./helpers.js";',
-		].join('\n')
+/** @type {string[]} */
+const NAMES = [...REQUIRED_PUBLIC_EXPORTS];
+/** @type {Readonly<Record<string, string>>} */
+const VALUES = EXPECTED_PINNED_VALUES;
+
+/** @param {string} dist */
+function writeBuiltGraph(dist) {
+	mkdirSync(join(dist, 'review'), { recursive: true });
+	writeFileSync(
+		join(dist, 'index.js'),
+		`export { ${NAMES.join(', ')} } from "./review/state.js";\n`
 	);
-
-	assert.deepEqual(
-		[...names].sort(),
-		[
-			'ArticleCard',
-			'REVIEW_STALE_APPROVAL_LABEL',
-			'REVIEW_STATE_QUALIFIER',
-			'ReviewStateTone',
-			'helpers',
-		].sort()
+	writeFileSync(
+		join(dist, 'review', 'state.js'),
+		`var ${NAMES.map((name) => `${name}=${JSON.stringify(VALUES[name])}`).join(',')};export{${NAMES.join(',')}};`
 	);
-	assert.deepEqual(starFrom, ['./patterns/index.js']);
-});
-
-test('stripComments removes comments without touching module specifiers', () => {
-	const stripped = stripComments(
-		[
-			'/** block comment mentioning export { FAKE } */',
-			'// line comment mentioning export { ALSO_FAKE }',
-			'export { REAL } from "./real.js"; // trailing',
-		].join('\n')
+	writeFileSync(join(dist, 'index.d.ts'), `export * from "./review/state.js";\n`);
+	writeFileSync(
+		join(dist, 'review', 'state.d.ts'),
+		NAMES.map((name) => `export declare const ${name} = ${JSON.stringify(VALUES[name])};`).join(
+			'\n'
+		)
 	);
+}
 
-	const { names } = collectModuleExports(stripped);
-	assert.deepEqual([...names], ['REAL']);
-});
-
-test('resolveExportSurface follows relative star re-exports within dist', () =>
-	withTempDir((dir) => {
-		writeFileSync(
-			join(dir, 'index.js'),
-			['export { REVIEW_STATE_QUALIFIER } from "./state.js";', 'export * from "./extra.js";'].join(
-				'\n'
-			)
-		);
-		writeFileSync(join(dir, 'state.js'), 'export const REVIEW_STATE_QUALIFIER = "q";');
-		writeFileSync(
-			join(dir, 'extra.js'),
-			'export { REVIEW_STALE_APPROVAL_LABEL } from "./labels.js";'
-		);
-		writeFileSync(join(dir, 'labels.js'), 'export const REVIEW_STALE_APPROVAL_LABEL = "l";');
-
-		const surface = resolveExportSurface(join(dir, 'index.js'));
-		assert.ok(surface.has('REVIEW_STATE_QUALIFIER'));
-		assert.ok(surface.has('REVIEW_STALE_APPROVAL_LABEL'));
-		assert.deepEqual(missingRequiredExports(surface), [
-			'REVIEW_STALE_APPROVAL_DETAIL',
-			'REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL',
-		]);
-	}));
-
-test('missingRequiredExports names every absent pinned export', () => {
-	const surface = new Set(['REVIEW_STATE_QUALIFIER']);
-	assert.deepEqual(missingRequiredExports(surface), [
-		'REVIEW_STALE_APPROVAL_LABEL',
-		'REVIEW_STALE_APPROVAL_DETAIL',
-		'REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL',
-	]);
-	assert.deepEqual(missingRequiredExports(new Set(REQUIRED_PUBLIC_EXPORTS)), []);
-});
-
-test('mismatchedRootConditions flags drifted or absent exports["."] conditions', () => {
-	const good = {
-		'.': {
-			types: './dist/index.d.ts',
-			svelte: './src/index.ts',
-			import: './dist/index.js',
-		},
-	};
-	assert.deepEqual(mismatchedRootConditions(good), []);
-
-	const drifted = {
-		'.': { types: './dist/index.d.ts', svelte: './src/index.ts', import: './src/index.ts' },
-	};
-	assert.deepEqual(mismatchedRootConditions(drifted), [
-		{ condition: 'import', expected: './dist/index.js', actual: './src/index.ts' },
-	]);
-
-	assert.deepEqual(mismatchedRootConditions(undefined), [
-		{ condition: 'types', expected: './dist/index.d.ts', actual: '(absent)' },
-		{ condition: 'svelte', expected: './src/index.ts', actual: '(absent)' },
-		{ condition: 'import', expected: './dist/index.js', actual: '(absent)' },
-	]);
-});
-
-test('plain Node cannot import a graph containing .svelte modules (the static-inspection boundary)', async () =>
-	withTempDir(async (dir) => {
-		// The built blog dist transitively imports raw .svelte modules (the
-		// primitives face re-exports them); only a bundler honouring the
-		// package's `svelte` condition can consume that graph. Reproduce the
-		// boundary with the minimal shape so the assertion script's choice of
-		// static export-surface inspection stays justified and tested.
-		writeFileSync(join(dir, 'widget.svelte'), '<p>widget</p>\n');
-		writeFileSync(join(dir, 'entry.js'), 'import "./widget.svelte";\nexport const ok = true;\n');
-
-		await assert.rejects(
-			() => import(pathToFileURL(join(dir, 'entry.js')).href),
-			(/** @type {NodeJS.ErrnoException} */ error) => {
-				assert.equal(error.code, 'ERR_UNKNOWN_FILE_EXTENSION');
-				assert.match(String(error.message), /\.svelte/);
-				return true;
-			}
-		);
-	}));
-
-test('collectModuleExports accepts compact export forms a minifier may emit', () => {
-	const { names, starFrom } = collectModuleExports(
-		'var a="Latest verdict: Approved (superseded)";' +
-			'export{a as REVIEW_STALE_APPROVAL_LABEL};' +
-			'export{REVIEW_STATE_QUALIFIER}from"./state.js";' +
-			'export type{ReviewStateTone}from"./types.js";' +
-			'export*from"./extra.js";'
-	);
-
-	assert.deepEqual(
-		[...names].sort(),
-		['REVIEW_STALE_APPROVAL_LABEL', 'REVIEW_STATE_QUALIFIER', 'ReviewStateTone'].sort()
-	);
-	assert.deepEqual(starFrom, ['./extra.js']);
-});
-
-test('collectModuleExports never matches export-shaped text inside identifiers, strings, or comments', () => {
-	const { names } = collectModuleExports(
-		[
-			'var reexport = { REVIEW_STALE_APPROVAL_LABEL: "fake" };',
-			'var doc = "export { REVIEW_STATE_QUALIFIER } from \\"./fake.js\\"";',
-			'/* export { BLOCK_FAKE } */',
-			'// export { LINE_FAKE }',
-			'export{REAL};',
-		].join('\n')
-	);
-
-	assert.deepEqual([...names], ['REAL']);
-});
-
-test('the scanner survives regex literals that contain quote characters', () => {
-	const { names } = collectModuleExports(
-		['var quoteRe = /["\'`]/;', 'export { REVIEW_STATE_QUALIFIER } from "./state.js";'].join('\n')
-	);
-
-	assert.deepEqual([...names], ['REVIEW_STATE_QUALIFIER']);
-});
-
-test('parseSpecifier accepts identifier pairs and rejects everything else', () => {
-	assert.deepEqual(parseSpecifier('REVIEW_STATE_QUALIFIER'), {
-		local: 'REVIEW_STATE_QUALIFIER',
-		exported: 'REVIEW_STATE_QUALIFIER',
-	});
-	assert.deepEqual(parseSpecifier('a as REVIEW_STATE_QUALIFIER'), {
-		local: 'a',
-		exported: 'REVIEW_STATE_QUALIFIER',
-	});
-	assert.deepEqual(parseSpecifier(' type Foo as Bar '), { local: 'Foo', exported: 'Bar' });
-	assert.equal(parseSpecifier('"string name" as Bar'), null);
-	assert.equal(parseSpecifier(''), null);
-	assert.equal(parseSpecifier('A as'), null);
-});
-
-test('EXPECTED_PINNED_VALUES is the exact pinned #1055 wording and nothing else', () => {
+test('expected map pins exactly the four #1055 values', () => {
 	assert.deepEqual(EXPECTED_PINNED_VALUES, {
 		REVIEW_STALE_APPROVAL_LABEL: 'Latest verdict: Approved (superseded)',
 		REVIEW_STALE_APPROVAL_DETAIL:
@@ -227,236 +61,257 @@ test('EXPECTED_PINNED_VALUES is the exact pinned #1055 wording and nothing else'
 			'This approval no longer counts. Principal approval for the current revision is outstanding.',
 		REVIEW_STATE_QUALIFIER: 'latest activity, not publication state',
 	});
-	assert.deepEqual(
-		[...Object.keys(EXPECTED_PINNED_VALUES)].sort(),
-		[...REQUIRED_PUBLIC_EXPORTS].sort()
-	);
+	assert.deepEqual(Object.keys(EXPECTED_PINNED_VALUES).sort(), [...REQUIRED_PUBLIC_EXPORTS].sort());
 	assert.ok(Object.isFrozen(EXPECTED_PINNED_VALUES));
 });
 
-/**
- * Writes a fixture that mirrors the real built graph: an entry that imports
- * the pinned constants and re-exports them bare, a leaf module carrying the
- * `var NAME = "…"` declarations plus a trailing `export { … }`, and the
- * matching `.d.ts` graph with `export declare const NAME = "…"` literal
- * declarations behind `.js` specifiers.
- *
- * @param {string} dir
- * @param {{ label: string, detail: string, detailPrincipal: string, qualifier: string }} values
- */
-function writeBuiltGraph(dir, values) {
-	mkdirSync(join(dir, 'components', 'Review'), { recursive: true });
-	const names = [
-		'REVIEW_STALE_APPROVAL_LABEL',
-		'REVIEW_STALE_APPROVAL_DETAIL',
-		'REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL',
-		'REVIEW_STATE_QUALIFIER',
-	];
-	/** @type {Record<string, string>} */
-	const byName = {
-		REVIEW_STALE_APPROVAL_LABEL: values.label,
-		REVIEW_STALE_APPROVAL_DETAIL: values.detail,
-		REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL: values.detailPrincipal,
-		REVIEW_STATE_QUALIFIER: values.qualifier,
-	};
-
-	writeFileSync(
-		join(dir, 'index.js'),
-		[
-			`import { ${names.join(', ')} } from "./components/Review/state.js";`,
-			`export { ${names.join(', ')} };`,
-		].join('\n')
-	);
-	writeFileSync(
-		join(dir, 'components', 'Review', 'state.js'),
-		[
-			...names.map((name) => `var ${name} = ${JSON.stringify(byName[name])};`),
-			`export { ${names.join(', ')} };`,
-		].join('\n')
-	);
-
-	writeFileSync(
-		join(dir, 'index.d.ts'),
-		`export { ${names.join(', ')} } from "./components/Review/index.js";`
-	);
-	writeFileSync(
-		join(dir, 'components', 'Review', 'index.d.ts'),
-		`export { ${names.join(', ')} } from "./state.js";`
-	);
-	writeFileSync(
-		join(dir, 'components', 'Review', 'state.d.ts'),
-		names
-			.map((name) => `export declare const ${name} = ${JSON.stringify(byName[name])};`)
-			.join('\n')
-	);
-}
-
-const PINNED_GRAPHS_VALUES = {
-	label: EXPECTED_PINNED_VALUES.REVIEW_STALE_APPROVAL_LABEL,
-	detail: EXPECTED_PINNED_VALUES.REVIEW_STALE_APPROVAL_DETAIL,
-	detailPrincipal: EXPECTED_PINNED_VALUES.REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL,
-	qualifier: EXPECTED_PINNED_VALUES.REVIEW_STATE_QUALIFIER,
-};
-
-test('auditPinnedValues passes a built graph carrying the exact pinned wording', () =>
-	withTempDir((dir) => {
-		writeBuiltGraph(dir, PINNED_GRAPHS_VALUES);
-		assert.deepEqual(auditPinnedValues(join(dir, 'index.js'), join(dir, 'index.d.ts')), []);
-	}));
-
-test('auditPinnedValues fails a mutated value in the runtime graph', () =>
-	withTempDir((dir) => {
-		writeBuiltGraph(dir, {
-			...PINNED_GRAPHS_VALUES,
-			label: 'Latest verdict: Approved',
+test('AST graph accepts compact exports and multi-declarator variables', () =>
+	withTempDir((dist) => {
+		writeBuiltGraph(dist);
+		assert.deepEqual(auditPinnedValues(join(dist, 'index.js'), join(dist, 'index.d.ts')), []);
+		assert.deepEqual(resolveExportedStringValue(join(dist, 'index.js'), 'REVIEW_STATE_QUALIFIER'), {
+			ok: true,
+			value: VALUES['REVIEW_STATE_QUALIFIER'],
 		});
-		const problems = auditPinnedValues(join(dir, 'index.js'), join(dir, 'index.d.ts'));
-		assert.equal(problems.length, 2);
-		for (const problem of problems) {
-			assert.match(problem, /dist\/index\.(js|d\.ts) value mutation detected/);
-			assert.match(problem, /REVIEW_STALE_APPROVAL_LABEL/);
-		}
 	}));
 
-test('auditPinnedValues fails a mutation in only the declaration graph too', () =>
-	withTempDir((dir) => {
-		writeBuiltGraph(dir, PINNED_GRAPHS_VALUES);
-		// Mutate only the .d.ts leaf: the runtime value stays correct, so exactly
-		// one problem must surface — from the types graph. This also pins that the
-		// declaration walk never falls back to the runtime .js files, which would
-		// re-prove the runtime graph and hide the mutation.
-		const dtsLeaf = join(dir, 'components', 'Review', 'state.d.ts');
+test('AST ignores export phantoms in regex, comments, strings, and templates', () =>
+	withTempDir((dist) => {
 		writeFileSync(
-			dtsLeaf,
+			join(dist, 'index.js'),
 			[
-				`export declare const REVIEW_STALE_APPROVAL_LABEL = ${JSON.stringify(PINNED_GRAPHS_VALUES.label)};`,
-				`export declare const REVIEW_STALE_APPROVAL_DETAIL = ${JSON.stringify(PINNED_GRAPHS_VALUES.detail)};`,
-				`export declare const REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL = ${JSON.stringify(PINNED_GRAPHS_VALUES.detailPrincipal)};`,
-				'export declare const REVIEW_STATE_QUALIFIER = "latest activity";',
+				'const regex = /export { REVIEW_STATE_QUALIFIER } from "fake"/;',
+				'const string = "export { REVIEW_STALE_APPROVAL_LABEL }";',
+				'const template = `export * from "./fake.js"`;',
+				'/* export const REVIEW_STALE_APPROVAL_DETAIL = "fake"; */',
+				'// export const REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL = "fake";',
 			].join('\n')
 		);
-		const problems = auditPinnedValues(join(dir, 'index.js'), join(dir, 'index.d.ts'));
-		assert.deepEqual(problems, [
-			'dist/index.d.ts value mutation detected: REVIEW_STATE_QUALIFIER resolves to ' +
-				'"latest activity"; the pinned #1055 wording is ' +
-				'"latest activity, not publication state"',
-		]);
+		const surface = resolveExportSurface(join(dist, 'index.js'));
+		assert.deepEqual([...surface], []);
+		assert.deepEqual(missingRequiredExports(surface), NAMES);
 	}));
 
-test('resolveExportedStringValue accepts compact minified graphs end to end', () =>
-	withTempDir((dir) => {
-		writeFileSync(join(dir, 'index.js'), 'export{REVIEW_STATE_QUALIFIER}from"./state.js";');
+test('runtime and declaration value mutations both fail independently', () =>
+	withTempDir((dist) => {
+		writeBuiltGraph(dist);
 		writeFileSync(
-			join(dir, 'state.js'),
-			'var a="latest activity, not publication state";export{a as REVIEW_STATE_QUALIFIER};'
+			join(dist, 'review', 'state.js'),
+			`export const REVIEW_STATE_QUALIFIER="runtime mutation";export{${NAMES.filter((name) => name !== 'REVIEW_STATE_QUALIFIER').join(',')}};`
+		);
+		let problems = auditPinnedValues(join(dist, 'index.js'), join(dist, 'index.d.ts'));
+		assert.ok(problems.some((problem) => /dist\/index\.js value mutation detected/.test(problem)));
+		assert.ok(
+			!problems.some((problem) => /dist\/index\.d\.ts value mutation detected/.test(problem))
 		);
 
-		assert.deepEqual(resolveExportedStringValue(join(dir, 'index.js'), 'REVIEW_STATE_QUALIFIER'), {
-			ok: true,
-			value: 'latest activity, not publication state',
-		});
-	}));
-
-test('resolveExportedStringValue follows a single star re-export', () =>
-	withTempDir((dir) => {
-		writeFileSync(join(dir, 'index.js'), 'export * from "./leaf.js";');
+		writeBuiltGraph(dist);
 		writeFileSync(
-			join(dir, 'leaf.js'),
-			'var REVIEW_STATE_QUALIFIER = "latest activity, not publication state";\nexport { REVIEW_STATE_QUALIFIER };'
+			join(dist, 'review', 'state.d.ts'),
+			NAMES.map(
+				(name) =>
+					`export declare const ${name} = ${JSON.stringify(name === 'REVIEW_STATE_QUALIFIER' ? 'types mutation' : VALUES[name])};`
+			).join('\n')
 		);
-
-		assert.deepEqual(resolveExportedStringValue(join(dir, 'index.js'), 'REVIEW_STATE_QUALIFIER'), {
-			ok: true,
-			value: 'latest activity, not publication state',
-		});
-	}));
-
-test('resolveExportedStringValue fails closed on unresolvable or ambiguous chains', () =>
-	withTempDir((dir) => {
-		// External source: the value lives outside the package dist.
-		writeFileSync(
-			join(dir, 'external.js'),
-			'export { REVIEW_STATE_QUALIFIER } from "some-external-package";'
-		);
-		assert.equal(
-			resolveExportedStringValue(join(dir, 'external.js'), 'REVIEW_STATE_QUALIFIER').ok,
-			false
-		);
-
-		// Circular re-export chain.
-		writeFileSync(join(dir, 'loop-a.js'), 'export { REVIEW_STATE_QUALIFIER } from "./loop-b.js";');
-		writeFileSync(join(dir, 'loop-b.js'), 'export { REVIEW_STATE_QUALIFIER } from "./loop-a.js";');
-		assert.equal(
-			resolveExportedStringValue(join(dir, 'loop-a.js'), 'REVIEW_STATE_QUALIFIER').ok,
-			false
-		);
-
-		// Duplicate declarations: runtime ambiguity must not resolve.
-		writeFileSync(
-			join(dir, 'dup.js'),
-			'var REVIEW_STATE_QUALIFIER = "a";\nvar REVIEW_STATE_QUALIFIER = "b";\nexport { REVIEW_STATE_QUALIFIER };'
-		);
-		assert.equal(
-			resolveExportedStringValue(join(dir, 'dup.js'), 'REVIEW_STATE_QUALIFIER').ok,
-			false
-		);
-
-		// Concatenated initializer: not exactly one literal.
-		writeFileSync(
-			join(dir, 'concat.js'),
-			'var REVIEW_STATE_QUALIFIER = "latest activity" + ", not publication state";\nexport { REVIEW_STATE_QUALIFIER };'
-		);
-		assert.equal(
-			resolveExportedStringValue(join(dir, 'concat.js'), 'REVIEW_STATE_QUALIFIER').ok,
-			false
-		);
-
-		// Template literal with a substitution: not static.
-		writeFileSync(
-			join(dir, 'template.js'),
-			'var x = "latest";\nvar REVIEW_STATE_QUALIFIER = `${x} activity`;\nexport { REVIEW_STATE_QUALIFIER };'
-		);
-		assert.equal(
-			resolveExportedStringValue(join(dir, 'template.js'), 'REVIEW_STATE_QUALIFIER').ok,
-			false
-		);
-
-		// Name exported by two star re-exports: ambiguous.
-		writeFileSync(
-			join(dir, 'star-entry.js'),
-			'export * from "./star-a.js";\nexport * from "./star-b.js";'
-		);
-		writeFileSync(
-			join(dir, 'star-a.js'),
-			'var REVIEW_STATE_QUALIFIER = "a";\nexport { REVIEW_STATE_QUALIFIER };'
-		);
-		writeFileSync(
-			join(dir, 'star-b.js'),
-			'var REVIEW_STATE_QUALIFIER = "b";\nexport { REVIEW_STATE_QUALIFIER };'
-		);
-		assert.equal(
-			resolveExportedStringValue(join(dir, 'star-entry.js'), 'REVIEW_STATE_QUALIFIER').ok,
-			false
-		);
-
-		// Missing file in the chain.
-		writeFileSync(
-			join(dir, 'dangling.js'),
-			'export { REVIEW_STATE_QUALIFIER } from "./missing.js";'
-		);
-		assert.equal(
-			resolveExportedStringValue(join(dir, 'dangling.js'), 'REVIEW_STATE_QUALIFIER').ok,
-			false
+		problems = auditPinnedValues(join(dist, 'index.js'), join(dist, 'index.d.ts'));
+		assert.ok(!problems.some((problem) => /dist\/index\.js value mutation detected/.test(problem)));
+		assert.ok(
+			problems.some((problem) => /dist\/index\.d\.ts value mutation detected/.test(problem))
 		);
 	}));
 
-test('auditPinnedValues fails closed when a graph cannot be resolved at all', () =>
-	withTempDir((dir) => {
-		writeFileSync(join(dir, 'index.js'), 'export const UNRELATED = true;\n');
-		writeFileSync(join(dir, 'index.d.ts'), 'export declare const UNRELATED: boolean;\n');
-		const problems = auditPinnedValues(join(dir, 'index.js'), join(dir, 'index.d.ts'));
-		assert.equal(problems.length, Object.keys(EXPECTED_PINNED_VALUES).length * 2);
-		for (const problem of problems) {
-			assert.match(problem, /cannot prove the pinned value of REVIEW_/);
+test('outside files cannot satisfy runtime or declaration graphs', () =>
+	withTempDir((root) => {
+		const dist = join(root, 'dist');
+		mkdirSync(dist);
+		writeFileSync(join(dist, 'index.js'), `export { ${NAMES.join(',')} } from "../outside.js";`);
+		writeFileSync(join(dist, 'index.d.ts'), `export { ${NAMES.join(',')} } from "../outside.js";`);
+		writeFileSync(
+			join(root, 'outside.js'),
+			NAMES.map((name) => `export const ${name}=${JSON.stringify(VALUES[name])};`).join('\n')
+		);
+		writeFileSync(
+			join(root, 'outside.d.ts'),
+			NAMES.map((name) => `export declare const ${name}=${JSON.stringify(VALUES[name])};`).join(
+				'\n'
+			)
+		);
+		const problems = auditPinnedValues(join(dist, 'index.js'), join(dist, 'index.d.ts'));
+		assert.equal(problems.length, NAMES.length * 2);
+		assert.ok(problems.every((problem) => problem.includes('forbidden .. segment')));
+	}));
+
+test('canonical real paths reject symlink escapes', () =>
+	withTempDir((root) => {
+		const dist = join(root, 'dist');
+		mkdirSync(dist);
+		writeFileSync(
+			join(root, 'outside.js'),
+			`export const REVIEW_STATE_QUALIFIER=${JSON.stringify(VALUES['REVIEW_STATE_QUALIFIER'])};`
+		);
+		symlinkSync(join(root, 'outside.js'), join(dist, 'linked.js'));
+		writeFileSync(join(dist, 'index.js'), 'export * from "./linked.js";');
+		const result = resolveExportedStringValue(join(dist, 'index.js'), 'REVIEW_STATE_QUALIFIER');
+		assert.equal(result.ok, false);
+		assert.match(result.reason, /outside this package's dist root/);
+	}));
+
+test('absolute, external, and missing targets fail closed concisely', () =>
+	withTempDir((dist) => {
+		/** @type {Array<[string, string, RegExp]>} */
+		const cases = [
+			[
+				'absolute.js',
+				'export { REVIEW_STATE_QUALIFIER } from "/tmp/value.js";',
+				/external or absolute/,
+			],
+			[
+				'external.js',
+				'export { REVIEW_STATE_QUALIFIER } from "dependency";',
+				/external or absolute/,
+			],
+			['missing.js', 'export { REVIEW_STATE_QUALIFIER } from "./absent.js";', /does not exist/],
+		];
+		for (const [file, source, expected] of cases) {
+			writeFileSync(join(dist, file), source);
+			const result = resolveExportedStringValue(join(dist, file), 'REVIEW_STATE_QUALIFIER');
+			assert.equal(result.ok, false);
+			assert.match(result.reason, expected);
+			assert.ok(!result.reason.includes('\n    at '));
+			assert.ok(result.reason.length < 300);
 		}
+	}));
+
+test('malformed syntax and malformed literals produce bounded diagnostics', () =>
+	withTempDir((dist) => {
+		/** @type {Array<[string, string]>} */
+		const cases = [
+			['syntax.js', 'export { REVIEW_STATE_QUALIFIER from "./state.js";'],
+			['literal.js', 'export const REVIEW_STATE_QUALIFIER = "\\xZZ";'],
+		];
+		for (const [file, source] of cases) {
+			writeFileSync(join(dist, file), source);
+			const result = resolveExportedStringValue(join(dist, file), 'REVIEW_STATE_QUALIFIER');
+			assert.equal(result.ok, false);
+			assert.match(result.reason, /invalid syntax/);
+			assert.ok(!result.reason.includes('\n    at '));
+			assert.ok(result.reason.length < 500);
+		}
+	}));
+
+test('CLI exits nonzero with bounded malformed-source output', () => {
+	const fixture = mkdtempSync(join(dirname(fileURLToPath(import.meta.url)), '.dist-gate-cli-'));
+	try {
+		const scripts = join(fixture, 'scripts');
+		const dist = join(fixture, 'dist');
+		mkdirSync(scripts);
+		mkdirSync(dist);
+		copyFileSync(
+			fileURLToPath(new URL('./assert-dist-public-exports.mjs', import.meta.url)),
+			join(scripts, 'gate.mjs')
+		);
+		writeFileSync(
+			join(fixture, 'package.json'),
+			JSON.stringify({
+				exports: {
+					'.': {
+						types: './dist/index.d.ts',
+						svelte: './src/index.ts',
+						import: './dist/index.js',
+					},
+				},
+			})
+		);
+		writeFileSync(join(dist, 'index.js'), 'export { REVIEW_STATE_QUALIFIER from "./state.js";');
+		writeFileSync(join(dist, 'index.d.ts'), 'export declare const UNRELATED: boolean;');
+		const result = spawnSync(process.execPath, [join(scripts, 'gate.mjs')], { encoding: 'utf8' });
+		assert.notEqual(result.status, 0);
+		assert.match(result.stderr, /dist public-export parity: index\.js has invalid syntax/);
+		assert.ok(!result.stderr.includes('\n    at '));
+		assert.ok(result.stderr.length < 1000);
+	} finally {
+		rmSync(fixture, { recursive: true, force: true });
+	}
+});
+
+test('non-literal initializers and substitutions cannot satisfy a pinned value', () =>
+	withTempDir((dist) => {
+		/** @type {Array<[string, string]>} */
+		const cases = [
+			['concat.js', '"latest activity" + ", not publication state"'],
+			['template.js', '`${value} activity`'],
+			['call.js', 'String("latest activity, not publication state")'],
+		];
+		for (const [file, initializer] of cases) {
+			writeFileSync(
+				join(dist, file),
+				`const value="latest";export const REVIEW_STATE_QUALIFIER=${initializer};`
+			);
+			const result = resolveExportedStringValue(join(dist, file), 'REVIEW_STATE_QUALIFIER');
+			assert.equal(result.ok, false);
+			assert.match(result.reason, /not one string literal/);
+		}
+	}));
+
+test('cycles and ambiguous exports fail closed', () =>
+	withTempDir((dist) => {
+		writeFileSync(join(dist, 'a.js'), 'export { REVIEW_STATE_QUALIFIER } from "./b.js";');
+		writeFileSync(join(dist, 'b.js'), 'export { REVIEW_STATE_QUALIFIER } from "./a.js";');
+		let result = resolveExportedStringValue(join(dist, 'a.js'), 'REVIEW_STATE_QUALIFIER');
+		assert.equal(result.ok, false);
+		assert.match(result.reason, /circular export chain/);
+
+		writeFileSync(
+			join(dist, 'duplicate.js'),
+			'const a="a",b="b";export{a as REVIEW_STATE_QUALIFIER,b as REVIEW_STATE_QUALIFIER};'
+		);
+		result = resolveExportedStringValue(join(dist, 'duplicate.js'), 'REVIEW_STATE_QUALIFIER');
+		assert.equal(result.ok, false);
+		assert.match(result.reason, /ambiguous duplicate export/);
+
+		writeFileSync(join(dist, 'stars.js'), 'export*from"./one.js";export*from"./two.js";');
+		writeFileSync(join(dist, 'one.js'), 'export const REVIEW_STATE_QUALIFIER="one";');
+		writeFileSync(join(dist, 'two.js'), 'export const REVIEW_STATE_QUALIFIER="two";');
+		result = resolveExportedStringValue(join(dist, 'stars.js'), 'REVIEW_STATE_QUALIFIER');
+		assert.equal(result.ok, false);
+		assert.match(result.reason, /multiple star exports/);
+	}));
+
+test('star-surface cycles and escaping star targets are rejected', () =>
+	withTempDir((root) => {
+		const dist = join(root, 'dist');
+		mkdirSync(dist);
+		writeFileSync(join(dist, 'a.js'), 'export * from "./b.js";');
+		writeFileSync(join(dist, 'b.js'), 'export * from "./a.js";');
+		assert.throws(() => resolveExportSurface(join(dist, 'a.js')), /circular star export/);
+
+		writeFileSync(join(root, 'outside.js'), 'export const SAFE="not safe";');
+		writeFileSync(join(dist, 'escape.js'), 'export * from "../outside.js";');
+		assert.throws(() => resolveExportSurface(join(dist, 'escape.js')), /forbidden \.\./);
+	}));
+
+test('root export conditions remain exact', () => {
+	assert.deepEqual(
+		mismatchedRootConditions({
+			'.': {
+				types: './dist/index.d.ts',
+				svelte: './src/index.ts',
+				import: './dist/index.js',
+			},
+		}),
+		[]
+	);
+	assert.deepEqual(
+		mismatchedRootConditions({ '.': {} }).map(({ condition }) => condition),
+		['types', 'svelte', 'import']
+	);
+});
+
+test('plain Node cannot import the built-style .svelte graph', async () =>
+	withTempDir(async (dir) => {
+		writeFileSync(join(dir, 'widget.svelte'), '<p>widget</p>\n');
+		writeFileSync(join(dir, 'entry.js'), 'import "./widget.svelte";\nexport const ok=true;\n');
+		await assert.rejects(() => import(pathToFileURL(join(dir, 'entry.js')).href), {
+			code: 'ERR_UNKNOWN_FILE_EXTENSION',
+		});
 	}));
