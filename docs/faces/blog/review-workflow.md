@@ -267,3 +267,9 @@ used as custom-property paths so the removed pattern cannot return.
 `tests/contracts/lesser-draft-review-contract.test.ts` reads the pinned snapshot
 and fails if the contract stops matching what these components render. When it
 goes red, run the `sync-contracts` walk — do not patch the view model in place.
+
+The built-package half of the export promise is machine-enforced too:
+`scripts/assert-dist-public-exports.mjs` runs at the end of the package build
+and fails any build whose `exports` conditions or `dist/index.js` /
+`dist/index.d.ts` export surface drops the pinned review exports, so a
+consumer installing the released package always gets them.

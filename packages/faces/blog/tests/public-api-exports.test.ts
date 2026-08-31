@@ -1,11 +1,23 @@
 /**
- * Public-entry reachability tests.
+ * Source-entry reachability tests.
  *
  * The pinned review wording and state helpers are promised to consumers
  * (docs/faces/blog/review-workflow.md, the #1055 semver note), so they must
  * be importable through the package root `@equaltoai/greater-components-blog`
- * — not only through the internal `components/Review` module. Every import
- * below resolves through the package entry, exactly as a consumer's would.
+ * — not only through the internal `components/Review` module.
+ *
+ * What this file proves: the *source* entry (`src/index.ts`) re-exports the
+ * pinned names. The vitest config aliases the package name onto `src/`, so
+ * every import below resolves the source entry — this test would still pass
+ * if a build dropped the names from `dist/`.
+ *
+ * What proves the built package instead: `scripts/assert-dist-public-exports.mjs`
+ * runs at the end of the package build and statically asserts that
+ * `dist/index.js` and `dist/index.d.ts` export the same pinned names (plain
+ * Node cannot import the dist graph — transitive `.svelte` modules need a
+ * bundler — so the check inspects the emitted export surface). Both halves
+ * are required: this test keeps the source entry honest, that script keeps
+ * the publishable artifact honest.
  */
 import { describe, expect, it } from 'vitest';
 import {
