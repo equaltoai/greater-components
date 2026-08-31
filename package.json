@@ -43,6 +43,7 @@
     "test:unit": "pnpm -r test:unit",
     "test:scripts": "node scripts/run-script-tests.mjs",
     "test:scripts:dco": "node scripts/check-dco.test.mjs",
+    "test:scripts:blog-dist-exports": "node --test packages/faces/blog/scripts/assert-dist-public-exports.test.mjs",
     "test:scripts:csp": "vitest run scripts/audit-csp.test.mjs",
     "test:scripts:registry": "node scripts/generate-registry-index.test.mjs",
     "test:scripts:tokens": "node --test scripts/audit-tokens-placeholders.test.mjs",

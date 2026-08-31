@@ -50,6 +50,52 @@ deliberate even now that the gate is in-contract: the badge is an activity
 marker, and the authoritative gate lives in `publishEligibility`, which the
 chrome never substitutes activity history for.
 
+### Stale approvals do not look current
+
+A media or content change stales earlier verdicts upstream: Lesser re-hashes the
+draft and marks the affected verdict records with the authoritative
+`current` / `stale` markers. Since issue #1055 the chrome consumes those
+markers: when the newest recorded approval is voided for the current revision
+(`stale: true` or `current: false`), `resolveReviewState` emits the
+`stale-approved` state instead of letting the approval read as current —
+including when `reviewStatus` still spells the approval, which Lesser only
+overwrites on submission.
+
+The stale state keeps the approval **visible as history** while demoting it:
+
+- Badge label: `Latest verdict: Approved (superseded)` — the parenthetical
+  preserves the record without implying the current revision is approved.
+- Badge tone: `stale-approved` — the neutral palette with a dashed border,
+  never the approved green.
+- Explanation, rendered as visible text beneath the badge:
+  `This approval no longer counts. Approval for the current revision is outstanding.`
+  — or, when `publishEligibility` says the principal rule is in force and
+  unsatisfied:
+  `This approval no longer counts. Principal approval for the current revision is outstanding.`
+  The principal wording covers the TheoryLive incident: an agent-generated draft
+  whose media changed after the principal approved.
+
+Staleness is consumed, never inferred: an older or partial projection without
+the markers renders the ordinary qualified activity badge. It never shows a
+genuinely current approval as stale either — a record carrying
+`current: true` / `stale: false` keeps the approved tone, and it keeps it even
+when `publishEligibility` reports the draft ineligible or the principal
+approval outstanding: the gate is presentation data for the badge, never a
+staleness input. Contradictory authoritative markers (`current: true` together
+with `stale: true`) demote in the safe direction — the approval reads as
+superseded, never as current. The exported constants
+(`REVIEW_STALE_APPROVAL_LABEL`, `REVIEW_STALE_APPROVAL_DETAIL`,
+`REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL`) pin the exact strings so consumers
+and tests assert them rather than paraphrases.
+
+`ReviewStateDescriptor.stale` is typed optional (`stale?: boolean`) so
+downstream descriptor construction stays additive; `resolveReviewState` itself
+emits an explicit boolean for every state it returns. `ReviewStateTone` gains
+the `stale-approved` member, so consumers that switch exhaustively over the
+tone union must add the new case at compile time (migration note in the #1055
+semver impact note). The pinned wording constants and state helpers are
+importable from the package root `@equaltoai/greater-components-blog`.
+
 ### The approval rules are cumulative
 
 `describeApprovalRequirement()` mirrors Lesser's rules for **display only**.
@@ -189,8 +235,11 @@ face convention.
 ## Theming
 
 New tokens are prefixed `--gr-blog-review-*`: card padding and radius, plus
-`approved` / `changes` / `pending` / `agent` background, foreground, and border
-triples, with light and dark values.
+`approved` / `changes` / `pending` / `stale` / `agent` background, foreground,
+and border triples, with light and dark values. The `stale` triple is
+deliberately neutral (gray palette, not the approved green) so a superseded
+approval is visually demoted; the dashed border on `--stale-approved` badges
+distinguishes them from plain pending badges without relying on colour alone.
 
 `neutral` is a selectable palette name, but `--gr-color-neutral-*` was never an
 emitted token family. This PR removes the never-functional, consumer-facing
@@ -201,7 +250,9 @@ used as custom-property paths so the removed pattern cannot return.
 
 ## Accessibility
 
-- Review state is always carried by text — never colour alone.
+- Review state is always carried by text — never colour alone. The stale
+  approval demotion is announced by its label and explanation text, so the
+  "no longer counts" state survives screen readers that see no badge colour.
 - Cards expose `aria-labelledby` pointing at their heading, and `headingLevel`
   keeps the page outline correct.
 - The notes field uses the `TextArea` primitive, which supplies label
@@ -216,3 +267,17 @@ used as custom-property paths so the removed pattern cannot return.
 `tests/contracts/lesser-draft-review-contract.test.ts` reads the pinned snapshot
 and fails if the contract stops matching what these components render. When it
 goes red, run the `sync-contracts` walk — do not patch the view model in place.
+
+The built-package half of the export promise is machine-enforced too:
+`scripts/assert-dist-public-exports.mjs` runs at the end of the package build
+and fails any build whose `exports` conditions or `dist/index.js` /
+`dist/index.d.ts` export surface drops the pinned review exports — or whose
+built graphs resolve any of the four pinned constants to anything other than
+the exact wording above. The gate traces each constant through the built
+module graph (runtime entry and declaration entry alike) to its initializer
+and compares it against the authoritative expected-value map in the script;
+a mutated or statically unresolvable value fails the build. The parser
+accepts both spaced and minified-compact export forms and is fail-closed:
+any shape it cannot prove fails rather than passes. A consumer installing the
+released package therefore always gets the pinned names with the pinned
+wording.

@@ -8,7 +8,10 @@ rules are in force and whether an outstanding invitation exists.
 
 The review-status row is always qualified as "latest activity, not publication
 state": `reviewStatus` is overwritten on every verdict submission upstream, so
-neither it nor the verdict history is the publication gate.
+neither it nor the verdict history is the publication gate. When Lesser marks
+the newest recorded approval stale, the row shows the stale-approval state
+instead — the approval stays visible as history, without the success tone or
+wording of a current approval.
 
 Empty fields are rendered with an explicit empty state by default rather than
 being silently dropped: "not recorded" is itself information a reviewer needs.
@@ -122,6 +125,9 @@ being silently dropped: "not recorded" is itself information a reviewer needs.
 
 		<DefinitionItem label="Review status">
 			<span class={stateClass}>{state.label}</span>
+			{#if state.detail}
+				<span class="gr-blog-review-attribution__state-detail">{state.detail}</span>
+			{/if}
 			{#if state.source !== 'none'}
 				<span class="gr-blog-review-attribution__state-source">
 					{REVIEW_STATE_QUALIFIER}

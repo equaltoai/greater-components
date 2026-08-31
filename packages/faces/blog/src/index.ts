@@ -51,6 +51,10 @@ export { Editor } from './components/Editor/index.js';
  */
 export { Review } from './components/Review/index.js';
 export {
+	REVIEW_STATE_QUALIFIER,
+	REVIEW_STALE_APPROVAL_DETAIL,
+	REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL,
+	REVIEW_STALE_APPROVAL_LABEL,
 	describeApprovalRequirement,
 	formatReviewDateTime,
 	resolveReviewState,

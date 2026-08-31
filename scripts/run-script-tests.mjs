@@ -6,6 +6,7 @@ const scripts = [
 	'test:scripts:registry',
 	'test:scripts:tokens',
 	'test:scripts:generator-replay',
+	'test:scripts:blog-dist-exports',
 ];
 let failed = false;
 
