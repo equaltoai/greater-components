@@ -472,7 +472,7 @@
     "shiki": "^4.4.3",
     "tabbable": "^6.5.0",
     "unified": "^11.0.5",
-    "viem": "^2.55.19",
+    "viem": "^2.56.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {

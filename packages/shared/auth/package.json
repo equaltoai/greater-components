@@ -40,7 +40,7 @@
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^7.3.0",
     "@testing-library/svelte": "5.4.2",
-    "@types/node": "^26.2.0",
+    "@types/node": "^26.4.0",
     "@vitest/coverage-v8": "^4.1.11",
     "jsdom": "^29.0.2",
     "svelte": "^5.56.10",
