@@ -452,6 +452,125 @@ describe('Review workflow chrome', () => {
 				expect(state.stale).toBe(true);
 			}
 		});
+
+		describe('authority boundary — mutation-negative cases', () => {
+			// Lesser's verdict-record markers are the only staleness authority.
+			// Every case below fails under the mutation
+			// `isStaleApproval(newest) || review.publishEligibility?.eligible === false`,
+			// proving the gate projection is presentation data for the badge and can
+			// never be promoted into a staleness inference.
+
+			function createIneligiblePrincipalEligibility(): DraftPublishEligibilityData {
+				return createMockEligibility({
+					eligible: false,
+					blockingReasons: ['principal approval outstanding'],
+					principalApprovalRequired: true,
+					principalApproved: false,
+				});
+			}
+
+			it('keeps a marker-less current approval approved when the gate is ineligible', () => {
+				// The incident inversion: the principal approval is outstanding and
+				// the gate reports ineligible, yet the newest verdict carries no
+				// voiding marker — so the approval is current and keeps its tone.
+				const review = createMockDraftReview('d1', {
+					generatedBy: createMockAgentActor('a1'),
+					verdicts: [createMockVerdict({ verdict: 'APPROVED' })],
+					publishEligibility: createIneligiblePrincipalEligibility(),
+				});
+				const state = resolveReviewState(review);
+
+				expect(state).toMatchObject({
+					tone: 'approved',
+					label: 'Latest verdict: Approved',
+					source: 'verdicts',
+					stale: false,
+				});
+				expect(state.detail).toBeUndefined();
+			});
+
+			it('keeps an explicitly current approval approved when the gate is ineligible', () => {
+				const review = createMockDraftReview('d1', {
+					generatedBy: createMockAgentActor('a1'),
+					verdicts: [createMockVerdict({ verdict: 'APPROVED', current: true, stale: false })],
+					publishEligibility: createIneligiblePrincipalEligibility(),
+				});
+
+				expect(resolveReviewState(review)).toMatchObject({
+					tone: 'approved',
+					label: 'Latest verdict: Approved',
+					stale: false,
+				});
+			});
+
+			it('keeps an approval-shaped reviewStatus current when the gate is ineligible', () => {
+				// The server-string branch must honour the same boundary: an
+				// ineligible gate never rewrites an unvoided approval reading.
+				const review = createMockDraftReview('d1', {
+					reviewStatus: 'Approved',
+					verdicts: [createMockVerdict({ verdict: 'APPROVED', current: true, stale: false })],
+					publishEligibility: createIneligiblePrincipalEligibility(),
+				});
+
+				expect(resolveReviewState(review)).toMatchObject({
+					tone: 'approved',
+					label: 'Approved',
+					source: 'server',
+					stale: false,
+				});
+			});
+
+			it('demotes contradictory authoritative markers in the safe direction', () => {
+				// `current: true` and `stale: true` cannot both describe one
+				// revision; when Lesser's projection carries both, the badge fails
+				// closed — superseded — and never lets the approval read as current.
+				const review = createMockDraftReview('d1', {
+					verdicts: [createMockVerdict({ verdict: 'APPROVED', current: true, stale: true })],
+				});
+
+				expect(resolveReviewState(review)).toMatchObject({
+					tone: 'stale-approved',
+					label: REVIEW_STALE_APPROVAL_LABEL,
+					source: 'verdicts',
+					stale: true,
+				});
+			});
+
+			it('demotes contradictory markers even when reviewStatus still spells the approval', () => {
+				const review = createMockDraftReview('d1', {
+					reviewStatus: 'Approved',
+					verdicts: [createMockVerdict({ verdict: 'APPROVED', current: true, stale: true })],
+				});
+
+				expect(resolveReviewState(review)).toMatchObject({
+					tone: 'stale-approved',
+					label: REVIEW_STALE_APPROVAL_LABEL,
+					stale: true,
+				});
+			});
+
+			it('emits an explicit stale boolean for every resolved state', () => {
+				// The descriptor types the field optional for additive downstream
+				// construction; the resolver itself never leaves it undefined.
+				const reviews = [
+					createMockDraftReview('d1'),
+					createMockDraftReview('d2', { reviewStatus: 'Approved' }),
+					createMockDraftReview('d3', {
+						verdicts: [createMockVerdict({ verdict: 'APPROVED' })],
+					}),
+					createMockDraftReview('d4', {
+						verdicts: [createMockVerdict({ verdict: 'CHANGES_REQUESTED' })],
+					}),
+					createMockDraftReview('d5', {
+						verdicts: [createMockVerdict({ verdict: 'APPROVED', stale: true })],
+					}),
+				];
+
+				for (const review of reviews) {
+					expect(typeof resolveReviewState(review).stale).toBe('boolean');
+				}
+			});
+		});
 	});
 
 	describe('Review.QueueCard', () => {
