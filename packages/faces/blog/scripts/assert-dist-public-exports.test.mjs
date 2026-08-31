@@ -1,7 +1,15 @@
 import assert from 'node:assert/strict';
-import { copyFileSync, mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import {
+	copyFileSync,
+	existsSync,
+	mkdirSync,
+	mkdtempSync,
+	rmSync,
+	symlinkSync,
+	writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { test } from 'node:test';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -10,11 +18,17 @@ import {
 	EXPECTED_PINNED_VALUES,
 	REQUIRED_PUBLIC_EXPORTS,
 	auditPinnedValues,
+	extraRootConditions,
 	mismatchedRootConditions,
 	missingRequiredExports,
 	resolveExportedStringValue,
 	resolveExportSurface,
 } from './assert-dist-public-exports.mjs';
+
+/** Directory of this test file: packages/faces/blog/scripts. */
+const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
+/** Repository root, four levels above the scripts directory. */
+const REPO_ROOT = resolve(SCRIPT_DIR, '..', '..', '..', '..');
 
 /** @template T @param {(dir: string) => T} run @returns {T} */
 function withTempDir(run) {
@@ -24,6 +38,81 @@ function withTempDir(run) {
 		return run(dir);
 	} finally {
 		rmSync(dir, { recursive: true, force: true });
+	}
+}
+
+/**
+ * Build an isolated CLI fixture entirely under the OS temp dir — never inside
+ * the repository — so an abrupt interruption cannot leave a repo-local
+ * untracked directory behind. The gate's one direct dependency (`typescript`)
+ * is provided through a fixture-local `node_modules` symlink into the repo's
+ * pinned install; normal ESM resolution then finds the exact parser the real
+ * build uses, without accepting any arbitrary package root.
+ */
+function createCliFixture() {
+	const fixture = mkdtempSync(join(tmpdir(), '.dist-gate-cli-'));
+	mkdirSync(join(fixture, 'scripts'));
+	mkdirSync(join(fixture, 'node_modules'));
+	copyFileSync(
+		fileURLToPath(new URL('./assert-dist-public-exports.mjs', import.meta.url)),
+		join(fixture, 'scripts', 'gate.mjs')
+	);
+	symlinkSync(
+		join(REPO_ROOT, 'node_modules', 'typescript'),
+		join(fixture, 'node_modules', 'typescript'),
+		'dir'
+	);
+	return fixture;
+}
+
+/** @param {string} fixture Exact valid package-root condition map for a fixture package. */
+function writeValidPackageJson(fixture) {
+	writeFileSync(
+		join(fixture, 'package.json'),
+		JSON.stringify({
+			name: 'fixture-blog',
+			exports: {
+				'.': {
+					types: './dist/index.d.ts',
+					svelte: './src/index.ts',
+					import: './dist/index.js',
+				},
+			},
+		})
+	);
+}
+
+/** @param {string} fixture Run the copied gate CLI against a fixture and return the spawned result. */
+function runCli(fixture) {
+	return spawnSync(process.execPath, [join(fixture, 'scripts', 'gate.mjs')], {
+		encoding: 'utf8',
+	});
+}
+
+/** `git status --short` at the repository root. */
+function gitStatusShort() {
+	const result = spawnSync('git', ['status', '--short'], { cwd: REPO_ROOT, encoding: 'utf8' });
+	return result.status === 0 ? result.stdout : `git failed: ${result.stderr}`;
+}
+
+/**
+ * Prove a CLI run left no repo-local fixture artifact: no `.dist-gate-cli-*`
+ * entry may appear anywhere in the tree, and no untracked file may be added.
+ * (Pre-existing tracked-file modifications, such as the very files under
+ * development, are not the CLI run's doing and do not fail the proof.)
+ */
+function assertNoRepoFixtureLeak() {
+	const status = gitStatusShort();
+	assert.ok(
+		!status.includes('.dist-gate-cli'),
+		`CLI fixture must never appear in the repo working tree: ${JSON.stringify(status)}`
+	);
+	for (const line of status.split('\n')) {
+		if (line.trim() === '') continue;
+		assert.ok(
+			!line.startsWith('??'),
+			`CLI runs must not add untracked repo-local files: ${JSON.stringify(status)}`
+		);
 	}
 }
 
@@ -260,31 +349,16 @@ test('malformed syntax and malformed literals produce bounded diagnostics', () =
 	}));
 
 test('CLI exits nonzero with bounded malformed-source output', () => {
-	const fixture = mkdtempSync(join(dirname(fileURLToPath(import.meta.url)), '.dist-gate-cli-'));
+	const fixture = createCliFixture();
 	try {
-		const scripts = join(fixture, 'scripts');
-		const dist = join(fixture, 'dist');
-		mkdirSync(scripts);
-		mkdirSync(dist);
-		copyFileSync(
-			fileURLToPath(new URL('./assert-dist-public-exports.mjs', import.meta.url)),
-			join(scripts, 'gate.mjs')
-		);
+		writeValidPackageJson(fixture);
+		mkdirSync(join(fixture, 'dist'));
 		writeFileSync(
-			join(fixture, 'package.json'),
-			JSON.stringify({
-				exports: {
-					'.': {
-						types: './dist/index.d.ts',
-						svelte: './src/index.ts',
-						import: './dist/index.js',
-					},
-				},
-			})
+			join(fixture, 'dist', 'index.js'),
+			'export { REVIEW_STATE_QUALIFIER from "./state.js";'
 		);
-		writeFileSync(join(dist, 'index.js'), 'export { REVIEW_STATE_QUALIFIER from "./state.js";');
-		writeFileSync(join(dist, 'index.d.ts'), 'export declare const UNRELATED: boolean;');
-		const result = spawnSync(process.execPath, [join(scripts, 'gate.mjs')], { encoding: 'utf8' });
+		writeFileSync(join(fixture, 'dist', 'index.d.ts'), 'export declare const UNRELATED: boolean;');
+		const result = runCli(fixture);
 		assert.notEqual(result.status, 0);
 		assert.match(result.stderr, /dist public-export parity: index\.js has invalid syntax/);
 		assert.ok(!result.stderr.includes('\n    at '));
@@ -292,6 +366,115 @@ test('CLI exits nonzero with bounded malformed-source output', () => {
 	} finally {
 		rmSync(fixture, { recursive: true, force: true });
 	}
+});
+
+test('CLI passes when the root condition map is exact and the dist graph is valid', () => {
+	const fixture = createCliFixture();
+	try {
+		writeValidPackageJson(fixture);
+		writeBuiltGraph(join(fixture, 'dist'));
+		const result = runCli(fixture);
+		assert.equal(result.status, 0, result.stderr);
+		assert.match(result.stdout, /dist public-export parity holds/);
+	} finally {
+		rmSync(fixture, { recursive: true, force: true });
+	}
+});
+
+test('every extra root condition fails closed with bounded CLI diagnostics', () => {
+	/** @type {Array<[string, unknown]>} */
+	const extras = [
+		['default', './dist/index.js'],
+		['require', './dist/index.cjs'],
+		['node', { types: './dist/index.d.ts', import: './dist/index.js' }],
+		['browser', './dist/index.js'],
+		['react-server', { default: './dist/index.js' }],
+	];
+	for (const [extra, value] of extras) {
+		const fixture = createCliFixture();
+		try {
+			writeFileSync(
+				join(fixture, 'package.json'),
+				JSON.stringify({
+					name: 'fixture-blog',
+					exports: {
+						'.': {
+							types: './dist/index.d.ts',
+							svelte: './src/index.ts',
+							import: './dist/index.js',
+							[extra]: value,
+						},
+					},
+				})
+			);
+			writeBuiltGraph(join(fixture, 'dist'));
+			const result = runCli(fixture);
+			assert.notEqual(result.status, 0, `extra condition ${extra} must fail the CLI`);
+			assert.match(result.stderr, new RegExp(`extra condition ${JSON.stringify(extra)}`));
+			assert.match(result.stderr, /allowed conditions are exactly types, svelte, import/);
+			assert.ok(!result.stderr.includes('\n    at '));
+			assert.ok(result.stderr.length < 1000, `diagnostics for ${extra} must be bounded`);
+		} finally {
+			rmSync(fixture, { recursive: true, force: true });
+		}
+	}
+});
+
+test('normal and failing CLI runs clean up and leave the repo clean', () => {
+	const failing = createCliFixture();
+	try {
+		writeValidPackageJson(failing);
+		mkdirSync(join(failing, 'dist'));
+		writeFileSync(join(failing, 'dist', 'index.js'), 'export { broken');
+		writeFileSync(join(failing, 'dist', 'index.d.ts'), 'export declare const UNRELATED: boolean;');
+		const result = runCli(failing);
+		assert.notEqual(result.status, 0);
+	} finally {
+		rmSync(failing, { recursive: true, force: true });
+	}
+	assert.equal(existsSync(failing), false, 'failing run must remove its fixture');
+	assertNoRepoFixtureLeak();
+
+	const passing = createCliFixture();
+	try {
+		writeValidPackageJson(passing);
+		writeBuiltGraph(join(passing, 'dist'));
+		const result = runCli(passing);
+		assert.equal(result.status, 0, result.stderr);
+	} finally {
+		rmSync(passing, { recursive: true, force: true });
+	}
+	assert.equal(existsSync(passing), false, 'passing run must remove its fixture');
+	assertNoRepoFixtureLeak();
+});
+
+test('abruptly interrupted CLI fixture runs cannot leak into the repo', () => {
+	const fixture = join(tmpdir(), `.dist-gate-cli-abrupt-${process.pid}-${Date.now()}`);
+	assert.ok(fixture.startsWith(tmpdir()), 'fixture must live under the OS temp dir');
+	assert.ok(!fixture.startsWith(`${REPO_ROOT}/`), 'fixture must live outside the repository');
+	// A child creates the same fixture shape and is hard-killed before any
+	// cleanup, simulating an abrupt interruption of a CLI run.
+	const child = spawnSync(
+		process.execPath,
+		[
+			'-e',
+			[
+				"const { mkdirSync, writeFileSync } = require('node:fs');",
+				"const { join } = require('node:path');",
+				'const fixture = process.argv[1];',
+				"mkdirSync(join(fixture, 'scripts'), { recursive: true });",
+				"writeFileSync(join(fixture, 'package.json'), '{}');",
+				"process.kill(process.pid, 'SIGKILL');",
+			].join('\n'),
+			fixture,
+		],
+		{ encoding: 'utf8' }
+	);
+	assert.equal(child.signal, 'SIGKILL', 'child must die before any cleanup');
+	assert.equal(existsSync(join(fixture, 'package.json')), true, 'fixture existed at kill time');
+	assertNoRepoFixtureLeak();
+	// The leak stayed in the OS temp dir by construction; remove it as hygiene.
+	rmSync(fixture, { recursive: true, force: true });
 });
 
 test('non-literal initializers and substitutions cannot satisfy a pinned value', () =>
@@ -351,19 +534,57 @@ test('star-surface cycles and escaping star targets are rejected', () =>
 	}));
 
 test('root export conditions remain exact', () => {
-	assert.deepEqual(
-		mismatchedRootConditions({
-			'.': {
-				types: './dist/index.d.ts',
-				svelte: './src/index.ts',
-				import: './dist/index.js',
-			},
-		}),
-		[]
-	);
+	const exact = {
+		'.': {
+			types: './dist/index.d.ts',
+			svelte: './src/index.ts',
+			import: './dist/index.js',
+		},
+	};
+	assert.deepEqual(mismatchedRootConditions(exact), []);
+	assert.deepEqual(extraRootConditions(exact), []);
 	assert.deepEqual(
 		mismatchedRootConditions({ '.': {} }).map(({ condition }) => condition),
 		['types', 'svelte', 'import']
+	);
+	assert.deepEqual(extraRootConditions({ '.': {} }), []);
+});
+
+test('every shadowing or nested extra condition fails closed in any property order', () => {
+	/** @type {Array<[string, unknown]>} */
+	const extras = [
+		['default', './dist/index.js'],
+		['require', './dist/index.cjs'],
+		['node', { types: './dist/index.d.ts', import: './dist/index.js' }],
+		['browser', './dist/index.js'],
+		['react-server', { default: './dist/index.js' }],
+	];
+	const valid = {
+		types: './dist/index.d.ts',
+		svelte: './src/index.ts',
+		import: './dist/index.js',
+	};
+	for (const [extra, value] of extras) {
+		assert.deepEqual(
+			extraRootConditions({ '.': { ...valid, [extra]: value } }),
+			[extra],
+			`${extra} after the pinned conditions`
+		);
+		assert.deepEqual(
+			extraRootConditions({ '.': { [extra]: value, ...valid } }),
+			[extra],
+			`${extra} before the pinned conditions`
+		);
+		// The required values must still be reported as exact when only the
+		// extra key is added.
+		assert.deepEqual(mismatchedRootConditions({ '.': { ...valid, [extra]: value } }), []);
+	}
+	// Multiple extras are reported together, deterministically sorted.
+	assert.deepEqual(
+		extraRootConditions({
+			'.': { ...valid, require: './dist/index.cjs', default: './dist/index.js' },
+		}),
+		['default', 'require']
 	);
 });
 

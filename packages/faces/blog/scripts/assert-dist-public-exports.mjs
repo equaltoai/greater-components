@@ -427,6 +427,32 @@ export function mismatchedRootConditions(exportsField, required = REQUIRED_ROOT_
 		}));
 }
 
+/**
+ * Condition keys declared under `exports['.']` beyond the exact allowed set.
+ *
+ * The package root must declare exactly the pinned conditions and nothing else:
+ * an extra `default`, `require`, `node`, or unknown/nested condition gives a
+ * consumer resolution mode a second entry point that can shadow the audited
+ * built surface, so any extra key fails closed here. The set comparison is
+ * order-independent — the result is sorted so diagnostics are stable no matter
+ * how the map is serialized.
+ *
+ * @param {Record<string, unknown> | null | undefined} exportsField
+ * @param {Record<string, string>} [required]
+ * @returns {string[]}
+ */
+export function extraRootConditions(exportsField, required = REQUIRED_ROOT_CONDITIONS) {
+	const root =
+		exportsField && typeof exportsField['.'] === 'object' && exportsField['.'] !== null
+			? /** @type {Record<string, unknown>} */ (exportsField['.'])
+			: undefined;
+	if (typeof root !== 'object' || root === null) return [];
+	const allowed = new Set(Object.keys(required));
+	return Object.keys(root)
+		.filter((condition) => !allowed.has(condition))
+		.sort();
+}
+
 /** @param {string[]} messages @returns {never} */
 function fail(messages) {
 	for (const message of messages.slice(0, 20))
@@ -451,6 +477,11 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 	for (const { condition, expected, actual } of mismatchedRootConditions(pkg.exports)) {
 		errors.push(
 			`package.json exports["."].${condition} is ${actual}; expected ${expected} so consumers resolve the built surface`
+		);
+	}
+	for (const condition of extraRootConditions(pkg.exports)) {
+		errors.push(
+			`package.json exports["."] declares extra condition ${JSON.stringify(condition)}; allowed conditions are exactly ${Object.keys(REQUIRED_ROOT_CONDITIONS).join(', ')}`
 		);
 	}
 
