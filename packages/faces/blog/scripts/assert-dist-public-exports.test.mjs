@@ -134,8 +134,10 @@ test('every one of the four pinned values fails on mutation in JS and declaratio
 				1,
 				`JS mutation of ${mutated} must produce exactly one problem`
 			);
+			const runtimeProblem = problems[0];
+			assert.ok(runtimeProblem !== undefined);
 			assert.match(
-				problems[0],
+				runtimeProblem,
 				new RegExp(`dist/index\\.js value mutation detected: ${mutated} resolves`)
 			);
 
@@ -153,8 +155,10 @@ test('every one of the four pinned values fails on mutation in JS and declaratio
 				1,
 				`d.ts mutation of ${mutated} must produce exactly one problem`
 			);
+			const declarationProblem = problems[0];
+			assert.ok(declarationProblem !== undefined);
 			assert.match(
-				problems[0],
+				declarationProblem,
 				new RegExp(`dist/index\\.d\\.ts value mutation detected: ${mutated} resolves`)
 			);
 		}
