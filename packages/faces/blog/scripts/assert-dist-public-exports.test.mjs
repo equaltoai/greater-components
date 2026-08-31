@@ -120,6 +120,46 @@ test('runtime and declaration value mutations both fail independently', () =>
 		);
 	}));
 
+test('every one of the four pinned values fails on mutation in JS and declarations', () =>
+	withTempDir((dist) => {
+		for (const mutated of NAMES) {
+			writeBuiltGraph(dist);
+			writeFileSync(
+				join(dist, 'review', 'state.js'),
+				`var ${NAMES.map((name) => `${name}=${JSON.stringify(name === mutated ? 'mutated runtime value' : VALUES[name])}`).join(',')};export{${NAMES.join(',')}};`
+			);
+			let problems = auditPinnedValues(join(dist, 'index.js'), join(dist, 'index.d.ts'));
+			assert.equal(
+				problems.length,
+				1,
+				`JS mutation of ${mutated} must produce exactly one problem`
+			);
+			assert.match(
+				problems[0],
+				new RegExp(`dist/index\\.js value mutation detected: ${mutated} resolves`)
+			);
+
+			writeBuiltGraph(dist);
+			writeFileSync(
+				join(dist, 'review', 'state.d.ts'),
+				NAMES.map(
+					(name) =>
+						`export declare const ${name} = ${JSON.stringify(name === mutated ? 'mutated declaration value' : VALUES[name])};`
+				).join('\n')
+			);
+			problems = auditPinnedValues(join(dist, 'index.js'), join(dist, 'index.d.ts'));
+			assert.equal(
+				problems.length,
+				1,
+				`d.ts mutation of ${mutated} must produce exactly one problem`
+			);
+			assert.match(
+				problems[0],
+				new RegExp(`dist/index\\.d\\.ts value mutation detected: ${mutated} resolves`)
+			);
+		}
+	}));
+
 test('outside files cannot satisfy runtime or declaration graphs', () =>
 	withTempDir((root) => {
 		const dist = join(root, 'dist');
@@ -149,11 +189,27 @@ test('canonical real paths reject symlink escapes', () =>
 			join(root, 'outside.js'),
 			`export const REVIEW_STATE_QUALIFIER=${JSON.stringify(VALUES['REVIEW_STATE_QUALIFIER'])};`
 		);
+		writeFileSync(
+			join(root, 'outside.d.ts'),
+			`export declare const REVIEW_STATE_QUALIFIER=${JSON.stringify(VALUES['REVIEW_STATE_QUALIFIER'])};`
+		);
 		symlinkSync(join(root, 'outside.js'), join(dist, 'linked.js'));
+		symlinkSync(join(root, 'outside.d.ts'), join(dist, 'linked.d.ts'));
 		writeFileSync(join(dist, 'index.js'), 'export * from "./linked.js";');
-		const result = resolveExportedStringValue(join(dist, 'index.js'), 'REVIEW_STATE_QUALIFIER');
-		assert.equal(result.ok, false);
-		assert.match(result.reason, /outside this package's dist root/);
+		writeFileSync(join(dist, 'index.d.ts'), 'export * from "./linked.js";');
+		const runtime = resolveExportedStringValue(join(dist, 'index.js'), 'REVIEW_STATE_QUALIFIER');
+		assert.equal(runtime.ok, false);
+		assert.match(runtime.reason, /outside this package's dist root/);
+		const declaration = resolveExportedStringValue(
+			join(dist, 'index.d.ts'),
+			'REVIEW_STATE_QUALIFIER',
+			{
+				declarationFiles: true,
+				distRoot: dist,
+			}
+		);
+		assert.equal(declaration.ok, false);
+		assert.match(declaration.reason, /outside this package's dist root/);
 	}));
 
 test('absolute, external, and missing targets fail closed concisely', () =>
