@@ -90,7 +90,11 @@ and tests assert them rather than paraphrases.
 
 `ReviewStateDescriptor.stale` is typed optional (`stale?: boolean`) so
 downstream descriptor construction stays additive; `resolveReviewState` itself
-emits an explicit boolean for every state it returns.
+emits an explicit boolean for every state it returns. `ReviewStateTone` gains
+the `stale-approved` member, so consumers that switch exhaustively over the
+tone union must add the new case at compile time (migration note in the #1055
+semver impact note). The pinned wording constants and state helpers are
+importable from the package root `@equaltoai/greater-components-blog`.
 
 ### The approval rules are cumulative
 
