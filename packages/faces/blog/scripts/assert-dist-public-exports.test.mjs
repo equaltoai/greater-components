@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {
+	chmodSync,
 	copyFileSync,
 	existsSync,
 	mkdirSync,
@@ -9,7 +10,7 @@ import {
 	writeFileSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { dirname, join, resolve } from 'node:path';
+import { delimiter, dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { test } from 'node:test';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -89,10 +90,29 @@ function runCli(fixture) {
 	});
 }
 
-/** `git status --short` at the repository root. */
-function gitStatusShort() {
-	const result = spawnSync('git', ['status', '--short'], { cwd: REPO_ROOT, encoding: 'utf8' });
-	return result.status === 0 ? result.stdout : `git failed: ${result.stderr}`;
+/**
+ * `git status --short` at the repository root.
+ *
+ * Git execution failures fail loudly: a nonzero exit or an unstartable git
+ * process throws instead of degrading into a scanned string, so the no-leak
+ * assertion can never treat a broken evidence source as a passing proof.
+ *
+ * @param {{ env?: NodeJS.ProcessEnv, command?: string }} [options]
+ * @returns {string}
+ */
+function gitStatusShort({ env = process.env, command = 'git' } = {}) {
+	const result = spawnSync(command, ['status', '--short'], {
+		cwd: REPO_ROOT,
+		env,
+		encoding: 'utf8',
+	});
+	if (result.status !== 0) {
+		const reason =
+			result.error && 'code' in result.error ? String(result.error.code) : `exit ${result.status}`;
+		const stderr = String(result.stderr ?? '').trim();
+		throw new Error(`git status --short failed (${reason})${stderr ? `: ${stderr}` : ''}`);
+	}
+	return result.stdout;
 }
 
 /**
@@ -100,9 +120,12 @@ function gitStatusShort() {
  * entry may appear anywhere in the tree, and no untracked file may be added.
  * (Pre-existing tracked-file modifications, such as the very files under
  * development, are not the CLI run's doing and do not fail the proof.)
+ *
+ * @param {{ env?: NodeJS.ProcessEnv, command?: string }} [options] Passed to
+ *   `gitStatusShort` so tests can inject a bounded failing git process.
  */
-function assertNoRepoFixtureLeak() {
-	const status = gitStatusShort();
+function assertNoRepoFixtureLeak({ env = process.env, command = 'git' } = {}) {
+	const status = gitStatusShort({ env, command });
 	assert.ok(
 		!status.includes('.dist-gate-cli'),
 		`CLI fixture must never appear in the repo working tree: ${JSON.stringify(status)}`
@@ -475,6 +498,30 @@ test('abruptly interrupted CLI fixture runs cannot leak into the repo', () => {
 	assertNoRepoFixtureLeak();
 	// The leak stayed in the OS temp dir by construction; remove it as hygiene.
 	rmSync(fixture, { recursive: true, force: true });
+});
+
+test('a failing git process fails the no-leak assertion loudly instead of passing', () => {
+	withTempDir((fakeBin) => {
+		// A bounded fake `git` binary that always fails, injected through PATH:
+		// the spawned process really fails, the real repository git state is
+		// never touched, and the fake lives only inside the OS temp dir.
+		const fakeGit = join(fakeBin, 'git');
+		writeFileSync(fakeGit, '#!/bin/sh\necho "simulated git failure" >&2\nexit 2\n');
+		chmodSync(fakeGit, 0o755);
+		const env = { ...process.env, PATH: `${fakeBin}${delimiter}${process.env['PATH']}` };
+		assert.throws(
+			() => gitStatusShort({ env }),
+			/git status --short failed \(exit 2\): simulated git failure/
+		);
+		// The hygiene assertion propagates the failure instead of scanning a
+		// degraded error string — a broken evidence source can never pass.
+		assert.throws(() => assertNoRepoFixtureLeak({ env }), /git status --short failed/);
+	});
+	// An unstartable git (no such binary) fails the same way, loudly.
+	assert.throws(
+		() => gitStatusShort({ command: 'no-such-git-binary-12345' }),
+		/git status --short failed \(ENOENT\)/
+	);
 });
 
 test('non-literal initializers and substitutions cannot satisfy a pinned value', () =>
