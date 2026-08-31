@@ -864,8 +864,12 @@ export interface ReviewStateDescriptor {
 	 * (`DraftReviewVerdictRecord.stale` / `.current`) void the newest recorded
 	 * approval. Absent markers (older or partial projections) leave this
 	 * `false` — staleness is consumed from the server, never inferred.
+	 *
+	 * Typed optional so downstream TypeScript construction of descriptors stays
+	 * additive; `resolveReviewState` itself emits an explicit boolean for every
+	 * state it returns.
 	 */
-	stale: boolean;
+	stale?: boolean;
 	/**
 	 * Supplementary sentence the chrome renders alongside the badge when the
 	 * state needs one — currently the stale-approval explanation. Rendered as

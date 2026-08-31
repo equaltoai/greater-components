@@ -78,10 +78,19 @@ The stale state keeps the approval **visible as history** while demoting it:
 Staleness is consumed, never inferred: an older or partial projection without
 the markers renders the ordinary qualified activity badge. It never shows a
 genuinely current approval as stale either — a record carrying
-`current: true` / `stale: false` keeps the approved tone. The exported
-constants (`REVIEW_STALE_APPROVAL_LABEL`, `REVIEW_STALE_APPROVAL_DETAIL`,
+`current: true` / `stale: false` keeps the approved tone, and it keeps it even
+when `publishEligibility` reports the draft ineligible or the principal
+approval outstanding: the gate is presentation data for the badge, never a
+staleness input. Contradictory authoritative markers (`current: true` together
+with `stale: true`) demote in the safe direction — the approval reads as
+superseded, never as current. The exported constants
+(`REVIEW_STALE_APPROVAL_LABEL`, `REVIEW_STALE_APPROVAL_DETAIL`,
 `REVIEW_STALE_APPROVAL_DETAIL_PRINCIPAL`) pin the exact strings so consumers
 and tests assert them rather than paraphrases.
+
+`ReviewStateDescriptor.stale` is typed optional (`stale?: boolean`) so
+downstream descriptor construction stays additive; `resolveReviewState` itself
+emits an explicit boolean for every state it returns.
 
 ### The approval rules are cumulative
 
