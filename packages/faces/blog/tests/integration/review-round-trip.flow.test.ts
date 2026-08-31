@@ -2,7 +2,7 @@
  * Review workflow round trip: queue -> card -> verdict action.
  *
  * The fixture below is a verbatim `SharedDraftReviews` response payload — the
- * exact edges/node shape the pinned Lesser contract (LESSER_REF v1.6.0)
+ * exact edges/node shape the pinned Lesser contract (LESSER_REF v1.6.28)
  * returns for the query in
  * `packages/faces/social/src/adapters/graphql/documents/draft-review.graphql`.
  * The flow maps that payload into the queue, renders a card per draft, drives a

@@ -88,6 +88,39 @@ describe('Lesser shared-draft review contract', () => {
 		expect(ref).toMatch(/commit: [0-9a-f]{40}/);
 	});
 
+	it('keeps every LESSER_REF version comment aligned with the pinned tag', () => {
+		// The review chrome's comments name the contract they mirror. When the
+		// pin moves during a sync-contracts walk, these references must move
+		// with it — a comment citing an old tag is a lie about authority, so
+		// this check derives the expected version from LESSER_REF.txt itself
+		// and fails until every mention is brought in line.
+		const pinnedTag = /tag:\s*(v[0-9]+\.[0-9]+\.[0-9]+)/.exec(readLesserRef())?.[1];
+		expect(pinnedTag, 'LESSER_REF.txt carries no parsable release tag').toBeDefined();
+
+		const commentedFiles = [
+			'packages/faces/blog/src/types.ts',
+			'packages/faces/blog/tests/integration/review-round-trip.flow.test.ts',
+			'packages/faces/blog/tests/mocks/mockDraftReview.ts',
+		];
+
+		for (const relativePath of commentedFiles) {
+			const source = readFileSync(resolve(findRepoRoot(), relativePath), 'utf8');
+			const mentions = [...source.matchAll(/LESSER_REF (v[0-9]+\.[0-9]+\.[0-9]+)/g)].map(
+				(match) => match[1]
+			);
+
+			expect(
+				mentions.length,
+				`${relativePath} no longer names the pinned contract`
+			).toBeGreaterThan(0);
+			for (const mention of mentions) {
+				expect(mention, `${relativePath} cites ${mention}; pinned contract is ${pinnedTag}`).toBe(
+					pinnedTag
+				);
+			}
+		}
+	});
+
 	it('declares every DraftReview field the chrome renders', () => {
 		const fields = readTypeBlock(schema, 'type DraftReview {');
 
