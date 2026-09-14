@@ -48,14 +48,14 @@
     "ora": "^9.4.1",
     "prompts": "^2.4.2",
     "semver": "^7.8.5",
-    "zod": "^4.4.3"
+    "zod": "^4.6.2"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^7.0.1",
     "@sveltejs/kit": "^2.70.3",
     "@sveltejs/vite-plugin-svelte": "^7.3.0",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^26.2.0",
+    "@types/node": "^26.5.1",
     "@types/prompts": "^2.4.9",
     "@types/semver": "^7.8.0",
     "@vitest/coverage-v8": "^4.1.11",
@@ -68,7 +68,7 @@
     "svelte-check": "^4.7.6",
     "typescript": "^6.0.2",
     "unified": "^11.0.5",
-    "vite": "^8.2.2",
+    "vite": "^8.3.0",
     "vitest": "^4.1.11"
   }
 }

@@ -446,8 +446,8 @@
     "@apollo/client": "4.2.12",
     "@apollo/client-react-streaming": "^0.14.5",
     "@graphql-typed-document-node/core": "^3.2.0",
-    "@playwright/test": "^1.62.1",
-    "@tanstack/svelte-virtual": "^3.13.36",
+    "@playwright/test": "^1.63.0",
+    "@tanstack/svelte-virtual": "^3.13.37",
     "axe-playwright": "^2.2.2",
     "chalk": "^5.6.2",
     "commander": "^14.0.3",
@@ -472,8 +472,8 @@
     "shiki": "^4.4.3",
     "tabbable": "^6.5.0",
     "unified": "^11.0.5",
-    "viem": "^2.55.19",
-    "zod": "^4.4.3"
+    "viem": "^2.56.3",
+    "zod": "^4.6.2"
   },
   "devDependencies": {
     "@equaltoai/greater-components-adapters": "workspace:*",
