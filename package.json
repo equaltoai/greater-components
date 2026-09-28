@@ -105,7 +105,7 @@
     "openapi-typescript": "^7.13.0",
     "prettier": "^3.9.6",
     "prettier-plugin-svelte": "^3.5.1",
-    "svelte": "^5.56.10",
+    "svelte": "^5.57.1",
     "svelte-check": "^4.7.6",
     "tsx": "^4.23.12",
     "typescript": "^6.0.2",
