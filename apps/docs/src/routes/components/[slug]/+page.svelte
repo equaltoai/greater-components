@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { getComponentBySlug } from '$lib/data/registry.js';
 	import type { Component } from '$lib/data/registry.js';
 
-	const component = $derived<Component | undefined>(getComponentBySlug($page.params.slug ?? ''));
+	const component = $derived<Component | undefined>(getComponentBySlug(page.params.slug ?? ''));
 
 	let selectedExample = $state(0);
 	let copiedCode = $state(false);
@@ -31,7 +31,7 @@
 {#if !component}
 	<div class="not-found">
 		<h1>Component Not Found</h1>
-		<p>The component "{$page.params.slug}" does not exist.</p>
+		<p>The component "{page.params.slug}" does not exist.</p>
 		<a href="/components">← Back to Components</a>
 	</div>
 {:else}

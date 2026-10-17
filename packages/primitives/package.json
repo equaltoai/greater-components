@@ -159,8 +159,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "svelte-package --output dist && node scripts/build-css.js",
-    "dev": "svelte-package --output dist --watch",
+    "build": "svelte-package --input src --output dist && node scripts/build-css.js",
+    "dev": "svelte-package --input src --output dist --watch",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
@@ -176,15 +176,15 @@
   },
   "devDependencies": {
     "@equaltoai/greater-components-tokens": "workspace:*",
-    "@sveltejs/package": "^2.5.8",
-    "@sveltejs/vite-plugin-svelte": "^7.3.0",
+    "@sveltejs/package": "^3.0.0",
+    "@sveltejs/vite-plugin-svelte": "^7.3.1",
     "@testing-library/svelte": "5.4.2",
-    "@types/node": "^26.2.0",
+    "@types/node": "^26.6.4",
     "@vitest/coverage-v8": "^4.1.11",
     "jsdom": "^29.0.2",
-    "svelte": "^5.56.10",
+    "svelte": "^5.57.1",
     "typescript": "^6.0.2",
-    "vite": "^8.2.2",
+    "vite": "^8.3.4",
     "vitest": "^4.1.11"
   },
   "private": true

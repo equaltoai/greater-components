@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import ChevronRightIcon from '@equaltoai/greater-components-icons/icons/chevron-right.svelte';
 
 	export let isMobileMenuOpen = false;
@@ -93,7 +93,7 @@
 	}
 
 	function isActive(href: string): boolean {
-		return $page.url.pathname === href;
+		return page.url.pathname === href;
 	}
 </script>
 

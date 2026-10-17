@@ -7,7 +7,7 @@
 		GalleryMasonry,
 	} from '@equaltoai/greater-components-artist/components/Gallery';
 	import { componentArtworks } from '$lib/data/artist';
-	import { base } from '$app/paths';
+	import { resolve } from '$app/paths';
 
 	// Generate sample artworks by cycling through the 5 real ones
 	const sampleArtworks = Array.from({ length: 12 }, (_, i) => ({
@@ -32,7 +32,7 @@
 <GalleryRow 
   items={featuredArtworks}
   title="Featured This Week"
-  showAllLink="${base}/artist/gallery"
+  showAllLink="${resolve('/artist/gallery')}"
   cardSize="md"
 />`;
 
@@ -97,7 +97,7 @@
 			<GalleryRow
 				items={sampleArtworks.slice(0, 6)}
 				title="Featured This Week"
-				showAllLink={`${base}/artist/gallery`}
+				showAllLink={resolve('/artist/gallery')}
 				cardSize="md"
 			/>
 		</div>

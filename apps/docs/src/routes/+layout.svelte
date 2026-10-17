@@ -5,15 +5,15 @@
 	import Footer from '$lib/components/Footer.svelte';
 	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
 	import SearchModal from '$lib/components/SearchModal.svelte';
-	import { page } from '$app/stores';
+	import { afterNavigate } from '$app/navigation';
 
 	let isSearchOpen = false;
 	let isMobileMenuOpen = false;
 
 	// Close mobile menu on route change
-	$: if ($page) {
+	afterNavigate(() => {
 		isMobileMenuOpen = false;
-	}
+	});
 
 	// Handle keyboard shortcuts
 	function handleKeydown(e: KeyboardEvent) {

@@ -3,9 +3,9 @@
 	import CodeExample from '$lib/components/CodeExample.svelte';
 	import { ArtistProfile } from '@equaltoai/greater-components-artist/components/ArtistProfile';
 	import { profileData } from '$lib/data/artist';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
-	const username = $derived($page.params.username);
+	const username = $derived(page.params.username);
 
 	const profileExample = `
 // Dynamic route: /artist/[username]

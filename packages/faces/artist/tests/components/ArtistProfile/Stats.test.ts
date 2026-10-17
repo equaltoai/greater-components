@@ -68,7 +68,7 @@ describe('ArtistProfile.Stats', () => {
 			props: { context: mockContext, componentProps: { clickable: true } },
 		});
 
-		const followerStat = screen.getByLabelText('1200 Followers');
+		const followerStat = screen.getByLabelText('1.2K Followers');
 		expect(followerStat.tagName).toBe('BUTTON');
 
 		await fireEvent.click(followerStat);
@@ -80,7 +80,7 @@ describe('ArtistProfile.Stats', () => {
 			props: { context: mockContext, componentProps: { clickable: false } },
 		});
 
-		const followerStat = screen.getByLabelText('1200 Followers');
+		const followerStat = screen.getByLabelText('1.2K Followers');
 		expect(followerStat.tagName).toBe('DIV');
 
 		// Clicks should not trigger handler (though harder to test on div without handler,
