@@ -110,6 +110,9 @@ describe('UnreadIndicator live announcements', () => {
 		const instance = mount(UnreadIndicatorHarness, { target });
 
 		(target.querySelector('[data-testid="set-one"]') as HTMLButtonElement).click();
+		// Svelte 5.57+ schedules an internal zero-delay timer after delegated event
+		// propagation; let it run so the count reflects only the component's timers.
+		await vi.advanceTimersByTimeAsync(0);
 		await flushSync();
 		expect(vi.getTimerCount()).toBe(2);
 

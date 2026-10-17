@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { LayoutData } from './$types';
-	import { base } from '$app/paths';
-	import { page } from '$app/stores';
+	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 	import '@equaltoai/greater-components-tokens/theme.css';
 	import '@equaltoai/greater-components-primitives/theme.css';
@@ -68,10 +68,10 @@
 
 	const resolveHref = (href: string) => {
 		if (href === '/') {
-			return base || '/';
+			return resolve('/').replace(/\/$/, '') || '/';
 		}
 
-		return `${base}${href}`;
+		return resolve(href);
 	};
 
 	onMount(() => {
@@ -148,7 +148,7 @@
 				{#each navLinks as { href, label, icon: Icon, external } (href)}
 					{@const resolved = resolveHref(href)}
 					<a
-						class:active={$page.url.pathname === href}
+						class:active={page.url.pathname === href}
 						href={resolved}
 						rel={external ? 'external' : undefined}
 						data-sveltekit-reload={external || undefined}

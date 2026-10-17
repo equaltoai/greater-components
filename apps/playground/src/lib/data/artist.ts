@@ -8,7 +8,12 @@ import type {
 	AIUsageData,
 	PortfolioSectionEntity as PortfolioSection,
 } from '@equaltoai/greater-components-artist';
-import { base } from '$app/paths';
+import { asset, resolve } from '$app/paths';
+
+// The workspace-root typecheck does not load the playground's generated $app
+// route types, so `resolve` keeps its two-argument route-id overload there.
+// Demo data only needs the base-prefixed pathname form.
+const resolveRoute = resolve as unknown as (pathname: string) => string;
 
 // Helper for relative time
 const now = Date.now();
@@ -85,7 +90,7 @@ export const demoAccount = {
 	id: 'acct-1',
 	username: 'janeartist',
 	displayName: 'Jane Artist',
-	avatar: `${base}/images/artist/avatar.svg`,
+	avatar: asset('images/artist/avatar.svg'),
 	uri: 'https://equalto.social/users/janeartist',
 };
 
@@ -125,9 +130,9 @@ export const profileData: ComponentArtistData = {
 	id: 'artist-1',
 	displayName: 'Jane Artist',
 	username: 'janeartist',
-	profileUrl: `${base}/artist/profile`,
-	avatar: `${base}/images/artist/avatar.svg`,
-	heroBanner: `${base}/images/artist/artwork3.svg`,
+	profileUrl: resolveRoute('/artist/profile'),
+	avatar: asset('images/artist/avatar.svg'),
+	heroBanner: asset('images/artist/artwork3.svg'),
 	statement: 'Digital artist exploring the intersection of nature and technology.',
 	badges: [
 		{ type: 'verified', tooltip: 'Verified Artist', awardedAt: minutesAgo(100000) },
@@ -183,8 +188,8 @@ export const artworks: Artwork[] = [
 			{
 				id: 'media-1',
 				type: 'image',
-				url: `${base}/images/artist/artwork1.svg`,
-				previewUrl: `${base}/images/artist/artwork1.svg`,
+				url: asset('images/artist/artwork1.svg'),
+				previewUrl: asset('images/artist/artwork1.svg'),
 				description: 'Sunset over mountains',
 				blurhash: null,
 				meta: null,
@@ -214,20 +219,20 @@ export const componentArtworks: ComponentArtworkData[] = [
 		id: '1',
 		title: 'Sunset Over Mountains',
 		description: 'A serene view of the sun setting over the distant peaks.',
-		imageUrl: `${base}/images/artist/artwork1.svg`,
-		thumbnailUrl: `${base}/images/artist/artwork1.svg`,
+		imageUrl: asset('images/artist/artwork1.svg'),
+		thumbnailUrl: asset('images/artist/artwork1.svg'),
 		images: {
-			thumbnail: `${base}/images/artist/artwork1.svg`,
-			preview: `${base}/images/artist/artwork1.svg`,
-			standard: `${base}/images/artist/artwork1.svg`,
-			full: `${base}/images/artist/artwork1.svg`,
+			thumbnail: asset('images/artist/artwork1.svg'),
+			preview: asset('images/artist/artwork1.svg'),
+			standard: asset('images/artist/artwork1.svg'),
+			full: asset('images/artist/artwork1.svg'),
 		},
 		dimensions: { width: 800, height: 600 },
 		artist: {
 			id: 'artist-1',
 			name: 'Jane Artist',
 			username: 'janeartist',
-			avatar: `${base}/images/artist/avatar.svg`,
+			avatar: asset('images/artist/avatar.svg'),
 			verified: true,
 		},
 		metadata: {
@@ -253,19 +258,19 @@ export const componentArtworks: ComponentArtworkData[] = [
 		id: '2',
 		title: 'Forest Morning',
 		description: 'Early morning light.',
-		imageUrl: `${base}/images/artist/artwork2.svg`,
-		thumbnailUrl: `${base}/images/artist/artwork2.svg`,
+		imageUrl: asset('images/artist/artwork2.svg'),
+		thumbnailUrl: asset('images/artist/artwork2.svg'),
 		images: {
-			thumbnail: `${base}/images/artist/artwork2.svg`,
-			preview: `${base}/images/artist/artwork2.svg`,
-			standard: `${base}/images/artist/artwork2.svg`,
-			full: `${base}/images/artist/artwork2.svg`,
+			thumbnail: asset('images/artist/artwork2.svg'),
+			preview: asset('images/artist/artwork2.svg'),
+			standard: asset('images/artist/artwork2.svg'),
+			full: asset('images/artist/artwork2.svg'),
 		},
 		artist: {
 			id: 'artist-1',
 			name: 'Jane Artist',
 			username: 'janeartist',
-			avatar: `${base}/images/artist/avatar.svg`,
+			avatar: asset('images/artist/avatar.svg'),
 			verified: true,
 		},
 		metadata: {
@@ -287,19 +292,19 @@ export const componentArtworks: ComponentArtworkData[] = [
 		id: '3',
 		title: 'Ocean Waves',
 		description: 'Power of the ocean.',
-		imageUrl: `${base}/images/artist/artwork3.svg`,
-		thumbnailUrl: `${base}/images/artist/artwork3.svg`,
+		imageUrl: asset('images/artist/artwork3.svg'),
+		thumbnailUrl: asset('images/artist/artwork3.svg'),
 		images: {
-			thumbnail: `${base}/images/artist/artwork3.svg`,
-			preview: `${base}/images/artist/artwork3.svg`,
-			standard: `${base}/images/artist/artwork3.svg`,
-			full: `${base}/images/artist/artwork3.svg`,
+			thumbnail: asset('images/artist/artwork3.svg'),
+			preview: asset('images/artist/artwork3.svg'),
+			standard: asset('images/artist/artwork3.svg'),
+			full: asset('images/artist/artwork3.svg'),
 		},
 		artist: {
 			id: 'artist-1',
 			name: 'Jane Artist',
 			username: 'janeartist',
-			avatar: `${base}/images/artist/avatar.svg`,
+			avatar: asset('images/artist/avatar.svg'),
 			verified: true,
 		},
 		metadata: {
@@ -321,19 +326,19 @@ export const componentArtworks: ComponentArtworkData[] = [
 		id: '4',
 		title: 'Abstract Thoughts',
 		description: 'Complexity of the mind.',
-		imageUrl: `${base}/images/artist/artwork4.svg`,
-		thumbnailUrl: `${base}/images/artist/artwork4.svg`,
+		imageUrl: asset('images/artist/artwork4.svg'),
+		thumbnailUrl: asset('images/artist/artwork4.svg'),
 		images: {
-			thumbnail: `${base}/images/artist/artwork4.svg`,
-			preview: `${base}/images/artist/artwork4.svg`,
-			standard: `${base}/images/artist/artwork4.svg`,
-			full: `${base}/images/artist/artwork4.svg`,
+			thumbnail: asset('images/artist/artwork4.svg'),
+			preview: asset('images/artist/artwork4.svg'),
+			standard: asset('images/artist/artwork4.svg'),
+			full: asset('images/artist/artwork4.svg'),
 		},
 		artist: {
 			id: 'artist-1',
 			name: 'Jane Artist',
 			username: 'janeartist',
-			avatar: `${base}/images/artist/avatar.svg`,
+			avatar: asset('images/artist/avatar.svg'),
 			verified: true,
 		},
 		metadata: {
@@ -359,19 +364,19 @@ export const componentArtworks: ComponentArtworkData[] = [
 		id: '5',
 		title: 'Modern Composition',
 		description: 'Geometry and color.',
-		imageUrl: `${base}/images/artist/artwork5.svg`,
-		thumbnailUrl: `${base}/images/artist/artwork5.svg`,
+		imageUrl: asset('images/artist/artwork5.svg'),
+		thumbnailUrl: asset('images/artist/artwork5.svg'),
 		images: {
-			thumbnail: `${base}/images/artist/artwork5.svg`,
-			preview: `${base}/images/artist/artwork5.svg`,
-			standard: `${base}/images/artist/artwork5.svg`,
-			full: `${base}/images/artist/artwork5.svg`,
+			thumbnail: asset('images/artist/artwork5.svg'),
+			preview: asset('images/artist/artwork5.svg'),
+			standard: asset('images/artist/artwork5.svg'),
+			full: asset('images/artist/artwork5.svg'),
 		},
 		artist: {
 			id: 'artist-1',
 			name: 'Jane Artist',
 			username: 'janeartist',
-			avatar: `${base}/images/artist/avatar.svg`,
+			avatar: asset('images/artist/avatar.svg'),
 			verified: true,
 		},
 		metadata: {

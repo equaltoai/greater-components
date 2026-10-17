@@ -77,13 +77,13 @@ Features:
 				<button
 					class="profile-stats__item profile-stats__item--clickable"
 					onclick={() => handleStatClick(stat)}
-					aria-label={`${value} ${label}`}
+					aria-label={`${formattedValue} ${label}`}
 				>
 					<span class="profile-stats__value">{formattedValue}</span>
 					<span class="profile-stats__label">{label}</span>
 				</button>
 			{:else}
-				<div class="profile-stats__item" aria-label={`${value} ${label}`} role="group">
+				<div class="profile-stats__item" aria-label={`${formattedValue} ${label}`} role="group">
 					<span class="profile-stats__value">{formattedValue}</span>
 					<span class="profile-stats__label">{label}</span>
 				</div>
