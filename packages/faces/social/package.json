@@ -112,7 +112,7 @@
     "@testing-library/svelte": "5.4.2",
     "@types/node": "^26.6.4",
     "@vitest/coverage-v8": "^4.1.11",
-    "@vitest/ui": "^4.1.11",
+    "@vitest/ui": "^5.0.5",
     "axe-core": "^4.14.0",
     "graphql": "^16.13.2",
     "jsdom": "^29.0.2",
