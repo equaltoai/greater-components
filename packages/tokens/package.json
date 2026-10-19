@@ -46,7 +46,7 @@
   },
   "devDependencies": {
     "@types/node": "^26.6.4",
-    "@vitest/coverage-v8": "^4.1.11",
+    "@vitest/coverage-v8": "^5.0.5",
     "chokidar": "^5.0.0",
     "typescript": "^6.0.2",
     "vitest": "^4.1.11"
