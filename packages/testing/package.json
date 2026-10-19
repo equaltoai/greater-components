@@ -46,7 +46,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@axe-core/playwright": "^4.13.0",
+    "@axe-core/playwright": "^4.14.0",
     "axe-core": "^4.14.0",
     "axe-playwright": "^2.2.2",
     "focus-trap": "^8.2.3",
@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "@percy/playwright": "^1.1.2",
-    "@playwright/test": "^1.64.0",
+    "@playwright/test": "^1.64.1",
     "@sveltejs/vite-plugin-svelte": "^7.3.1",
     "@testing-library/svelte": "5.4.2",
     "@testing-library/user-event": "^14.6.7",
